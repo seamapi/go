@@ -2,7 +2,7 @@
 
 The Seam Go library provides convenient access to the Seam API from Go.
 
-[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/seam/go)
+[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/seamapi/go)
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
 
 ## Installation
@@ -10,7 +10,7 @@ The Seam Go library provides convenient access to the Seam API from Go.
 Run the following command to use the Seam Go library in your Go module:
 
 ```sh
-go get github.com/seam/go
+go get github.com/seamapi/go
 ```
 
 This module requires Go version >= 1.19.
@@ -25,7 +25,7 @@ import (
   "fmt"
   "net/http"
 
-  seam "github.com/seam/go"
+  seam "github.com/seamapi/go"
 )
 
 func run() error {
