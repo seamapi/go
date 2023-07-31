@@ -3,7 +3,7 @@
 package api
 
 type AccessCodesCreateResponse struct {
-	ActionAttempt *AccessCodesCreateResponseActionAttempt `json:"action_attempt,omitempty"`
-	AccessCode    *AccessCodesCreateResponseAccessCode    `json:"access_code,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
+	AccessCode    *AccessCode    `json:"access_code,omitempty"`
+	Ok            bool           `json:"ok"`
 }

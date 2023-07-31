@@ -7,15 +7,14 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	fmt "fmt"
 	core "github.com/seamapi/go/core"
 	io "io"
 	http "net/http"
-	url "net/url"
 )
 
 type ActionAttemptsClient interface {
-	ActionAttemptsGet(ctx context.Context, request *ActionAttemptsGetRequest) (*ActionAttemptsGetResponse, error)
+	Get(ctx context.Context, request *ActionAttemptsGetRequest) (*ActionAttemptsGetResponse, error)
+	List(ctx context.Context, request *ActionAttemptsListRequest) (*ActionAttemptsListResponse, error)
 }
 
 func NewActionAttemptsClient(opts ...core.ClientOption) ActionAttemptsClient {
@@ -36,18 +35,12 @@ type actionAttemptsClient struct {
 	header     http.Header
 }
 
-func (a *actionAttemptsClient) ActionAttemptsGet(ctx context.Context, request *ActionAttemptsGetRequest) (*ActionAttemptsGetResponse, error) {
+func (a *actionAttemptsClient) Get(ctx context.Context, request *ActionAttemptsGetRequest) (*ActionAttemptsGetResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if a.baseURL != "" {
 		baseURL = a.baseURL
 	}
 	endpointURL := baseURL + "/" + "action_attempts/get"
-
-	queryParams := make(url.Values)
-	queryParams.Add("action_attempt_id", fmt.Sprintf("%v", request.ActionAttemptId))
-	if len(queryParams) > 0 {
-		endpointURL += "?" + queryParams.Encode()
-	}
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -80,7 +73,57 @@ func (a *actionAttemptsClient) ActionAttemptsGet(ctx context.Context, request *A
 		ctx,
 		a.httpClient,
 		endpointURL,
-		http.MethodGet,
+		http.MethodPost,
+		request,
+		&response,
+		false,
+		a.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (a *actionAttemptsClient) List(ctx context.Context, request *ActionAttemptsListRequest) (*ActionAttemptsListResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if a.baseURL != "" {
+		baseURL = a.baseURL
+	}
+	endpointURL := baseURL + "/" + "action_attempts/list"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 401:
+			value := new(UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *ActionAttemptsListResponse
+	if err := core.DoRequest(
+		ctx,
+		a.httpClient,
+		endpointURL,
+		http.MethodPost,
 		request,
 		&response,
 		false,

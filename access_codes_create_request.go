@@ -2,7 +2,7 @@
 
 package api
 
-// AccessCodesCreateRequest is an in-lined request used by the AccessCodesCreate endpoint.
+// AccessCodesCreateRequest is an in-lined request used by the Create endpoint.
 type AccessCodesCreateRequest struct {
 	DeviceId string  `json:"device_id"`
 	Name     *string `json:"name,omitempty"`
@@ -13,4 +13,6 @@ type AccessCodesCreateRequest struct {
 	Sync                    *bool   `json:"sync,omitempty"`
 	AttemptForOfflineDevice *bool   `json:"attempt_for_offline_device,omitempty"`
 	CommonCodeKey           *string `json:"common_code_key,omitempty"`
+	PreferNativeScheduling  *bool   `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool *bool   `json:"use_backup_access_code_pool,omitempty"`
 }

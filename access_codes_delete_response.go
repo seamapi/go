@@ -3,6 +3,6 @@
 package api
 
 type AccessCodesDeleteResponse struct {
-	ActionAttempt *AccessCodesDeleteResponseActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok"`
 }

@@ -4,12 +4,24 @@ package api
 
 import (
 	core "github.com/seamapi/go/core"
+	noisesensors "github.com/seamapi/go/noisesensors"
 	http "net/http"
 )
 
 type Client interface {
 	AccessCodes() AccessCodesClient
 	ActionAttempts() ActionAttemptsClient
+	ConnectedAccounts() ConnectedAccountsClient
+	Devices() DevicesClient
+	ClientSessions() ClientSessionsClient
+	Events() EventsClient
+	Health() HealthClient
+	ConnectWebviews() ConnectWebviewsClient
+	Locks() LocksClient
+	Thermostats() ThermostatsClient
+	Webhooks() WebhooksClient
+	Workspaces() WorkspacesClient
+	NoiseSensors() noisesensors.Client
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -18,20 +30,42 @@ func NewClient(opts ...core.ClientOption) Client {
 		opt(options)
 	}
 	return &client{
-		baseURL:              options.BaseURL,
-		httpClient:           options.HTTPClient,
-		header:               options.ToHeader(),
-		accessCodesClient:    NewAccessCodesClient(opts...),
-		actionAttemptsClient: NewActionAttemptsClient(opts...),
+		baseURL:                 options.BaseURL,
+		httpClient:              options.HTTPClient,
+		header:                  options.ToHeader(),
+		accessCodesClient:       NewAccessCodesClient(opts...),
+		actionAttemptsClient:    NewActionAttemptsClient(opts...),
+		connectedAccountsClient: NewConnectedAccountsClient(opts...),
+		devicesClient:           NewDevicesClient(opts...),
+		clientSessionsClient:    NewClientSessionsClient(opts...),
+		eventsClient:            NewEventsClient(opts...),
+		healthClient:            NewHealthClient(opts...),
+		connectWebviewsClient:   NewConnectWebviewsClient(opts...),
+		locksClient:             NewLocksClient(opts...),
+		thermostatsClient:       NewThermostatsClient(opts...),
+		webhooksClient:          NewWebhooksClient(opts...),
+		workspacesClient:        NewWorkspacesClient(opts...),
+		noiseSensorsClient:      noisesensors.NewClient(opts...),
 	}
 }
 
 type client struct {
-	baseURL              string
-	httpClient           core.HTTPClient
-	header               http.Header
-	accessCodesClient    AccessCodesClient
-	actionAttemptsClient ActionAttemptsClient
+	baseURL                 string
+	httpClient              core.HTTPClient
+	header                  http.Header
+	accessCodesClient       AccessCodesClient
+	actionAttemptsClient    ActionAttemptsClient
+	connectedAccountsClient ConnectedAccountsClient
+	devicesClient           DevicesClient
+	clientSessionsClient    ClientSessionsClient
+	eventsClient            EventsClient
+	healthClient            HealthClient
+	connectWebviewsClient   ConnectWebviewsClient
+	locksClient             LocksClient
+	thermostatsClient       ThermostatsClient
+	webhooksClient          WebhooksClient
+	workspacesClient        WorkspacesClient
+	noiseSensorsClient      noisesensors.Client
 }
 
 func (c *client) AccessCodes() AccessCodesClient {
@@ -40,4 +74,48 @@ func (c *client) AccessCodes() AccessCodesClient {
 
 func (c *client) ActionAttempts() ActionAttemptsClient {
 	return c.actionAttemptsClient
+}
+
+func (c *client) ConnectedAccounts() ConnectedAccountsClient {
+	return c.connectedAccountsClient
+}
+
+func (c *client) Devices() DevicesClient {
+	return c.devicesClient
+}
+
+func (c *client) ClientSessions() ClientSessionsClient {
+	return c.clientSessionsClient
+}
+
+func (c *client) Events() EventsClient {
+	return c.eventsClient
+}
+
+func (c *client) Health() HealthClient {
+	return c.healthClient
+}
+
+func (c *client) ConnectWebviews() ConnectWebviewsClient {
+	return c.connectWebviewsClient
+}
+
+func (c *client) Locks() LocksClient {
+	return c.locksClient
+}
+
+func (c *client) Thermostats() ThermostatsClient {
+	return c.thermostatsClient
+}
+
+func (c *client) Webhooks() WebhooksClient {
+	return c.webhooksClient
+}
+
+func (c *client) Workspaces() WorkspacesClient {
+	return c.workspacesClient
+}
+
+func (c *client) NoiseSensors() noisesensors.Client {
+	return c.noiseSensorsClient
 }

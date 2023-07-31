@@ -2,7 +2,7 @@
 
 package api
 
-// AccessCodesDeleteRequest is an in-lined request used by the AccessCodesDelete endpoint.
+// AccessCodesDeleteRequest is an in-lined request used by the Delete endpoint.
 type AccessCodesDeleteRequest struct {
 	DeviceId     *string `json:"device_id,omitempty"`
 	AccessCodeId string  `json:"access_code_id"`

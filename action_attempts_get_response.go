@@ -3,6 +3,6 @@
 package api
 
 type ActionAttemptsGetResponse struct {
-	ActionAttempt *ActionAttemptsGetResponseActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok"`
 }

@@ -13,9 +13,15 @@ import (
 )
 
 type AccessCodesClient interface {
-	AccessCodesCreate(ctx context.Context, request *AccessCodesCreateRequest) (*AccessCodesCreateResponse, error)
-	AccessCodesDelete(ctx context.Context, request *AccessCodesDeleteRequest) (*AccessCodesDeleteResponse, error)
-	AccessCodesUpdatePut(ctx context.Context, request *AccessCodesUpdatePutRequest) (*AccessCodesUpdatePutResponse, error)
+	Create(ctx context.Context, request *AccessCodesCreateRequest) (*AccessCodesCreateResponse, error)
+	CreateMultiple(ctx context.Context, request *AccessCodesCreateMultipleRequest) (*AccessCodesCreateMultipleResponse, error)
+	Delete(ctx context.Context, request *AccessCodesDeleteRequest) (*AccessCodesDeleteResponse, error)
+	Get(ctx context.Context, request *AccessCodesGetRequest) (*AccessCodesGetResponse, error)
+	List(ctx context.Context, request *AccessCodesListRequest) (*AccessCodesListResponse, error)
+	PullBackupAccessCode(ctx context.Context, request *AccessCodesPullBackupAccessCodeRequest) (*AccessCodesPullBackupAccessCodeResponse, error)
+	Update(ctx context.Context, request *AccessCodesUpdateRequest) (*AccessCodesUpdateResponse, error)
+	Simulate() SimulateClient
+	Unmanaged() UnmanagedClient
 }
 
 func NewAccessCodesClient(opts ...core.ClientOption) AccessCodesClient {
@@ -24,19 +30,23 @@ func NewAccessCodesClient(opts ...core.ClientOption) AccessCodesClient {
 		opt(options)
 	}
 	return &accessCodesClient{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL:         options.BaseURL,
+		httpClient:      options.HTTPClient,
+		header:          options.ToHeader(),
+		simulateClient:  NewSimulateClient(opts...),
+		unmanagedClient: NewUnmanagedClient(opts...),
 	}
 }
 
 type accessCodesClient struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL         string
+	httpClient      core.HTTPClient
+	header          http.Header
+	simulateClient  SimulateClient
+	unmanagedClient UnmanagedClient
 }
 
-func (a *accessCodesClient) AccessCodesCreate(ctx context.Context, request *AccessCodesCreateRequest) (*AccessCodesCreateResponse, error) {
+func (a *accessCodesClient) Create(ctx context.Context, request *AccessCodesCreateRequest) (*AccessCodesCreateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if a.baseURL != "" {
 		baseURL = a.baseURL
@@ -86,7 +96,57 @@ func (a *accessCodesClient) AccessCodesCreate(ctx context.Context, request *Acce
 	return response, nil
 }
 
-func (a *accessCodesClient) AccessCodesDelete(ctx context.Context, request *AccessCodesDeleteRequest) (*AccessCodesDeleteResponse, error) {
+func (a *accessCodesClient) CreateMultiple(ctx context.Context, request *AccessCodesCreateMultipleRequest) (*AccessCodesCreateMultipleResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if a.baseURL != "" {
+		baseURL = a.baseURL
+	}
+	endpointURL := baseURL + "/" + "access_codes/create_multiple"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 401:
+			value := new(UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *AccessCodesCreateMultipleResponse
+	if err := core.DoRequest(
+		ctx,
+		a.httpClient,
+		endpointURL,
+		http.MethodPost,
+		request,
+		&response,
+		false,
+		a.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (a *accessCodesClient) Delete(ctx context.Context, request *AccessCodesDeleteRequest) (*AccessCodesDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if a.baseURL != "" {
 		baseURL = a.baseURL
@@ -136,7 +196,157 @@ func (a *accessCodesClient) AccessCodesDelete(ctx context.Context, request *Acce
 	return response, nil
 }
 
-func (a *accessCodesClient) AccessCodesUpdatePut(ctx context.Context, request *AccessCodesUpdatePutRequest) (*AccessCodesUpdatePutResponse, error) {
+func (a *accessCodesClient) Get(ctx context.Context, request *AccessCodesGetRequest) (*AccessCodesGetResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if a.baseURL != "" {
+		baseURL = a.baseURL
+	}
+	endpointURL := baseURL + "/" + "access_codes/get"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 401:
+			value := new(UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *AccessCodesGetResponse
+	if err := core.DoRequest(
+		ctx,
+		a.httpClient,
+		endpointURL,
+		http.MethodPost,
+		request,
+		&response,
+		false,
+		a.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (a *accessCodesClient) List(ctx context.Context, request *AccessCodesListRequest) (*AccessCodesListResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if a.baseURL != "" {
+		baseURL = a.baseURL
+	}
+	endpointURL := baseURL + "/" + "access_codes/list"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 401:
+			value := new(UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *AccessCodesListResponse
+	if err := core.DoRequest(
+		ctx,
+		a.httpClient,
+		endpointURL,
+		http.MethodPost,
+		request,
+		&response,
+		false,
+		a.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (a *accessCodesClient) PullBackupAccessCode(ctx context.Context, request *AccessCodesPullBackupAccessCodeRequest) (*AccessCodesPullBackupAccessCodeResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if a.baseURL != "" {
+		baseURL = a.baseURL
+	}
+	endpointURL := baseURL + "/" + "access_codes/pull_backup_access_code"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 401:
+			value := new(UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *AccessCodesPullBackupAccessCodeResponse
+	if err := core.DoRequest(
+		ctx,
+		a.httpClient,
+		endpointURL,
+		http.MethodPost,
+		request,
+		&response,
+		false,
+		a.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (a *accessCodesClient) Update(ctx context.Context, request *AccessCodesUpdateRequest) (*AccessCodesUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if a.baseURL != "" {
 		baseURL = a.baseURL
@@ -169,12 +379,12 @@ func (a *accessCodesClient) AccessCodesUpdatePut(ctx context.Context, request *A
 		return apiError
 	}
 
-	var response *AccessCodesUpdatePutResponse
+	var response *AccessCodesUpdateResponse
 	if err := core.DoRequest(
 		ctx,
 		a.httpClient,
 		endpointURL,
-		http.MethodPut,
+		http.MethodPost,
 		request,
 		&response,
 		false,
@@ -184,4 +394,12 @@ func (a *accessCodesClient) AccessCodesUpdatePut(ctx context.Context, request *A
 		return response, err
 	}
 	return response, nil
+}
+
+func (a *accessCodesClient) Simulate() SimulateClient {
+	return a.simulateClient
+}
+
+func (a *accessCodesClient) Unmanaged() UnmanagedClient {
+	return a.unmanagedClient
 }

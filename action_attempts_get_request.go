@@ -2,7 +2,7 @@
 
 package api
 
-// ActionAttemptsGetRequest is an in-lined request used by the ActionAttemptsGet endpoint.
+// ActionAttemptsGetRequest is an in-lined request used by the Get endpoint.
 type ActionAttemptsGetRequest struct {
-	ActionAttemptId string `json:"-"`
+	ActionAttemptId string `json:"action_attempt_id"`
 }
