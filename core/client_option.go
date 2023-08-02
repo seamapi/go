@@ -3,7 +3,6 @@
 package core
 
 import (
-	fmt "fmt"
 	http "net/http"
 )
 
@@ -17,7 +16,7 @@ type ClientOptions struct {
 	BaseURL    string
 	HTTPClient HTTPClient
 	HTTPHeader http.Header
-	ApiKey     string
+	Bearer     string
 }
 
 // NewClientOptions returns a new *ClientOptions value.
@@ -34,6 +33,8 @@ func NewClientOptions() *ClientOptions {
 // on every request.
 func (c *ClientOptions) ToHeader() http.Header {
 	header := c.HTTPHeader.Clone()
-	header.Set("seam-workspace", fmt.Sprintf("%v", c.ApiKey))
+	if c.Bearer != "" {
+		header.Set("Authorization", "Bearer "+c.Bearer)
+	}
 	return header
 }
