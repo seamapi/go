@@ -2,6 +2,10 @@
 
 package api
 
+import (
+	time "time"
+)
+
 type ConnectWebview struct {
 	ConnectWebviewId    string                            `json:"connect_webview_id"`
 	ConnectedAccountId  *string                           `json:"connected_account_id,omitempty"`
@@ -12,7 +16,7 @@ type ConnectWebview struct {
 	AcceptedDevices     []string                          `json:"accepted_devices,omitempty"`
 	AnyProviderAllowed  bool                              `json:"any_provider_allowed"`
 	AnyDeviceAllowed    bool                              `json:"any_device_allowed"`
-	CreatedAt           string                            `json:"created_at"`
+	CreatedAt           time.Time                         `json:"created_at"`
 	LoginSuccessful     bool                              `json:"login_successful"`
 	Status              ConnectWebviewStatus              `json:"status,omitempty"`
 }

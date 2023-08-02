@@ -8,30 +8,30 @@ import (
 )
 
 type ConnectedAccountsGetRequest struct {
-	typeName                                               string
-	ConnectedAccountsGetRequestConnectedAccountsGetRequest *ConnectedAccountsGetRequestConnectedAccountsGetRequest
-	ConnectedAccountsGetRequestConnectedAccountsGetRequest *ConnectedAccountsGetRequestConnectedAccountsGetRequest
+	typeName                                      string
+	ConnectedAccountsGetRequestConnectedAccountId *ConnectedAccountsGetRequestConnectedAccountId
+	ConnectedAccountsGetRequestEmail              *ConnectedAccountsGetRequestEmail
 }
 
-func NewConnectedAccountsGetRequestFromConnectedAccountsGetRequestConnectedAccountsGetRequest(value *ConnectedAccountsGetRequestConnectedAccountsGetRequest) *ConnectedAccountsGetRequest {
-	return &ConnectedAccountsGetRequest{typeName: "connectedAccountsGetRequestConnectedAccountsGetRequest", ConnectedAccountsGetRequestConnectedAccountsGetRequest: value}
+func NewConnectedAccountsGetRequestFromConnectedAccountsGetRequestConnectedAccountId(value *ConnectedAccountsGetRequestConnectedAccountId) *ConnectedAccountsGetRequest {
+	return &ConnectedAccountsGetRequest{typeName: "connectedAccountsGetRequestConnectedAccountId", ConnectedAccountsGetRequestConnectedAccountId: value}
 }
 
-func NewConnectedAccountsGetRequestFromConnectedAccountsGetRequestConnectedAccountsGetRequest(value *ConnectedAccountsGetRequestConnectedAccountsGetRequest) *ConnectedAccountsGetRequest {
-	return &ConnectedAccountsGetRequest{typeName: "connectedAccountsGetRequestConnectedAccountsGetRequest", ConnectedAccountsGetRequestConnectedAccountsGetRequest: value}
+func NewConnectedAccountsGetRequestFromConnectedAccountsGetRequestEmail(value *ConnectedAccountsGetRequestEmail) *ConnectedAccountsGetRequest {
+	return &ConnectedAccountsGetRequest{typeName: "connectedAccountsGetRequestEmail", ConnectedAccountsGetRequestEmail: value}
 }
 
 func (c *ConnectedAccountsGetRequest) UnmarshalJSON(data []byte) error {
-	valueConnectedAccountsGetRequestConnectedAccountsGetRequest := new(ConnectedAccountsGetRequestConnectedAccountsGetRequest)
-	if err := json.Unmarshal(data, &valueConnectedAccountsGetRequestConnectedAccountsGetRequest); err == nil {
-		c.typeName = "connectedAccountsGetRequestConnectedAccountsGetRequest"
-		c.ConnectedAccountsGetRequestConnectedAccountsGetRequest = valueConnectedAccountsGetRequestConnectedAccountsGetRequest
+	valueConnectedAccountsGetRequestConnectedAccountId := new(ConnectedAccountsGetRequestConnectedAccountId)
+	if err := json.Unmarshal(data, &valueConnectedAccountsGetRequestConnectedAccountId); err == nil {
+		c.typeName = "connectedAccountsGetRequestConnectedAccountId"
+		c.ConnectedAccountsGetRequestConnectedAccountId = valueConnectedAccountsGetRequestConnectedAccountId
 		return nil
 	}
-	valueConnectedAccountsGetRequestConnectedAccountsGetRequest := new(ConnectedAccountsGetRequestConnectedAccountsGetRequest)
-	if err := json.Unmarshal(data, &valueConnectedAccountsGetRequestConnectedAccountsGetRequest); err == nil {
-		c.typeName = "connectedAccountsGetRequestConnectedAccountsGetRequest"
-		c.ConnectedAccountsGetRequestConnectedAccountsGetRequest = valueConnectedAccountsGetRequestConnectedAccountsGetRequest
+	valueConnectedAccountsGetRequestEmail := new(ConnectedAccountsGetRequestEmail)
+	if err := json.Unmarshal(data, &valueConnectedAccountsGetRequestEmail); err == nil {
+		c.typeName = "connectedAccountsGetRequestEmail"
+		c.ConnectedAccountsGetRequestEmail = valueConnectedAccountsGetRequestEmail
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
@@ -41,25 +41,25 @@ func (c ConnectedAccountsGetRequest) MarshalJSON() ([]byte, error) {
 	switch c.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "connectedAccountsGetRequestConnectedAccountsGetRequest":
-		return json.Marshal(c.ConnectedAccountsGetRequestConnectedAccountsGetRequest)
-	case "connectedAccountsGetRequestConnectedAccountsGetRequest":
-		return json.Marshal(c.ConnectedAccountsGetRequestConnectedAccountsGetRequest)
+	case "connectedAccountsGetRequestConnectedAccountId":
+		return json.Marshal(c.ConnectedAccountsGetRequestConnectedAccountId)
+	case "connectedAccountsGetRequestEmail":
+		return json.Marshal(c.ConnectedAccountsGetRequestEmail)
 	}
 }
 
 type ConnectedAccountsGetRequestVisitor interface {
-	VisitConnectedAccountsGetRequestConnectedAccountsGetRequest(*ConnectedAccountsGetRequestConnectedAccountsGetRequest) error
-	VisitConnectedAccountsGetRequestConnectedAccountsGetRequest(*ConnectedAccountsGetRequestConnectedAccountsGetRequest) error
+	VisitConnectedAccountsGetRequestConnectedAccountId(*ConnectedAccountsGetRequestConnectedAccountId) error
+	VisitConnectedAccountsGetRequestEmail(*ConnectedAccountsGetRequestEmail) error
 }
 
 func (c *ConnectedAccountsGetRequest) Accept(v ConnectedAccountsGetRequestVisitor) error {
 	switch c.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "connectedAccountsGetRequestConnectedAccountsGetRequest":
-		return v.VisitConnectedAccountsGetRequestConnectedAccountsGetRequest(c.ConnectedAccountsGetRequestConnectedAccountsGetRequest)
-	case "connectedAccountsGetRequestConnectedAccountsGetRequest":
-		return v.VisitConnectedAccountsGetRequestConnectedAccountsGetRequest(c.ConnectedAccountsGetRequestConnectedAccountsGetRequest)
+	case "connectedAccountsGetRequestConnectedAccountId":
+		return v.VisitConnectedAccountsGetRequestConnectedAccountId(c.ConnectedAccountsGetRequestConnectedAccountId)
+	case "connectedAccountsGetRequestEmail":
+		return v.VisitConnectedAccountsGetRequestEmail(c.ConnectedAccountsGetRequestEmail)
 	}
 }

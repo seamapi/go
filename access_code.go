@@ -2,6 +2,10 @@
 
 package api
 
+import (
+	time "time"
+)
+
 type AccessCode struct {
 	CommonCodeKey               *string          `json:"common_code_key,omitempty"`
 	IsScheduledOnDevice         *bool            `json:"is_scheduled_on_device,omitempty"`
@@ -11,12 +15,12 @@ type AccessCode struct {
 	DeviceId                    string           `json:"device_id"`
 	Name                        *string          `json:"name,omitempty"`
 	Code                        *string          `json:"code,omitempty"`
-	CreatedAt                   string           `json:"created_at"`
+	CreatedAt                   time.Time        `json:"created_at"`
 	Errors                      *any             `json:"errors,omitempty"`
 	Warnings                    *any             `json:"warnings,omitempty"`
 	IsManaged                   string           `json:"is_managed"`
-	StartsAt                    *string          `json:"starts_at,omitempty"`
-	EndsAt                      *string          `json:"ends_at,omitempty"`
+	StartsAt                    *time.Time       `json:"starts_at,omitempty"`
+	EndsAt                      *time.Time       `json:"ends_at,omitempty"`
 	Status                      AccessCodeStatus `json:"status,omitempty"`
 	IsBackupAccessCodeAvailable bool             `json:"is_backup_access_code_available"`
 	IsBackup                    *bool            `json:"is_backup,omitempty"`

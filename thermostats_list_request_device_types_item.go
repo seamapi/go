@@ -5,77 +5,181 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	strconv "strconv"
 )
 
-type ThermostatsListRequestDeviceTypesItem struct {
-	typeName                                                                   string
-	ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-	ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-	ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-}
+type ThermostatsListRequestDeviceTypesItem uint8
 
-func NewThermostatsListRequestDeviceTypesItemFromThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(value ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) *ThermostatsListRequestDeviceTypesItem {
-	return &ThermostatsListRequestDeviceTypesItem{typeName: "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem", ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem: value}
-}
+const (
+	ThermostatsListRequestDeviceTypesItemAkuvoxLock ThermostatsListRequestDeviceTypesItem = iota + 1
+	ThermostatsListRequestDeviceTypesItemAugustLock
+	ThermostatsListRequestDeviceTypesItemBrivoAccessPoint
+	ThermostatsListRequestDeviceTypesItemButterflymxPanel
+	ThermostatsListRequestDeviceTypesItemDoorkingLock
+	ThermostatsListRequestDeviceTypesItemGenieDoor
+	ThermostatsListRequestDeviceTypesItemIglooLock
+	ThermostatsListRequestDeviceTypesItemLinearLock
+	ThermostatsListRequestDeviceTypesItemLocklyLock
+	ThermostatsListRequestDeviceTypesItemKwiksetLock
+	ThermostatsListRequestDeviceTypesItemNukiLock
+	ThermostatsListRequestDeviceTypesItemSaltoLock
+	ThermostatsListRequestDeviceTypesItemSchlageLock
+	ThermostatsListRequestDeviceTypesItemSeamRelay
+	ThermostatsListRequestDeviceTypesItemSmartthingsLock
+	ThermostatsListRequestDeviceTypesItemYaleLock
+	ThermostatsListRequestDeviceTypesItemTwoNIntercom
+	ThermostatsListRequestDeviceTypesItemControlbywebDevice
+	ThermostatsListRequestDeviceTypesItemTtlockLock
+	ThermostatsListRequestDeviceTypesItemIgloohomeLock
+	ThermostatsListRequestDeviceTypesItemHubitatLock
+	ThermostatsListRequestDeviceTypesItemNoiseawareActivityZone
+	ThermostatsListRequestDeviceTypesItemMinutSensor
+	ThermostatsListRequestDeviceTypesItemEcobeeThermostat
+	ThermostatsListRequestDeviceTypesItemNestThermostat
+)
 
-func NewThermostatsListRequestDeviceTypesItemFromThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(value ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) *ThermostatsListRequestDeviceTypesItem {
-	return &ThermostatsListRequestDeviceTypesItem{typeName: "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem", ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem: value}
-}
-
-func NewThermostatsListRequestDeviceTypesItemFromThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(value ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) *ThermostatsListRequestDeviceTypesItem {
-	return &ThermostatsListRequestDeviceTypesItem{typeName: "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem", ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem: value}
-}
-
-func (t *ThermostatsListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
-	var valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem); err == nil {
-		t.typeName = "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem"
-		t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem = valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-		return nil
+func (t ThermostatsListRequestDeviceTypesItem) String() string {
+	switch t {
+	default:
+		return strconv.Itoa(int(t))
+	case ThermostatsListRequestDeviceTypesItemAkuvoxLock:
+		return "akuvox_lock"
+	case ThermostatsListRequestDeviceTypesItemAugustLock:
+		return "august_lock"
+	case ThermostatsListRequestDeviceTypesItemBrivoAccessPoint:
+		return "brivo_access_point"
+	case ThermostatsListRequestDeviceTypesItemButterflymxPanel:
+		return "butterflymx_panel"
+	case ThermostatsListRequestDeviceTypesItemDoorkingLock:
+		return "doorking_lock"
+	case ThermostatsListRequestDeviceTypesItemGenieDoor:
+		return "genie_door"
+	case ThermostatsListRequestDeviceTypesItemIglooLock:
+		return "igloo_lock"
+	case ThermostatsListRequestDeviceTypesItemLinearLock:
+		return "linear_lock"
+	case ThermostatsListRequestDeviceTypesItemLocklyLock:
+		return "lockly_lock"
+	case ThermostatsListRequestDeviceTypesItemKwiksetLock:
+		return "kwikset_lock"
+	case ThermostatsListRequestDeviceTypesItemNukiLock:
+		return "nuki_lock"
+	case ThermostatsListRequestDeviceTypesItemSaltoLock:
+		return "salto_lock"
+	case ThermostatsListRequestDeviceTypesItemSchlageLock:
+		return "schlage_lock"
+	case ThermostatsListRequestDeviceTypesItemSeamRelay:
+		return "seam_relay"
+	case ThermostatsListRequestDeviceTypesItemSmartthingsLock:
+		return "smartthings_lock"
+	case ThermostatsListRequestDeviceTypesItemYaleLock:
+		return "yale_lock"
+	case ThermostatsListRequestDeviceTypesItemTwoNIntercom:
+		return "two_n_intercom"
+	case ThermostatsListRequestDeviceTypesItemControlbywebDevice:
+		return "controlbyweb_device"
+	case ThermostatsListRequestDeviceTypesItemTtlockLock:
+		return "ttlock_lock"
+	case ThermostatsListRequestDeviceTypesItemIgloohomeLock:
+		return "igloohome_lock"
+	case ThermostatsListRequestDeviceTypesItemHubitatLock:
+		return "hubitat_lock"
+	case ThermostatsListRequestDeviceTypesItemNoiseawareActivityZone:
+		return "noiseaware_activity_zone"
+	case ThermostatsListRequestDeviceTypesItemMinutSensor:
+		return "minut_sensor"
+	case ThermostatsListRequestDeviceTypesItemEcobeeThermostat:
+		return "ecobee_thermostat"
+	case ThermostatsListRequestDeviceTypesItemNestThermostat:
+		return "nest_thermostat"
 	}
-	var valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem); err == nil {
-		t.typeName = "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem"
-		t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem = valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-		return nil
-	}
-	var valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem); err == nil {
-		t.typeName = "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem"
-		t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem = valueThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
 func (t ThermostatsListRequestDeviceTypesItem) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return json.Marshal(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return json.Marshal(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return json.Marshal(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
-	}
+	return []byte(fmt.Sprintf("%q", t.String())), nil
 }
 
-type ThermostatsListRequestDeviceTypesItemVisitor interface {
-	VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) error
-	VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) error
-	VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem) error
-}
-
-func (t *ThermostatsListRequestDeviceTypesItem) Accept(v ThermostatsListRequestDeviceTypesItemVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return v.VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return v.VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
-	case "thermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem":
-		return v.VisitThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem(t.ThermostatsListRequestDeviceTypesItemThermostatsListRequestDeviceTypesItem)
+func (t *ThermostatsListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
+	var raw string
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
 	}
+	switch raw {
+	case "akuvox_lock":
+		value := ThermostatsListRequestDeviceTypesItemAkuvoxLock
+		*t = value
+	case "august_lock":
+		value := ThermostatsListRequestDeviceTypesItemAugustLock
+		*t = value
+	case "brivo_access_point":
+		value := ThermostatsListRequestDeviceTypesItemBrivoAccessPoint
+		*t = value
+	case "butterflymx_panel":
+		value := ThermostatsListRequestDeviceTypesItemButterflymxPanel
+		*t = value
+	case "doorking_lock":
+		value := ThermostatsListRequestDeviceTypesItemDoorkingLock
+		*t = value
+	case "genie_door":
+		value := ThermostatsListRequestDeviceTypesItemGenieDoor
+		*t = value
+	case "igloo_lock":
+		value := ThermostatsListRequestDeviceTypesItemIglooLock
+		*t = value
+	case "linear_lock":
+		value := ThermostatsListRequestDeviceTypesItemLinearLock
+		*t = value
+	case "lockly_lock":
+		value := ThermostatsListRequestDeviceTypesItemLocklyLock
+		*t = value
+	case "kwikset_lock":
+		value := ThermostatsListRequestDeviceTypesItemKwiksetLock
+		*t = value
+	case "nuki_lock":
+		value := ThermostatsListRequestDeviceTypesItemNukiLock
+		*t = value
+	case "salto_lock":
+		value := ThermostatsListRequestDeviceTypesItemSaltoLock
+		*t = value
+	case "schlage_lock":
+		value := ThermostatsListRequestDeviceTypesItemSchlageLock
+		*t = value
+	case "seam_relay":
+		value := ThermostatsListRequestDeviceTypesItemSeamRelay
+		*t = value
+	case "smartthings_lock":
+		value := ThermostatsListRequestDeviceTypesItemSmartthingsLock
+		*t = value
+	case "yale_lock":
+		value := ThermostatsListRequestDeviceTypesItemYaleLock
+		*t = value
+	case "two_n_intercom":
+		value := ThermostatsListRequestDeviceTypesItemTwoNIntercom
+		*t = value
+	case "controlbyweb_device":
+		value := ThermostatsListRequestDeviceTypesItemControlbywebDevice
+		*t = value
+	case "ttlock_lock":
+		value := ThermostatsListRequestDeviceTypesItemTtlockLock
+		*t = value
+	case "igloohome_lock":
+		value := ThermostatsListRequestDeviceTypesItemIgloohomeLock
+		*t = value
+	case "hubitat_lock":
+		value := ThermostatsListRequestDeviceTypesItemHubitatLock
+		*t = value
+	case "noiseaware_activity_zone":
+		value := ThermostatsListRequestDeviceTypesItemNoiseawareActivityZone
+		*t = value
+	case "minut_sensor":
+		value := ThermostatsListRequestDeviceTypesItemMinutSensor
+		*t = value
+	case "ecobee_thermostat":
+		value := ThermostatsListRequestDeviceTypesItemEcobeeThermostat
+		*t = value
+	case "nest_thermostat":
+		value := ThermostatsListRequestDeviceTypesItemNestThermostat
+		*t = value
+	}
+	return nil
 }

@@ -4,6 +4,7 @@ package api
 
 import (
 	json "encoding/json"
+	time "time"
 )
 
 type ClimateSettingSchedule struct {
@@ -12,7 +13,7 @@ type ClimateSettingSchedule struct {
 	Name                      *string                                `json:"name,omitempty"`
 	ScheduleStartsAt          string                                 `json:"schedule_starts_at"`
 	ScheduleEndsAt            string                                 `json:"schedule_ends_at"`
-	CreatedAt                 string                                 `json:"created_at"`
+	CreatedAt                 time.Time                              `json:"created_at"`
 	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty"`
 	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty"`
 	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty"`

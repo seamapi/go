@@ -2,6 +2,6 @@
 
 package api
 
-type ConnectedAccountsGetRequestConnectedAccountsGetRequest struct {
+type ConnectedAccountsGetRequestEmail struct {
 	Email string `json:"email"`
 }

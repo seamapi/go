@@ -5,77 +5,181 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	strconv "strconv"
 )
 
-type DevicesUnmanagedListRequestDeviceType struct {
-	typeName                                                                   string
-	DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-	DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-	DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-}
+type DevicesUnmanagedListRequestDeviceType uint8
 
-func NewDevicesUnmanagedListRequestDeviceTypeFromDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(value DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) *DevicesUnmanagedListRequestDeviceType {
-	return &DevicesUnmanagedListRequestDeviceType{typeName: "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType", DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType: value}
-}
+const (
+	DevicesUnmanagedListRequestDeviceTypeAkuvoxLock DevicesUnmanagedListRequestDeviceType = iota + 1
+	DevicesUnmanagedListRequestDeviceTypeAugustLock
+	DevicesUnmanagedListRequestDeviceTypeBrivoAccessPoint
+	DevicesUnmanagedListRequestDeviceTypeButterflymxPanel
+	DevicesUnmanagedListRequestDeviceTypeDoorkingLock
+	DevicesUnmanagedListRequestDeviceTypeGenieDoor
+	DevicesUnmanagedListRequestDeviceTypeIglooLock
+	DevicesUnmanagedListRequestDeviceTypeLinearLock
+	DevicesUnmanagedListRequestDeviceTypeLocklyLock
+	DevicesUnmanagedListRequestDeviceTypeKwiksetLock
+	DevicesUnmanagedListRequestDeviceTypeNukiLock
+	DevicesUnmanagedListRequestDeviceTypeSaltoLock
+	DevicesUnmanagedListRequestDeviceTypeSchlageLock
+	DevicesUnmanagedListRequestDeviceTypeSeamRelay
+	DevicesUnmanagedListRequestDeviceTypeSmartthingsLock
+	DevicesUnmanagedListRequestDeviceTypeYaleLock
+	DevicesUnmanagedListRequestDeviceTypeTwoNIntercom
+	DevicesUnmanagedListRequestDeviceTypeControlbywebDevice
+	DevicesUnmanagedListRequestDeviceTypeTtlockLock
+	DevicesUnmanagedListRequestDeviceTypeIgloohomeLock
+	DevicesUnmanagedListRequestDeviceTypeHubitatLock
+	DevicesUnmanagedListRequestDeviceTypeNoiseawareActivityZone
+	DevicesUnmanagedListRequestDeviceTypeMinutSensor
+	DevicesUnmanagedListRequestDeviceTypeEcobeeThermostat
+	DevicesUnmanagedListRequestDeviceTypeNestThermostat
+)
 
-func NewDevicesUnmanagedListRequestDeviceTypeFromDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(value DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) *DevicesUnmanagedListRequestDeviceType {
-	return &DevicesUnmanagedListRequestDeviceType{typeName: "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType", DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType: value}
-}
-
-func NewDevicesUnmanagedListRequestDeviceTypeFromDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(value DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) *DevicesUnmanagedListRequestDeviceType {
-	return &DevicesUnmanagedListRequestDeviceType{typeName: "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType", DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType: value}
-}
-
-func (d *DevicesUnmanagedListRequestDeviceType) UnmarshalJSON(data []byte) error {
-	var valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType"
-		d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType = valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-		return nil
+func (d DevicesUnmanagedListRequestDeviceType) String() string {
+	switch d {
+	default:
+		return strconv.Itoa(int(d))
+	case DevicesUnmanagedListRequestDeviceTypeAkuvoxLock:
+		return "akuvox_lock"
+	case DevicesUnmanagedListRequestDeviceTypeAugustLock:
+		return "august_lock"
+	case DevicesUnmanagedListRequestDeviceTypeBrivoAccessPoint:
+		return "brivo_access_point"
+	case DevicesUnmanagedListRequestDeviceTypeButterflymxPanel:
+		return "butterflymx_panel"
+	case DevicesUnmanagedListRequestDeviceTypeDoorkingLock:
+		return "doorking_lock"
+	case DevicesUnmanagedListRequestDeviceTypeGenieDoor:
+		return "genie_door"
+	case DevicesUnmanagedListRequestDeviceTypeIglooLock:
+		return "igloo_lock"
+	case DevicesUnmanagedListRequestDeviceTypeLinearLock:
+		return "linear_lock"
+	case DevicesUnmanagedListRequestDeviceTypeLocklyLock:
+		return "lockly_lock"
+	case DevicesUnmanagedListRequestDeviceTypeKwiksetLock:
+		return "kwikset_lock"
+	case DevicesUnmanagedListRequestDeviceTypeNukiLock:
+		return "nuki_lock"
+	case DevicesUnmanagedListRequestDeviceTypeSaltoLock:
+		return "salto_lock"
+	case DevicesUnmanagedListRequestDeviceTypeSchlageLock:
+		return "schlage_lock"
+	case DevicesUnmanagedListRequestDeviceTypeSeamRelay:
+		return "seam_relay"
+	case DevicesUnmanagedListRequestDeviceTypeSmartthingsLock:
+		return "smartthings_lock"
+	case DevicesUnmanagedListRequestDeviceTypeYaleLock:
+		return "yale_lock"
+	case DevicesUnmanagedListRequestDeviceTypeTwoNIntercom:
+		return "two_n_intercom"
+	case DevicesUnmanagedListRequestDeviceTypeControlbywebDevice:
+		return "controlbyweb_device"
+	case DevicesUnmanagedListRequestDeviceTypeTtlockLock:
+		return "ttlock_lock"
+	case DevicesUnmanagedListRequestDeviceTypeIgloohomeLock:
+		return "igloohome_lock"
+	case DevicesUnmanagedListRequestDeviceTypeHubitatLock:
+		return "hubitat_lock"
+	case DevicesUnmanagedListRequestDeviceTypeNoiseawareActivityZone:
+		return "noiseaware_activity_zone"
+	case DevicesUnmanagedListRequestDeviceTypeMinutSensor:
+		return "minut_sensor"
+	case DevicesUnmanagedListRequestDeviceTypeEcobeeThermostat:
+		return "ecobee_thermostat"
+	case DevicesUnmanagedListRequestDeviceTypeNestThermostat:
+		return "nest_thermostat"
 	}
-	var valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType"
-		d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType = valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-		return nil
-	}
-	var valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType"
-		d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType = valueDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
 func (d DevicesUnmanagedListRequestDeviceType) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
-	}
+	return []byte(fmt.Sprintf("%q", d.String())), nil
 }
 
-type DevicesUnmanagedListRequestDeviceTypeVisitor interface {
-	VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) error
-	VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) error
-	VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType) error
-}
-
-func (d *DevicesUnmanagedListRequestDeviceType) Accept(v DevicesUnmanagedListRequestDeviceTypeVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
-	case "devicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType(d.DevicesUnmanagedListRequestDeviceTypeDevicesUnmanagedListRequestDeviceType)
+func (d *DevicesUnmanagedListRequestDeviceType) UnmarshalJSON(data []byte) error {
+	var raw string
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
 	}
+	switch raw {
+	case "akuvox_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeAkuvoxLock
+		*d = value
+	case "august_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeAugustLock
+		*d = value
+	case "brivo_access_point":
+		value := DevicesUnmanagedListRequestDeviceTypeBrivoAccessPoint
+		*d = value
+	case "butterflymx_panel":
+		value := DevicesUnmanagedListRequestDeviceTypeButterflymxPanel
+		*d = value
+	case "doorking_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeDoorkingLock
+		*d = value
+	case "genie_door":
+		value := DevicesUnmanagedListRequestDeviceTypeGenieDoor
+		*d = value
+	case "igloo_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeIglooLock
+		*d = value
+	case "linear_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeLinearLock
+		*d = value
+	case "lockly_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeLocklyLock
+		*d = value
+	case "kwikset_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeKwiksetLock
+		*d = value
+	case "nuki_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeNukiLock
+		*d = value
+	case "salto_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeSaltoLock
+		*d = value
+	case "schlage_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeSchlageLock
+		*d = value
+	case "seam_relay":
+		value := DevicesUnmanagedListRequestDeviceTypeSeamRelay
+		*d = value
+	case "smartthings_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeSmartthingsLock
+		*d = value
+	case "yale_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeYaleLock
+		*d = value
+	case "two_n_intercom":
+		value := DevicesUnmanagedListRequestDeviceTypeTwoNIntercom
+		*d = value
+	case "controlbyweb_device":
+		value := DevicesUnmanagedListRequestDeviceTypeControlbywebDevice
+		*d = value
+	case "ttlock_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeTtlockLock
+		*d = value
+	case "igloohome_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeIgloohomeLock
+		*d = value
+	case "hubitat_lock":
+		value := DevicesUnmanagedListRequestDeviceTypeHubitatLock
+		*d = value
+	case "noiseaware_activity_zone":
+		value := DevicesUnmanagedListRequestDeviceTypeNoiseawareActivityZone
+		*d = value
+	case "minut_sensor":
+		value := DevicesUnmanagedListRequestDeviceTypeMinutSensor
+		*d = value
+	case "ecobee_thermostat":
+		value := DevicesUnmanagedListRequestDeviceTypeEcobeeThermostat
+		*d = value
+	case "nest_thermostat":
+		value := DevicesUnmanagedListRequestDeviceTypeNestThermostat
+		*d = value
+	}
+	return nil
 }

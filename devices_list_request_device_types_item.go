@@ -5,77 +5,181 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	strconv "strconv"
 )
 
-type DevicesListRequestDeviceTypesItem struct {
-	typeName                                                           string
-	DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-	DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-	DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-}
+type DevicesListRequestDeviceTypesItem uint8
 
-func NewDevicesListRequestDeviceTypesItemFromDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(value DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) *DevicesListRequestDeviceTypesItem {
-	return &DevicesListRequestDeviceTypesItem{typeName: "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem", DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem: value}
-}
+const (
+	DevicesListRequestDeviceTypesItemAkuvoxLock DevicesListRequestDeviceTypesItem = iota + 1
+	DevicesListRequestDeviceTypesItemAugustLock
+	DevicesListRequestDeviceTypesItemBrivoAccessPoint
+	DevicesListRequestDeviceTypesItemButterflymxPanel
+	DevicesListRequestDeviceTypesItemDoorkingLock
+	DevicesListRequestDeviceTypesItemGenieDoor
+	DevicesListRequestDeviceTypesItemIglooLock
+	DevicesListRequestDeviceTypesItemLinearLock
+	DevicesListRequestDeviceTypesItemLocklyLock
+	DevicesListRequestDeviceTypesItemKwiksetLock
+	DevicesListRequestDeviceTypesItemNukiLock
+	DevicesListRequestDeviceTypesItemSaltoLock
+	DevicesListRequestDeviceTypesItemSchlageLock
+	DevicesListRequestDeviceTypesItemSeamRelay
+	DevicesListRequestDeviceTypesItemSmartthingsLock
+	DevicesListRequestDeviceTypesItemYaleLock
+	DevicesListRequestDeviceTypesItemTwoNIntercom
+	DevicesListRequestDeviceTypesItemControlbywebDevice
+	DevicesListRequestDeviceTypesItemTtlockLock
+	DevicesListRequestDeviceTypesItemIgloohomeLock
+	DevicesListRequestDeviceTypesItemHubitatLock
+	DevicesListRequestDeviceTypesItemNoiseawareActivityZone
+	DevicesListRequestDeviceTypesItemMinutSensor
+	DevicesListRequestDeviceTypesItemEcobeeThermostat
+	DevicesListRequestDeviceTypesItemNestThermostat
+)
 
-func NewDevicesListRequestDeviceTypesItemFromDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(value DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) *DevicesListRequestDeviceTypesItem {
-	return &DevicesListRequestDeviceTypesItem{typeName: "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem", DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem: value}
-}
-
-func NewDevicesListRequestDeviceTypesItemFromDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(value DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) *DevicesListRequestDeviceTypesItem {
-	return &DevicesListRequestDeviceTypesItem{typeName: "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem", DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem: value}
-}
-
-func (d *DevicesListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
-	var valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem"
-		d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem = valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-		return nil
+func (d DevicesListRequestDeviceTypesItem) String() string {
+	switch d {
+	default:
+		return strconv.Itoa(int(d))
+	case DevicesListRequestDeviceTypesItemAkuvoxLock:
+		return "akuvox_lock"
+	case DevicesListRequestDeviceTypesItemAugustLock:
+		return "august_lock"
+	case DevicesListRequestDeviceTypesItemBrivoAccessPoint:
+		return "brivo_access_point"
+	case DevicesListRequestDeviceTypesItemButterflymxPanel:
+		return "butterflymx_panel"
+	case DevicesListRequestDeviceTypesItemDoorkingLock:
+		return "doorking_lock"
+	case DevicesListRequestDeviceTypesItemGenieDoor:
+		return "genie_door"
+	case DevicesListRequestDeviceTypesItemIglooLock:
+		return "igloo_lock"
+	case DevicesListRequestDeviceTypesItemLinearLock:
+		return "linear_lock"
+	case DevicesListRequestDeviceTypesItemLocklyLock:
+		return "lockly_lock"
+	case DevicesListRequestDeviceTypesItemKwiksetLock:
+		return "kwikset_lock"
+	case DevicesListRequestDeviceTypesItemNukiLock:
+		return "nuki_lock"
+	case DevicesListRequestDeviceTypesItemSaltoLock:
+		return "salto_lock"
+	case DevicesListRequestDeviceTypesItemSchlageLock:
+		return "schlage_lock"
+	case DevicesListRequestDeviceTypesItemSeamRelay:
+		return "seam_relay"
+	case DevicesListRequestDeviceTypesItemSmartthingsLock:
+		return "smartthings_lock"
+	case DevicesListRequestDeviceTypesItemYaleLock:
+		return "yale_lock"
+	case DevicesListRequestDeviceTypesItemTwoNIntercom:
+		return "two_n_intercom"
+	case DevicesListRequestDeviceTypesItemControlbywebDevice:
+		return "controlbyweb_device"
+	case DevicesListRequestDeviceTypesItemTtlockLock:
+		return "ttlock_lock"
+	case DevicesListRequestDeviceTypesItemIgloohomeLock:
+		return "igloohome_lock"
+	case DevicesListRequestDeviceTypesItemHubitatLock:
+		return "hubitat_lock"
+	case DevicesListRequestDeviceTypesItemNoiseawareActivityZone:
+		return "noiseaware_activity_zone"
+	case DevicesListRequestDeviceTypesItemMinutSensor:
+		return "minut_sensor"
+	case DevicesListRequestDeviceTypesItemEcobeeThermostat:
+		return "ecobee_thermostat"
+	case DevicesListRequestDeviceTypesItemNestThermostat:
+		return "nest_thermostat"
 	}
-	var valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem"
-		d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem = valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-		return nil
-	}
-	var valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem"
-		d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem = valueDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
 func (d DevicesListRequestDeviceTypesItem) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
-	}
+	return []byte(fmt.Sprintf("%q", d.String())), nil
 }
 
-type DevicesListRequestDeviceTypesItemVisitor interface {
-	VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) error
-	VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) error
-	VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem) error
-}
-
-func (d *DevicesListRequestDeviceTypesItem) Accept(v DevicesListRequestDeviceTypesItemVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return v.VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return v.VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
-	case "devicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem":
-		return v.VisitDevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem(d.DevicesListRequestDeviceTypesItemDevicesListRequestDeviceTypesItem)
+func (d *DevicesListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
+	var raw string
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
 	}
+	switch raw {
+	case "akuvox_lock":
+		value := DevicesListRequestDeviceTypesItemAkuvoxLock
+		*d = value
+	case "august_lock":
+		value := DevicesListRequestDeviceTypesItemAugustLock
+		*d = value
+	case "brivo_access_point":
+		value := DevicesListRequestDeviceTypesItemBrivoAccessPoint
+		*d = value
+	case "butterflymx_panel":
+		value := DevicesListRequestDeviceTypesItemButterflymxPanel
+		*d = value
+	case "doorking_lock":
+		value := DevicesListRequestDeviceTypesItemDoorkingLock
+		*d = value
+	case "genie_door":
+		value := DevicesListRequestDeviceTypesItemGenieDoor
+		*d = value
+	case "igloo_lock":
+		value := DevicesListRequestDeviceTypesItemIglooLock
+		*d = value
+	case "linear_lock":
+		value := DevicesListRequestDeviceTypesItemLinearLock
+		*d = value
+	case "lockly_lock":
+		value := DevicesListRequestDeviceTypesItemLocklyLock
+		*d = value
+	case "kwikset_lock":
+		value := DevicesListRequestDeviceTypesItemKwiksetLock
+		*d = value
+	case "nuki_lock":
+		value := DevicesListRequestDeviceTypesItemNukiLock
+		*d = value
+	case "salto_lock":
+		value := DevicesListRequestDeviceTypesItemSaltoLock
+		*d = value
+	case "schlage_lock":
+		value := DevicesListRequestDeviceTypesItemSchlageLock
+		*d = value
+	case "seam_relay":
+		value := DevicesListRequestDeviceTypesItemSeamRelay
+		*d = value
+	case "smartthings_lock":
+		value := DevicesListRequestDeviceTypesItemSmartthingsLock
+		*d = value
+	case "yale_lock":
+		value := DevicesListRequestDeviceTypesItemYaleLock
+		*d = value
+	case "two_n_intercom":
+		value := DevicesListRequestDeviceTypesItemTwoNIntercom
+		*d = value
+	case "controlbyweb_device":
+		value := DevicesListRequestDeviceTypesItemControlbywebDevice
+		*d = value
+	case "ttlock_lock":
+		value := DevicesListRequestDeviceTypesItemTtlockLock
+		*d = value
+	case "igloohome_lock":
+		value := DevicesListRequestDeviceTypesItemIgloohomeLock
+		*d = value
+	case "hubitat_lock":
+		value := DevicesListRequestDeviceTypesItemHubitatLock
+		*d = value
+	case "noiseaware_activity_zone":
+		value := DevicesListRequestDeviceTypesItemNoiseawareActivityZone
+		*d = value
+	case "minut_sensor":
+		value := DevicesListRequestDeviceTypesItemMinutSensor
+		*d = value
+	case "ecobee_thermostat":
+		value := DevicesListRequestDeviceTypesItemEcobeeThermostat
+		*d = value
+	case "nest_thermostat":
+		value := DevicesListRequestDeviceTypesItemNestThermostat
+		*d = value
+	}
+	return nil
 }

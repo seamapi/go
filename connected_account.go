@@ -2,9 +2,13 @@
 
 package api
 
+import (
+	time "time"
+)
+
 type ConnectedAccount struct {
 	ConnectedAccountId *string                                          `json:"connected_account_id,omitempty"`
-	CreatedAt          *string                                          `json:"created_at,omitempty"`
+	CreatedAt          *time.Time                                       `json:"created_at,omitempty"`
 	UserIdentifier     *ConnectedAccountUserIdentifier                  `json:"user_identifier,omitempty"`
 	AccountType        *string                                          `json:"account_type,omitempty"`
 	Errors             *any                                             `json:"errors,omitempty"`

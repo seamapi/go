@@ -2,9 +2,13 @@
 
 package api
 
+import (
+	time "time"
+)
+
 type Device struct {
 	DeviceId              string                            `json:"device_id"`
-	DeviceType            *DeviceDeviceType                 `json:"device_type,omitempty"`
+	DeviceType            DeviceDeviceType                  `json:"device_type,omitempty"`
 	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
 	Properties            *DeviceProperties                 `json:"properties,omitempty"`
 	Location              *any                              `json:"location,omitempty"`
@@ -12,6 +16,6 @@ type Device struct {
 	WorkspaceId           string                            `json:"workspace_id"`
 	Errors                []*DeviceErrorsItem               `json:"errors,omitempty"`
 	Warnings              []*DeviceWarningsItem             `json:"warnings,omitempty"`
-	CreatedAt             string                            `json:"created_at"`
+	CreatedAt             time.Time                         `json:"created_at"`
 	IsManaged             string                            `json:"is_managed"`
 }

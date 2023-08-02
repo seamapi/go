@@ -2,11 +2,15 @@
 
 package api
 
+import (
+	time "time"
+)
+
 type Event struct {
-	EventId     string  `json:"event_id"`
-	DeviceId    *string `json:"device_id,omitempty"`
-	EventType   string  `json:"event_type"`
-	WorkspaceId string  `json:"workspace_id"`
-	CreatedAt   string  `json:"created_at"`
-	OccurredAt  string  `json:"occurred_at"`
+	EventId     string    `json:"event_id"`
+	DeviceId    *string   `json:"device_id,omitempty"`
+	EventType   string    `json:"event_type"`
+	WorkspaceId string    `json:"workspace_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	OccurredAt  time.Time `json:"occurred_at"`
 }

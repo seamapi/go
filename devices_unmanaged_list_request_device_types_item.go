@@ -5,77 +5,181 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	strconv "strconv"
 )
 
-type DevicesUnmanagedListRequestDeviceTypesItem struct {
-	typeName                                                                             string
-	DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-	DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-	DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-}
+type DevicesUnmanagedListRequestDeviceTypesItem uint8
 
-func NewDevicesUnmanagedListRequestDeviceTypesItemFromDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(value DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) *DevicesUnmanagedListRequestDeviceTypesItem {
-	return &DevicesUnmanagedListRequestDeviceTypesItem{typeName: "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem", DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem: value}
-}
+const (
+	DevicesUnmanagedListRequestDeviceTypesItemAkuvoxLock DevicesUnmanagedListRequestDeviceTypesItem = iota + 1
+	DevicesUnmanagedListRequestDeviceTypesItemAugustLock
+	DevicesUnmanagedListRequestDeviceTypesItemBrivoAccessPoint
+	DevicesUnmanagedListRequestDeviceTypesItemButterflymxPanel
+	DevicesUnmanagedListRequestDeviceTypesItemDoorkingLock
+	DevicesUnmanagedListRequestDeviceTypesItemGenieDoor
+	DevicesUnmanagedListRequestDeviceTypesItemIglooLock
+	DevicesUnmanagedListRequestDeviceTypesItemLinearLock
+	DevicesUnmanagedListRequestDeviceTypesItemLocklyLock
+	DevicesUnmanagedListRequestDeviceTypesItemKwiksetLock
+	DevicesUnmanagedListRequestDeviceTypesItemNukiLock
+	DevicesUnmanagedListRequestDeviceTypesItemSaltoLock
+	DevicesUnmanagedListRequestDeviceTypesItemSchlageLock
+	DevicesUnmanagedListRequestDeviceTypesItemSeamRelay
+	DevicesUnmanagedListRequestDeviceTypesItemSmartthingsLock
+	DevicesUnmanagedListRequestDeviceTypesItemYaleLock
+	DevicesUnmanagedListRequestDeviceTypesItemTwoNIntercom
+	DevicesUnmanagedListRequestDeviceTypesItemControlbywebDevice
+	DevicesUnmanagedListRequestDeviceTypesItemTtlockLock
+	DevicesUnmanagedListRequestDeviceTypesItemIgloohomeLock
+	DevicesUnmanagedListRequestDeviceTypesItemHubitatLock
+	DevicesUnmanagedListRequestDeviceTypesItemNoiseawareActivityZone
+	DevicesUnmanagedListRequestDeviceTypesItemMinutSensor
+	DevicesUnmanagedListRequestDeviceTypesItemEcobeeThermostat
+	DevicesUnmanagedListRequestDeviceTypesItemNestThermostat
+)
 
-func NewDevicesUnmanagedListRequestDeviceTypesItemFromDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(value DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) *DevicesUnmanagedListRequestDeviceTypesItem {
-	return &DevicesUnmanagedListRequestDeviceTypesItem{typeName: "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem", DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem: value}
-}
-
-func NewDevicesUnmanagedListRequestDeviceTypesItemFromDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(value DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) *DevicesUnmanagedListRequestDeviceTypesItem {
-	return &DevicesUnmanagedListRequestDeviceTypesItem{typeName: "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem", DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem: value}
-}
-
-func (d *DevicesUnmanagedListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
-	var valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem"
-		d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem = valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-		return nil
+func (d DevicesUnmanagedListRequestDeviceTypesItem) String() string {
+	switch d {
+	default:
+		return strconv.Itoa(int(d))
+	case DevicesUnmanagedListRequestDeviceTypesItemAkuvoxLock:
+		return "akuvox_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemAugustLock:
+		return "august_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemBrivoAccessPoint:
+		return "brivo_access_point"
+	case DevicesUnmanagedListRequestDeviceTypesItemButterflymxPanel:
+		return "butterflymx_panel"
+	case DevicesUnmanagedListRequestDeviceTypesItemDoorkingLock:
+		return "doorking_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemGenieDoor:
+		return "genie_door"
+	case DevicesUnmanagedListRequestDeviceTypesItemIglooLock:
+		return "igloo_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemLinearLock:
+		return "linear_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemLocklyLock:
+		return "lockly_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemKwiksetLock:
+		return "kwikset_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemNukiLock:
+		return "nuki_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemSaltoLock:
+		return "salto_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemSchlageLock:
+		return "schlage_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemSeamRelay:
+		return "seam_relay"
+	case DevicesUnmanagedListRequestDeviceTypesItemSmartthingsLock:
+		return "smartthings_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemYaleLock:
+		return "yale_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemTwoNIntercom:
+		return "two_n_intercom"
+	case DevicesUnmanagedListRequestDeviceTypesItemControlbywebDevice:
+		return "controlbyweb_device"
+	case DevicesUnmanagedListRequestDeviceTypesItemTtlockLock:
+		return "ttlock_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemIgloohomeLock:
+		return "igloohome_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemHubitatLock:
+		return "hubitat_lock"
+	case DevicesUnmanagedListRequestDeviceTypesItemNoiseawareActivityZone:
+		return "noiseaware_activity_zone"
+	case DevicesUnmanagedListRequestDeviceTypesItemMinutSensor:
+		return "minut_sensor"
+	case DevicesUnmanagedListRequestDeviceTypesItemEcobeeThermostat:
+		return "ecobee_thermostat"
+	case DevicesUnmanagedListRequestDeviceTypesItemNestThermostat:
+		return "nest_thermostat"
 	}
-	var valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem"
-		d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem = valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-		return nil
-	}
-	var valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-	if err := json.Unmarshal(data, &valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem); err == nil {
-		d.typeName = "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem"
-		d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem = valueDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
 func (d DevicesUnmanagedListRequestDeviceTypesItem) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return json.Marshal(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
-	}
+	return []byte(fmt.Sprintf("%q", d.String())), nil
 }
 
-type DevicesUnmanagedListRequestDeviceTypesItemVisitor interface {
-	VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) error
-	VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) error
-	VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem) error
-}
-
-func (d *DevicesUnmanagedListRequestDeviceTypesItem) Accept(v DevicesUnmanagedListRequestDeviceTypesItemVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
-	case "devicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem":
-		return v.VisitDevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem(d.DevicesUnmanagedListRequestDeviceTypesItemDevicesUnmanagedListRequestDeviceTypesItem)
+func (d *DevicesUnmanagedListRequestDeviceTypesItem) UnmarshalJSON(data []byte) error {
+	var raw string
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
 	}
+	switch raw {
+	case "akuvox_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemAkuvoxLock
+		*d = value
+	case "august_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemAugustLock
+		*d = value
+	case "brivo_access_point":
+		value := DevicesUnmanagedListRequestDeviceTypesItemBrivoAccessPoint
+		*d = value
+	case "butterflymx_panel":
+		value := DevicesUnmanagedListRequestDeviceTypesItemButterflymxPanel
+		*d = value
+	case "doorking_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemDoorkingLock
+		*d = value
+	case "genie_door":
+		value := DevicesUnmanagedListRequestDeviceTypesItemGenieDoor
+		*d = value
+	case "igloo_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemIglooLock
+		*d = value
+	case "linear_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemLinearLock
+		*d = value
+	case "lockly_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemLocklyLock
+		*d = value
+	case "kwikset_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemKwiksetLock
+		*d = value
+	case "nuki_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemNukiLock
+		*d = value
+	case "salto_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemSaltoLock
+		*d = value
+	case "schlage_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemSchlageLock
+		*d = value
+	case "seam_relay":
+		value := DevicesUnmanagedListRequestDeviceTypesItemSeamRelay
+		*d = value
+	case "smartthings_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemSmartthingsLock
+		*d = value
+	case "yale_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemYaleLock
+		*d = value
+	case "two_n_intercom":
+		value := DevicesUnmanagedListRequestDeviceTypesItemTwoNIntercom
+		*d = value
+	case "controlbyweb_device":
+		value := DevicesUnmanagedListRequestDeviceTypesItemControlbywebDevice
+		*d = value
+	case "ttlock_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemTtlockLock
+		*d = value
+	case "igloohome_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemIgloohomeLock
+		*d = value
+	case "hubitat_lock":
+		value := DevicesUnmanagedListRequestDeviceTypesItemHubitatLock
+		*d = value
+	case "noiseaware_activity_zone":
+		value := DevicesUnmanagedListRequestDeviceTypesItemNoiseawareActivityZone
+		*d = value
+	case "minut_sensor":
+		value := DevicesUnmanagedListRequestDeviceTypesItemMinutSensor
+		*d = value
+	case "ecobee_thermostat":
+		value := DevicesUnmanagedListRequestDeviceTypesItemEcobeeThermostat
+		*d = value
+	case "nest_thermostat":
+		value := DevicesUnmanagedListRequestDeviceTypesItemNestThermostat
+		*d = value
+	}
+	return nil
 }

@@ -5,20 +5,21 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	time "time"
 )
 
 type AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt struct {
 	typeName string
 	String   string
-	String   string
+	DateTime time.Time
 }
 
 func NewAccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtFromString(value string) *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt {
 	return &AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt{typeName: "string", String: value}
 }
 
-func NewAccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtFromString(value string) *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt {
-	return &AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt{typeName: "string", String: value}
+func NewAccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtFromDateTime(value time.Time) *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt {
+	return &AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt{typeName: "dateTime", DateTime: value}
 }
 
 func (a *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) UnmarshalJSON(data []byte) error {
@@ -28,10 +29,10 @@ func (a *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
 		a.String = valueString
 		return nil
 	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		a.typeName = "string"
-		a.String = valueString
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		a.typeName = "dateTime"
+		a.DateTime = valueDateTime
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
@@ -43,14 +44,14 @@ func (a AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundC
 		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
 	case "string":
 		return json.Marshal(a.String)
-	case "string":
-		return json.Marshal(a.String)
+	case "dateTime":
+		return json.Marshal(a.DateTime)
 	}
 }
 
 type AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtVisitor interface {
 	VisitString(string) error
-	VisitString(string) error
+	VisitDateTime(time.Time) error
 }
 
 func (a *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) Accept(v AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtVisitor) error {
@@ -59,7 +60,7 @@ func (a *AccessCodesSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
 		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
 	case "string":
 		return v.VisitString(a.String)
-	case "string":
-		return v.VisitString(a.String)
+	case "dateTime":
+		return v.VisitDateTime(a.DateTime)
 	}
 }
