@@ -14,8 +14,8 @@ import (
 )
 
 type UnmanagedClient interface {
-	List(ctx context.Context, request *DevicesUnmanagedListRequest) (*seamapigo.DevicesUnmanagedListResponse, error)
-	Update(ctx context.Context, request *DevicesUnmanagedUpdateRequest) (*seamapigo.DevicesUnmanagedUpdateResponse, error)
+	List(ctx context.Context, request *UnmanagedListRequest) (*seamapigo.UnmanagedListResponse, error)
+	Update(ctx context.Context, request *UnmanagedUpdateRequest) (*seamapigo.UnmanagedUpdateResponse, error)
 }
 
 func NewUnmanagedClient(opts ...core.ClientOption) UnmanagedClient {
@@ -36,7 +36,7 @@ type unmanagedClient struct {
 	header     http.Header
 }
 
-func (u *unmanagedClient) List(ctx context.Context, request *DevicesUnmanagedListRequest) (*seamapigo.DevicesUnmanagedListResponse, error) {
+func (u *unmanagedClient) List(ctx context.Context, request *UnmanagedListRequest) (*seamapigo.UnmanagedListResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -69,7 +69,7 @@ func (u *unmanagedClient) List(ctx context.Context, request *DevicesUnmanagedLis
 		return apiError
 	}
 
-	var response *seamapigo.DevicesUnmanagedListResponse
+	var response *seamapigo.UnmanagedListResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,
@@ -86,7 +86,7 @@ func (u *unmanagedClient) List(ctx context.Context, request *DevicesUnmanagedLis
 	return response, nil
 }
 
-func (u *unmanagedClient) Update(ctx context.Context, request *DevicesUnmanagedUpdateRequest) (*seamapigo.DevicesUnmanagedUpdateResponse, error) {
+func (u *unmanagedClient) Update(ctx context.Context, request *UnmanagedUpdateRequest) (*seamapigo.UnmanagedUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -119,7 +119,7 @@ func (u *unmanagedClient) Update(ctx context.Context, request *DevicesUnmanagedU
 		return apiError
 	}
 
-	var response *seamapigo.DevicesUnmanagedUpdateResponse
+	var response *seamapigo.UnmanagedUpdateResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,

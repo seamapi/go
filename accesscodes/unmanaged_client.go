@@ -14,11 +14,11 @@ import (
 )
 
 type UnmanagedClient interface {
-	ConvertToManaged(ctx context.Context, request *AccessCodesUnmanagedConvertToManagedRequest) (*seamapigo.AccessCodesUnmanagedConvertToManagedResponse, error)
-	Delete(ctx context.Context, request *AccessCodesUnmanagedDeleteRequest) (*seamapigo.AccessCodesUnmanagedDeleteResponse, error)
-	Get(ctx context.Context, request *AccessCodesUnmanagedGetRequest) (*seamapigo.AccessCodesUnmanagedGetResponse, error)
-	List(ctx context.Context, request *AccessCodesUnmanagedListRequest) (*seamapigo.AccessCodesUnmanagedListResponse, error)
-	Update(ctx context.Context, request *AccessCodesUnmanagedUpdateRequest) (*seamapigo.AccessCodesUnmanagedUpdateResponse, error)
+	ConvertToManaged(ctx context.Context, request *UnmanagedConvertToManagedRequest) (*seamapigo.UnmanagedConvertToManagedResponse, error)
+	Delete(ctx context.Context, request *UnmanagedDeleteRequest) (*seamapigo.UnmanagedDeleteResponse, error)
+	Get(ctx context.Context, request *UnmanagedGetRequest) (*seamapigo.UnmanagedGetResponse, error)
+	List(ctx context.Context, request *UnmanagedListRequest) (*seamapigo.UnmanagedListResponse, error)
+	Update(ctx context.Context, request *UnmanagedUpdateRequest) (*seamapigo.UnmanagedUpdateResponse, error)
 }
 
 func NewUnmanagedClient(opts ...core.ClientOption) UnmanagedClient {
@@ -39,7 +39,7 @@ type unmanagedClient struct {
 	header     http.Header
 }
 
-func (u *unmanagedClient) ConvertToManaged(ctx context.Context, request *AccessCodesUnmanagedConvertToManagedRequest) (*seamapigo.AccessCodesUnmanagedConvertToManagedResponse, error) {
+func (u *unmanagedClient) ConvertToManaged(ctx context.Context, request *UnmanagedConvertToManagedRequest) (*seamapigo.UnmanagedConvertToManagedResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -72,7 +72,7 @@ func (u *unmanagedClient) ConvertToManaged(ctx context.Context, request *AccessC
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesUnmanagedConvertToManagedResponse
+	var response *seamapigo.UnmanagedConvertToManagedResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,
@@ -89,7 +89,7 @@ func (u *unmanagedClient) ConvertToManaged(ctx context.Context, request *AccessC
 	return response, nil
 }
 
-func (u *unmanagedClient) Delete(ctx context.Context, request *AccessCodesUnmanagedDeleteRequest) (*seamapigo.AccessCodesUnmanagedDeleteResponse, error) {
+func (u *unmanagedClient) Delete(ctx context.Context, request *UnmanagedDeleteRequest) (*seamapigo.UnmanagedDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -122,7 +122,7 @@ func (u *unmanagedClient) Delete(ctx context.Context, request *AccessCodesUnmana
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesUnmanagedDeleteResponse
+	var response *seamapigo.UnmanagedDeleteResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,
@@ -139,7 +139,7 @@ func (u *unmanagedClient) Delete(ctx context.Context, request *AccessCodesUnmana
 	return response, nil
 }
 
-func (u *unmanagedClient) Get(ctx context.Context, request *AccessCodesUnmanagedGetRequest) (*seamapigo.AccessCodesUnmanagedGetResponse, error) {
+func (u *unmanagedClient) Get(ctx context.Context, request *UnmanagedGetRequest) (*seamapigo.UnmanagedGetResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -172,7 +172,7 @@ func (u *unmanagedClient) Get(ctx context.Context, request *AccessCodesUnmanaged
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesUnmanagedGetResponse
+	var response *seamapigo.UnmanagedGetResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,
@@ -189,7 +189,7 @@ func (u *unmanagedClient) Get(ctx context.Context, request *AccessCodesUnmanaged
 	return response, nil
 }
 
-func (u *unmanagedClient) List(ctx context.Context, request *AccessCodesUnmanagedListRequest) (*seamapigo.AccessCodesUnmanagedListResponse, error) {
+func (u *unmanagedClient) List(ctx context.Context, request *UnmanagedListRequest) (*seamapigo.UnmanagedListResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -222,7 +222,7 @@ func (u *unmanagedClient) List(ctx context.Context, request *AccessCodesUnmanage
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesUnmanagedListResponse
+	var response *seamapigo.UnmanagedListResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,
@@ -239,7 +239,7 @@ func (u *unmanagedClient) List(ctx context.Context, request *AccessCodesUnmanage
 	return response, nil
 }
 
-func (u *unmanagedClient) Update(ctx context.Context, request *AccessCodesUnmanagedUpdateRequest) (*seamapigo.AccessCodesUnmanagedUpdateResponse, error) {
+func (u *unmanagedClient) Update(ctx context.Context, request *UnmanagedUpdateRequest) (*seamapigo.UnmanagedUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if u.baseURL != "" {
 		baseURL = u.baseURL
@@ -272,7 +272,7 @@ func (u *unmanagedClient) Update(ctx context.Context, request *AccessCodesUnmana
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesUnmanagedUpdateResponse
+	var response *seamapigo.UnmanagedUpdateResponse
 	if err := core.DoRequest(
 		ctx,
 		u.httpClient,

@@ -14,7 +14,7 @@ import (
 )
 
 type SimulateClient interface {
-	TriggerNoiseThreshold(ctx context.Context, request *NoiseSensorsSimulateTriggerNoiseThresholdRequest) (*seamapigo.NoiseSensorsSimulateTriggerNoiseThresholdResponse, error)
+	TriggerNoiseThreshold(ctx context.Context, request *SimulateTriggerNoiseThresholdRequest) (*seamapigo.SimulateTriggerNoiseThresholdResponse, error)
 }
 
 func NewSimulateClient(opts ...core.ClientOption) SimulateClient {
@@ -35,7 +35,7 @@ type simulateClient struct {
 	header     http.Header
 }
 
-func (s *simulateClient) TriggerNoiseThreshold(ctx context.Context, request *NoiseSensorsSimulateTriggerNoiseThresholdRequest) (*seamapigo.NoiseSensorsSimulateTriggerNoiseThresholdResponse, error) {
+func (s *simulateClient) TriggerNoiseThreshold(ctx context.Context, request *SimulateTriggerNoiseThresholdRequest) (*seamapigo.SimulateTriggerNoiseThresholdResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if s.baseURL != "" {
 		baseURL = s.baseURL
@@ -68,7 +68,7 @@ func (s *simulateClient) TriggerNoiseThreshold(ctx context.Context, request *Noi
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsSimulateTriggerNoiseThresholdResponse
+	var response *seamapigo.SimulateTriggerNoiseThresholdResponse
 	if err := core.DoRequest(
 		ctx,
 		s.httpClient,

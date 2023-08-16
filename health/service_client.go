@@ -14,7 +14,7 @@ import (
 )
 
 type ServiceClient interface {
-	ByServiceName(ctx context.Context, request *HealthServiceByServiceNameRequest) (*seamapigo.HealthServiceByServiceNameResponse, error)
+	ByServiceName(ctx context.Context, request *ServiceByServiceNameRequest) (*seamapigo.ServiceByServiceNameResponse, error)
 }
 
 func NewServiceClient(opts ...core.ClientOption) ServiceClient {
@@ -35,7 +35,7 @@ type serviceClient struct {
 	header     http.Header
 }
 
-func (s *serviceClient) ByServiceName(ctx context.Context, request *HealthServiceByServiceNameRequest) (*seamapigo.HealthServiceByServiceNameResponse, error) {
+func (s *serviceClient) ByServiceName(ctx context.Context, request *ServiceByServiceNameRequest) (*seamapigo.ServiceByServiceNameResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if s.baseURL != "" {
 		baseURL = s.baseURL
@@ -68,7 +68,7 @@ func (s *serviceClient) ByServiceName(ctx context.Context, request *HealthServic
 		return apiError
 	}
 
-	var response *seamapigo.HealthServiceByServiceNameResponse
+	var response *seamapigo.ServiceByServiceNameResponse
 	if err := core.DoRequest(
 		ctx,
 		s.httpClient,

@@ -14,7 +14,7 @@ import (
 )
 
 type SimulateClient interface {
-	CreateUnmanagedAccessCode(ctx context.Context, request *AccessCodesSimulateCreateUnmanagedAccessCodeRequest) (*seamapigo.AccessCodesSimulateCreateUnmanagedAccessCodeResponse, error)
+	CreateUnmanagedAccessCode(ctx context.Context, request *SimulateCreateUnmanagedAccessCodeRequest) (*seamapigo.SimulateCreateUnmanagedAccessCodeResponse, error)
 }
 
 func NewSimulateClient(opts ...core.ClientOption) SimulateClient {
@@ -35,7 +35,7 @@ type simulateClient struct {
 	header     http.Header
 }
 
-func (s *simulateClient) CreateUnmanagedAccessCode(ctx context.Context, request *AccessCodesSimulateCreateUnmanagedAccessCodeRequest) (*seamapigo.AccessCodesSimulateCreateUnmanagedAccessCodeResponse, error) {
+func (s *simulateClient) CreateUnmanagedAccessCode(ctx context.Context, request *SimulateCreateUnmanagedAccessCodeRequest) (*seamapigo.SimulateCreateUnmanagedAccessCodeResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if s.baseURL != "" {
 		baseURL = s.baseURL
@@ -68,7 +68,7 @@ func (s *simulateClient) CreateUnmanagedAccessCode(ctx context.Context, request 
 		return apiError
 	}
 
-	var response *seamapigo.AccessCodesSimulateCreateUnmanagedAccessCodeResponse
+	var response *seamapigo.SimulateCreateUnmanagedAccessCodeResponse
 	if err := core.DoRequest(
 		ctx,
 		s.httpClient,

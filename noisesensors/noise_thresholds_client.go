@@ -14,11 +14,11 @@ import (
 )
 
 type NoiseThresholdsClient interface {
-	Create(ctx context.Context, request *NoiseSensorsNoiseThresholdsCreateRequest) (*seamapigo.NoiseSensorsNoiseThresholdsCreateResponse, error)
-	Delete(ctx context.Context, request *NoiseSensorsNoiseThresholdsDeleteRequest) (*seamapigo.NoiseSensorsNoiseThresholdsDeleteResponse, error)
-	Get(ctx context.Context, request *NoiseSensorsNoiseThresholdsGetRequest) (*seamapigo.NoiseSensorsNoiseThresholdsGetResponse, error)
-	List(ctx context.Context, request *NoiseSensorsNoiseThresholdsListRequest) (*seamapigo.NoiseSensorsNoiseThresholdsListResponse, error)
-	Update(ctx context.Context, request *NoiseSensorsNoiseThresholdsUpdateRequest) (*seamapigo.NoiseSensorsNoiseThresholdsUpdateResponse, error)
+	Create(ctx context.Context, request *NoiseThresholdsCreateRequest) (*seamapigo.NoiseThresholdsCreateResponse, error)
+	Delete(ctx context.Context, request *NoiseThresholdsDeleteRequest) (*seamapigo.NoiseThresholdsDeleteResponse, error)
+	Get(ctx context.Context, request *NoiseThresholdsGetRequest) (*seamapigo.NoiseThresholdsGetResponse, error)
+	List(ctx context.Context, request *NoiseThresholdsListRequest) (*seamapigo.NoiseThresholdsListResponse, error)
+	Update(ctx context.Context, request *NoiseThresholdsUpdateRequest) (*seamapigo.NoiseThresholdsUpdateResponse, error)
 }
 
 func NewNoiseThresholdsClient(opts ...core.ClientOption) NoiseThresholdsClient {
@@ -39,7 +39,7 @@ type noiseThresholdsClient struct {
 	header     http.Header
 }
 
-func (n *noiseThresholdsClient) Create(ctx context.Context, request *NoiseSensorsNoiseThresholdsCreateRequest) (*seamapigo.NoiseSensorsNoiseThresholdsCreateResponse, error) {
+func (n *noiseThresholdsClient) Create(ctx context.Context, request *NoiseThresholdsCreateRequest) (*seamapigo.NoiseThresholdsCreateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if n.baseURL != "" {
 		baseURL = n.baseURL
@@ -72,7 +72,7 @@ func (n *noiseThresholdsClient) Create(ctx context.Context, request *NoiseSensor
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsNoiseThresholdsCreateResponse
+	var response *seamapigo.NoiseThresholdsCreateResponse
 	if err := core.DoRequest(
 		ctx,
 		n.httpClient,
@@ -89,7 +89,7 @@ func (n *noiseThresholdsClient) Create(ctx context.Context, request *NoiseSensor
 	return response, nil
 }
 
-func (n *noiseThresholdsClient) Delete(ctx context.Context, request *NoiseSensorsNoiseThresholdsDeleteRequest) (*seamapigo.NoiseSensorsNoiseThresholdsDeleteResponse, error) {
+func (n *noiseThresholdsClient) Delete(ctx context.Context, request *NoiseThresholdsDeleteRequest) (*seamapigo.NoiseThresholdsDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if n.baseURL != "" {
 		baseURL = n.baseURL
@@ -122,7 +122,7 @@ func (n *noiseThresholdsClient) Delete(ctx context.Context, request *NoiseSensor
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsNoiseThresholdsDeleteResponse
+	var response *seamapigo.NoiseThresholdsDeleteResponse
 	if err := core.DoRequest(
 		ctx,
 		n.httpClient,
@@ -139,7 +139,7 @@ func (n *noiseThresholdsClient) Delete(ctx context.Context, request *NoiseSensor
 	return response, nil
 }
 
-func (n *noiseThresholdsClient) Get(ctx context.Context, request *NoiseSensorsNoiseThresholdsGetRequest) (*seamapigo.NoiseSensorsNoiseThresholdsGetResponse, error) {
+func (n *noiseThresholdsClient) Get(ctx context.Context, request *NoiseThresholdsGetRequest) (*seamapigo.NoiseThresholdsGetResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if n.baseURL != "" {
 		baseURL = n.baseURL
@@ -172,7 +172,7 @@ func (n *noiseThresholdsClient) Get(ctx context.Context, request *NoiseSensorsNo
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsNoiseThresholdsGetResponse
+	var response *seamapigo.NoiseThresholdsGetResponse
 	if err := core.DoRequest(
 		ctx,
 		n.httpClient,
@@ -189,7 +189,7 @@ func (n *noiseThresholdsClient) Get(ctx context.Context, request *NoiseSensorsNo
 	return response, nil
 }
 
-func (n *noiseThresholdsClient) List(ctx context.Context, request *NoiseSensorsNoiseThresholdsListRequest) (*seamapigo.NoiseSensorsNoiseThresholdsListResponse, error) {
+func (n *noiseThresholdsClient) List(ctx context.Context, request *NoiseThresholdsListRequest) (*seamapigo.NoiseThresholdsListResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if n.baseURL != "" {
 		baseURL = n.baseURL
@@ -222,7 +222,7 @@ func (n *noiseThresholdsClient) List(ctx context.Context, request *NoiseSensorsN
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsNoiseThresholdsListResponse
+	var response *seamapigo.NoiseThresholdsListResponse
 	if err := core.DoRequest(
 		ctx,
 		n.httpClient,
@@ -239,7 +239,7 @@ func (n *noiseThresholdsClient) List(ctx context.Context, request *NoiseSensorsN
 	return response, nil
 }
 
-func (n *noiseThresholdsClient) Update(ctx context.Context, request *NoiseSensorsNoiseThresholdsUpdateRequest) (*seamapigo.NoiseSensorsNoiseThresholdsUpdateResponse, error) {
+func (n *noiseThresholdsClient) Update(ctx context.Context, request *NoiseThresholdsUpdateRequest) (*seamapigo.NoiseThresholdsUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if n.baseURL != "" {
 		baseURL = n.baseURL
@@ -272,7 +272,7 @@ func (n *noiseThresholdsClient) Update(ctx context.Context, request *NoiseSensor
 		return apiError
 	}
 
-	var response *seamapigo.NoiseSensorsNoiseThresholdsUpdateResponse
+	var response *seamapigo.NoiseThresholdsUpdateResponse
 	if err := core.DoRequest(
 		ctx,
 		n.httpClient,
