@@ -8,8 +8,7 @@ import (
 )
 
 type ConnectWebviewsCreateRequestCustomMetadataValue struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 500 characters`</span>
+	typeName       string
 	String         string
 	Double         float64
 	StringOptional *string

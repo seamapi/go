@@ -6,6 +6,5 @@ package accesscodes
 type SimulateCreateUnmanagedAccessCodeRequest struct {
 	DeviceId string `json:"device_id"`
 	Name     string `json:"name"`
-	// <span style="white-space: nowrap">`<= 8 characters`</span>
-	Code string `json:"code"`
+	Code     string `json:"code"`
 }

@@ -9,9 +9,8 @@ type AccessCodesCreateMultipleRequest struct {
 	Name                           *string                                                         `json:"name,omitempty"`
 	StartsAt                       *string                                                         `json:"starts_at,omitempty"`
 	EndsAt                         *string                                                         `json:"ends_at,omitempty"`
-	// <span style="white-space: nowrap">`<= 8 characters`</span>
-	Code                    *string `json:"code,omitempty"`
-	AttemptForOfflineDevice *bool   `json:"attempt_for_offline_device,omitempty"`
-	PreferNativeScheduling  *bool   `json:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool *bool   `json:"use_backup_access_code_pool,omitempty"`
+	Code                           *string                                                         `json:"code,omitempty"`
+	AttemptForOfflineDevice        *bool                                                           `json:"attempt_for_offline_device,omitempty"`
+	PreferNativeScheduling         *bool                                                           `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool        *bool                                                           `json:"use_backup_access_code_pool,omitempty"`
 }

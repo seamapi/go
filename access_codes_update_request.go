@@ -4,10 +4,9 @@ package api
 
 // AccessCodesUpdateRequest is an in-lined request used by the Update endpoint.
 type AccessCodesUpdateRequest struct {
-	Name     *string `json:"name,omitempty"`
-	StartsAt *string `json:"starts_at,omitempty"`
-	EndsAt   *string `json:"ends_at,omitempty"`
-	// <span style="white-space: nowrap">`<= 8 characters`</span>
+	Name                    *string                       `json:"name,omitempty"`
+	StartsAt                *string                       `json:"starts_at,omitempty"`
+	EndsAt                  *string                       `json:"ends_at,omitempty"`
 	Code                    *string                       `json:"code,omitempty"`
 	Sync                    *bool                         `json:"sync,omitempty"`
 	AttemptForOfflineDevice *bool                         `json:"attempt_for_offline_device,omitempty"`

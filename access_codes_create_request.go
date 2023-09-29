@@ -4,11 +4,10 @@ package api
 
 // AccessCodesCreateRequest is an in-lined request used by the Create endpoint.
 type AccessCodesCreateRequest struct {
-	DeviceId string  `json:"device_id"`
-	Name     *string `json:"name,omitempty"`
-	StartsAt *string `json:"starts_at,omitempty"`
-	EndsAt   *string `json:"ends_at,omitempty"`
-	// <span style="white-space: nowrap">`<= 8 characters`</span>
+	DeviceId                string  `json:"device_id"`
+	Name                    *string `json:"name,omitempty"`
+	StartsAt                *string `json:"starts_at,omitempty"`
+	EndsAt                  *string `json:"ends_at,omitempty"`
 	Code                    *string `json:"code,omitempty"`
 	Sync                    *bool   `json:"sync,omitempty"`
 	AttemptForOfflineDevice *bool   `json:"attempt_for_offline_device,omitempty"`
