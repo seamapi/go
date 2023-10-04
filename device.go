@@ -8,7 +8,7 @@ import (
 
 type Device struct {
 	DeviceId              string                            `json:"device_id"`
-	DeviceType            DeviceDeviceType                  `json:"device_type,omitempty"`
+	DeviceType            DeviceType                        `json:"device_type,omitempty"`
 	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
 	Properties            *DeviceProperties                 `json:"properties,omitempty"`
 	Location              *any                              `json:"location,omitempty"`

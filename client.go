@@ -11,17 +11,17 @@ import (
 type Client interface {
 	AccessCodes() AccessCodesClient
 	ActionAttempts() ActionAttemptsClient
-	ConnectedAccounts() ConnectedAccountsClient
-	Devices() DevicesClient
 	ClientSessions() ClientSessionsClient
+	ConnectedAccounts() ConnectedAccountsClient
+	ConnectWebviews() ConnectWebviewsClient
+	Devices() DevicesClient
 	Events() EventsClient
 	Health() HealthClient
-	ConnectWebviews() ConnectWebviewsClient
 	Locks() LocksClient
+	NoiseSensors() noisesensors.Client
 	Thermostats() ThermostatsClient
 	Webhooks() WebhooksClient
 	Workspaces() WorkspacesClient
-	NoiseSensors() noisesensors.Client
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -35,17 +35,17 @@ func NewClient(opts ...core.ClientOption) Client {
 		header:                  options.ToHeader(),
 		accessCodesClient:       NewAccessCodesClient(opts...),
 		actionAttemptsClient:    NewActionAttemptsClient(opts...),
-		connectedAccountsClient: NewConnectedAccountsClient(opts...),
-		devicesClient:           NewDevicesClient(opts...),
 		clientSessionsClient:    NewClientSessionsClient(opts...),
+		connectedAccountsClient: NewConnectedAccountsClient(opts...),
+		connectWebviewsClient:   NewConnectWebviewsClient(opts...),
+		devicesClient:           NewDevicesClient(opts...),
 		eventsClient:            NewEventsClient(opts...),
 		healthClient:            NewHealthClient(opts...),
-		connectWebviewsClient:   NewConnectWebviewsClient(opts...),
 		locksClient:             NewLocksClient(opts...),
+		noiseSensorsClient:      noisesensors.NewClient(opts...),
 		thermostatsClient:       NewThermostatsClient(opts...),
 		webhooksClient:          NewWebhooksClient(opts...),
 		workspacesClient:        NewWorkspacesClient(opts...),
-		noiseSensorsClient:      noisesensors.NewClient(opts...),
 	}
 }
 
@@ -55,17 +55,17 @@ type client struct {
 	header                  http.Header
 	accessCodesClient       AccessCodesClient
 	actionAttemptsClient    ActionAttemptsClient
-	connectedAccountsClient ConnectedAccountsClient
-	devicesClient           DevicesClient
 	clientSessionsClient    ClientSessionsClient
+	connectedAccountsClient ConnectedAccountsClient
+	connectWebviewsClient   ConnectWebviewsClient
+	devicesClient           DevicesClient
 	eventsClient            EventsClient
 	healthClient            HealthClient
-	connectWebviewsClient   ConnectWebviewsClient
 	locksClient             LocksClient
+	noiseSensorsClient      noisesensors.Client
 	thermostatsClient       ThermostatsClient
 	webhooksClient          WebhooksClient
 	workspacesClient        WorkspacesClient
-	noiseSensorsClient      noisesensors.Client
 }
 
 func (c *client) AccessCodes() AccessCodesClient {
@@ -76,16 +76,20 @@ func (c *client) ActionAttempts() ActionAttemptsClient {
 	return c.actionAttemptsClient
 }
 
+func (c *client) ClientSessions() ClientSessionsClient {
+	return c.clientSessionsClient
+}
+
 func (c *client) ConnectedAccounts() ConnectedAccountsClient {
 	return c.connectedAccountsClient
 }
 
-func (c *client) Devices() DevicesClient {
-	return c.devicesClient
+func (c *client) ConnectWebviews() ConnectWebviewsClient {
+	return c.connectWebviewsClient
 }
 
-func (c *client) ClientSessions() ClientSessionsClient {
-	return c.clientSessionsClient
+func (c *client) Devices() DevicesClient {
+	return c.devicesClient
 }
 
 func (c *client) Events() EventsClient {
@@ -96,12 +100,12 @@ func (c *client) Health() HealthClient {
 	return c.healthClient
 }
 
-func (c *client) ConnectWebviews() ConnectWebviewsClient {
-	return c.connectWebviewsClient
-}
-
 func (c *client) Locks() LocksClient {
 	return c.locksClient
+}
+
+func (c *client) NoiseSensors() noisesensors.Client {
+	return c.noiseSensorsClient
 }
 
 func (c *client) Thermostats() ThermostatsClient {
@@ -114,8 +118,4 @@ func (c *client) Webhooks() WebhooksClient {
 
 func (c *client) Workspaces() WorkspacesClient {
 	return c.workspacesClient
-}
-
-func (c *client) NoiseSensors() noisesensors.Client {
-	return c.noiseSensorsClient
 }

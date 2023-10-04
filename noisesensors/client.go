@@ -8,8 +8,8 @@ import (
 )
 
 type Client interface {
-	Simulate() SimulateClient
 	NoiseThresholds() NoiseThresholdsClient
+	Simulate() SimulateClient
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -21,8 +21,8 @@ func NewClient(opts ...core.ClientOption) Client {
 		baseURL:               options.BaseURL,
 		httpClient:            options.HTTPClient,
 		header:                options.ToHeader(),
-		simulateClient:        NewSimulateClient(opts...),
 		noiseThresholdsClient: NewNoiseThresholdsClient(opts...),
+		simulateClient:        NewSimulateClient(opts...),
 	}
 }
 
@@ -30,14 +30,14 @@ type client struct {
 	baseURL               string
 	httpClient            core.HTTPClient
 	header                http.Header
-	simulateClient        SimulateClient
 	noiseThresholdsClient NoiseThresholdsClient
-}
-
-func (c *client) Simulate() SimulateClient {
-	return c.simulateClient
+	simulateClient        SimulateClient
 }
 
 func (c *client) NoiseThresholds() NoiseThresholdsClient {
 	return c.noiseThresholdsClient
+}
+
+func (c *client) Simulate() SimulateClient {
+	return c.simulateClient
 }
