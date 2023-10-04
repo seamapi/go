@@ -3,7 +3,7 @@
 package api
 
 type LocksGetResponse struct {
-	Lock   *any `json:"lock,omitempty"`
-	Device *any `json:"device,omitempty"`
-	Ok     bool `json:"ok"`
+	Lock   *any    `json:"lock,omitempty"`
+	Device *Device `json:"device,omitempty"`
+	Ok     bool    `json:"ok"`
 }

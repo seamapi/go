@@ -3,7 +3,7 @@
 package api
 
 type LocksListResponse struct {
-	Locks   *any `json:"locks,omitempty"`
-	Devices *any `json:"devices,omitempty"`
-	Ok      bool `json:"ok"`
+	Locks   *any      `json:"locks,omitempty"`
+	Devices []*Device `json:"devices,omitempty"`
+	Ok      bool      `json:"ok"`
 }
