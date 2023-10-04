@@ -184,7 +184,7 @@ func (a *accessCodesClient) Delete(ctx context.Context, request *AccessCodesDele
 		ctx,
 		a.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

@@ -74,7 +74,7 @@ func (c *connectedAccountsClient) Delete(ctx context.Context, request *Connected
 		ctx,
 		c.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

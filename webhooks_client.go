@@ -125,7 +125,7 @@ func (w *webhooksClient) Delete(ctx context.Context, request *WebhooksDeleteRequ
 		ctx,
 		w.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

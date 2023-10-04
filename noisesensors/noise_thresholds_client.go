@@ -127,7 +127,7 @@ func (n *noiseThresholdsClient) Delete(ctx context.Context, request *NoiseThresh
 		ctx,
 		n.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

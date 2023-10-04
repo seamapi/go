@@ -127,7 +127,7 @@ func (u *unmanagedClient) Delete(ctx context.Context, request *UnmanagedDeleteRe
 		ctx,
 		u.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

@@ -127,7 +127,7 @@ func (c *climateSettingSchedulesClient) Delete(ctx context.Context, request *Cli
 		ctx,
 		c.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

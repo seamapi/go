@@ -128,7 +128,7 @@ func (c *connectWebviewsClient) Delete(ctx context.Context, request *ConnectWebv
 		ctx,
 		c.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

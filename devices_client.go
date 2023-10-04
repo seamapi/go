@@ -79,7 +79,7 @@ func (d *devicesClient) Delete(ctx context.Context, request *DevicesDeleteReques
 		ctx,
 		d.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,

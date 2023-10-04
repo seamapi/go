@@ -125,7 +125,7 @@ func (c *clientSessionsClient) Delete(ctx context.Context, request *ClientSessio
 		ctx,
 		c.httpClient,
 		endpointURL,
-		http.MethodPost,
+		http.MethodDelete,
 		request,
 		&response,
 		false,
