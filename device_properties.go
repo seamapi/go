@@ -3,7 +3,10 @@
 package api
 
 type DeviceProperties struct {
-	Online bool                   `json:"online"`
-	Name   string                 `json:"name"`
-	Model  *DevicePropertiesModel `json:"model,omitempty"`
+	Online              bool                   `json:"online"`
+	Name                string                 `json:"name"`
+	Model               *DevicePropertiesModel `json:"model,omitempty"`
+	AugustMetadata      *AugustDeviceMetadata  `json:"august_metadata,omitempty"`
+	SchlageMetadata     *SchlageDeviceMetadata `json:"schlage_metadata,omitempty"`
+	SmartthingsMetadata any                    `json:"smartthings_metadata,omitempty"`
 }
