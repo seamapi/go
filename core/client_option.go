@@ -16,7 +16,7 @@ type ClientOptions struct {
 	BaseURL    string
 	HTTPClient HTTPClient
 	HTTPHeader http.Header
-	Bearer     string
+	ApiKey     string
 }
 
 // NewClientOptions returns a new *ClientOptions value.
@@ -32,9 +32,17 @@ func NewClientOptions() *ClientOptions {
 // ToHeader maps the configured client options into a http.Header issued
 // on every request.
 func (c *ClientOptions) ToHeader() http.Header {
-	header := c.HTTPHeader.Clone()
-	if c.Bearer != "" {
-		header.Set("Authorization", "Bearer "+c.Bearer)
+	header := c.cloneHeader()
+	if c.ApiKey != "" {
+		header.Set("Authorization", "Bearer "+c.ApiKey)
 	}
 	return header
+}
+
+func (c *ClientOptions) cloneHeader() http.Header {
+	headers := c.HTTPHeader.Clone()
+	headers.Set("X-Fern-Language", "Go")
+	headers.Set("X-Fern-SDK-Name", "github.com/seamapi/go")
+	headers.Set("X-Fern-SDK-Version", "0.2.0")
+	return headers
 }
