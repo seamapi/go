@@ -150,7 +150,7 @@ func TestAccessCodes(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(createdAccessCodes), 1)
+	assert.Len(t, createdAccessCodes, 1)
 	assert.Equal(t, len(deviceIds), len(createdAccessCodes))
 
 	commonCodes := make(map[string]struct{})

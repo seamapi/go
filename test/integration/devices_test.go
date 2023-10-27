@@ -28,7 +28,7 @@ func TestDevices(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(devices), 1)
+	assert.Len(t, devices, 3)
 
 	devices, err = seam.Devices.List(
 		ctx,
@@ -37,7 +37,7 @@ func TestDevices(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(devices), 1)
+	assert.Len(t, devices, 3)
 
 	devices, err = seam.Devices.List(
 		ctx,
@@ -46,7 +46,7 @@ func TestDevices(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(devices), 1)
+	assert.Len(t, devices, 2)
 
 	devices, err = seam.Devices.List(
 		ctx,
@@ -57,7 +57,7 @@ func TestDevices(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(devices), 1)
+	assert.Len(t, devices, 2)
 
 	devices, err = seam.Devices.List(
 		ctx,
@@ -66,7 +66,7 @@ func TestDevices(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(devices), 1)
+	assert.Len(t, devices, 1)
 
 	deviceWithName, err := seam.Devices.Get(
 		ctx,
@@ -83,7 +83,7 @@ func TestDevices(t *testing.T) {
 		nil,
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(locks), 1)
+	assert.Len(t, locks, 3)
 
 	lock, err := seam.Locks.Get(
 		ctx,

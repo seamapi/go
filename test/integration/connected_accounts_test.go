@@ -66,6 +66,6 @@ func TestConnectedAccounts(t *testing.T) {
 func getTestConnectedAccount(t *testing.T, seam *seamclient.Client) *seamgo.ConnectedAccount {
 	connectedAccounts, err := seam.ConnectedAccounts.List(context.Background())
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(connectedAccounts), 1)
+	require.GreaterOrEqual(t, len(connectedAccounts), 1)
 	return connectedAccounts[0]
 }

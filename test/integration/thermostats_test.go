@@ -18,7 +18,7 @@ func TestThermostats(t *testing.T) {
 	ctx := context.Background()
 	thermostats, err := seam.Thermostats.List(ctx, nil)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(thermostats), 1)
+	assert.Len(t, thermostats, 1)
 
 	thermostat := thermostats[0]
 	assert.Equal(t, seamgo.DeviceTypeEcobeeThermostat, thermostat.DeviceType)

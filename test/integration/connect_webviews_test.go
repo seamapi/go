@@ -52,5 +52,5 @@ func TestConnectWebviews(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(gotWebview.AcceptedProviders), 1)
+	assert.Len(t, gotWebview.AcceptedProviders, 1)
 }

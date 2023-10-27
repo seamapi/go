@@ -30,7 +30,7 @@ func TestEvents(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(events), 1)
+	assert.Len(t, events, 1)
 
 	var connectedEvent *seamgo.Event
 	for _, event := range events {
