@@ -20,7 +20,7 @@ type AccessCode struct {
 	CreatedAt                   time.Time        `json:"created_at"`
 	Errors                      interface{}      `json:"errors,omitempty"`
 	Warnings                    interface{}      `json:"warnings,omitempty"`
-	IsManaged                   string           `json:"is_managed"`
+	IsManaged                   bool             `json:"is_managed"`
 	StartsAt                    *time.Time       `json:"starts_at,omitempty"`
 	EndsAt                      *time.Time       `json:"ends_at,omitempty"`
 	Status                      AccessCodeStatus `json:"status,omitempty"`
@@ -587,7 +587,7 @@ type Device struct {
 	Errors                []*DeviceErrorsItem               `json:"errors,omitempty"`
 	Warnings              []*DeviceWarningsItem             `json:"warnings,omitempty"`
 	CreatedAt             time.Time                         `json:"created_at"`
-	IsManaged             string                            `json:"is_managed"`
+	IsManaged             bool                              `json:"is_managed"`
 }
 
 type DeviceCapabilitiesSupportedItem string
@@ -1069,7 +1069,7 @@ type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing struct {
 	AccessCodeId string                                                               `json:"access_code_id"`
 	Code         *string                                                              `json:"code,omitempty"`
 	CreatedAt    *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt `json:"created_at,omitempty"`
-	IsManaged    string                                                               `json:"is_managed"`
+	IsManaged    bool                                                                 `json:"is_managed"`
 	StartsAt     *string                                                              `json:"starts_at,omitempty"`
 	EndsAt       *string                                                              `json:"ends_at,omitempty"`
 	status       string
@@ -1163,7 +1163,7 @@ type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound struct {
 	AccessCodeId string                                                                 `json:"access_code_id"`
 	Code         *string                                                                `json:"code,omitempty"`
 	CreatedAt    *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt `json:"created_at,omitempty"`
-	IsManaged    string                                                                 `json:"is_managed"`
+	IsManaged    bool                                                                   `json:"is_managed"`
 	StartsAt     *string                                                                `json:"starts_at,omitempty"`
 	EndsAt       *string                                                                `json:"ends_at,omitempty"`
 	status       string
@@ -1306,7 +1306,7 @@ type UnmanagedDevice struct {
 	Errors                []*UnmanagedDeviceErrorsItem   `json:"errors,omitempty"`
 	Warnings              []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
 	CreatedAt             time.Time                      `json:"created_at"`
-	IsManaged             string                         `json:"is_managed"`
+	IsManaged             bool                           `json:"is_managed"`
 	Properties            *UnmanagedDeviceProperties     `json:"properties,omitempty"`
 }
 
@@ -1347,7 +1347,7 @@ type UnmanagedGetResponseAccessCode struct {
 	CreatedAt    time.Time                          `json:"created_at"`
 	Errors       interface{}                        `json:"errors,omitempty"`
 	Warnings     interface{}                        `json:"warnings,omitempty"`
-	IsManaged    string                             `json:"is_managed"`
+	IsManaged    bool                               `json:"is_managed"`
 	StartsAt     *time.Time                         `json:"starts_at,omitempty"`
 	EndsAt       *time.Time                         `json:"ends_at,omitempty"`
 	status       string
@@ -1416,7 +1416,7 @@ type UnmanagedListResponseAccessCodesItem struct {
 	CreatedAt    time.Time                                `json:"created_at"`
 	Errors       interface{}                              `json:"errors,omitempty"`
 	Warnings     interface{}                              `json:"warnings,omitempty"`
-	IsManaged    string                                   `json:"is_managed"`
+	IsManaged    bool                                     `json:"is_managed"`
 	StartsAt     *time.Time                               `json:"starts_at,omitempty"`
 	EndsAt       *time.Time                               `json:"ends_at,omitempty"`
 	status       string
