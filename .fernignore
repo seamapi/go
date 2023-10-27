@@ -1,1 +1,8 @@
 # Specify files that shouldn't be modified by Fern
+
+# Add GetById client methods.
+accesscodes/client/get_by_id.go
+actionattempts/get_by_id.go
+clientsessions/get_by_id.go
+connectwebviews/get_by_id.go
+webhooks/get_by_id.go
