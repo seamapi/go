@@ -23,5 +23,8 @@ jobs:
       - name: Set up go
         uses: actions/setup-go@v4
 
+      - name: Install Fake Seam
+        run: npm install -g @seamapi/fake-seam-connect@v1.41.0
+
       - name: Test
         run: go test ./...
