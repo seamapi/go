@@ -5,6 +5,7 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 )
 
 type ConnectWebviewsCreateRequest struct {
@@ -263,20 +264,120 @@ func (c ConnectWebviewsCreateRequestProviderCategory) Ptr() *ConnectWebviewsCrea
 type ConnectWebviewsCreateResponse struct {
 	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty"`
 	Ok             bool            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectWebviewsCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectWebviewsCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectWebviewsCreateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebviewsCreateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewsDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectWebviewsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectWebviewsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectWebviewsDeleteResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebviewsDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewsGetResponse struct {
 	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty"`
 	Ok             bool            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectWebviewsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectWebviewsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectWebviewsGetResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebviewsGetResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewsListResponse struct {
 	ConnectWebviews []*ConnectWebview `json:"connect_webviews,omitempty"`
 	Ok              bool              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectWebviewsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectWebviewsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectWebviewsListResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebviewsListResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewsViewRequest struct {

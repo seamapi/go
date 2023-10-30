@@ -4,6 +4,8 @@ package api
 
 import (
 	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
 )
 
 type HealthGetServiceHealthRequest struct {
@@ -15,6 +17,8 @@ type HealthGetHealthResponse struct {
 	LastServiceEvaluationAt *string          `json:"last_service_evaluation_at,omitempty"`
 	ServiceHealthStatuses   []*ServiceHealth `json:"service_health_statuses,omitempty"`
 	msg                     string
+
+	_rawJSON json.RawMessage
 }
 
 func (h *HealthGetHealthResponse) Msg() string {
@@ -29,6 +33,7 @@ func (h *HealthGetHealthResponse) UnmarshalJSON(data []byte) error {
 	}
 	*h = HealthGetHealthResponse(value)
 	h.msg = "I’m one with the Force. The Force is with me."
+	h._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -44,8 +49,45 @@ func (h *HealthGetHealthResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
+func (h *HealthGetHealthResponse) String() string {
+	if len(h._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
+}
+
 type HealthGetServiceHealthResponse struct {
 	Ok                      bool           `json:"ok"`
 	LastServiceEvaluationAt string         `json:"last_service_evaluation_at"`
 	ServiceHealth           *ServiceHealth `json:"service_health,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (h *HealthGetServiceHealthResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler HealthGetServiceHealthResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*h = HealthGetServiceHealthResponse(value)
+	h._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HealthGetServiceHealthResponse) String() string {
+	if len(h._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
 }

@@ -2,6 +2,12 @@
 
 package api
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
+)
+
 type ActionAttemptsGetRequest struct {
 	ActionAttemptId string `json:"action_attempt_id"`
 }
@@ -13,9 +19,59 @@ type ActionAttemptsListRequest struct {
 type ActionAttemptsGetResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptsGetResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptsGetResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ActionAttemptsListResponse struct {
 	ActionAttempts []*ActionAttempt `json:"action_attempts,omitempty"`
 	Ok             bool             `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptsListResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptsListResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }

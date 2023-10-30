@@ -2,6 +2,12 @@
 
 package api
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
+)
+
 type WebhooksCreateRequest struct {
 	Url        string   `json:"url"`
 	EventTypes []string `json:"event_types,omitempty"`
@@ -18,18 +24,118 @@ type WebhooksGetRequest struct {
 type WebhooksCreateResponse struct {
 	Webhook *Webhook `json:"webhook,omitempty"`
 	Ok      bool     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WebhooksCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhooksCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhooksCreateResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhooksCreateResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WebhooksDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WebhooksDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhooksDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhooksDeleteResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhooksDeleteResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WebhooksGetResponse struct {
 	Webhook *Webhook `json:"webhook,omitempty"`
 	Ok      bool     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WebhooksGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhooksGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhooksGetResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhooksGetResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WebhooksListResponse struct {
 	Webhooks []*Webhook `json:"webhooks,omitempty"`
 	Ok       bool       `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WebhooksListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhooksListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhooksListResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhooksListResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }

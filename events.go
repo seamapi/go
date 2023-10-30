@@ -5,6 +5,7 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
@@ -30,6 +31,31 @@ type EventsGetResponse struct {
 	Event   *Event  `json:"event,omitempty"`
 	Message *string `json:"message,omitempty"`
 	Ok      bool    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EventsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventsGetResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventsGetResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventsListRequestBetweenItem struct {
@@ -317,4 +343,29 @@ type EventsListResponse struct {
 	Events  []*Event `json:"events,omitempty"`
 	Message *string  `json:"message,omitempty"`
 	Ok      bool     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EventsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventsListResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventsListResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }

@@ -2,6 +2,12 @@
 
 package api
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
+)
+
 type ClientSessionsCreateRequest struct {
 	UserIdentifierKey   *string  `json:"user_identifier_key,omitempty"`
 	ConnectWebviewIds   []string `json:"connect_webview_ids,omitempty"`
@@ -26,18 +32,118 @@ type ClientSessionsListRequest struct {
 type ClientSessionsCreateResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSessionsCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClientSessionsCreateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSessionsCreateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClientSessionsDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSessionsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClientSessionsDeleteResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSessionsDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClientSessionsGetResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSessionsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClientSessionsGetResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSessionsGetResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClientSessionsListResponse struct {
 	ClientSessions []*ClientSession `json:"client_sessions,omitempty"`
 	Ok             bool             `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSessionsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClientSessionsListResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSessionsListResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }

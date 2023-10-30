@@ -3,6 +3,9 @@
 package api
 
 import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
@@ -33,15 +36,90 @@ type ThermostatsListRequest struct {
 type ThermostatsGetResponse struct {
 	Thermostat *Device `json:"thermostat,omitempty"`
 	Ok         bool    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsGetResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsGetResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsHeatResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsHeatResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsHeatResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsHeatResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsHeatResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsListResponse struct {
 	Thermostats []*Device `json:"thermostats,omitempty"`
 	Ok          bool      `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsListResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsListResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsUpdateRequestDefaultClimateSetting struct {
@@ -53,10 +131,60 @@ type ThermostatsUpdateRequestDefaultClimateSetting struct {
 	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
 	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
 	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsUpdateRequestDefaultClimateSetting
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsUpdateRequestDefaultClimateSetting(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsUpdateResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsUpdateResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsUpdateResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsUpdateRequest struct {

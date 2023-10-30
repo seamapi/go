@@ -5,6 +5,7 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
@@ -27,6 +28,31 @@ type AccessCode struct {
 	IsBackupAccessCodeAvailable bool             `json:"is_backup_access_code_available"`
 	IsBackup                    *bool            `json:"is_backup,omitempty"`
 	PulledBackupAccessCodeId    *string          `json:"pulled_backup_access_code_id,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCode) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCode
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCode(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCode) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodeStatus string
@@ -190,11 +216,61 @@ type ActionAttemptError struct {
 	ActionAttemptId string                   `json:"action_attempt_id"`
 	Result          *string                  `json:"result,omitempty"`
 	Error           *ActionAttemptErrorError `json:"error,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ActionAttemptErrorError struct {
 	Type    string `json:"type"`
 	Message string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptErrorError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptErrorError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptErrorError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptErrorError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ActionAttemptPending struct {
@@ -202,6 +278,31 @@ type ActionAttemptPending struct {
 	ActionAttemptId string  `json:"action_attempt_id"`
 	Result          *string `json:"result,omitempty"`
 	Error           *string `json:"error,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptPending) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptPending
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptPending(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptPending) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ActionAttemptSuccess struct {
@@ -209,6 +310,31 @@ type ActionAttemptSuccess struct {
 	ActionAttemptId string      `json:"action_attempt_id"`
 	Result          interface{} `json:"result,omitempty"`
 	Error           *string     `json:"error,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSuccess) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptSuccess
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptSuccess(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSuccess) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AugustDeviceMetadata struct {
@@ -219,6 +345,31 @@ type AugustDeviceMetadata struct {
 	HasKeypad          bool    `json:"has_keypad"`
 	Model              *string `json:"model,omitempty"`
 	KeypadBatteryLevel *string `json:"keypad_battery_level,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AugustDeviceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler AugustDeviceMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AugustDeviceMetadata(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AugustDeviceMetadata) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ClientSession struct {
@@ -230,6 +381,31 @@ type ClientSession struct {
 	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty"`
 	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty"`
 	WorkspaceId         string    `json:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSession) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSession
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClientSession(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSession) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedule struct {
@@ -248,6 +424,8 @@ type ClimateSettingSchedule struct {
 	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty"`
 	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty"`
 	scheduleType              string
+
+	_rawJSON json.RawMessage
 }
 
 func (c *ClimateSettingSchedule) ScheduleType() string {
@@ -262,6 +440,7 @@ func (c *ClimateSettingSchedule) UnmarshalJSON(data []byte) error {
 	}
 	*c = ClimateSettingSchedule(value)
 	c.scheduleType = "time_bound"
+	c._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -275,6 +454,18 @@ func (c *ClimateSettingSchedule) MarshalJSON() ([]byte, error) {
 		ScheduleType: "time_bound",
 	}
 	return json.Marshal(marshaler)
+}
+
+func (c *ClimateSettingSchedule) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingScheduleHvacModeSetting string
@@ -336,20 +527,120 @@ func (c ClimateSettingSchedulesCreateRequestHvacModeSetting) Ptr() *ClimateSetti
 type ClimateSettingSchedulesCreateResponse struct {
 	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
 	Ok                     bool                    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesCreateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesDeleteResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesGetResponse struct {
 	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
 	Ok                     bool                    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesGetResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesGetResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesListResponse struct {
 	ClimateSettingSchedules []*ClimateSettingSchedule `json:"climate_setting_schedules,omitempty"`
 	Ok                      bool                      `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesListResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesListResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesUpdateRequestHvacModeSetting string
@@ -383,6 +674,31 @@ func (c ClimateSettingSchedulesUpdateRequestHvacModeSetting) Ptr() *ClimateSetti
 type ClimateSettingSchedulesUpdateResponse struct {
 	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
 	Ok                     bool                    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesUpdateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebview struct {
@@ -398,6 +714,31 @@ type ConnectWebview struct {
 	CreatedAt           time.Time                         `json:"created_at"`
 	LoginSuccessful     bool                              `json:"login_successful"`
 	Status              ConnectWebviewStatus              `json:"status,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectWebview) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectWebview
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectWebview(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebview) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewDeviceSelectionMode string
@@ -458,6 +799,31 @@ type ConnectedAccount struct {
 	Errors             interface{}                                     `json:"errors,omitempty"`
 	Warnings           interface{}                                     `json:"warnings,omitempty"`
 	CustomMetadata     map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccount) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccount
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccount(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccount) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountCustomMetadataValue struct {
@@ -555,14 +921,89 @@ type ConnectedAccountUserIdentifier struct {
 	Email     *string `json:"email,omitempty"`
 	Phone     *string `json:"phone,omitempty"`
 	Exclusive *bool   `json:"exclusive,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountUserIdentifier) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountUserIdentifier
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountUserIdentifier(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountUserIdentifier) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsGetRequestConnectedAccountId struct {
 	ConnectedAccountId string `json:"connected_account_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestConnectedAccountId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestConnectedAccountId(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsGetRequestEmail struct {
 	Email string `json:"email"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestEmail) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestEmail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestEmail(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestEmail) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CurrentClimateSetting struct {
@@ -574,6 +1015,31 @@ type CurrentClimateSetting struct {
 	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
 	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty"`
 	ManualOverrideAllowed     *bool    `json:"manual_override_allowed,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CurrentClimateSetting) UnmarshalJSON(data []byte) error {
+	type unmarshaler CurrentClimateSetting
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CurrentClimateSetting(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CurrentClimateSetting) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type Device struct {
@@ -588,6 +1054,31 @@ type Device struct {
 	Warnings              []*DeviceWarningsItem             `json:"warnings,omitempty"`
 	CreatedAt             time.Time                         `json:"created_at"`
 	IsManaged             bool                              `json:"is_managed"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *Device) UnmarshalJSON(data []byte) error {
+	type unmarshaler Device
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = Device(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *Device) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeviceCapabilitiesSupportedItem string
@@ -624,6 +1115,31 @@ func (d DeviceCapabilitiesSupportedItem) Ptr() *DeviceCapabilitiesSupportedItem 
 type DeviceErrorsItem struct {
 	ErrorCode string `json:"error_code"`
 	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceErrorsItem(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceErrorsItem) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeviceProperties struct {
@@ -634,10 +1150,60 @@ type DeviceProperties struct {
 	SchlageMetadata       *SchlageDeviceMetadata `json:"schlage_metadata,omitempty"`
 	SmartthingsMetadata   interface{}            `json:"smartthings_metadata,omitempty"`
 	CurrentClimateSetting *CurrentClimateSetting `json:"current_climate_setting,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceProperties) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceProperties
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceProperties(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceProperties) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicePropertiesModel struct {
 	DisplayName string `json:"display_name"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesModel) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesModel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesModel(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesModel) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeviceType string
@@ -734,6 +1300,31 @@ func (d DeviceType) Ptr() *DeviceType {
 type DeviceWarningsItem struct {
 	WarningCode string `json:"warning_code"`
 	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceWarningsItem(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceWarningsItem) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesListDeviceProvidersResponseDeviceProvidersItem struct {
@@ -741,6 +1332,31 @@ type DevicesListDeviceProvidersResponseDeviceProvidersItem struct {
 	DisplayName        string                                                                        `json:"display_name"`
 	ImageUrl           string                                                                        `json:"image_url"`
 	ProviderCategories []DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem `json:"provider_categories,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesListDeviceProvidersResponseDeviceProvidersItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesListDeviceProvidersResponseDeviceProvidersItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesListDeviceProvidersResponseDeviceProvidersItem(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesListDeviceProvidersResponseDeviceProvidersItem) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem string
@@ -772,6 +1388,31 @@ type Event struct {
 	WorkspaceId string    `json:"workspace_id"`
 	CreatedAt   time.Time `json:"created_at"`
 	OccurredAt  time.Time `json:"occurred_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *Event) UnmarshalJSON(data []byte) error {
+	type unmarshaler Event
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = Event(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *Event) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type HvacModeSetting string
@@ -904,35 +1545,210 @@ type NoiseThreshold struct {
 	StartsDailyAt          string   `json:"starts_daily_at"`
 	EndsDailyAt            string   `json:"ends_daily_at"`
 	NoiseThresholdDecibels float64  `json:"noise_threshold_decibels"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThreshold) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThreshold
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThreshold(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThreshold) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsCreateResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsCreateResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsCreateResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsDeleteResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsDeleteResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsDeleteResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsGetResponse struct {
 	NoiseThreshold *NoiseThreshold `json:"noise_threshold,omitempty"`
 	Ok             bool            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsGetResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsGetResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsListResponse struct {
 	NoiseThresholds []*NoiseThreshold `json:"noise_thresholds,omitempty"`
 	Ok              bool              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsListResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsListResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsUpdateResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsUpdateResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsUpdateResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NukiDeviceMetadata struct {
 	KeypadBatteryCritical *bool `json:"keypad_battery_critical,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NukiDeviceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler NukiDeviceMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NukiDeviceMetadata(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NukiDeviceMetadata) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type SchlageDeviceMetadata struct {
@@ -941,18 +1757,93 @@ type SchlageDeviceMetadata struct {
 	AccessCodeLength int     `json:"access_code_length"`
 	Model            *string `json:"model,omitempty"`
 	LocationId       *string `json:"location_id,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SchlageDeviceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler SchlageDeviceMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SchlageDeviceMetadata(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SchlageDeviceMetadata) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type ServiceByServiceNameResponse struct {
 	Ok                      bool           `json:"ok"`
 	LastServiceEvaluationAt string         `json:"last_service_evaluation_at"`
 	ServiceHealth           *ServiceHealth `json:"service_health,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *ServiceByServiceNameResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ServiceByServiceNameResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ServiceByServiceNameResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ServiceByServiceNameResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type ServiceHealth struct {
 	Service     string              `json:"service"`
 	Status      ServiceHealthStatus `json:"status,omitempty"`
 	Description string              `json:"description"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *ServiceHealth) UnmarshalJSON(data []byte) error {
+	type unmarshaler ServiceHealth
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ServiceHealth(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ServiceHealth) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type ServiceHealthStatus string
@@ -983,6 +1874,31 @@ func (s ServiceHealthStatus) Ptr() *ServiceHealthStatus {
 type SimulateCreateUnmanagedAccessCodeResponse struct {
 	AccessCode *SimulateCreateUnmanagedAccessCodeResponseAccessCode `json:"access_code,omitempty"`
 	Ok         bool                                                 `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateCreateUnmanagedAccessCodeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateCreateUnmanagedAccessCodeResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SimulateCreateUnmanagedAccessCodeResponseAccessCode struct {
@@ -1073,6 +1989,8 @@ type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing struct {
 	StartsAt     *string                                                              `json:"starts_at,omitempty"`
 	EndsAt       *string                                                              `json:"ends_at,omitempty"`
 	status       string
+
+	_rawJSON json.RawMessage
 }
 
 func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) Status() string {
@@ -1087,6 +2005,7 @@ func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) UnmarshalJS
 	}
 	*s = SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing(value)
 	s.status = "set"
+	s._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -1100,6 +2019,18 @@ func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) MarshalJSON
 		Status: "set",
 	}
 	return json.Marshal(marshaler)
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt struct {
@@ -1167,6 +2098,8 @@ type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound struct {
 	StartsAt     *string                                                                `json:"starts_at,omitempty"`
 	EndsAt       *string                                                                `json:"ends_at,omitempty"`
 	status       string
+
+	_rawJSON json.RawMessage
 }
 
 func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) Status() string {
@@ -1181,6 +2114,7 @@ func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) Unmarshal
 	}
 	*s = SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound(value)
 	s.status = "set"
+	s._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -1194,6 +2128,18 @@ func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) MarshalJS
 		Status: "set",
 	}
 	return json.Marshal(marshaler)
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt struct {
@@ -1255,6 +2201,31 @@ func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) 
 
 type SimulateTriggerNoiseThresholdResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SimulateTriggerNoiseThresholdResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateTriggerNoiseThresholdResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateTriggerNoiseThresholdResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateTriggerNoiseThresholdResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SupportedCapabililty string
@@ -1290,11 +2261,61 @@ func (s SupportedCapabililty) Ptr() *SupportedCapabililty {
 
 type UnmanagedConvertToManagedResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedConvertToManagedResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedConvertToManagedResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedConvertToManagedResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedConvertToManagedResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDeleteResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeleteResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeleteResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDevice struct {
@@ -1308,11 +2329,61 @@ type UnmanagedDevice struct {
 	CreatedAt             time.Time                      `json:"created_at"`
 	IsManaged             bool                           `json:"is_managed"`
 	Properties            *UnmanagedDeviceProperties     `json:"properties,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDevice) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDevice
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDevice(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDevice) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDeviceErrorsItem struct {
 	ErrorCode string `json:"error_code"`
 	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeviceErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeviceErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeviceErrorsItem(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeviceErrorsItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDeviceProperties struct {
@@ -1322,20 +2393,120 @@ type UnmanagedDeviceProperties struct {
 	ImageUrl     *string                         `json:"image_url,omitempty"`
 	ImageAltText *string                         `json:"image_alt_text,omitempty"`
 	Model        *UnmanagedDevicePropertiesModel `json:"model,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeviceProperties) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeviceProperties
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeviceProperties(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeviceProperties) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDevicePropertiesModel struct {
 	DisplayName string `json:"display_name"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDevicePropertiesModel) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDevicePropertiesModel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDevicePropertiesModel(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDevicePropertiesModel) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedDeviceWarningsItem struct {
 	WarningCode string `json:"warning_code"`
 	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeviceWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeviceWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeviceWarningsItem(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeviceWarningsItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedGetResponse struct {
 	AccessCode *UnmanagedGetResponseAccessCode `json:"access_code,omitempty"`
 	Ok         bool                            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedGetResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedGetResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedGetResponseAccessCode struct {
@@ -1351,6 +2522,8 @@ type UnmanagedGetResponseAccessCode struct {
 	StartsAt     *time.Time                         `json:"starts_at,omitempty"`
 	EndsAt       *time.Time                         `json:"ends_at,omitempty"`
 	status       string
+
+	_rawJSON json.RawMessage
 }
 
 func (u *UnmanagedGetResponseAccessCode) Status() string {
@@ -1365,6 +2538,7 @@ func (u *UnmanagedGetResponseAccessCode) UnmarshalJSON(data []byte) error {
 	}
 	*u = UnmanagedGetResponseAccessCode(value)
 	u.status = "set"
+	u._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -1378,6 +2552,18 @@ func (u *UnmanagedGetResponseAccessCode) MarshalJSON() ([]byte, error) {
 		Status: "set",
 	}
 	return json.Marshal(marshaler)
+}
+
+func (u *UnmanagedGetResponseAccessCode) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedGetResponseAccessCodeType string
@@ -1405,6 +2591,31 @@ func (u UnmanagedGetResponseAccessCodeType) Ptr() *UnmanagedGetResponseAccessCod
 type UnmanagedListResponse struct {
 	Devices []*UnmanagedDevice `json:"devices,omitempty"`
 	Ok      bool               `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedListResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedListResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedListResponseAccessCodesItem struct {
@@ -1420,6 +2631,8 @@ type UnmanagedListResponseAccessCodesItem struct {
 	StartsAt     *time.Time                               `json:"starts_at,omitempty"`
 	EndsAt       *time.Time                               `json:"ends_at,omitempty"`
 	status       string
+
+	_rawJSON json.RawMessage
 }
 
 func (u *UnmanagedListResponseAccessCodesItem) Status() string {
@@ -1434,6 +2647,7 @@ func (u *UnmanagedListResponseAccessCodesItem) UnmarshalJSON(data []byte) error 
 	}
 	*u = UnmanagedListResponseAccessCodesItem(value)
 	u.status = "set"
+	u._rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -1447,6 +2661,18 @@ func (u *UnmanagedListResponseAccessCodesItem) MarshalJSON() ([]byte, error) {
 		Status: "set",
 	}
 	return json.Marshal(marshaler)
+}
+
+func (u *UnmanagedListResponseAccessCodesItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedListResponseAccessCodesItemType string
@@ -1473,6 +2699,31 @@ func (u UnmanagedListResponseAccessCodesItemType) Ptr() *UnmanagedListResponseAc
 
 type UnmanagedUpdateResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedUpdateResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedUpdateResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type Webhook struct {
@@ -1480,6 +2731,31 @@ type Webhook struct {
 	Url        string   `json:"url"`
 	EventTypes []string `json:"event_types,omitempty"`
 	Secret     *string  `json:"secret,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *Webhook) UnmarshalJSON(data []byte) error {
+	type unmarshaler Webhook
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = Webhook(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Webhook) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type Workspace struct {
@@ -1487,4 +2763,29 @@ type Workspace struct {
 	Name               string  `json:"name"`
 	IsSandbox          bool    `json:"is_sandbox"`
 	ConnectPartnerName *string `json:"connect_partner_name,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *Workspace) UnmarshalJSON(data []byte) error {
+	type unmarshaler Workspace
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = Workspace(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Workspace) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }

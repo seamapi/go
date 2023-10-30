@@ -3,6 +3,9 @@
 package api
 
 import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
@@ -32,22 +35,122 @@ type LocksGetResponse struct {
 	Lock   interface{} `json:"lock,omitempty"`
 	Device *Device     `json:"device,omitempty"`
 	Ok     bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (l *LocksGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocksGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocksGetResponse(value)
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocksGetResponse) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type LocksListResponse struct {
 	Locks   interface{} `json:"locks,omitempty"`
 	Devices []*Device   `json:"devices,omitempty"`
 	Ok      bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (l *LocksListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocksListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocksListResponse(value)
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocksListResponse) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type LocksLockDoorResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (l *LocksLockDoorResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocksLockDoorResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocksLockDoorResponse(value)
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocksLockDoorResponse) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type LocksUnlockDoorResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (l *LocksUnlockDoorResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocksUnlockDoorResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocksUnlockDoorResponse(value)
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocksUnlockDoorResponse) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type LocksUnlockDoorRequest struct {

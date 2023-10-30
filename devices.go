@@ -3,7 +3,9 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
@@ -34,11 +36,61 @@ type DevicesListDeviceProvidersRequest struct {
 
 type DevicesDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesDeleteResponse(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesDeleteResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesGetResponse struct {
 	Device *Device `json:"device,omitempty"`
 	Ok     bool    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesGetResponse(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesGetResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesListDeviceProvidersRequestProviderCategory string
@@ -66,22 +118,146 @@ func (d DevicesListDeviceProvidersRequestProviderCategory) Ptr() *DevicesListDev
 type DevicesListDeviceProvidersResponse struct {
 	DeviceProviders []*DevicesListDeviceProvidersResponseDeviceProvidersItem `json:"device_providers,omitempty"`
 	Ok              bool                                                     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesListDeviceProvidersResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesListDeviceProvidersResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesListDeviceProvidersResponse(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesListDeviceProvidersResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesListResponse struct {
 	Devices []*Device `json:"devices,omitempty"`
 	Ok      bool      `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesListResponse(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesListResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesUpdateRequestLocation struct {
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesUpdateRequestLocation) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesUpdateRequestLocation
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesUpdateRequestLocation(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesUpdateRequestLocation) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesUpdateRequestProperties struct {
 	Name *string `json:"name,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesUpdateRequestProperties) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesUpdateRequestProperties
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesUpdateRequestProperties(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesUpdateRequestProperties) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesUpdateResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicesUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicesUpdateResponse(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicesUpdateResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DevicesUpdateRequest struct {

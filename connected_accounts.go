@@ -5,6 +5,7 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 )
 
 type ConnectedAccountsDeleteRequest struct {
@@ -13,6 +14,31 @@ type ConnectedAccountsDeleteRequest struct {
 
 type ConnectedAccountsDeleteResponse struct {
 	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsDeleteResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsGetRequest struct {
@@ -75,9 +101,59 @@ func (c *ConnectedAccountsGetRequest) Accept(visitor ConnectedAccountsGetRequest
 type ConnectedAccountsGetResponse struct {
 	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty"`
 	Ok               bool              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsListResponse struct {
 	ConnectedAccounts []*ConnectedAccount `json:"connected_accounts,omitempty"`
 	Ok                bool                `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsListResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsListResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }

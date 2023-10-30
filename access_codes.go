@@ -3,7 +3,9 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
+	core "github.com/seamapi/go/core"
 )
 
 type AccessCodesCreateRequest struct {
@@ -77,32 +79,182 @@ func (a AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared) Ptr() *A
 type AccessCodesCreateMultipleResponse struct {
 	AccessCodes []*AccessCode `json:"access_codes,omitempty"`
 	Ok          bool          `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesCreateMultipleResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesCreateMultipleResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesCreateMultipleResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesCreateMultipleResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesCreateResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	AccessCode    *AccessCode    `json:"access_code,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesCreateResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesCreateResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesDeleteResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesDeleteResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesDeleteResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesGetResponse struct {
 	AccessCode *AccessCode `json:"access_code,omitempty"`
 	Ok         bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesGetResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesGetResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesListResponse struct {
 	AccessCodes []*AccessCode `json:"access_codes,omitempty"`
 	Ok          bool          `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesListResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesListResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesPullBackupAccessCodeResponse struct {
 	BackupAccessCode *AccessCode `json:"backup_access_code,omitempty"`
 	Ok               bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesPullBackupAccessCodeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesPullBackupAccessCodeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesPullBackupAccessCodeResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesPullBackupAccessCodeResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesUpdateRequestType string
@@ -130,6 +282,31 @@ func (a AccessCodesUpdateRequestType) Ptr() *AccessCodesUpdateRequestType {
 type AccessCodesUpdateResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesUpdateResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesUpdateResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesUpdateRequest struct {

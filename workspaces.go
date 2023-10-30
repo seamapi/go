@@ -2,17 +2,98 @@
 
 package api
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/seamapi/go/core"
+)
+
 type WorkspacesGetResponse struct {
 	Workspace *Workspace `json:"workspace,omitempty"`
 	Ok        bool       `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WorkspacesGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WorkspacesGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WorkspacesGetResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WorkspacesGetResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WorkspacesListResponse struct {
 	Workspaces []*Workspace `json:"workspaces,omitempty"`
 	Ok         bool         `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WorkspacesListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WorkspacesListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WorkspacesListResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WorkspacesListResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WorkspacesResetSandboxResponse struct {
 	Message string `json:"message"`
 	Ok      bool   `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WorkspacesResetSandboxResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WorkspacesResetSandboxResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WorkspacesResetSandboxResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WorkspacesResetSandboxResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
