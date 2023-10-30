@@ -35,7 +35,7 @@ func newFakeSeam(t *testing.T) (*seamclient.Client, func()) {
 
 	client := seamclient.NewClient(
 		seamclient.WithBaseURL(fmt.Sprintf("http://localhost:%d", port)),
-		seamclient.WithAuthApiKey(fakeSeamToken),
+		seamclient.WithApiKey(fakeSeamToken),
 	)
 
 	cleanup := func() {

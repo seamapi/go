@@ -21,7 +21,7 @@ go get github.com/seamapi/go
 ```go
 import goclient "github.com/seamapi/go/client"
 
-client := goclient.NewClient(goclient.WithAuthApiKey("<YOUR_AUTH_TOKEN>"))
+client := goclient.NewClient(goclient.WithApiKey("<YOUR_AUTH_TOKEN>"))
 ```
 
 ## Access Codes
@@ -29,7 +29,7 @@ client := goclient.NewClient(goclient.WithAuthApiKey("<YOUR_AUTH_TOKEN>"))
 ```go
 import goclient "github.com/seamapi/go/client"
 
-client := goclient.NewClient(goclient.WithAuthApiKey("<YOUR_AUTH_TOKEN>"))
+client := goclient.NewClient(goclient.WithApiKey("<YOUR_AUTH_TOKEN>"))
 accessCode, err := client.AccessCodes.Create(
   context.TODO(),
   &seamgo.AccessCodesCreateRequest{
@@ -68,7 +68,7 @@ configuring authorization tokens to be sent on every request, or providing your 
 
 ```go
 client := goclient.NewClient(
-  goclient.WithAuthApiKey("<YOUR_AUTH_TOKEN>"),
+  goclient.WithApiKey("<YOUR_AUTH_TOKEN>"),
   goclient.WithHTTPClient(
     &http.Client{
       Timeout: 5 * time.Second,
