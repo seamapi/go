@@ -33,6 +33,35 @@ type ThermostatsListRequest struct {
 	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
 }
 
+type ThermostatsSetFanModeRequest struct {
+	DeviceId       string          `json:"device_id"`
+	FanMode        *FanModeSetting `json:"fan_mode,omitempty"`
+	FanModeSetting *FanModeSetting `json:"fan_mode_setting,omitempty"`
+	Sync           *bool           `json:"sync,omitempty"`
+}
+
+type FanModeSetting string
+
+const (
+	FanModeSettingAuto FanModeSetting = "auto"
+	FanModeSettingOn   FanModeSetting = "on"
+)
+
+func NewFanModeSettingFromString(s string) (FanModeSetting, error) {
+	switch s {
+	case "auto":
+		return FanModeSettingAuto, nil
+	case "on":
+		return FanModeSettingOn, nil
+	}
+	var t FanModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (f FanModeSetting) Ptr() *FanModeSetting {
+	return &f
+}
+
 type ThermostatsGetResponse struct {
 	Thermostat *Device `json:"thermostat,omitempty"`
 	Ok         bool    `json:"ok"`
@@ -111,6 +140,35 @@ func (t *ThermostatsListResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (t *ThermostatsListResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsSetFanModeResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsSetFanModeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsSetFanModeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsSetFanModeResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsSetFanModeResponse) String() string {
 	if len(t._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
 			return value

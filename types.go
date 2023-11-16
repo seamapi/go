@@ -409,20 +409,20 @@ func (c *ClientSession) String() string {
 }
 
 type ClimateSettingSchedule struct {
-	ClimateSettingScheduleId  string                                 `json:"climate_setting_schedule_id"`
-	DeviceId                  string                                 `json:"device_id"`
-	Name                      *string                                `json:"name,omitempty"`
-	ScheduleStartsAt          string                                 `json:"schedule_starts_at"`
-	ScheduleEndsAt            string                                 `json:"schedule_ends_at"`
-	CreatedAt                 time.Time                              `json:"created_at"`
-	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64                               `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64                               `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64                               `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty"`
+	ClimateSettingScheduleId  string           `json:"climate_setting_schedule_id"`
+	DeviceId                  string           `json:"device_id"`
+	Name                      *string          `json:"name,omitempty"`
+	ScheduleStartsAt          string           `json:"schedule_starts_at"`
+	ScheduleEndsAt            string           `json:"schedule_ends_at"`
+	CreatedAt                 time.Time        `json:"created_at"`
+	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
 	scheduleType              string
 
 	_rawJSON json.RawMessage
@@ -466,62 +466,6 @@ func (c *ClimateSettingSchedule) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
-}
-
-type ClimateSettingScheduleHvacModeSetting string
-
-const (
-	ClimateSettingScheduleHvacModeSettingOff      ClimateSettingScheduleHvacModeSetting = "off"
-	ClimateSettingScheduleHvacModeSettingHeat     ClimateSettingScheduleHvacModeSetting = "heat"
-	ClimateSettingScheduleHvacModeSettingCool     ClimateSettingScheduleHvacModeSetting = "cool"
-	ClimateSettingScheduleHvacModeSettingHeatcool ClimateSettingScheduleHvacModeSetting = "heatcool"
-)
-
-func NewClimateSettingScheduleHvacModeSettingFromString(s string) (ClimateSettingScheduleHvacModeSetting, error) {
-	switch s {
-	case "off":
-		return ClimateSettingScheduleHvacModeSettingOff, nil
-	case "heat":
-		return ClimateSettingScheduleHvacModeSettingHeat, nil
-	case "cool":
-		return ClimateSettingScheduleHvacModeSettingCool, nil
-	case "heatcool":
-		return ClimateSettingScheduleHvacModeSettingHeatcool, nil
-	}
-	var t ClimateSettingScheduleHvacModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ClimateSettingScheduleHvacModeSetting) Ptr() *ClimateSettingScheduleHvacModeSetting {
-	return &c
-}
-
-type ClimateSettingSchedulesCreateRequestHvacModeSetting string
-
-const (
-	ClimateSettingSchedulesCreateRequestHvacModeSettingOff      ClimateSettingSchedulesCreateRequestHvacModeSetting = "off"
-	ClimateSettingSchedulesCreateRequestHvacModeSettingHeat     ClimateSettingSchedulesCreateRequestHvacModeSetting = "heat"
-	ClimateSettingSchedulesCreateRequestHvacModeSettingCool     ClimateSettingSchedulesCreateRequestHvacModeSetting = "cool"
-	ClimateSettingSchedulesCreateRequestHvacModeSettingHeatcool ClimateSettingSchedulesCreateRequestHvacModeSetting = "heatcool"
-)
-
-func NewClimateSettingSchedulesCreateRequestHvacModeSettingFromString(s string) (ClimateSettingSchedulesCreateRequestHvacModeSetting, error) {
-	switch s {
-	case "off":
-		return ClimateSettingSchedulesCreateRequestHvacModeSettingOff, nil
-	case "heat":
-		return ClimateSettingSchedulesCreateRequestHvacModeSettingHeat, nil
-	case "cool":
-		return ClimateSettingSchedulesCreateRequestHvacModeSettingCool, nil
-	case "heatcool":
-		return ClimateSettingSchedulesCreateRequestHvacModeSettingHeatcool, nil
-	}
-	var t ClimateSettingSchedulesCreateRequestHvacModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ClimateSettingSchedulesCreateRequestHvacModeSetting) Ptr() *ClimateSettingSchedulesCreateRequestHvacModeSetting {
-	return &c
 }
 
 type ClimateSettingSchedulesCreateResponse struct {
@@ -643,34 +587,6 @@ func (c *ClimateSettingSchedulesListResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type ClimateSettingSchedulesUpdateRequestHvacModeSetting string
-
-const (
-	ClimateSettingSchedulesUpdateRequestHvacModeSettingOff      ClimateSettingSchedulesUpdateRequestHvacModeSetting = "off"
-	ClimateSettingSchedulesUpdateRequestHvacModeSettingHeat     ClimateSettingSchedulesUpdateRequestHvacModeSetting = "heat"
-	ClimateSettingSchedulesUpdateRequestHvacModeSettingCool     ClimateSettingSchedulesUpdateRequestHvacModeSetting = "cool"
-	ClimateSettingSchedulesUpdateRequestHvacModeSettingHeatcool ClimateSettingSchedulesUpdateRequestHvacModeSetting = "heatcool"
-)
-
-func NewClimateSettingSchedulesUpdateRequestHvacModeSettingFromString(s string) (ClimateSettingSchedulesUpdateRequestHvacModeSetting, error) {
-	switch s {
-	case "off":
-		return ClimateSettingSchedulesUpdateRequestHvacModeSettingOff, nil
-	case "heat":
-		return ClimateSettingSchedulesUpdateRequestHvacModeSettingHeat, nil
-	case "cool":
-		return ClimateSettingSchedulesUpdateRequestHvacModeSettingCool, nil
-	case "heatcool":
-		return ClimateSettingSchedulesUpdateRequestHvacModeSettingHeatcool, nil
-	}
-	var t ClimateSettingSchedulesUpdateRequestHvacModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ClimateSettingSchedulesUpdateRequestHvacModeSetting) Ptr() *ClimateSettingSchedulesUpdateRequestHvacModeSetting {
-	return &c
-}
-
 type ClimateSettingSchedulesUpdateResponse struct {
 	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
 	Ok                     bool                    `json:"ok"`
@@ -702,18 +618,18 @@ func (c *ClimateSettingSchedulesUpdateResponse) String() string {
 }
 
 type ConnectWebview struct {
-	ConnectWebviewId    string                            `json:"connect_webview_id"`
-	ConnectedAccountId  *string                           `json:"connected_account_id,omitempty"`
-	Url                 string                            `json:"url"`
-	WorkspaceId         string                            `json:"workspace_id"`
-	DeviceSelectionMode ConnectWebviewDeviceSelectionMode `json:"device_selection_mode,omitempty"`
-	AcceptedProviders   []string                          `json:"accepted_providers,omitempty"`
-	AcceptedDevices     []string                          `json:"accepted_devices,omitempty"`
-	AnyProviderAllowed  bool                              `json:"any_provider_allowed"`
-	AnyDeviceAllowed    bool                              `json:"any_device_allowed"`
-	CreatedAt           time.Time                         `json:"created_at"`
-	LoginSuccessful     bool                              `json:"login_successful"`
-	Status              ConnectWebviewStatus              `json:"status,omitempty"`
+	ConnectWebviewId    string               `json:"connect_webview_id"`
+	ConnectedAccountId  *string              `json:"connected_account_id,omitempty"`
+	Url                 string               `json:"url"`
+	WorkspaceId         string               `json:"workspace_id"`
+	DeviceSelectionMode SelectionMode        `json:"device_selection_mode,omitempty"`
+	AcceptedProviders   []string             `json:"accepted_providers,omitempty"`
+	AcceptedDevices     []string             `json:"accepted_devices,omitempty"`
+	AnyProviderAllowed  bool                 `json:"any_provider_allowed"`
+	AnyDeviceAllowed    bool                 `json:"any_device_allowed"`
+	CreatedAt           time.Time            `json:"created_at"`
+	LoginSuccessful     bool                 `json:"login_successful"`
+	Status              ConnectWebviewStatus `json:"status,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -739,31 +655,6 @@ func (c *ConnectWebview) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
-}
-
-type ConnectWebviewDeviceSelectionMode string
-
-const (
-	ConnectWebviewDeviceSelectionModeNone     ConnectWebviewDeviceSelectionMode = "none"
-	ConnectWebviewDeviceSelectionModeSingle   ConnectWebviewDeviceSelectionMode = "single"
-	ConnectWebviewDeviceSelectionModeMultiple ConnectWebviewDeviceSelectionMode = "multiple"
-)
-
-func NewConnectWebviewDeviceSelectionModeFromString(s string) (ConnectWebviewDeviceSelectionMode, error) {
-	switch s {
-	case "none":
-		return ConnectWebviewDeviceSelectionModeNone, nil
-	case "single":
-		return ConnectWebviewDeviceSelectionModeSingle, nil
-	case "multiple":
-		return ConnectWebviewDeviceSelectionModeMultiple, nil
-	}
-	var t ConnectWebviewDeviceSelectionMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ConnectWebviewDeviceSelectionMode) Ptr() *ConnectWebviewDeviceSelectionMode {
-	return &c
 }
 
 type ConnectWebviewStatus string
@@ -1421,7 +1312,7 @@ const (
 	HvacModeSettingOff      HvacModeSetting = "off"
 	HvacModeSettingHeat     HvacModeSetting = "heat"
 	HvacModeSettingCool     HvacModeSetting = "cool"
-	HvacModeSettingHeatcool HvacModeSetting = "heatcool"
+	HvacModeSettingHeatCool HvacModeSetting = "heat_cool"
 )
 
 func NewHvacModeSettingFromString(s string) (HvacModeSetting, error) {
@@ -1432,8 +1323,8 @@ func NewHvacModeSettingFromString(s string) (HvacModeSetting, error) {
 		return HvacModeSettingHeat, nil
 	case "cool":
 		return HvacModeSettingCool, nil
-	case "heatcool":
-		return HvacModeSettingHeatcool, nil
+	case "heat_cool":
+		return HvacModeSettingHeatCool, nil
 	}
 	var t HvacModeSetting
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

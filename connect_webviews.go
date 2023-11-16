@@ -9,12 +9,12 @@ import (
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode      *ConnectWebviewsCreateRequestDeviceSelectionMode            `json:"device_selection_mode,omitempty"`
-	CustomRedirectUrl        *string                                                     `json:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl *string                                                     `json:"custom_redirect_failure_url,omitempty"`
-	AcceptedProviders        []ConnectWebviewsCreateRequestAcceptedProvidersItem         `json:"accepted_providers,omitempty"`
-	ProviderCategory         *ConnectWebviewsCreateRequestProviderCategory               `json:"provider_category,omitempty"`
-	CustomMetadata           map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
+	DeviceSelectionMode      *SelectionMode                  `json:"device_selection_mode,omitempty"`
+	CustomRedirectUrl        *string                         `json:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl *string                         `json:"custom_redirect_failure_url,omitempty"`
+	AcceptedProviders        []AcceptedProvider              `json:"accepted_providers,omitempty"`
+	ProviderCategory         *ProviderCategory               `json:"provider_category,omitempty"`
+	CustomMetadata           map[string]*CustomMetadataValue `json:"custom_metadata,omitempty"`
 }
 
 type ConnectWebviewsDeleteRequest struct {
@@ -25,240 +25,101 @@ type ConnectWebviewsGetRequest struct {
 	ConnectWebviewId string `json:"connect_webview_id"`
 }
 
-type ConnectWebviewsCreateRequestAcceptedProvidersItem string
+type AcceptedProvider string
 
 const (
-	ConnectWebviewsCreateRequestAcceptedProvidersItemAkuvox         ConnectWebviewsCreateRequestAcceptedProvidersItem = "akuvox"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemAugust         ConnectWebviewsCreateRequestAcceptedProvidersItem = "august"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemAvigilonAlta   ConnectWebviewsCreateRequestAcceptedProvidersItem = "avigilon_alta"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemBrivo          ConnectWebviewsCreateRequestAcceptedProvidersItem = "brivo"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemButterflymx    ConnectWebviewsCreateRequestAcceptedProvidersItem = "butterflymx"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemSchlage        ConnectWebviewsCreateRequestAcceptedProvidersItem = "schlage"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemSmartthings    ConnectWebviewsCreateRequestAcceptedProvidersItem = "smartthings"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemYale           ConnectWebviewsCreateRequestAcceptedProvidersItem = "yale"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemGenie          ConnectWebviewsCreateRequestAcceptedProvidersItem = "genie"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemDoorking       ConnectWebviewsCreateRequestAcceptedProvidersItem = "doorking"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemSalto          ConnectWebviewsCreateRequestAcceptedProvidersItem = "salto"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemLockly         ConnectWebviewsCreateRequestAcceptedProvidersItem = "lockly"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemTtlock         ConnectWebviewsCreateRequestAcceptedProvidersItem = "ttlock"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemLinear         ConnectWebviewsCreateRequestAcceptedProvidersItem = "linear"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemNoiseaware     ConnectWebviewsCreateRequestAcceptedProvidersItem = "noiseaware"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemNuki           ConnectWebviewsCreateRequestAcceptedProvidersItem = "nuki"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemSeamRelayAdmin ConnectWebviewsCreateRequestAcceptedProvidersItem = "seam_relay_admin"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemIgloo          ConnectWebviewsCreateRequestAcceptedProvidersItem = "igloo"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemKwikset        ConnectWebviewsCreateRequestAcceptedProvidersItem = "kwikset"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemMinut          ConnectWebviewsCreateRequestAcceptedProvidersItem = "minut"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemMy2N           ConnectWebviewsCreateRequestAcceptedProvidersItem = "my_2n"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemControlbyweb   ConnectWebviewsCreateRequestAcceptedProvidersItem = "controlbyweb"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemNest           ConnectWebviewsCreateRequestAcceptedProvidersItem = "nest"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemIgloohome      ConnectWebviewsCreateRequestAcceptedProvidersItem = "igloohome"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemEcobee         ConnectWebviewsCreateRequestAcceptedProvidersItem = "ecobee"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemHubitat        ConnectWebviewsCreateRequestAcceptedProvidersItem = "hubitat"
-	ConnectWebviewsCreateRequestAcceptedProvidersItemYaleAccess     ConnectWebviewsCreateRequestAcceptedProvidersItem = "yale_access"
+	AcceptedProviderAkuvox         AcceptedProvider = "akuvox"
+	AcceptedProviderAugust         AcceptedProvider = "august"
+	AcceptedProviderAvigilonAlta   AcceptedProvider = "avigilon_alta"
+	AcceptedProviderBrivo          AcceptedProvider = "brivo"
+	AcceptedProviderButterflymx    AcceptedProvider = "butterflymx"
+	AcceptedProviderSchlage        AcceptedProvider = "schlage"
+	AcceptedProviderSmartthings    AcceptedProvider = "smartthings"
+	AcceptedProviderYale           AcceptedProvider = "yale"
+	AcceptedProviderGenie          AcceptedProvider = "genie"
+	AcceptedProviderDoorking       AcceptedProvider = "doorking"
+	AcceptedProviderSalto          AcceptedProvider = "salto"
+	AcceptedProviderLockly         AcceptedProvider = "lockly"
+	AcceptedProviderTtlock         AcceptedProvider = "ttlock"
+	AcceptedProviderLinear         AcceptedProvider = "linear"
+	AcceptedProviderNoiseaware     AcceptedProvider = "noiseaware"
+	AcceptedProviderNuki           AcceptedProvider = "nuki"
+	AcceptedProviderSeamRelayAdmin AcceptedProvider = "seam_relay_admin"
+	AcceptedProviderIgloo          AcceptedProvider = "igloo"
+	AcceptedProviderKwikset        AcceptedProvider = "kwikset"
+	AcceptedProviderMinut          AcceptedProvider = "minut"
+	AcceptedProviderMy2N           AcceptedProvider = "my_2n"
+	AcceptedProviderControlbyweb   AcceptedProvider = "controlbyweb"
+	AcceptedProviderNest           AcceptedProvider = "nest"
+	AcceptedProviderIgloohome      AcceptedProvider = "igloohome"
+	AcceptedProviderEcobee         AcceptedProvider = "ecobee"
+	AcceptedProviderHubitat        AcceptedProvider = "hubitat"
+	AcceptedProviderYaleAccess     AcceptedProvider = "yale_access"
 )
 
-func NewConnectWebviewsCreateRequestAcceptedProvidersItemFromString(s string) (ConnectWebviewsCreateRequestAcceptedProvidersItem, error) {
+func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
 	switch s {
 	case "akuvox":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemAkuvox, nil
+		return AcceptedProviderAkuvox, nil
 	case "august":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemAugust, nil
+		return AcceptedProviderAugust, nil
 	case "avigilon_alta":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemAvigilonAlta, nil
+		return AcceptedProviderAvigilonAlta, nil
 	case "brivo":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemBrivo, nil
+		return AcceptedProviderBrivo, nil
 	case "butterflymx":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemButterflymx, nil
+		return AcceptedProviderButterflymx, nil
 	case "schlage":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemSchlage, nil
+		return AcceptedProviderSchlage, nil
 	case "smartthings":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemSmartthings, nil
+		return AcceptedProviderSmartthings, nil
 	case "yale":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemYale, nil
+		return AcceptedProviderYale, nil
 	case "genie":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemGenie, nil
+		return AcceptedProviderGenie, nil
 	case "doorking":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemDoorking, nil
+		return AcceptedProviderDoorking, nil
 	case "salto":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemSalto, nil
+		return AcceptedProviderSalto, nil
 	case "lockly":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemLockly, nil
+		return AcceptedProviderLockly, nil
 	case "ttlock":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemTtlock, nil
+		return AcceptedProviderTtlock, nil
 	case "linear":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemLinear, nil
+		return AcceptedProviderLinear, nil
 	case "noiseaware":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemNoiseaware, nil
+		return AcceptedProviderNoiseaware, nil
 	case "nuki":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemNuki, nil
+		return AcceptedProviderNuki, nil
 	case "seam_relay_admin":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemSeamRelayAdmin, nil
+		return AcceptedProviderSeamRelayAdmin, nil
 	case "igloo":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemIgloo, nil
+		return AcceptedProviderIgloo, nil
 	case "kwikset":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemKwikset, nil
+		return AcceptedProviderKwikset, nil
 	case "minut":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemMinut, nil
+		return AcceptedProviderMinut, nil
 	case "my_2n":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemMy2N, nil
+		return AcceptedProviderMy2N, nil
 	case "controlbyweb":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemControlbyweb, nil
+		return AcceptedProviderControlbyweb, nil
 	case "nest":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemNest, nil
+		return AcceptedProviderNest, nil
 	case "igloohome":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemIgloohome, nil
+		return AcceptedProviderIgloohome, nil
 	case "ecobee":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemEcobee, nil
+		return AcceptedProviderEcobee, nil
 	case "hubitat":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemHubitat, nil
+		return AcceptedProviderHubitat, nil
 	case "yale_access":
-		return ConnectWebviewsCreateRequestAcceptedProvidersItemYaleAccess, nil
+		return AcceptedProviderYaleAccess, nil
 	}
-	var t ConnectWebviewsCreateRequestAcceptedProvidersItem
+	var t AcceptedProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (c ConnectWebviewsCreateRequestAcceptedProvidersItem) Ptr() *ConnectWebviewsCreateRequestAcceptedProvidersItem {
-	return &c
-}
-
-type ConnectWebviewsCreateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Double         float64
-	StringOptional *string
-	Boolean        bool
-}
-
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "string", String: value}
-}
-
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromDouble(value float64) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "double", Double: value}
-}
-
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
-}
-
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromBoolean(value bool) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		c.typeName = "double"
-		c.Double = valueDouble
-		return nil
-	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		c.typeName = "boolean"
-		c.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c ConnectWebviewsCreateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "double":
-		return json.Marshal(c.Double)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
-	case "boolean":
-		return json.Marshal(c.Boolean)
-	}
-}
-
-type ConnectWebviewsCreateRequestCustomMetadataValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-	VisitStringOptional(*string) error
-	VisitBoolean(bool) error
-}
-
-func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor ConnectWebviewsCreateRequestCustomMetadataValueVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "double":
-		return visitor.VisitDouble(c.Double)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
-	case "boolean":
-		return visitor.VisitBoolean(c.Boolean)
-	}
-}
-
-type ConnectWebviewsCreateRequestDeviceSelectionMode string
-
-const (
-	ConnectWebviewsCreateRequestDeviceSelectionModeNone     ConnectWebviewsCreateRequestDeviceSelectionMode = "none"
-	ConnectWebviewsCreateRequestDeviceSelectionModeSingle   ConnectWebviewsCreateRequestDeviceSelectionMode = "single"
-	ConnectWebviewsCreateRequestDeviceSelectionModeMultiple ConnectWebviewsCreateRequestDeviceSelectionMode = "multiple"
-)
-
-func NewConnectWebviewsCreateRequestDeviceSelectionModeFromString(s string) (ConnectWebviewsCreateRequestDeviceSelectionMode, error) {
-	switch s {
-	case "none":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeNone, nil
-	case "single":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeSingle, nil
-	case "multiple":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeMultiple, nil
-	}
-	var t ConnectWebviewsCreateRequestDeviceSelectionMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ConnectWebviewsCreateRequestDeviceSelectionMode) Ptr() *ConnectWebviewsCreateRequestDeviceSelectionMode {
-	return &c
-}
-
-type ConnectWebviewsCreateRequestProviderCategory string
-
-const (
-	ConnectWebviewsCreateRequestProviderCategoryStable             ConnectWebviewsCreateRequestProviderCategory = "stable"
-	ConnectWebviewsCreateRequestProviderCategoryConsumerSmartlocks ConnectWebviewsCreateRequestProviderCategory = "consumer_smartlocks"
-	ConnectWebviewsCreateRequestProviderCategoryInternalBeta       ConnectWebviewsCreateRequestProviderCategory = "internal_beta"
-)
-
-func NewConnectWebviewsCreateRequestProviderCategoryFromString(s string) (ConnectWebviewsCreateRequestProviderCategory, error) {
-	switch s {
-	case "stable":
-		return ConnectWebviewsCreateRequestProviderCategoryStable, nil
-	case "consumer_smartlocks":
-		return ConnectWebviewsCreateRequestProviderCategoryConsumerSmartlocks, nil
-	case "internal_beta":
-		return ConnectWebviewsCreateRequestProviderCategoryInternalBeta, nil
-	}
-	var t ConnectWebviewsCreateRequestProviderCategory
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ConnectWebviewsCreateRequestProviderCategory) Ptr() *ConnectWebviewsCreateRequestProviderCategory {
-	return &c
+func (a AcceptedProvider) Ptr() *AcceptedProvider {
+	return &a
 }
 
 type ConnectWebviewsCreateResponse struct {
@@ -378,6 +239,129 @@ func (c *ConnectWebviewsListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type CustomMetadataValue struct {
+	typeName       string
+	StringOptional *string
+	Double         float64
+	Boolean        bool
+}
+
+func NewCustomMetadataValueFromStringOptional(value *string) *CustomMetadataValue {
+	return &CustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func NewCustomMetadataValueFromDouble(value float64) *CustomMetadataValue {
+	return &CustomMetadataValue{typeName: "double", Double: value}
+}
+
+func NewCustomMetadataValueFromBoolean(value bool) *CustomMetadataValue {
+	return &CustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func (c *CustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
+	var valueDouble float64
+	if err := json.Unmarshal(data, &valueDouble); err == nil {
+		c.typeName = "double"
+		c.Double = valueDouble
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c CustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
+	case "double":
+		return json.Marshal(c.Double)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	}
+}
+
+type CustomMetadataValueVisitor interface {
+	VisitStringOptional(*string) error
+	VisitDouble(float64) error
+	VisitBoolean(bool) error
+}
+
+func (c *CustomMetadataValue) Accept(visitor CustomMetadataValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
+	case "double":
+		return visitor.VisitDouble(c.Double)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	}
+}
+
+type ProviderCategory string
+
+const (
+	ProviderCategoryStable             ProviderCategory = "stable"
+	ProviderCategoryConsumerSmartlocks ProviderCategory = "consumer_smartlocks"
+	ProviderCategoryInternalBeta       ProviderCategory = "internal_beta"
+)
+
+func NewProviderCategoryFromString(s string) (ProviderCategory, error) {
+	switch s {
+	case "stable":
+		return ProviderCategoryStable, nil
+	case "consumer_smartlocks":
+		return ProviderCategoryConsumerSmartlocks, nil
+	case "internal_beta":
+		return ProviderCategoryInternalBeta, nil
+	}
+	var t ProviderCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p ProviderCategory) Ptr() *ProviderCategory {
+	return &p
+}
+
+type SelectionMode string
+
+const (
+	SelectionModeNone     SelectionMode = "none"
+	SelectionModeSingle   SelectionMode = "single"
+	SelectionModeMultiple SelectionMode = "multiple"
+)
+
+func NewSelectionModeFromString(s string) (SelectionMode, error) {
+	switch s {
+	case "none":
+		return SelectionModeNone, nil
+	case "single":
+		return SelectionModeSingle, nil
+	case "multiple":
+		return SelectionModeMultiple, nil
+	}
+	var t SelectionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SelectionMode) Ptr() *SelectionMode {
+	return &s
 }
 
 type ConnectWebviewsViewRequest struct {
