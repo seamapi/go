@@ -19,8 +19,8 @@ func TestConnectWebviews(t *testing.T) {
 	createdWebview, err := seam.ConnectWebviews.Create(
 		ctx,
 		&seamgo.ConnectWebviewsCreateRequest{
-			AcceptedProviders: []seamgo.ConnectWebviewsCreateRequestAcceptedProvidersItem{
-				seamgo.ConnectWebviewsCreateRequestAcceptedProvidersItemSchlage,
+			AcceptedProviders: []seamgo.AcceptedProvider{
+				seamgo.AcceptedProviderIgloo,
 			},
 		},
 	)
@@ -39,7 +39,7 @@ func TestConnectWebviews(t *testing.T) {
 	newWebview, err := seam.ConnectWebviews.Create(
 		ctx,
 		&seamgo.ConnectWebviewsCreateRequest{
-			ProviderCategory: seamgo.ConnectWebviewsCreateRequestProviderCategoryStable.Ptr(),
+			ProviderCategory: seamgo.ProviderCategoryStable.Ptr(),
 		},
 	)
 	require.NoError(t, err)
