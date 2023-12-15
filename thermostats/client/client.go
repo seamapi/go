@@ -15,9 +15,9 @@ import (
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 
 	ClimateSettingSchedules *climatesettingschedules.Client
 }
@@ -29,7 +29,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 	return &Client{
 		baseURL:                 options.BaseURL,
-		httpClient:              options.HTTPClient,
+		caller:                  core.NewCaller(options.HTTPClient),
 		header:                  options.ToHeader(),
 		ClimateSettingSchedules: climatesettingschedules.NewClient(opts...),
 	}
@@ -69,16 +69,16 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ThermostatsGetReque
 	}
 
 	var response *seamapigo.ThermostatsGetResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -119,16 +119,16 @@ func (c *Client) Heat(ctx context.Context, request *seamapigo.ThermostatsHeatReq
 	}
 
 	var response *seamapigo.ThermostatsHeatResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return false, err
 	}
@@ -169,16 +169,16 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ThermostatsListReq
 	}
 
 	var response *seamapigo.ThermostatsListResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -219,16 +219,16 @@ func (c *Client) SetFanMode(ctx context.Context, request *seamapigo.ThermostatsS
 	}
 
 	var response *seamapigo.ThermostatsSetFanModeResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -269,16 +269,16 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.ThermostatsUpdat
 	}
 
 	var response *seamapigo.ThermostatsUpdateResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return false, err
 	}

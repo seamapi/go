@@ -37,3 +37,10 @@ func WithApiKey(apiKey string) core.ClientOption {
 		opts.ApiKey = apiKey
 	}
 }
+
+// WithSeamWorkspace sets the seamWorkspace header on every request.
+func WithSeamWorkspace(seamWorkspace *string) core.ClientOption {
+	return func(opts *core.ClientOptions) {
+		opts.SeamWorkspace = seamWorkspace
+	}
+}
