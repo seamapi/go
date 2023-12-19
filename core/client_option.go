@@ -3,6 +3,7 @@
 package core
 
 import (
+	fmt "fmt"
 	http "net/http"
 )
 
@@ -13,10 +14,11 @@ type ClientOption func(*ClientOptions)
 // This type is primarily used by the generated code and is
 // not meant to be used directly; use ClientOption instead.
 type ClientOptions struct {
-	BaseURL    string
-	HTTPClient HTTPClient
-	HTTPHeader http.Header
-	ApiKey     string
+	BaseURL       string
+	HTTPClient    HTTPClient
+	HTTPHeader    http.Header
+	ApiKey        string
+	SeamWorkspace *string
 }
 
 // NewClientOptions returns a new *ClientOptions value.
@@ -36,6 +38,9 @@ func (c *ClientOptions) ToHeader() http.Header {
 	if c.ApiKey != "" {
 		header.Set("Authorization", "Bearer "+c.ApiKey)
 	}
+	if c.SeamWorkspace != nil {
+		header.Set("Seam-Workspace", fmt.Sprintf("%v", *c.SeamWorkspace))
+	}
 	return header
 }
 
@@ -43,6 +48,6 @@ func (c *ClientOptions) cloneHeader() http.Header {
 	headers := c.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/seamapi/go")
-	headers.Set("X-Fern-SDK-Version", "0.1.4")
+	headers.Set("X-Fern-SDK-Version", "v0.1.5")
 	return headers
 }

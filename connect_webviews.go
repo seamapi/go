@@ -9,12 +9,14 @@ import (
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode      *SelectionMode                  `json:"device_selection_mode,omitempty"`
-	CustomRedirectUrl        *string                         `json:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl *string                         `json:"custom_redirect_failure_url,omitempty"`
-	AcceptedProviders        []AcceptedProvider              `json:"accepted_providers,omitempty"`
-	ProviderCategory         *ProviderCategory               `json:"provider_category,omitempty"`
-	CustomMetadata           map[string]*CustomMetadataValue `json:"custom_metadata,omitempty"`
+	DeviceSelectionMode           *SelectionMode                  `json:"device_selection_mode,omitempty"`
+	CustomRedirectUrl             *string                         `json:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                         `json:"custom_redirect_failure_url,omitempty"`
+	AcceptedProviders             []AcceptedProvider              `json:"accepted_providers,omitempty"`
+	ProviderCategory              *ProviderCategory               `json:"provider_category,omitempty"`
+	CustomMetadata                map[string]*CustomMetadataValue `json:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices *bool                           `json:"automatically_manage_new_devices,omitempty"`
+	WaitForDeviceCreation         *bool                           `json:"wait_for_device_creation,omitempty"`
 }
 
 type ConnectWebviewsDeleteRequest struct {

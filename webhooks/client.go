@@ -14,9 +14,9 @@ import (
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 }
 
 func NewClient(opts ...core.ClientOption) *Client {
@@ -25,9 +25,9 @@ func NewClient(opts ...core.ClientOption) *Client {
 		opt(options)
 	}
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL: options.BaseURL,
+		caller:  core.NewCaller(options.HTTPClient),
+		header:  options.ToHeader(),
 	}
 }
 
@@ -65,16 +65,16 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRe
 	}
 
 	var response *seamapigo.WebhooksCreateResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -115,16 +115,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRe
 	}
 
 	var response *seamapigo.WebhooksDeleteResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodDelete,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodDelete,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -165,16 +165,16 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest)
 	}
 
 	var response *seamapigo.WebhooksGetResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -215,16 +215,15 @@ func (c *Client) List(ctx context.Context) (*seamapigo.WebhooksListResponse, err
 	}
 
 	var response *seamapigo.WebhooksListResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodGet,
+			Headers:      c.header,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}

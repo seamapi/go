@@ -21,9 +21,9 @@ import (
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 
 	AccessCodes       *accesscodesclient.Client
 	ActionAttempts    *actionattempts.Client
@@ -47,7 +47,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 	return &Client{
 		baseURL:           options.BaseURL,
-		httpClient:        options.HTTPClient,
+		caller:            core.NewCaller(options.HTTPClient),
 		header:            options.ToHeader(),
 		AccessCodes:       accesscodesclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),

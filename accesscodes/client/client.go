@@ -16,9 +16,9 @@ import (
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 
 	Simulate  *simulate.Client
 	Unmanaged *unmanaged.Client
@@ -30,11 +30,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 		opt(options)
 	}
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
-		Simulate:   simulate.NewClient(opts...),
-		Unmanaged:  unmanaged.NewClient(opts...),
+		baseURL:   options.BaseURL,
+		caller:    core.NewCaller(options.HTTPClient),
+		header:    options.ToHeader(),
+		Simulate:  simulate.NewClient(opts...),
+		Unmanaged: unmanaged.NewClient(opts...),
 	}
 }
 
@@ -72,16 +72,16 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.AccessCodesCreat
 	}
 
 	var response *seamapigo.AccessCodesCreateResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -122,16 +122,16 @@ func (c *Client) CreateMultiple(ctx context.Context, request *seamapigo.AccessCo
 	}
 
 	var response *seamapigo.AccessCodesCreateMultipleResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -172,16 +172,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.AccessCodesDelet
 	}
 
 	var response *seamapigo.AccessCodesDeleteResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodDelete,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodDelete,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -222,16 +222,16 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.AccessCodesGetReque
 	}
 
 	var response *seamapigo.AccessCodesGetResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -272,16 +272,16 @@ func (c *Client) List(ctx context.Context, request *seamapigo.AccessCodesListReq
 	}
 
 	var response *seamapigo.AccessCodesListResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -322,16 +322,16 @@ func (c *Client) PullBackupAccessCode(ctx context.Context, request *seamapigo.Ac
 	}
 
 	var response *seamapigo.AccessCodesPullBackupAccessCodeResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
@@ -372,16 +372,16 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.AccessCodesUpdat
 	}
 
 	var response *seamapigo.AccessCodesUpdateResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
 	); err != nil {
 		return nil, err
 	}
