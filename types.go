@@ -108,6 +108,317 @@ func (a AccessCodeType) Ptr() *AccessCodeType {
 	return &a
 }
 
+type AcsAccessGroup struct {
+	AcsAccessGroupId string `json:"acs_access_group_id"`
+	AcsSystemId      string `json:"acs_system_id"`
+	WorkspaceId      string `json:"workspace_id"`
+	Name             string `json:"name"`
+	// deprecated: use external_type
+	AccessGroupType AcsAccessGroupAccessGroupType `json:"access_group_type,omitempty"`
+	// deprecated: use external_type_display_name
+	AccessGroupTypeDisplayName string                     `json:"access_group_type_display_name"`
+	ExternalType               AcsAccessGroupExternalType `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    string                     `json:"external_type_display_name"`
+	CreatedAt                  time.Time                  `json:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsAccessGroup) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsAccessGroup
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsAccessGroup(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsAccessGroup) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// deprecated: use external_type
+type AcsAccessGroupAccessGroupType string
+
+const (
+	AcsAccessGroupAccessGroupTypePtiUnit          AcsAccessGroupAccessGroupType = "pti_unit"
+	AcsAccessGroupAccessGroupTypePtiAccessLevel   AcsAccessGroupAccessGroupType = "pti_access_level"
+	AcsAccessGroupAccessGroupTypeSaltoAccessGroup AcsAccessGroupAccessGroupType = "salto_access_group"
+	AcsAccessGroupAccessGroupTypeBrivoGroup       AcsAccessGroupAccessGroupType = "brivo_group"
+)
+
+func NewAcsAccessGroupAccessGroupTypeFromString(s string) (AcsAccessGroupAccessGroupType, error) {
+	switch s {
+	case "pti_unit":
+		return AcsAccessGroupAccessGroupTypePtiUnit, nil
+	case "pti_access_level":
+		return AcsAccessGroupAccessGroupTypePtiAccessLevel, nil
+	case "salto_access_group":
+		return AcsAccessGroupAccessGroupTypeSaltoAccessGroup, nil
+	case "brivo_group":
+		return AcsAccessGroupAccessGroupTypeBrivoGroup, nil
+	}
+	var t AcsAccessGroupAccessGroupType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsAccessGroupAccessGroupType) Ptr() *AcsAccessGroupAccessGroupType {
+	return &a
+}
+
+type AcsAccessGroupExternalType string
+
+const (
+	AcsAccessGroupExternalTypePtiUnit          AcsAccessGroupExternalType = "pti_unit"
+	AcsAccessGroupExternalTypePtiAccessLevel   AcsAccessGroupExternalType = "pti_access_level"
+	AcsAccessGroupExternalTypeSaltoAccessGroup AcsAccessGroupExternalType = "salto_access_group"
+	AcsAccessGroupExternalTypeBrivoGroup       AcsAccessGroupExternalType = "brivo_group"
+)
+
+func NewAcsAccessGroupExternalTypeFromString(s string) (AcsAccessGroupExternalType, error) {
+	switch s {
+	case "pti_unit":
+		return AcsAccessGroupExternalTypePtiUnit, nil
+	case "pti_access_level":
+		return AcsAccessGroupExternalTypePtiAccessLevel, nil
+	case "salto_access_group":
+		return AcsAccessGroupExternalTypeSaltoAccessGroup, nil
+	case "brivo_group":
+		return AcsAccessGroupExternalTypeBrivoGroup, nil
+	}
+	var t AcsAccessGroupExternalType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsAccessGroupExternalType) Ptr() *AcsAccessGroupExternalType {
+	return &a
+}
+
+type AcsSystem struct {
+	AcsSystemId             string                `json:"acs_system_id"`
+	ExternalType            AcsSystemExternalType `json:"external_type,omitempty"`
+	ExternalTypeDisplayName string                `json:"external_type_display_name"`
+	// deprecated: use external_type
+	SystemType AcsSystemSystemType `json:"system_type,omitempty"`
+	// deprecated: use external_type_display_name
+	SystemTypeDisplayName string    `json:"system_type_display_name"`
+	Name                  string    `json:"name"`
+	CreatedAt             time.Time `json:"created_at"`
+	WorkspaceId           string    `json:"workspace_id"`
+	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsSystem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsSystem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsSystem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsSystem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsSystemExternalType string
+
+const (
+	AcsSystemExternalTypePtiSite                          AcsSystemExternalType = "pti_site"
+	AcsSystemExternalTypeAltaOrg                          AcsSystemExternalType = "alta_org"
+	AcsSystemExternalTypeSaltoSite                        AcsSystemExternalType = "salto_site"
+	AcsSystemExternalTypeBrivoAccount                     AcsSystemExternalType = "brivo_account"
+	AcsSystemExternalTypeHidCredentialManagerOrganization AcsSystemExternalType = "hid_credential_manager_organization"
+	AcsSystemExternalTypeVisionlineSystem                 AcsSystemExternalType = "visionline_system"
+	AcsSystemExternalTypeAssaAbloyCredentialServiceUser   AcsSystemExternalType = "assa_abloy_credential_service_user"
+)
+
+func NewAcsSystemExternalTypeFromString(s string) (AcsSystemExternalType, error) {
+	switch s {
+	case "pti_site":
+		return AcsSystemExternalTypePtiSite, nil
+	case "alta_org":
+		return AcsSystemExternalTypeAltaOrg, nil
+	case "salto_site":
+		return AcsSystemExternalTypeSaltoSite, nil
+	case "brivo_account":
+		return AcsSystemExternalTypeBrivoAccount, nil
+	case "hid_credential_manager_organization":
+		return AcsSystemExternalTypeHidCredentialManagerOrganization, nil
+	case "visionline_system":
+		return AcsSystemExternalTypeVisionlineSystem, nil
+	case "assa_abloy_credential_service_user":
+		return AcsSystemExternalTypeAssaAbloyCredentialServiceUser, nil
+	}
+	var t AcsSystemExternalType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsSystemExternalType) Ptr() *AcsSystemExternalType {
+	return &a
+}
+
+// deprecated: use external_type
+type AcsSystemSystemType string
+
+const (
+	AcsSystemSystemTypePtiSite                          AcsSystemSystemType = "pti_site"
+	AcsSystemSystemTypeAltaOrg                          AcsSystemSystemType = "alta_org"
+	AcsSystemSystemTypeSaltoSite                        AcsSystemSystemType = "salto_site"
+	AcsSystemSystemTypeBrivoAccount                     AcsSystemSystemType = "brivo_account"
+	AcsSystemSystemTypeHidCredentialManagerOrganization AcsSystemSystemType = "hid_credential_manager_organization"
+	AcsSystemSystemTypeVisionlineSystem                 AcsSystemSystemType = "visionline_system"
+	AcsSystemSystemTypeAssaAbloyCredentialServiceUser   AcsSystemSystemType = "assa_abloy_credential_service_user"
+)
+
+func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
+	switch s {
+	case "pti_site":
+		return AcsSystemSystemTypePtiSite, nil
+	case "alta_org":
+		return AcsSystemSystemTypeAltaOrg, nil
+	case "salto_site":
+		return AcsSystemSystemTypeSaltoSite, nil
+	case "brivo_account":
+		return AcsSystemSystemTypeBrivoAccount, nil
+	case "hid_credential_manager_organization":
+		return AcsSystemSystemTypeHidCredentialManagerOrganization, nil
+	case "visionline_system":
+		return AcsSystemSystemTypeVisionlineSystem, nil
+	case "assa_abloy_credential_service_user":
+		return AcsSystemSystemTypeAssaAbloyCredentialServiceUser, nil
+	}
+	var t AcsSystemSystemType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsSystemSystemType) Ptr() *AcsSystemSystemType {
+	return &a
+}
+
+type AcsUser struct {
+	AcsUserId               string                 `json:"acs_user_id"`
+	AcsSystemId             string                 `json:"acs_system_id"`
+	HidAcsSystemId          *string                `json:"hid_acs_system_id,omitempty"`
+	WorkspaceId             string                 `json:"workspace_id"`
+	CreatedAt               time.Time              `json:"created_at"`
+	DisplayName             string                 `json:"display_name"`
+	ExternalType            *AcsUserExternalType   `json:"external_type,omitempty"`
+	ExternalTypeDisplayName *string                `json:"external_type_display_name,omitempty"`
+	IsSuspended             bool                   `json:"is_suspended"`
+	AccessSchedule          *AcsUserAccessSchedule `json:"access_schedule,omitempty"`
+	FullName                *string                `json:"full_name,omitempty"`
+	// Deprecated: use email_address.
+	Email        *string `json:"email,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty"`
+	PhoneNumber  *string `json:"phone_number,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsUser) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsUser
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsUser(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsUser) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsUserAccessSchedule struct {
+	StartsAt time.Time `json:"starts_at"`
+	EndsAt   time.Time `json:"ends_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsUserAccessSchedule) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsUserAccessSchedule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsUserAccessSchedule(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsUserAccessSchedule) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsUserExternalType string
+
+const (
+	AcsUserExternalTypePtiUser       AcsUserExternalType = "pti_user"
+	AcsUserExternalTypeBrivoUser     AcsUserExternalType = "brivo_user"
+	AcsUserExternalTypeHidCmUser     AcsUserExternalType = "hid_cm_user"
+	AcsUserExternalTypeSaltoSiteUser AcsUserExternalType = "salto_site_user"
+)
+
+func NewAcsUserExternalTypeFromString(s string) (AcsUserExternalType, error) {
+	switch s {
+	case "pti_user":
+		return AcsUserExternalTypePtiUser, nil
+	case "brivo_user":
+		return AcsUserExternalTypeBrivoUser, nil
+	case "hid_cm_user":
+		return AcsUserExternalTypeHidCmUser, nil
+	case "salto_site_user":
+		return AcsUserExternalTypeSaltoSiteUser, nil
+	}
+	var t AcsUserExternalType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsUserExternalType) Ptr() *AcsUserExternalType {
+	return &a
+}
+
 type ActionAttempt struct {
 	Status  string
 	Success *ActionAttemptSuccess
