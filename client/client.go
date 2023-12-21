@@ -4,6 +4,7 @@ package client
 
 import (
 	accesscodesclient "github.com/seamapi/go/accesscodes/client"
+	acsclient "github.com/seamapi/go/acs/client"
 	actionattempts "github.com/seamapi/go/actionattempts"
 	clientsessions "github.com/seamapi/go/clientsessions"
 	connectedaccounts "github.com/seamapi/go/connectedaccounts"
@@ -15,6 +16,7 @@ import (
 	locks "github.com/seamapi/go/locks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
 	thermostatsclient "github.com/seamapi/go/thermostats/client"
+	useridentitiesclient "github.com/seamapi/go/useridentities/client"
 	webhooks "github.com/seamapi/go/webhooks"
 	workspaces "github.com/seamapi/go/workspaces"
 	http "net/http"
@@ -25,7 +27,9 @@ type Client struct {
 	caller  *core.Caller
 	header  http.Header
 
+	UserIdentities    *useridentitiesclient.Client
 	AccessCodes       *accesscodesclient.Client
+	Acs               *acsclient.Client
 	ActionAttempts    *actionattempts.Client
 	ClientSessions    *clientsessions.Client
 	ConnectedAccounts *connectedaccounts.Client
@@ -49,7 +53,9 @@ func NewClient(opts ...core.ClientOption) *Client {
 		baseURL:           options.BaseURL,
 		caller:            core.NewCaller(options.HTTPClient),
 		header:            options.ToHeader(),
+		UserIdentities:    useridentitiesclient.NewClient(opts...),
 		AccessCodes:       accesscodesclient.NewClient(opts...),
+		Acs:               acsclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),
 		ClientSessions:    clientsessions.NewClient(opts...),
 		ConnectedAccounts: connectedaccounts.NewClient(opts...),
