@@ -36,7 +36,10 @@ type UsersGetRequest struct {
 }
 
 type UsersListRequest struct {
-	AcsSystemId string `json:"acs_system_id"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty"`
+	UserIdentityPhoneNumber  *string `json:"user_identity_phone_number,omitempty"`
+	UserIdentityEmailAddress *string `json:"user_identity_email_address,omitempty"`
+	AcsSystemId              *string `json:"acs_system_id,omitempty"`
 }
 
 type UsersRemoveFromAccessGroupRequest struct {
