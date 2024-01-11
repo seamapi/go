@@ -319,17 +319,20 @@ func (a AcsSystemSystemType) Ptr() *AcsSystemSystemType {
 }
 
 type AcsUser struct {
-	AcsUserId               string                 `json:"acs_user_id"`
-	AcsSystemId             string                 `json:"acs_system_id"`
-	HidAcsSystemId          *string                `json:"hid_acs_system_id,omitempty"`
-	WorkspaceId             string                 `json:"workspace_id"`
-	CreatedAt               time.Time              `json:"created_at"`
-	DisplayName             string                 `json:"display_name"`
-	ExternalType            *AcsUserExternalType   `json:"external_type,omitempty"`
-	ExternalTypeDisplayName *string                `json:"external_type_display_name,omitempty"`
-	IsSuspended             bool                   `json:"is_suspended"`
-	AccessSchedule          *AcsUserAccessSchedule `json:"access_schedule,omitempty"`
-	FullName                *string                `json:"full_name,omitempty"`
+	AcsUserId                string                 `json:"acs_user_id"`
+	AcsSystemId              string                 `json:"acs_system_id"`
+	HidAcsSystemId           *string                `json:"hid_acs_system_id,omitempty"`
+	WorkspaceId              string                 `json:"workspace_id"`
+	CreatedAt                time.Time              `json:"created_at"`
+	DisplayName              string                 `json:"display_name"`
+	ExternalType             *AcsUserExternalType   `json:"external_type,omitempty"`
+	ExternalTypeDisplayName  *string                `json:"external_type_display_name,omitempty"`
+	IsSuspended              bool                   `json:"is_suspended"`
+	AccessSchedule           *AcsUserAccessSchedule `json:"access_schedule,omitempty"`
+	UserIdentityId           *string                `json:"user_identity_id,omitempty"`
+	UserIdentityEmailAddress *string                `json:"user_identity_email_address,omitempty"`
+	UserIdentityPhoneNumber  *string                `json:"user_identity_phone_number,omitempty"`
+	FullName                 *string                `json:"full_name,omitempty"`
 	// Deprecated: use email_address.
 	Email        *string `json:"email,omitempty"`
 	EmailAddress *string `json:"email_address,omitempty"`
