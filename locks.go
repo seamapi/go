@@ -15,15 +15,17 @@ type LocksGetRequest struct {
 }
 
 type LocksListRequest struct {
-	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string      `json:"device_ids,omitempty"`
-	Limit               *float64      `json:"limit,omitempty"`
-	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
+	// List all devices owned by this connected account
+	ConnectedAccountId  *string                           `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                          `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                           `json:"connect_webview_id,omitempty"`
+	DeviceType          *LocksListRequestDeviceType       `json:"device_type,omitempty"`
+	DeviceTypes         []LocksListRequestDeviceTypesItem `json:"device_types,omitempty"`
+	Manufacturer        *LocksListRequestManufacturer     `json:"manufacturer,omitempty"`
+	DeviceIds           []string                          `json:"device_ids,omitempty"`
+	Limit               *float64                          `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                        `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                           `json:"user_identifier_key,omitempty"`
 }
 
 type LocksLockDoorRequest struct {
@@ -32,9 +34,9 @@ type LocksLockDoorRequest struct {
 }
 
 type LocksGetResponse struct {
-	Lock   interface{} `json:"lock,omitempty"`
-	Device *Device     `json:"device,omitempty"`
-	Ok     bool        `json:"ok"`
+	Lock   *Device `json:"lock,omitempty"`
+	Device *Device `json:"device,omitempty"`
+	Ok     bool    `json:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -62,10 +64,340 @@ func (l *LocksGetResponse) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
+type LocksListRequestDeviceType string
+
+const (
+	LocksListRequestDeviceTypeAkuvoxLock             LocksListRequestDeviceType = "akuvox_lock"
+	LocksListRequestDeviceTypeAugustLock             LocksListRequestDeviceType = "august_lock"
+	LocksListRequestDeviceTypeBrivoAccessPoint       LocksListRequestDeviceType = "brivo_access_point"
+	LocksListRequestDeviceTypeButterflymxPanel       LocksListRequestDeviceType = "butterflymx_panel"
+	LocksListRequestDeviceTypeAvigilonAltaEntry      LocksListRequestDeviceType = "avigilon_alta_entry"
+	LocksListRequestDeviceTypeDoorkingLock           LocksListRequestDeviceType = "doorking_lock"
+	LocksListRequestDeviceTypeGenieDoor              LocksListRequestDeviceType = "genie_door"
+	LocksListRequestDeviceTypeIglooLock              LocksListRequestDeviceType = "igloo_lock"
+	LocksListRequestDeviceTypeLinearLock             LocksListRequestDeviceType = "linear_lock"
+	LocksListRequestDeviceTypeLocklyLock             LocksListRequestDeviceType = "lockly_lock"
+	LocksListRequestDeviceTypeKwiksetLock            LocksListRequestDeviceType = "kwikset_lock"
+	LocksListRequestDeviceTypeNukiLock               LocksListRequestDeviceType = "nuki_lock"
+	LocksListRequestDeviceTypeSaltoLock              LocksListRequestDeviceType = "salto_lock"
+	LocksListRequestDeviceTypeSchlageLock            LocksListRequestDeviceType = "schlage_lock"
+	LocksListRequestDeviceTypeSeamRelay              LocksListRequestDeviceType = "seam_relay"
+	LocksListRequestDeviceTypeSmartthingsLock        LocksListRequestDeviceType = "smartthings_lock"
+	LocksListRequestDeviceTypeWyzeLock               LocksListRequestDeviceType = "wyze_lock"
+	LocksListRequestDeviceTypeYaleLock               LocksListRequestDeviceType = "yale_lock"
+	LocksListRequestDeviceTypeTwoNIntercom           LocksListRequestDeviceType = "two_n_intercom"
+	LocksListRequestDeviceTypeControlbywebDevice     LocksListRequestDeviceType = "controlbyweb_device"
+	LocksListRequestDeviceTypeTtlockLock             LocksListRequestDeviceType = "ttlock_lock"
+	LocksListRequestDeviceTypeIgloohomeLock          LocksListRequestDeviceType = "igloohome_lock"
+	LocksListRequestDeviceTypeHubitatLock            LocksListRequestDeviceType = "hubitat_lock"
+	LocksListRequestDeviceTypeFourSuitesDoor         LocksListRequestDeviceType = "four_suites_door"
+	LocksListRequestDeviceTypeDormakabaOracodeDoor   LocksListRequestDeviceType = "dormakaba_oracode_door"
+	LocksListRequestDeviceTypeNoiseawareActivityZone LocksListRequestDeviceType = "noiseaware_activity_zone"
+	LocksListRequestDeviceTypeMinutSensor            LocksListRequestDeviceType = "minut_sensor"
+	LocksListRequestDeviceTypeEcobeeThermostat       LocksListRequestDeviceType = "ecobee_thermostat"
+	LocksListRequestDeviceTypeNestThermostat         LocksListRequestDeviceType = "nest_thermostat"
+	LocksListRequestDeviceTypeIosPhone               LocksListRequestDeviceType = "ios_phone"
+	LocksListRequestDeviceTypeAndroidPhone           LocksListRequestDeviceType = "android_phone"
+)
+
+func NewLocksListRequestDeviceTypeFromString(s string) (LocksListRequestDeviceType, error) {
+	switch s {
+	case "akuvox_lock":
+		return LocksListRequestDeviceTypeAkuvoxLock, nil
+	case "august_lock":
+		return LocksListRequestDeviceTypeAugustLock, nil
+	case "brivo_access_point":
+		return LocksListRequestDeviceTypeBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return LocksListRequestDeviceTypeButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return LocksListRequestDeviceTypeAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return LocksListRequestDeviceTypeDoorkingLock, nil
+	case "genie_door":
+		return LocksListRequestDeviceTypeGenieDoor, nil
+	case "igloo_lock":
+		return LocksListRequestDeviceTypeIglooLock, nil
+	case "linear_lock":
+		return LocksListRequestDeviceTypeLinearLock, nil
+	case "lockly_lock":
+		return LocksListRequestDeviceTypeLocklyLock, nil
+	case "kwikset_lock":
+		return LocksListRequestDeviceTypeKwiksetLock, nil
+	case "nuki_lock":
+		return LocksListRequestDeviceTypeNukiLock, nil
+	case "salto_lock":
+		return LocksListRequestDeviceTypeSaltoLock, nil
+	case "schlage_lock":
+		return LocksListRequestDeviceTypeSchlageLock, nil
+	case "seam_relay":
+		return LocksListRequestDeviceTypeSeamRelay, nil
+	case "smartthings_lock":
+		return LocksListRequestDeviceTypeSmartthingsLock, nil
+	case "wyze_lock":
+		return LocksListRequestDeviceTypeWyzeLock, nil
+	case "yale_lock":
+		return LocksListRequestDeviceTypeYaleLock, nil
+	case "two_n_intercom":
+		return LocksListRequestDeviceTypeTwoNIntercom, nil
+	case "controlbyweb_device":
+		return LocksListRequestDeviceTypeControlbywebDevice, nil
+	case "ttlock_lock":
+		return LocksListRequestDeviceTypeTtlockLock, nil
+	case "igloohome_lock":
+		return LocksListRequestDeviceTypeIgloohomeLock, nil
+	case "hubitat_lock":
+		return LocksListRequestDeviceTypeHubitatLock, nil
+	case "four_suites_door":
+		return LocksListRequestDeviceTypeFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return LocksListRequestDeviceTypeDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return LocksListRequestDeviceTypeNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return LocksListRequestDeviceTypeMinutSensor, nil
+	case "ecobee_thermostat":
+		return LocksListRequestDeviceTypeEcobeeThermostat, nil
+	case "nest_thermostat":
+		return LocksListRequestDeviceTypeNestThermostat, nil
+	case "ios_phone":
+		return LocksListRequestDeviceTypeIosPhone, nil
+	case "android_phone":
+		return LocksListRequestDeviceTypeAndroidPhone, nil
+	}
+	var t LocksListRequestDeviceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (l LocksListRequestDeviceType) Ptr() *LocksListRequestDeviceType {
+	return &l
+}
+
+type LocksListRequestDeviceTypesItem string
+
+const (
+	LocksListRequestDeviceTypesItemAkuvoxLock             LocksListRequestDeviceTypesItem = "akuvox_lock"
+	LocksListRequestDeviceTypesItemAugustLock             LocksListRequestDeviceTypesItem = "august_lock"
+	LocksListRequestDeviceTypesItemBrivoAccessPoint       LocksListRequestDeviceTypesItem = "brivo_access_point"
+	LocksListRequestDeviceTypesItemButterflymxPanel       LocksListRequestDeviceTypesItem = "butterflymx_panel"
+	LocksListRequestDeviceTypesItemAvigilonAltaEntry      LocksListRequestDeviceTypesItem = "avigilon_alta_entry"
+	LocksListRequestDeviceTypesItemDoorkingLock           LocksListRequestDeviceTypesItem = "doorking_lock"
+	LocksListRequestDeviceTypesItemGenieDoor              LocksListRequestDeviceTypesItem = "genie_door"
+	LocksListRequestDeviceTypesItemIglooLock              LocksListRequestDeviceTypesItem = "igloo_lock"
+	LocksListRequestDeviceTypesItemLinearLock             LocksListRequestDeviceTypesItem = "linear_lock"
+	LocksListRequestDeviceTypesItemLocklyLock             LocksListRequestDeviceTypesItem = "lockly_lock"
+	LocksListRequestDeviceTypesItemKwiksetLock            LocksListRequestDeviceTypesItem = "kwikset_lock"
+	LocksListRequestDeviceTypesItemNukiLock               LocksListRequestDeviceTypesItem = "nuki_lock"
+	LocksListRequestDeviceTypesItemSaltoLock              LocksListRequestDeviceTypesItem = "salto_lock"
+	LocksListRequestDeviceTypesItemSchlageLock            LocksListRequestDeviceTypesItem = "schlage_lock"
+	LocksListRequestDeviceTypesItemSeamRelay              LocksListRequestDeviceTypesItem = "seam_relay"
+	LocksListRequestDeviceTypesItemSmartthingsLock        LocksListRequestDeviceTypesItem = "smartthings_lock"
+	LocksListRequestDeviceTypesItemWyzeLock               LocksListRequestDeviceTypesItem = "wyze_lock"
+	LocksListRequestDeviceTypesItemYaleLock               LocksListRequestDeviceTypesItem = "yale_lock"
+	LocksListRequestDeviceTypesItemTwoNIntercom           LocksListRequestDeviceTypesItem = "two_n_intercom"
+	LocksListRequestDeviceTypesItemControlbywebDevice     LocksListRequestDeviceTypesItem = "controlbyweb_device"
+	LocksListRequestDeviceTypesItemTtlockLock             LocksListRequestDeviceTypesItem = "ttlock_lock"
+	LocksListRequestDeviceTypesItemIgloohomeLock          LocksListRequestDeviceTypesItem = "igloohome_lock"
+	LocksListRequestDeviceTypesItemHubitatLock            LocksListRequestDeviceTypesItem = "hubitat_lock"
+	LocksListRequestDeviceTypesItemFourSuitesDoor         LocksListRequestDeviceTypesItem = "four_suites_door"
+	LocksListRequestDeviceTypesItemDormakabaOracodeDoor   LocksListRequestDeviceTypesItem = "dormakaba_oracode_door"
+	LocksListRequestDeviceTypesItemNoiseawareActivityZone LocksListRequestDeviceTypesItem = "noiseaware_activity_zone"
+	LocksListRequestDeviceTypesItemMinutSensor            LocksListRequestDeviceTypesItem = "minut_sensor"
+	LocksListRequestDeviceTypesItemEcobeeThermostat       LocksListRequestDeviceTypesItem = "ecobee_thermostat"
+	LocksListRequestDeviceTypesItemNestThermostat         LocksListRequestDeviceTypesItem = "nest_thermostat"
+	LocksListRequestDeviceTypesItemIosPhone               LocksListRequestDeviceTypesItem = "ios_phone"
+	LocksListRequestDeviceTypesItemAndroidPhone           LocksListRequestDeviceTypesItem = "android_phone"
+)
+
+func NewLocksListRequestDeviceTypesItemFromString(s string) (LocksListRequestDeviceTypesItem, error) {
+	switch s {
+	case "akuvox_lock":
+		return LocksListRequestDeviceTypesItemAkuvoxLock, nil
+	case "august_lock":
+		return LocksListRequestDeviceTypesItemAugustLock, nil
+	case "brivo_access_point":
+		return LocksListRequestDeviceTypesItemBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return LocksListRequestDeviceTypesItemButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return LocksListRequestDeviceTypesItemAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return LocksListRequestDeviceTypesItemDoorkingLock, nil
+	case "genie_door":
+		return LocksListRequestDeviceTypesItemGenieDoor, nil
+	case "igloo_lock":
+		return LocksListRequestDeviceTypesItemIglooLock, nil
+	case "linear_lock":
+		return LocksListRequestDeviceTypesItemLinearLock, nil
+	case "lockly_lock":
+		return LocksListRequestDeviceTypesItemLocklyLock, nil
+	case "kwikset_lock":
+		return LocksListRequestDeviceTypesItemKwiksetLock, nil
+	case "nuki_lock":
+		return LocksListRequestDeviceTypesItemNukiLock, nil
+	case "salto_lock":
+		return LocksListRequestDeviceTypesItemSaltoLock, nil
+	case "schlage_lock":
+		return LocksListRequestDeviceTypesItemSchlageLock, nil
+	case "seam_relay":
+		return LocksListRequestDeviceTypesItemSeamRelay, nil
+	case "smartthings_lock":
+		return LocksListRequestDeviceTypesItemSmartthingsLock, nil
+	case "wyze_lock":
+		return LocksListRequestDeviceTypesItemWyzeLock, nil
+	case "yale_lock":
+		return LocksListRequestDeviceTypesItemYaleLock, nil
+	case "two_n_intercom":
+		return LocksListRequestDeviceTypesItemTwoNIntercom, nil
+	case "controlbyweb_device":
+		return LocksListRequestDeviceTypesItemControlbywebDevice, nil
+	case "ttlock_lock":
+		return LocksListRequestDeviceTypesItemTtlockLock, nil
+	case "igloohome_lock":
+		return LocksListRequestDeviceTypesItemIgloohomeLock, nil
+	case "hubitat_lock":
+		return LocksListRequestDeviceTypesItemHubitatLock, nil
+	case "four_suites_door":
+		return LocksListRequestDeviceTypesItemFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return LocksListRequestDeviceTypesItemDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return LocksListRequestDeviceTypesItemNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return LocksListRequestDeviceTypesItemMinutSensor, nil
+	case "ecobee_thermostat":
+		return LocksListRequestDeviceTypesItemEcobeeThermostat, nil
+	case "nest_thermostat":
+		return LocksListRequestDeviceTypesItemNestThermostat, nil
+	case "ios_phone":
+		return LocksListRequestDeviceTypesItemIosPhone, nil
+	case "android_phone":
+		return LocksListRequestDeviceTypesItemAndroidPhone, nil
+	}
+	var t LocksListRequestDeviceTypesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (l LocksListRequestDeviceTypesItem) Ptr() *LocksListRequestDeviceTypesItem {
+	return &l
+}
+
+type LocksListRequestManufacturer string
+
+const (
+	LocksListRequestManufacturerAkuvox           LocksListRequestManufacturer = "akuvox"
+	LocksListRequestManufacturerAugust           LocksListRequestManufacturer = "august"
+	LocksListRequestManufacturerAvigilonAlta     LocksListRequestManufacturer = "avigilon_alta"
+	LocksListRequestManufacturerBrivo            LocksListRequestManufacturer = "brivo"
+	LocksListRequestManufacturerButterflymx      LocksListRequestManufacturer = "butterflymx"
+	LocksListRequestManufacturerDoorking         LocksListRequestManufacturer = "doorking"
+	LocksListRequestManufacturerFourSuites       LocksListRequestManufacturer = "four_suites"
+	LocksListRequestManufacturerGenie            LocksListRequestManufacturer = "genie"
+	LocksListRequestManufacturerIgloo            LocksListRequestManufacturer = "igloo"
+	LocksListRequestManufacturerKeywe            LocksListRequestManufacturer = "keywe"
+	LocksListRequestManufacturerKwikset          LocksListRequestManufacturer = "kwikset"
+	LocksListRequestManufacturerLinear           LocksListRequestManufacturer = "linear"
+	LocksListRequestManufacturerLockly           LocksListRequestManufacturer = "lockly"
+	LocksListRequestManufacturerNuki             LocksListRequestManufacturer = "nuki"
+	LocksListRequestManufacturerPhilia           LocksListRequestManufacturer = "philia"
+	LocksListRequestManufacturerSalto            LocksListRequestManufacturer = "salto"
+	LocksListRequestManufacturerSamsung          LocksListRequestManufacturer = "samsung"
+	LocksListRequestManufacturerSchlage          LocksListRequestManufacturer = "schlage"
+	LocksListRequestManufacturerSeam             LocksListRequestManufacturer = "seam"
+	LocksListRequestManufacturerUnknown          LocksListRequestManufacturer = "unknown"
+	LocksListRequestManufacturerWyze             LocksListRequestManufacturer = "wyze"
+	LocksListRequestManufacturerYale             LocksListRequestManufacturer = "yale"
+	LocksListRequestManufacturerMinut            LocksListRequestManufacturer = "minut"
+	LocksListRequestManufacturerTwoN             LocksListRequestManufacturer = "two_n"
+	LocksListRequestManufacturerTtlock           LocksListRequestManufacturer = "ttlock"
+	LocksListRequestManufacturerNest             LocksListRequestManufacturer = "nest"
+	LocksListRequestManufacturerIgloohome        LocksListRequestManufacturer = "igloohome"
+	LocksListRequestManufacturerEcobee           LocksListRequestManufacturer = "ecobee"
+	LocksListRequestManufacturerHubitat          LocksListRequestManufacturer = "hubitat"
+	LocksListRequestManufacturerControlbyweb     LocksListRequestManufacturer = "controlbyweb"
+	LocksListRequestManufacturerSmartthings      LocksListRequestManufacturer = "smartthings"
+	LocksListRequestManufacturerDormakabaOracode LocksListRequestManufacturer = "dormakaba_oracode"
+)
+
+func NewLocksListRequestManufacturerFromString(s string) (LocksListRequestManufacturer, error) {
+	switch s {
+	case "akuvox":
+		return LocksListRequestManufacturerAkuvox, nil
+	case "august":
+		return LocksListRequestManufacturerAugust, nil
+	case "avigilon_alta":
+		return LocksListRequestManufacturerAvigilonAlta, nil
+	case "brivo":
+		return LocksListRequestManufacturerBrivo, nil
+	case "butterflymx":
+		return LocksListRequestManufacturerButterflymx, nil
+	case "doorking":
+		return LocksListRequestManufacturerDoorking, nil
+	case "four_suites":
+		return LocksListRequestManufacturerFourSuites, nil
+	case "genie":
+		return LocksListRequestManufacturerGenie, nil
+	case "igloo":
+		return LocksListRequestManufacturerIgloo, nil
+	case "keywe":
+		return LocksListRequestManufacturerKeywe, nil
+	case "kwikset":
+		return LocksListRequestManufacturerKwikset, nil
+	case "linear":
+		return LocksListRequestManufacturerLinear, nil
+	case "lockly":
+		return LocksListRequestManufacturerLockly, nil
+	case "nuki":
+		return LocksListRequestManufacturerNuki, nil
+	case "philia":
+		return LocksListRequestManufacturerPhilia, nil
+	case "salto":
+		return LocksListRequestManufacturerSalto, nil
+	case "samsung":
+		return LocksListRequestManufacturerSamsung, nil
+	case "schlage":
+		return LocksListRequestManufacturerSchlage, nil
+	case "seam":
+		return LocksListRequestManufacturerSeam, nil
+	case "unknown":
+		return LocksListRequestManufacturerUnknown, nil
+	case "wyze":
+		return LocksListRequestManufacturerWyze, nil
+	case "yale":
+		return LocksListRequestManufacturerYale, nil
+	case "minut":
+		return LocksListRequestManufacturerMinut, nil
+	case "two_n":
+		return LocksListRequestManufacturerTwoN, nil
+	case "ttlock":
+		return LocksListRequestManufacturerTtlock, nil
+	case "nest":
+		return LocksListRequestManufacturerNest, nil
+	case "igloohome":
+		return LocksListRequestManufacturerIgloohome, nil
+	case "ecobee":
+		return LocksListRequestManufacturerEcobee, nil
+	case "hubitat":
+		return LocksListRequestManufacturerHubitat, nil
+	case "controlbyweb":
+		return LocksListRequestManufacturerControlbyweb, nil
+	case "smartthings":
+		return LocksListRequestManufacturerSmartthings, nil
+	case "dormakaba_oracode":
+		return LocksListRequestManufacturerDormakabaOracode, nil
+	}
+	var t LocksListRequestManufacturer
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (l LocksListRequestManufacturer) Ptr() *LocksListRequestManufacturer {
+	return &l
+}
+
 type LocksListResponse struct {
-	Locks   interface{} `json:"locks,omitempty"`
-	Devices []*Device   `json:"devices,omitempty"`
-	Ok      bool        `json:"ok"`
+	Locks   []*Device `json:"locks,omitempty"`
+	Devices []*Device `json:"devices,omitempty"`
+	Ok      bool      `json:"ok"`
 
 	_rawJSON json.RawMessage
 }

@@ -18,7 +18,8 @@ type EntrancesGrantAccessRequest struct {
 }
 
 type EntrancesListRequest struct {
-	AcsSystemId *string `json:"acs_system_id,omitempty"`
+	AcsSystemId     *string `json:"acs_system_id,omitempty"`
+	AcsCredentialId *string `json:"acs_credential_id,omitempty"`
 }
 
 type EntrancesGetResponse struct {

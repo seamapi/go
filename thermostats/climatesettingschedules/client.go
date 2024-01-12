@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSettingSchedulesCreateRequest) (*seamapigo.ClimateSettingSchedulesCreateResponse, error) {
+func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSettingSchedulesCreateRequest) (*seamapigo.ClimateSettingSchedule, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -65,7 +65,7 @@ func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSetting
 		return apiError
 	}
 
-	var response *seamapigo.ClimateSettingSchedulesCreateResponse
+	var response *thermostats.ClimateSettingSchedulesCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -79,10 +79,10 @@ func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSetting
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ClimateSettingSchedule, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSettingSchedulesDeleteRequest) (*seamapigo.ClimateSettingSchedulesDeleteResponse, error) {
+func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSettingSchedulesDeleteRequest) (*thermostats.ClimateSettingSchedulesDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -115,12 +115,12 @@ func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSetting
 		return apiError
 	}
 
-	var response *seamapigo.ClimateSettingSchedulesDeleteResponse
+	var response *thermostats.ClimateSettingSchedulesDeleteResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
@@ -132,7 +132,7 @@ func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSetting
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSchedulesGetRequest) (*seamapigo.ClimateSettingSchedulesGetResponse, error) {
+func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSchedulesGetRequest) (*seamapigo.ClimateSettingSchedule, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -165,7 +165,7 @@ func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSch
 		return apiError
 	}
 
-	var response *seamapigo.ClimateSettingSchedulesGetResponse
+	var response *thermostats.ClimateSettingSchedulesGetResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -179,10 +179,10 @@ func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSch
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ClimateSettingSchedule, nil
 }
 
-func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSchedulesListRequest) (*seamapigo.ClimateSettingSchedulesListResponse, error) {
+func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSchedulesListRequest) ([]*seamapigo.ClimateSettingSchedule, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -215,7 +215,7 @@ func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSc
 		return apiError
 	}
 
-	var response *seamapigo.ClimateSettingSchedulesListResponse
+	var response *thermostats.ClimateSettingSchedulesListResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -229,10 +229,10 @@ func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSc
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ClimateSettingSchedules, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSettingSchedulesUpdateRequest) (*seamapigo.ClimateSettingSchedulesUpdateResponse, error) {
+func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSettingSchedulesUpdateRequest) (*seamapigo.ClimateSettingSchedule, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -265,7 +265,7 @@ func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSetting
 		return apiError
 	}
 
-	var response *seamapigo.ClimateSettingSchedulesUpdateResponse
+	var response *thermostats.ClimateSettingSchedulesUpdateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -279,5 +279,5 @@ func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSetting
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ClimateSettingSchedule, nil
 }

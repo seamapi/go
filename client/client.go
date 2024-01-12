@@ -14,7 +14,9 @@ import (
 	events "github.com/seamapi/go/events"
 	healthclient "github.com/seamapi/go/health/client"
 	locks "github.com/seamapi/go/locks"
+	networks "github.com/seamapi/go/networks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
+	phonesclient "github.com/seamapi/go/phones/client"
 	thermostatsclient "github.com/seamapi/go/thermostats/client"
 	useridentitiesclient "github.com/seamapi/go/useridentities/client"
 	webhooks "github.com/seamapi/go/webhooks"
@@ -27,7 +29,6 @@ type Client struct {
 	caller  *core.Caller
 	header  http.Header
 
-	UserIdentities    *useridentitiesclient.Client
 	AccessCodes       *accesscodesclient.Client
 	Acs               *acsclient.Client
 	ActionAttempts    *actionattempts.Client
@@ -38,8 +39,11 @@ type Client struct {
 	Events            *events.Client
 	Health            *healthclient.Client
 	Locks             *locks.Client
+	Networks          *networks.Client
 	NoiseSensors      *noisesensorsclient.Client
+	Phones            *phonesclient.Client
 	Thermostats       *thermostatsclient.Client
+	UserIdentities    *useridentitiesclient.Client
 	Webhooks          *webhooks.Client
 	Workspaces        *workspaces.Client
 }
@@ -53,7 +57,6 @@ func NewClient(opts ...core.ClientOption) *Client {
 		baseURL:           options.BaseURL,
 		caller:            core.NewCaller(options.HTTPClient),
 		header:            options.ToHeader(),
-		UserIdentities:    useridentitiesclient.NewClient(opts...),
 		AccessCodes:       accesscodesclient.NewClient(opts...),
 		Acs:               acsclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),
@@ -64,8 +67,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 		Events:            events.NewClient(opts...),
 		Health:            healthclient.NewClient(opts...),
 		Locks:             locks.NewClient(opts...),
+		Networks:          networks.NewClient(opts...),
 		NoiseSensors:      noisesensorsclient.NewClient(opts...),
+		Phones:            phonesclient.NewClient(opts...),
 		Thermostats:       thermostatsclient.NewClient(opts...),
+		UserIdentities:    useridentitiesclient.NewClient(opts...),
 		Webhooks:          webhooks.NewClient(opts...),
 		Workspaces:        workspaces.NewClient(opts...),
 	}
