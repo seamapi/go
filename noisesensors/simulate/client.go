@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) TriggerNoiseThreshold(ctx context.Context, request *noisesensors.SimulateTriggerNoiseThresholdRequest) (*seamapigo.SimulateTriggerNoiseThresholdResponse, error) {
+func (c *Client) TriggerNoiseThreshold(ctx context.Context, request *noisesensors.SimulateTriggerNoiseThresholdRequest) (*noisesensors.SimulateTriggerNoiseThresholdResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -65,7 +65,7 @@ func (c *Client) TriggerNoiseThreshold(ctx context.Context, request *noisesensor
 		return apiError
 	}
 
-	var response *seamapigo.SimulateTriggerNoiseThresholdResponse
+	var response *noisesensors.SimulateTriggerNoiseThresholdResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{

@@ -2,10 +2,19 @@
 
 package accesscodes
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
+	core "github.com/seamapi/go/core"
+)
+
 type UnmanagedConvertToManagedRequest struct {
-	AccessCodeId string `json:"access_code_id"`
-	Force        *bool  `json:"force,omitempty"`
-	Sync         *bool  `json:"sync,omitempty"`
+	AccessCodeId                  string `json:"access_code_id"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty"`
+	Force                         *bool  `json:"force,omitempty"`
+	Sync                          *bool  `json:"sync,omitempty"`
 }
 
 type UnmanagedDeleteRequest struct {
@@ -20,11 +29,162 @@ type UnmanagedGetRequest struct {
 }
 
 type UnmanagedListRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId          string  `json:"device_id"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+}
+
+type UnmanagedConvertToManagedResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedConvertToManagedResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedConvertToManagedResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedConvertToManagedResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedConvertToManagedResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedDeleteResponse struct {
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeleteResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeleteResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedGetResponse struct {
+	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty"`
+	Ok         bool                           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedGetResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedGetResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedListResponse struct {
+	AccessCodes []*seamapigo.UnmanagedAccessCode `json:"access_codes,omitempty"`
+	Ok          bool                             `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedListResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedListResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedUpdateResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedUpdateResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedUpdateResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedUpdateRequest struct {
-	AccessCodeId string `json:"access_code_id"`
-	IsManaged    bool   `json:"is_managed"`
-	Force        *bool  `json:"force,omitempty"`
+	AccessCodeId                  string `json:"access_code_id"`
+	IsManaged                     bool   `json:"is_managed"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty"`
+	Force                         *bool  `json:"force,omitempty"`
 }

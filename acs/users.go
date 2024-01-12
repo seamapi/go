@@ -42,6 +42,10 @@ type UsersListRequest struct {
 	AcsSystemId              *string `json:"acs_system_id,omitempty"`
 }
 
+type UsersListAccessibleEntrancesRequest struct {
+	AcsUserId string `json:"acs_user_id"`
+}
+
 type UsersRemoveFromAccessGroupRequest struct {
 	AcsUserId        string `json:"acs_user_id"`
 	AcsAccessGroupId string `json:"acs_access_group_id"`
@@ -170,6 +174,36 @@ func (u *UsersGetResponse) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+type UsersListAccessibleEntrancesResponse struct {
+	AcsEntrances []*UsersListAccessibleEntrancesResponseAcsEntrancesItem `json:"acs_entrances,omitempty"`
+	Ok           bool                                                    `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersListAccessibleEntrancesResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersListAccessibleEntrancesResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersListAccessibleEntrancesResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersListAccessibleEntrancesResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
 type UsersListResponse struct {
 	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty"`
 	Ok       bool                 `json:"ok"`
@@ -258,6 +292,36 @@ func (u *UsersUnsuspendResponse) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+type UsersUpdateRequestAccessSchedule struct {
+	StartsAt time.Time `json:"starts_at"`
+	EndsAt   time.Time `json:"ends_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersUpdateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersUpdateRequestAccessSchedule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersUpdateRequestAccessSchedule(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersUpdateRequestAccessSchedule) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
 type UsersUpdateResponse struct {
 	Ok bool `json:"ok"`
 
@@ -292,8 +356,9 @@ type UsersUnsuspendRequest struct {
 }
 
 type UsersUpdateRequest struct {
-	AcsUserId string  `json:"acs_user_id"`
-	FullName  *string `json:"full_name,omitempty"`
+	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty"`
+	AcsUserId      string                            `json:"acs_user_id"`
+	FullName       *string                           `json:"full_name,omitempty"`
 	// Deprecated: use email_address.
 	Email          *string `json:"email,omitempty"`
 	PhoneNumber    *string `json:"phone_number,omitempty"`

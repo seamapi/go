@@ -35,6 +35,56 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
+func (c *Client) Cool(ctx context.Context, request *seamapigo.ThermostatsCoolRequest) (*seamapigo.ThermostatsCoolResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "thermostats/cool"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ThermostatsCoolResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *Client) Get(ctx context.Context, request *seamapigo.ThermostatsGetRequest) (*seamapigo.Device, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
@@ -85,7 +135,7 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ThermostatsGetReque
 	return response.Thermostat, nil
 }
 
-func (c *Client) Heat(ctx context.Context, request *seamapigo.ThermostatsHeatRequest) (bool, error) {
+func (c *Client) Heat(ctx context.Context, request *seamapigo.ThermostatsHeatRequest) (*seamapigo.ThermostatsHeatResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -130,9 +180,59 @@ func (c *Client) Heat(ctx context.Context, request *seamapigo.ThermostatsHeatReq
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
+}
+
+func (c *Client) HeatCool(ctx context.Context, request *seamapigo.ThermostatsHeatCoolRequest) (*seamapigo.ThermostatsHeatCoolResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "thermostats/heat_cool"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ThermostatsHeatCoolResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
 func (c *Client) List(ctx context.Context, request *seamapigo.ThermostatsListRequest) ([]*seamapigo.Device, error) {
@@ -185,6 +285,56 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ThermostatsListReq
 	return response.Thermostats, nil
 }
 
+func (c *Client) Off(ctx context.Context, request *seamapigo.ThermostatsOffRequest) (*seamapigo.ThermostatsOffResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "thermostats/off"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ThermostatsOffResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *Client) SetFanMode(ctx context.Context, request *seamapigo.ThermostatsSetFanModeRequest) (*seamapigo.ThermostatsSetFanModeResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
@@ -235,7 +385,7 @@ func (c *Client) SetFanMode(ctx context.Context, request *seamapigo.ThermostatsS
 	return response, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *seamapigo.ThermostatsUpdateRequest) (bool, error) {
+func (c *Client) Update(ctx context.Context, request *seamapigo.ThermostatsUpdateRequest) (*seamapigo.ThermostatsUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -280,7 +430,7 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.ThermostatsUpdat
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }

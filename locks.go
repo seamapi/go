@@ -15,6 +15,7 @@ type LocksGetRequest struct {
 }
 
 type LocksListRequest struct {
+	// List all devices owned by this connected account
 	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
 	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
 	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
@@ -24,6 +25,7 @@ type LocksListRequest struct {
 	DeviceIds           []string      `json:"device_ids,omitempty"`
 	Limit               *float64      `json:"limit,omitempty"`
 	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
+	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
 }
 
 type LocksLockDoorRequest struct {
@@ -32,9 +34,9 @@ type LocksLockDoorRequest struct {
 }
 
 type LocksGetResponse struct {
-	Lock   interface{} `json:"lock,omitempty"`
-	Device *Device     `json:"device,omitempty"`
-	Ok     bool        `json:"ok"`
+	Lock   *Device `json:"lock,omitempty"`
+	Device *Device `json:"device,omitempty"`
+	Ok     bool    `json:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -63,9 +65,9 @@ func (l *LocksGetResponse) String() string {
 }
 
 type LocksListResponse struct {
-	Locks   interface{} `json:"locks,omitempty"`
-	Devices []*Device   `json:"devices,omitempty"`
-	Ok      bool        `json:"ok"`
+	Locks   []*Device `json:"locks,omitempty"`
+	Devices []*Device `json:"devices,omitempty"`
+	Ok      bool      `json:"ok"`
 
 	_rawJSON json.RawMessage
 }

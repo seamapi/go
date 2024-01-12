@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type CredentialsAssignRequest struct {
@@ -22,6 +23,8 @@ type CredentialsCreateRequest struct {
 	ExternalType                               *CredentialsCreateRequestExternalType `json:"external_type,omitempty"`
 	CardFormat                                 *CredentialsCreateRequestCardFormat   `json:"card_format,omitempty"`
 	IsOverrideKey                              *bool                                 `json:"is_override_key,omitempty"`
+	StartsAt                                   *time.Time                            `json:"starts_at,omitempty"`
+	EndsAt                                     *time.Time                            `json:"ends_at,omitempty"`
 }
 
 type CredentialsDeleteRequest struct {
@@ -227,10 +230,11 @@ func (c *CredentialsGetResponse) String() string {
 }
 
 type CredentialsListRequest struct {
-	typeName                   string
-	CredentialsListRequestZero *CredentialsListRequestZero
-	CredentialsListRequestOne  *CredentialsListRequestOne
-	CredentialsListRequestTwo  *CredentialsListRequestTwo
+	typeName                             string
+	CredentialsListRequestZero           *CredentialsListRequestZero
+	CredentialsListRequestOne            *CredentialsListRequestOne
+	CredentialsListRequestTwo            *CredentialsListRequestTwo
+	CredentialsListRequestUserIdentityId *CredentialsListRequestUserIdentityId
 }
 
 func NewCredentialsListRequestFromCredentialsListRequestZero(value *CredentialsListRequestZero) *CredentialsListRequest {
@@ -243,6 +247,10 @@ func NewCredentialsListRequestFromCredentialsListRequestOne(value *CredentialsLi
 
 func NewCredentialsListRequestFromCredentialsListRequestTwo(value *CredentialsListRequestTwo) *CredentialsListRequest {
 	return &CredentialsListRequest{typeName: "credentialsListRequestTwo", CredentialsListRequestTwo: value}
+}
+
+func NewCredentialsListRequestFromCredentialsListRequestUserIdentityId(value *CredentialsListRequestUserIdentityId) *CredentialsListRequest {
+	return &CredentialsListRequest{typeName: "credentialsListRequestUserIdentityId", CredentialsListRequestUserIdentityId: value}
 }
 
 func (c *CredentialsListRequest) UnmarshalJSON(data []byte) error {
@@ -264,6 +272,12 @@ func (c *CredentialsListRequest) UnmarshalJSON(data []byte) error {
 		c.CredentialsListRequestTwo = valueCredentialsListRequestTwo
 		return nil
 	}
+	valueCredentialsListRequestUserIdentityId := new(CredentialsListRequestUserIdentityId)
+	if err := json.Unmarshal(data, &valueCredentialsListRequestUserIdentityId); err == nil {
+		c.typeName = "credentialsListRequestUserIdentityId"
+		c.CredentialsListRequestUserIdentityId = valueCredentialsListRequestUserIdentityId
+		return nil
+	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -277,6 +291,8 @@ func (c CredentialsListRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.CredentialsListRequestOne)
 	case "credentialsListRequestTwo":
 		return json.Marshal(c.CredentialsListRequestTwo)
+	case "credentialsListRequestUserIdentityId":
+		return json.Marshal(c.CredentialsListRequestUserIdentityId)
 	}
 }
 
@@ -284,6 +300,7 @@ type CredentialsListRequestVisitor interface {
 	VisitCredentialsListRequestZero(*CredentialsListRequestZero) error
 	VisitCredentialsListRequestOne(*CredentialsListRequestOne) error
 	VisitCredentialsListRequestTwo(*CredentialsListRequestTwo) error
+	VisitCredentialsListRequestUserIdentityId(*CredentialsListRequestUserIdentityId) error
 }
 
 func (c *CredentialsListRequest) Accept(visitor CredentialsListRequestVisitor) error {
@@ -296,6 +313,8 @@ func (c *CredentialsListRequest) Accept(visitor CredentialsListRequestVisitor) e
 		return visitor.VisitCredentialsListRequestOne(c.CredentialsListRequestOne)
 	case "credentialsListRequestTwo":
 		return visitor.VisitCredentialsListRequestTwo(c.CredentialsListRequestTwo)
+	case "credentialsListRequestUserIdentityId":
+		return visitor.VisitCredentialsListRequestUserIdentityId(c.CredentialsListRequestUserIdentityId)
 	}
 }
 

@@ -9,6 +9,13 @@ import (
 	time "time"
 )
 
+type ThermostatsCoolRequest struct {
+	DeviceId                  string   `json:"device_id"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
+	Sync                      *bool    `json:"sync,omitempty"`
+}
+
 type ThermostatsGetRequest struct {
 	DeviceId *string `json:"device_id,omitempty"`
 	Name     *string `json:"name,omitempty"`
@@ -21,7 +28,17 @@ type ThermostatsHeatRequest struct {
 	Sync                      *bool    `json:"sync,omitempty"`
 }
 
+type ThermostatsHeatCoolRequest struct {
+	DeviceId                  string   `json:"device_id"`
+	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty"`
+	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
+	Sync                      *bool    `json:"sync,omitempty"`
+}
+
 type ThermostatsListRequest struct {
+	// List all devices owned by this connected account
 	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
 	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
 	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
@@ -31,35 +48,48 @@ type ThermostatsListRequest struct {
 	DeviceIds           []string      `json:"device_ids,omitempty"`
 	Limit               *float64      `json:"limit,omitempty"`
 	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
+	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
+}
+
+type ThermostatsOffRequest struct {
+	DeviceId string `json:"device_id"`
+	Sync     *bool  `json:"sync,omitempty"`
 }
 
 type ThermostatsSetFanModeRequest struct {
-	DeviceId       string          `json:"device_id"`
-	FanMode        *FanModeSetting `json:"fan_mode,omitempty"`
-	FanModeSetting *FanModeSetting `json:"fan_mode_setting,omitempty"`
-	Sync           *bool           `json:"sync,omitempty"`
+	DeviceId       string                                      `json:"device_id"`
+	FanMode        *ThermostatsSetFanModeRequestFanMode        `json:"fan_mode,omitempty"`
+	FanModeSetting *ThermostatsSetFanModeRequestFanModeSetting `json:"fan_mode_setting,omitempty"`
+	Sync           *bool                                       `json:"sync,omitempty"`
 }
 
-type FanModeSetting string
+type ThermostatsCoolResponse struct {
+	Ok bool `json:"ok"`
 
-const (
-	FanModeSettingAuto FanModeSetting = "auto"
-	FanModeSettingOn   FanModeSetting = "on"
-)
+	_rawJSON json.RawMessage
+}
 
-func NewFanModeSettingFromString(s string) (FanModeSetting, error) {
-	switch s {
-	case "auto":
-		return FanModeSettingAuto, nil
-	case "on":
-		return FanModeSettingOn, nil
+func (t *ThermostatsCoolResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsCoolResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t FanModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*t = ThermostatsCoolResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (f FanModeSetting) Ptr() *FanModeSetting {
-	return &f
+func (t *ThermostatsCoolResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsGetResponse struct {
@@ -81,6 +111,35 @@ func (t *ThermostatsGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (t *ThermostatsGetResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsHeatCoolResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsHeatCoolResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsHeatCoolResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsHeatCoolResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsHeatCoolResponse) String() string {
 	if len(t._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
 			return value
@@ -151,6 +210,79 @@ func (t *ThermostatsListResponse) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type ThermostatsOffResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsOffResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsOffResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsOffResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsOffResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsSetFanModeRequestFanMode string
+
+const (
+	ThermostatsSetFanModeRequestFanModeAuto ThermostatsSetFanModeRequestFanMode = "auto"
+	ThermostatsSetFanModeRequestFanModeOn   ThermostatsSetFanModeRequestFanMode = "on"
+)
+
+func NewThermostatsSetFanModeRequestFanModeFromString(s string) (ThermostatsSetFanModeRequestFanMode, error) {
+	switch s {
+	case "auto":
+		return ThermostatsSetFanModeRequestFanModeAuto, nil
+	case "on":
+		return ThermostatsSetFanModeRequestFanModeOn, nil
+	}
+	var t ThermostatsSetFanModeRequestFanMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsSetFanModeRequestFanMode) Ptr() *ThermostatsSetFanModeRequestFanMode {
+	return &t
+}
+
+type ThermostatsSetFanModeRequestFanModeSetting string
+
+const (
+	ThermostatsSetFanModeRequestFanModeSettingAuto ThermostatsSetFanModeRequestFanModeSetting = "auto"
+	ThermostatsSetFanModeRequestFanModeSettingOn   ThermostatsSetFanModeRequestFanModeSetting = "on"
+)
+
+func NewThermostatsSetFanModeRequestFanModeSettingFromString(s string) (ThermostatsSetFanModeRequestFanModeSetting, error) {
+	switch s {
+	case "auto":
+		return ThermostatsSetFanModeRequestFanModeSettingAuto, nil
+	case "on":
+		return ThermostatsSetFanModeRequestFanModeSettingOn, nil
+	}
+	var t ThermostatsSetFanModeRequestFanModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsSetFanModeRequestFanModeSetting) Ptr() *ThermostatsSetFanModeRequestFanModeSetting {
+	return &t
+}
+
 type ThermostatsSetFanModeResponse struct {
 	Ok bool `json:"ok"`
 
@@ -181,14 +313,14 @@ func (t *ThermostatsSetFanModeResponse) String() string {
 }
 
 type ThermostatsUpdateRequestDefaultClimateSetting struct {
-	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+	AutomaticHeatingEnabled   *bool                                                         `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                                         `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                                                      `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                                                      `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                                                      `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                                                      `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                                         `json:"manual_override_allowed,omitempty"`
 
 	_rawJSON json.RawMessage
 }

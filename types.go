@@ -10,24 +10,46 @@ import (
 )
 
 type AccessCode struct {
-	CommonCodeKey               *string          `json:"common_code_key,omitempty"`
-	IsScheduledOnDevice         *bool            `json:"is_scheduled_on_device,omitempty"`
-	Type                        AccessCodeType   `json:"type,omitempty"`
-	IsWaitingForCodeAssignment  *bool            `json:"is_waiting_for_code_assignment,omitempty"`
-	AccessCodeId                string           `json:"access_code_id"`
-	DeviceId                    string           `json:"device_id"`
-	Name                        *string          `json:"name,omitempty"`
-	Code                        *string          `json:"code,omitempty"`
-	CreatedAt                   time.Time        `json:"created_at"`
-	Errors                      interface{}      `json:"errors,omitempty"`
-	Warnings                    interface{}      `json:"warnings,omitempty"`
-	IsManaged                   bool             `json:"is_managed"`
-	StartsAt                    *time.Time       `json:"starts_at,omitempty"`
-	EndsAt                      *time.Time       `json:"ends_at,omitempty"`
-	Status                      AccessCodeStatus `json:"status,omitempty"`
-	IsBackupAccessCodeAvailable bool             `json:"is_backup_access_code_available"`
-	IsBackup                    *bool            `json:"is_backup,omitempty"`
-	PulledBackupAccessCodeId    *string          `json:"pulled_backup_access_code_id,omitempty"`
+	// Unique identifier for a group of access codes that share the same code.
+	CommonCodeKey *string `json:"common_code_key,omitempty"`
+	// Indicates whether the code is set on the device according to a preconfigured schedule.
+	IsScheduledOnDevice *bool `json:"is_scheduled_on_device,omitempty"`
+	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+	Type AccessCodeType `json:"type,omitempty"`
+	// Indicates whether the access code is waiting for a code assignment.
+	IsWaitingForCodeAssignment *bool `json:"is_waiting_for_code_assignment,omitempty"`
+	// Unique identifier for the access code.
+	AccessCodeId string `json:"access_code_id"`
+	// Unique identifier for the device associated with the access code.
+	DeviceId string `json:"device_id"`
+	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
+	Name *string `json:"name,omitempty"`
+	// Code used for access. Typically, a numeric or alphanumeric string.
+	Code *string `json:"code,omitempty"`
+	// Date and time at which the access code was created.
+	CreatedAt time.Time   `json:"created_at"`
+	Errors    interface{} `json:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty"`
+	// Indicates whether Seam manages the access code.
+	IsManaged string `json:"is_managed"`
+	// Date and time at which the time-bound access code becomes active.
+	StartsAt *time.Time `json:"starts_at,omitempty"`
+	// Date and time after which the time-bound access code becomes inactive.
+	EndsAt *time.Time `json:"ends_at,omitempty"`
+	// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
+	Status AccessCodeStatus `json:"status,omitempty"`
+	// Indicates whether a backup access code is available for use if the primary access code is lost or compromised.
+	IsBackupAccessCodeAvailable bool `json:"is_backup_access_code_available"`
+	// Indicates whether the access code is a backup code.
+	IsBackup *bool `json:"is_backup,omitempty"`
+	// Identifier of the pulled backup access code. Used to associate the pulled backup access code with the original access code.
+	PulledBackupAccessCodeId *string `json:"pulled_backup_access_code_id,omitempty"`
+	// Indicates whether changes to the access code from external sources are permitted.
+	IsExternalModificationAllowed bool `json:"is_external_modification_allowed"`
+	// Indicates whether the access code can only be used once. If "true," the code becomes invalid after the first use.
+	IsOneTimeUse bool `json:"is_one_time_use"`
+	// Indicates whether the access code is intended for use in offline scenarios. If "true," this code can be created on a device without a network connection.
+	IsOfflineAccessCode bool `json:"is_offline_access_code"`
 
 	_rawJSON json.RawMessage
 }
@@ -55,6 +77,7 @@ func (a *AccessCode) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
 type AccessCodeStatus string
 
 const (
@@ -86,6 +109,7 @@ func (a AccessCodeStatus) Ptr() *AccessCodeStatus {
 	return &a
 }
 
+// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
 type AccessCodeType string
 
 const (
@@ -252,7 +276,7 @@ const (
 	AcsSystemExternalTypeBrivoAccount                     AcsSystemExternalType = "brivo_account"
 	AcsSystemExternalTypeHidCredentialManagerOrganization AcsSystemExternalType = "hid_credential_manager_organization"
 	AcsSystemExternalTypeVisionlineSystem                 AcsSystemExternalType = "visionline_system"
-	AcsSystemExternalTypeAssaAbloyCredentialServiceUser   AcsSystemExternalType = "assa_abloy_credential_service_user"
+	AcsSystemExternalTypeAssaAbloyCredentialService       AcsSystemExternalType = "assa_abloy_credential_service"
 )
 
 func NewAcsSystemExternalTypeFromString(s string) (AcsSystemExternalType, error) {
@@ -269,8 +293,8 @@ func NewAcsSystemExternalTypeFromString(s string) (AcsSystemExternalType, error)
 		return AcsSystemExternalTypeHidCredentialManagerOrganization, nil
 	case "visionline_system":
 		return AcsSystemExternalTypeVisionlineSystem, nil
-	case "assa_abloy_credential_service_user":
-		return AcsSystemExternalTypeAssaAbloyCredentialServiceUser, nil
+	case "assa_abloy_credential_service":
+		return AcsSystemExternalTypeAssaAbloyCredentialService, nil
 	}
 	var t AcsSystemExternalType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -290,7 +314,7 @@ const (
 	AcsSystemSystemTypeBrivoAccount                     AcsSystemSystemType = "brivo_account"
 	AcsSystemSystemTypeHidCredentialManagerOrganization AcsSystemSystemType = "hid_credential_manager_organization"
 	AcsSystemSystemTypeVisionlineSystem                 AcsSystemSystemType = "visionline_system"
-	AcsSystemSystemTypeAssaAbloyCredentialServiceUser   AcsSystemSystemType = "assa_abloy_credential_service_user"
+	AcsSystemSystemTypeAssaAbloyCredentialService       AcsSystemSystemType = "assa_abloy_credential_service"
 )
 
 func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
@@ -307,8 +331,8 @@ func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
 		return AcsSystemSystemTypeHidCredentialManagerOrganization, nil
 	case "visionline_system":
 		return AcsSystemSystemTypeVisionlineSystem, nil
-	case "assa_abloy_credential_service_user":
-		return AcsSystemSystemTypeAssaAbloyCredentialServiceUser, nil
+	case "assa_abloy_credential_service":
+		return AcsSystemSystemTypeAssaAbloyCredentialService, nil
 	}
 	var t AcsSystemSystemType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -397,10 +421,10 @@ func (a *AcsUserAccessSchedule) String() string {
 type AcsUserExternalType string
 
 const (
-	AcsUserExternalTypePtiUser       AcsUserExternalType = "pti_user"
-	AcsUserExternalTypeBrivoUser     AcsUserExternalType = "brivo_user"
-	AcsUserExternalTypeHidCmUser     AcsUserExternalType = "hid_cm_user"
-	AcsUserExternalTypeSaltoSiteUser AcsUserExternalType = "salto_site_user"
+	AcsUserExternalTypePtiUser                  AcsUserExternalType = "pti_user"
+	AcsUserExternalTypeBrivoUser                AcsUserExternalType = "brivo_user"
+	AcsUserExternalTypeHidCredentialManagerUser AcsUserExternalType = "hid_credential_manager_user"
+	AcsUserExternalTypeSaltoSiteUser            AcsUserExternalType = "salto_site_user"
 )
 
 func NewAcsUserExternalTypeFromString(s string) (AcsUserExternalType, error) {
@@ -409,8 +433,8 @@ func NewAcsUserExternalTypeFromString(s string) (AcsUserExternalType, error) {
 		return AcsUserExternalTypePtiUser, nil
 	case "brivo_user":
 		return AcsUserExternalTypeBrivoUser, nil
-	case "hid_cm_user":
-		return AcsUserExternalTypeHidCmUser, nil
+	case "hid_credential_manager_user":
+		return AcsUserExternalTypeHidCredentialManagerUser, nil
 	case "salto_site_user":
 		return AcsUserExternalTypeSaltoSiteUser, nil
 	}
@@ -651,41 +675,6 @@ func (a *ActionAttemptSuccess) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type AugustDeviceMetadata struct {
-	LockId             string  `json:"lock_id"`
-	LockName           string  `json:"lock_name"`
-	HouseName          string  `json:"house_name"`
-	HouseId            *string `json:"house_id,omitempty"`
-	HasKeypad          bool    `json:"has_keypad"`
-	Model              *string `json:"model,omitempty"`
-	KeypadBatteryLevel *string `json:"keypad_battery_level,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (a *AugustDeviceMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler AugustDeviceMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AugustDeviceMetadata(value)
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *AugustDeviceMetadata) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
 type ClientSession struct {
 	ClientSessionId     string    `json:"client_session_id"`
 	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty"`
@@ -694,6 +683,7 @@ type ClientSession struct {
 	DeviceCount         float64   `json:"device_count"`
 	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty"`
 	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty"`
+	UserIdentityIds     []string  `json:"user_identity_ids,omitempty"`
 	WorkspaceId         string    `json:"workspace_id"`
 
 	_rawJSON json.RawMessage
@@ -723,20 +713,21 @@ func (c *ClientSession) String() string {
 }
 
 type ClimateSettingSchedule struct {
-	ClimateSettingScheduleId  string           `json:"climate_setting_schedule_id"`
-	DeviceId                  string           `json:"device_id"`
-	Name                      *string          `json:"name,omitempty"`
-	ScheduleStartsAt          string           `json:"schedule_starts_at"`
-	ScheduleEndsAt            string           `json:"schedule_ends_at"`
-	CreatedAt                 time.Time        `json:"created_at"`
-	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+	ClimateSettingScheduleId  string                                 `json:"climate_setting_schedule_id"`
+	DeviceId                  string                                 `json:"device_id"`
+	Name                      *string                                `json:"name,omitempty"`
+	ScheduleStartsAt          string                                 `json:"schedule_starts_at"`
+	ScheduleEndsAt            string                                 `json:"schedule_ends_at"`
+	CreatedAt                 time.Time                              `json:"created_at"`
+	Errors                    interface{}                            `json:"errors,omitempty"`
+	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                               `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                               `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                               `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty"`
 	scheduleType              string
 
 	_rawJSON json.RawMessage
@@ -782,168 +773,54 @@ func (c *ClimateSettingSchedule) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type ClimateSettingSchedulesCreateResponse struct {
-	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
-	Ok                     bool                    `json:"ok"`
+type ClimateSettingScheduleHvacModeSetting string
 
-	_rawJSON json.RawMessage
+const (
+	ClimateSettingScheduleHvacModeSettingOff      ClimateSettingScheduleHvacModeSetting = "off"
+	ClimateSettingScheduleHvacModeSettingHeat     ClimateSettingScheduleHvacModeSetting = "heat"
+	ClimateSettingScheduleHvacModeSettingCool     ClimateSettingScheduleHvacModeSetting = "cool"
+	ClimateSettingScheduleHvacModeSettingHeatCool ClimateSettingScheduleHvacModeSetting = "heat_cool"
+)
+
+func NewClimateSettingScheduleHvacModeSettingFromString(s string) (ClimateSettingScheduleHvacModeSetting, error) {
+	switch s {
+	case "off":
+		return ClimateSettingScheduleHvacModeSettingOff, nil
+	case "heat":
+		return ClimateSettingScheduleHvacModeSettingHeat, nil
+	case "cool":
+		return ClimateSettingScheduleHvacModeSettingCool, nil
+	case "heat_cool":
+		return ClimateSettingScheduleHvacModeSettingHeatCool, nil
+	}
+	var t ClimateSettingScheduleHvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (c *ClimateSettingSchedulesCreateResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedulesCreateResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClimateSettingSchedulesCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClimateSettingSchedulesCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClimateSettingSchedulesDeleteResponse struct {
-	Ok bool `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClimateSettingSchedulesDeleteResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedulesDeleteResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClimateSettingSchedulesDeleteResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClimateSettingSchedulesDeleteResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClimateSettingSchedulesGetResponse struct {
-	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
-	Ok                     bool                    `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClimateSettingSchedulesGetResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedulesGetResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClimateSettingSchedulesGetResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClimateSettingSchedulesGetResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClimateSettingSchedulesListResponse struct {
-	ClimateSettingSchedules []*ClimateSettingSchedule `json:"climate_setting_schedules,omitempty"`
-	Ok                      bool                      `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClimateSettingSchedulesListResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedulesListResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClimateSettingSchedulesListResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClimateSettingSchedulesListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClimateSettingSchedulesUpdateResponse struct {
-	ClimateSettingSchedule *ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
-	Ok                     bool                    `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClimateSettingSchedulesUpdateResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedulesUpdateResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClimateSettingSchedulesUpdateResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClimateSettingSchedulesUpdateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
+func (c ClimateSettingScheduleHvacModeSetting) Ptr() *ClimateSettingScheduleHvacModeSetting {
+	return &c
 }
 
 type ConnectWebview struct {
-	ConnectWebviewId    string               `json:"connect_webview_id"`
-	ConnectedAccountId  *string              `json:"connected_account_id,omitempty"`
-	Url                 string               `json:"url"`
-	WorkspaceId         string               `json:"workspace_id"`
-	DeviceSelectionMode SelectionMode        `json:"device_selection_mode,omitempty"`
-	AcceptedProviders   []string             `json:"accepted_providers,omitempty"`
-	AcceptedDevices     []string             `json:"accepted_devices,omitempty"`
-	AnyProviderAllowed  bool                 `json:"any_provider_allowed"`
-	AnyDeviceAllowed    bool                 `json:"any_device_allowed"`
-	CreatedAt           time.Time            `json:"created_at"`
-	LoginSuccessful     bool                 `json:"login_successful"`
-	Status              ConnectWebviewStatus `json:"status,omitempty"`
+	ConnectWebviewId              string                                        `json:"connect_webview_id"`
+	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty"`
+	Url                           string                                        `json:"url"`
+	WorkspaceId                   string                                        `json:"workspace_id"`
+	DeviceSelectionMode           ConnectWebviewDeviceSelectionMode             `json:"device_selection_mode,omitempty"`
+	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty"`
+	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty"`
+	AnyProviderAllowed            bool                                          `json:"any_provider_allowed"`
+	AnyDeviceAllowed              bool                                          `json:"any_device_allowed"`
+	CreatedAt                     time.Time                                     `json:"created_at"`
+	LoginSuccessful               bool                                          `json:"login_successful"`
+	Status                        ConnectWebviewStatus                          `json:"status,omitempty"`
+	CustomRedirectUrl             *string                                       `json:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                                       `json:"custom_redirect_failure_url,omitempty"`
+	CustomMetadata                map[string]*ConnectWebviewCustomMetadataValue `json:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                          `json:"automatically_manage_new_devices"`
+	WaitForDeviceCreation         bool                                          `json:"wait_for_device_creation"`
+	AuthorizedAt                  *time.Time                                    `json:"authorized_at,omitempty"`
+	SelectedProvider              *string                                       `json:"selected_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -969,6 +846,88 @@ func (c *ConnectWebview) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectWebviewCustomMetadataValue struct {
+	typeName string
+	String   string
+	Boolean  bool
+}
+
+func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebviewCustomMetadataValue {
+	return &ConnectWebviewCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewConnectWebviewCustomMetadataValueFromBoolean(value bool) *ConnectWebviewCustomMetadataValue {
+	return &ConnectWebviewCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectWebviewCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	}
+}
+
+type ConnectWebviewCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+}
+
+func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomMetadataValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	}
+}
+
+type ConnectWebviewDeviceSelectionMode string
+
+const (
+	ConnectWebviewDeviceSelectionModeNone     ConnectWebviewDeviceSelectionMode = "none"
+	ConnectWebviewDeviceSelectionModeSingle   ConnectWebviewDeviceSelectionMode = "single"
+	ConnectWebviewDeviceSelectionModeMultiple ConnectWebviewDeviceSelectionMode = "multiple"
+)
+
+func NewConnectWebviewDeviceSelectionModeFromString(s string) (ConnectWebviewDeviceSelectionMode, error) {
+	switch s {
+	case "none":
+		return ConnectWebviewDeviceSelectionModeNone, nil
+	case "single":
+		return ConnectWebviewDeviceSelectionModeSingle, nil
+	case "multiple":
+		return ConnectWebviewDeviceSelectionModeMultiple, nil
+	}
+	var t ConnectWebviewDeviceSelectionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectWebviewDeviceSelectionMode) Ptr() *ConnectWebviewDeviceSelectionMode {
+	return &c
 }
 
 type ConnectWebviewStatus string
@@ -997,13 +956,15 @@ func (c ConnectWebviewStatus) Ptr() *ConnectWebviewStatus {
 }
 
 type ConnectedAccount struct {
-	ConnectedAccountId *string                                         `json:"connected_account_id,omitempty"`
-	CreatedAt          *time.Time                                      `json:"created_at,omitempty"`
-	UserIdentifier     *ConnectedAccountUserIdentifier                 `json:"user_identifier,omitempty"`
-	AccountType        *string                                         `json:"account_type,omitempty"`
-	Errors             interface{}                                     `json:"errors,omitempty"`
-	Warnings           interface{}                                     `json:"warnings,omitempty"`
-	CustomMetadata     map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty"`
+	ConnectedAccountId            *string                                         `json:"connected_account_id,omitempty"`
+	CreatedAt                     *time.Time                                      `json:"created_at,omitempty"`
+	UserIdentifier                *ConnectedAccountUserIdentifier                 `json:"user_identifier,omitempty"`
+	AccountType                   *string                                         `json:"account_type,omitempty"`
+	AccountTypeDisplayName        string                                          `json:"account_type_display_name"`
+	Errors                        interface{}                                     `json:"errors,omitempty"`
+	Warnings                      interface{}                                     `json:"warnings,omitempty"`
+	CustomMetadata                map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                            `json:"automatically_manage_new_devices"`
 
 	_rawJSON json.RawMessage
 }
@@ -1032,27 +993,17 @@ func (c *ConnectedAccount) String() string {
 }
 
 type ConnectedAccountCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Double         float64
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAccountCustomMetadataValue {
 	return &ConnectedAccountCustomMetadataValue{typeName: "string", String: value}
 }
 
-func NewConnectedAccountCustomMetadataValueFromDouble(value float64) *ConnectedAccountCustomMetadataValue {
-	return &ConnectedAccountCustomMetadataValue{typeName: "double", Double: value}
-}
-
 func NewConnectedAccountCustomMetadataValueFromBoolean(value bool) *ConnectedAccountCustomMetadataValue {
 	return &ConnectedAccountCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectedAccountCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountCustomMetadataValue {
-	return &ConnectedAccountCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -1062,22 +1013,10 @@ func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		c.String = valueString
 		return nil
 	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		c.typeName = "double"
-		c.Double = valueDouble
-		return nil
-	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
 		c.typeName = "boolean"
 		c.Boolean = valueBoolean
-		return nil
-	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
@@ -1089,20 +1028,14 @@ func (c ConnectedAccountCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
 	case "string":
 		return json.Marshal(c.String)
-	case "double":
-		return json.Marshal(c.Double)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountCustomMetadataValueVisitor interface {
 	VisitString(string) error
-	VisitDouble(float64) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCustomMetadataValueVisitor) error {
@@ -1111,12 +1044,8 @@ func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCus
 		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
 	case "string":
 		return visitor.VisitString(c.String)
-	case "double":
-		return visitor.VisitDouble(c.Double)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -1153,112 +1082,29 @@ func (c *ConnectedAccountUserIdentifier) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type ConnectedAccountsGetRequestConnectedAccountId struct {
-	ConnectedAccountId string `json:"connected_account_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ConnectedAccountsGetRequestConnectedAccountId) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConnectedAccountsGetRequestConnectedAccountId
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConnectedAccountsGetRequestConnectedAccountId(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConnectedAccountsGetRequestConnectedAccountId) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ConnectedAccountsGetRequestEmail struct {
-	Email string `json:"email"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ConnectedAccountsGetRequestEmail) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConnectedAccountsGetRequestEmail
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConnectedAccountsGetRequestEmail(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConnectedAccountsGetRequestEmail) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CurrentClimateSetting struct {
-	AutomaticHeatingEnabled   *bool    `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool    `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *string  `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool    `json:"manual_override_allowed,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CurrentClimateSetting) UnmarshalJSON(data []byte) error {
-	type unmarshaler CurrentClimateSetting
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CurrentClimateSetting(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CurrentClimateSetting) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
 type Device struct {
-	DeviceId              string                            `json:"device_id"`
-	DeviceType            DeviceType                        `json:"device_type,omitempty"`
+	// Unique identifier for the device.
+	DeviceId string `json:"device_id"`
+	// Type of the device.
+	DeviceType DeviceType `json:"device_type,omitempty"`
+	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
 	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
-	Properties            *DeviceProperties                 `json:"properties,omitempty"`
-	Location              interface{}                       `json:"location,omitempty"`
-	ConnectedAccountId    string                            `json:"connected_account_id"`
-	WorkspaceId           string                            `json:"workspace_id"`
-	Errors                []*DeviceErrorsItem               `json:"errors,omitempty"`
-	Warnings              []*DeviceWarningsItem             `json:"warnings,omitempty"`
-	CreatedAt             time.Time                         `json:"created_at"`
-	IsManaged             bool                              `json:"is_managed"`
+	// Properties of the device.
+	Properties *DeviceProperties `json:"properties,omitempty"`
+	// Location information for the device.
+	Location *DeviceLocation `json:"location,omitempty"`
+	// Unique identifier for the account associated with the device.
+	ConnectedAccountId string `json:"connected_account_id"`
+	// Unique identifier for the Seam workspace associated with the device.
+	WorkspaceId string `json:"workspace_id"`
+	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
+	Errors []*DeviceErrorsItem `json:"errors,omitempty"`
+	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
+	Warnings []*DeviceWarningsItem `json:"warnings,omitempty"`
+	// Date and time at which the device object was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Indicates whether Seam manages the device.
+	IsManaged string `json:"is_managed"`
 
 	_rawJSON json.RawMessage
 }
@@ -1294,6 +1140,7 @@ const (
 	DeviceCapabilitiesSupportedItemNoiseDetection DeviceCapabilitiesSupportedItem = "noise_detection"
 	DeviceCapabilitiesSupportedItemThermostat     DeviceCapabilitiesSupportedItem = "thermostat"
 	DeviceCapabilitiesSupportedItemBattery        DeviceCapabilitiesSupportedItem = "battery"
+	DeviceCapabilitiesSupportedItemPhone          DeviceCapabilitiesSupportedItem = "phone"
 )
 
 func NewDeviceCapabilitiesSupportedItemFromString(s string) (DeviceCapabilitiesSupportedItem, error) {
@@ -1308,6 +1155,8 @@ func NewDeviceCapabilitiesSupportedItemFromString(s string) (DeviceCapabilitiesS
 		return DeviceCapabilitiesSupportedItemThermostat, nil
 	case "battery":
 		return DeviceCapabilitiesSupportedItemBattery, nil
+	case "phone":
+		return DeviceCapabilitiesSupportedItemPhone, nil
 	}
 	var t DeviceCapabilitiesSupportedItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1347,14 +1196,42 @@ func (d *DeviceErrorsItem) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
+// Location information for the device.
+type DeviceLocation struct {
+	// Name of the device location.
+	LocationName *string `json:"location_name,omitempty"`
+	// Time zone of the device location.
+	Timezone *string `json:"timezone,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceLocation) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceLocation
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceLocation(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceLocation) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Properties of the device.
 type DeviceProperties struct {
-	Online                bool                   `json:"online"`
-	Name                  string                 `json:"name"`
-	Model                 *DevicePropertiesModel `json:"model,omitempty"`
-	AugustMetadata        *AugustDeviceMetadata  `json:"august_metadata,omitempty"`
-	SchlageMetadata       *SchlageDeviceMetadata `json:"schlage_metadata,omitempty"`
-	SmartthingsMetadata   interface{}            `json:"smartthings_metadata,omitempty"`
-	CurrentClimateSetting *CurrentClimateSetting `json:"current_climate_setting,omitempty"`
+	AssaAbloyCredentialServiceMetadata *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1382,24 +1259,25 @@ func (d *DeviceProperties) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-type DevicePropertiesModel struct {
-	DisplayName string `json:"display_name"`
+type DevicePropertiesAssaAbloyCredentialServiceMetadata struct {
+	HasActiveEndpoint bool                                                               `json:"has_active_endpoint"`
+	Endpoints         []*DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (d *DevicePropertiesModel) UnmarshalJSON(data []byte) error {
-	type unmarshaler DevicePropertiesModel
+func (d *DevicePropertiesAssaAbloyCredentialServiceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesAssaAbloyCredentialServiceMetadata
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*d = DevicePropertiesModel(value)
+	*d = DevicePropertiesAssaAbloyCredentialServiceMetadata(value)
 	d._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (d *DevicePropertiesModel) String() string {
+func (d *DevicePropertiesAssaAbloyCredentialServiceMetadata) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value
@@ -1411,6 +1289,90 @@ func (d *DevicePropertiesModel) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
+type DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem struct {
+	EndpointId string `json:"endpoint_id"`
+	IsActive   bool   `json:"is_active"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DeviceProvider struct {
+	DeviceProviderName string                                 `json:"device_provider_name"`
+	DisplayName        string                                 `json:"display_name"`
+	ImageUrl           string                                 `json:"image_url"`
+	ProviderCategories []DeviceProviderProviderCategoriesItem `json:"provider_categories,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceProvider) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceProvider
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceProvider(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceProvider) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DeviceProviderProviderCategoriesItem string
+
+const (
+	DeviceProviderProviderCategoriesItemStable             DeviceProviderProviderCategoriesItem = "stable"
+	DeviceProviderProviderCategoriesItemConsumerSmartlocks DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
+)
+
+func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProviderProviderCategoriesItem, error) {
+	switch s {
+	case "stable":
+		return DeviceProviderProviderCategoriesItemStable, nil
+	case "consumer_smartlocks":
+		return DeviceProviderProviderCategoriesItemConsumerSmartlocks, nil
+	}
+	var t DeviceProviderProviderCategoriesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceProviderProviderCategoriesItem) Ptr() *DeviceProviderProviderCategoriesItem {
+	return &d
+}
+
 type DeviceType string
 
 const (
@@ -1418,6 +1380,7 @@ const (
 	DeviceTypeAugustLock             DeviceType = "august_lock"
 	DeviceTypeBrivoAccessPoint       DeviceType = "brivo_access_point"
 	DeviceTypeButterflymxPanel       DeviceType = "butterflymx_panel"
+	DeviceTypeAvigilonAltaEntry      DeviceType = "avigilon_alta_entry"
 	DeviceTypeDoorkingLock           DeviceType = "doorking_lock"
 	DeviceTypeGenieDoor              DeviceType = "genie_door"
 	DeviceTypeIglooLock              DeviceType = "igloo_lock"
@@ -1429,16 +1392,21 @@ const (
 	DeviceTypeSchlageLock            DeviceType = "schlage_lock"
 	DeviceTypeSeamRelay              DeviceType = "seam_relay"
 	DeviceTypeSmartthingsLock        DeviceType = "smartthings_lock"
+	DeviceTypeWyzeLock               DeviceType = "wyze_lock"
 	DeviceTypeYaleLock               DeviceType = "yale_lock"
 	DeviceTypeTwoNIntercom           DeviceType = "two_n_intercom"
 	DeviceTypeControlbywebDevice     DeviceType = "controlbyweb_device"
 	DeviceTypeTtlockLock             DeviceType = "ttlock_lock"
 	DeviceTypeIgloohomeLock          DeviceType = "igloohome_lock"
 	DeviceTypeHubitatLock            DeviceType = "hubitat_lock"
+	DeviceTypeFourSuitesDoor         DeviceType = "four_suites_door"
+	DeviceTypeDormakabaOracodeDoor   DeviceType = "dormakaba_oracode_door"
 	DeviceTypeNoiseawareActivityZone DeviceType = "noiseaware_activity_zone"
 	DeviceTypeMinutSensor            DeviceType = "minut_sensor"
 	DeviceTypeEcobeeThermostat       DeviceType = "ecobee_thermostat"
 	DeviceTypeNestThermostat         DeviceType = "nest_thermostat"
+	DeviceTypeIosPhone               DeviceType = "ios_phone"
+	DeviceTypeAndroidPhone           DeviceType = "android_phone"
 )
 
 func NewDeviceTypeFromString(s string) (DeviceType, error) {
@@ -1451,6 +1419,8 @@ func NewDeviceTypeFromString(s string) (DeviceType, error) {
 		return DeviceTypeBrivoAccessPoint, nil
 	case "butterflymx_panel":
 		return DeviceTypeButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return DeviceTypeAvigilonAltaEntry, nil
 	case "doorking_lock":
 		return DeviceTypeDoorkingLock, nil
 	case "genie_door":
@@ -1473,6 +1443,8 @@ func NewDeviceTypeFromString(s string) (DeviceType, error) {
 		return DeviceTypeSeamRelay, nil
 	case "smartthings_lock":
 		return DeviceTypeSmartthingsLock, nil
+	case "wyze_lock":
+		return DeviceTypeWyzeLock, nil
 	case "yale_lock":
 		return DeviceTypeYaleLock, nil
 	case "two_n_intercom":
@@ -1485,6 +1457,10 @@ func NewDeviceTypeFromString(s string) (DeviceType, error) {
 		return DeviceTypeIgloohomeLock, nil
 	case "hubitat_lock":
 		return DeviceTypeHubitatLock, nil
+	case "four_suites_door":
+		return DeviceTypeFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return DeviceTypeDormakabaOracodeDoor, nil
 	case "noiseaware_activity_zone":
 		return DeviceTypeNoiseawareActivityZone, nil
 	case "minut_sensor":
@@ -1493,6 +1469,10 @@ func NewDeviceTypeFromString(s string) (DeviceType, error) {
 		return DeviceTypeEcobeeThermostat, nil
 	case "nest_thermostat":
 		return DeviceTypeNestThermostat, nil
+	case "ios_phone":
+		return DeviceTypeIosPhone, nil
+	case "android_phone":
+		return DeviceTypeAndroidPhone, nil
 	}
 	var t DeviceType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1532,58 +1512,37 @@ func (d *DeviceWarningsItem) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-type DevicesListDeviceProvidersResponseDeviceProvidersItem struct {
-	DeviceProviderName string                                                                        `json:"device_provider_name"`
-	DisplayName        string                                                                        `json:"display_name"`
-	ImageUrl           string                                                                        `json:"image_url"`
-	ProviderCategories []DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem `json:"provider_categories,omitempty"`
+type EnrollmentAutomation struct {
+	CredentialManagerAcsSystemId string    `json:"credential_manager_acs_system_id"`
+	UserIdentityId               string    `json:"user_identity_id"`
+	CreatedAt                    time.Time `json:"created_at"`
+	WorkspaceId                  string    `json:"workspace_id"`
+	EnrollmentAutomationId       string    `json:"enrollment_automation_id"`
 
 	_rawJSON json.RawMessage
 }
 
-func (d *DevicesListDeviceProvidersResponseDeviceProvidersItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler DevicesListDeviceProvidersResponseDeviceProvidersItem
+func (e *EnrollmentAutomation) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentAutomation
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*d = DevicesListDeviceProvidersResponseDeviceProvidersItem(value)
-	d._rawJSON = json.RawMessage(data)
+	*e = EnrollmentAutomation(value)
+	e._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (d *DevicesListDeviceProvidersResponseDeviceProvidersItem) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+func (e *EnrollmentAutomation) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(d); err == nil {
+	if value, err := core.StringifyJSON(e); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem string
-
-const (
-	DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItemStable             DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem = "stable"
-	DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItemConsumerSmartlocks DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem = "consumer_smartlocks"
-)
-
-func NewDevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItemFromString(s string) (DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem, error) {
-	switch s {
-	case "stable":
-		return DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItemStable, nil
-	case "consumer_smartlocks":
-		return DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItemConsumerSmartlocks, nil
-	}
-	var t DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (d DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem) Ptr() *DevicesListDeviceProvidersResponseDeviceProvidersItemProviderCategoriesItem {
-	return &d
+	return fmt.Sprintf("%#v", e)
 }
 
 type Event struct {
@@ -1620,63 +1579,41 @@ func (e *Event) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-type HvacModeSetting string
-
-const (
-	HvacModeSettingOff      HvacModeSetting = "off"
-	HvacModeSettingHeat     HvacModeSetting = "heat"
-	HvacModeSettingCool     HvacModeSetting = "cool"
-	HvacModeSettingHeatCool HvacModeSetting = "heat_cool"
-)
-
-func NewHvacModeSettingFromString(s string) (HvacModeSetting, error) {
-	switch s {
-	case "off":
-		return HvacModeSettingOff, nil
-	case "heat":
-		return HvacModeSettingHeat, nil
-	case "cool":
-		return HvacModeSettingCool, nil
-	case "heat_cool":
-		return HvacModeSettingHeatCool, nil
-	}
-	var t HvacModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (h HvacModeSetting) Ptr() *HvacModeSetting {
-	return &h
-}
-
 type Manufacturer string
 
 const (
-	ManufacturerAkuvox      Manufacturer = "akuvox"
-	ManufacturerAugust      Manufacturer = "august"
-	ManufacturerBrivo       Manufacturer = "brivo"
-	ManufacturerButterflymx Manufacturer = "butterflymx"
-	ManufacturerDoorking    Manufacturer = "doorking"
-	ManufacturerGenie       Manufacturer = "genie"
-	ManufacturerIgloo       Manufacturer = "igloo"
-	ManufacturerKeywe       Manufacturer = "keywe"
-	ManufacturerKwikset     Manufacturer = "kwikset"
-	ManufacturerLinear      Manufacturer = "linear"
-	ManufacturerLockly      Manufacturer = "lockly"
-	ManufacturerNuki        Manufacturer = "nuki"
-	ManufacturerPhilia      Manufacturer = "philia"
-	ManufacturerSalto       Manufacturer = "salto"
-	ManufacturerSamsung     Manufacturer = "samsung"
-	ManufacturerSchlage     Manufacturer = "schlage"
-	ManufacturerSeam        Manufacturer = "seam"
-	ManufacturerUnknown     Manufacturer = "unknown"
-	ManufacturerYale        Manufacturer = "yale"
-	ManufacturerMinut       Manufacturer = "minut"
-	ManufacturerTwoN        Manufacturer = "two_n"
-	ManufacturerTtlock      Manufacturer = "ttlock"
-	ManufacturerNest        Manufacturer = "nest"
-	ManufacturerIgloohome   Manufacturer = "igloohome"
-	ManufacturerEcobee      Manufacturer = "ecobee"
-	ManufacturerHubitat     Manufacturer = "hubitat"
+	ManufacturerAkuvox           Manufacturer = "akuvox"
+	ManufacturerAugust           Manufacturer = "august"
+	ManufacturerAvigilonAlta     Manufacturer = "avigilon_alta"
+	ManufacturerBrivo            Manufacturer = "brivo"
+	ManufacturerButterflymx      Manufacturer = "butterflymx"
+	ManufacturerDoorking         Manufacturer = "doorking"
+	ManufacturerFourSuites       Manufacturer = "four_suites"
+	ManufacturerGenie            Manufacturer = "genie"
+	ManufacturerIgloo            Manufacturer = "igloo"
+	ManufacturerKeywe            Manufacturer = "keywe"
+	ManufacturerKwikset          Manufacturer = "kwikset"
+	ManufacturerLinear           Manufacturer = "linear"
+	ManufacturerLockly           Manufacturer = "lockly"
+	ManufacturerNuki             Manufacturer = "nuki"
+	ManufacturerPhilia           Manufacturer = "philia"
+	ManufacturerSalto            Manufacturer = "salto"
+	ManufacturerSamsung          Manufacturer = "samsung"
+	ManufacturerSchlage          Manufacturer = "schlage"
+	ManufacturerSeam             Manufacturer = "seam"
+	ManufacturerUnknown          Manufacturer = "unknown"
+	ManufacturerWyze             Manufacturer = "wyze"
+	ManufacturerYale             Manufacturer = "yale"
+	ManufacturerMinut            Manufacturer = "minut"
+	ManufacturerTwoN             Manufacturer = "two_n"
+	ManufacturerTtlock           Manufacturer = "ttlock"
+	ManufacturerNest             Manufacturer = "nest"
+	ManufacturerIgloohome        Manufacturer = "igloohome"
+	ManufacturerEcobee           Manufacturer = "ecobee"
+	ManufacturerHubitat          Manufacturer = "hubitat"
+	ManufacturerControlbyweb     Manufacturer = "controlbyweb"
+	ManufacturerSmartthings      Manufacturer = "smartthings"
+	ManufacturerDormakabaOracode Manufacturer = "dormakaba_oracode"
 )
 
 func NewManufacturerFromString(s string) (Manufacturer, error) {
@@ -1685,12 +1622,16 @@ func NewManufacturerFromString(s string) (Manufacturer, error) {
 		return ManufacturerAkuvox, nil
 	case "august":
 		return ManufacturerAugust, nil
+	case "avigilon_alta":
+		return ManufacturerAvigilonAlta, nil
 	case "brivo":
 		return ManufacturerBrivo, nil
 	case "butterflymx":
 		return ManufacturerButterflymx, nil
 	case "doorking":
 		return ManufacturerDoorking, nil
+	case "four_suites":
+		return ManufacturerFourSuites, nil
 	case "genie":
 		return ManufacturerGenie, nil
 	case "igloo":
@@ -1717,6 +1658,8 @@ func NewManufacturerFromString(s string) (Manufacturer, error) {
 		return ManufacturerSeam, nil
 	case "unknown":
 		return ManufacturerUnknown, nil
+	case "wyze":
+		return ManufacturerWyze, nil
 	case "yale":
 		return ManufacturerYale, nil
 	case "minut":
@@ -1733,6 +1676,12 @@ func NewManufacturerFromString(s string) (Manufacturer, error) {
 		return ManufacturerEcobee, nil
 	case "hubitat":
 		return ManufacturerHubitat, nil
+	case "controlbyweb":
+		return ManufacturerControlbyweb, nil
+	case "smartthings":
+		return ManufacturerSmartthings, nil
+	case "dormakaba_oracode":
+		return ManufacturerDormakabaOracode, nil
 	}
 	var t Manufacturer
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1777,247 +1726,373 @@ func (n *NoiseThreshold) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
-type NoiseThresholdsCreateResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+type Phone struct {
+	// Unique identifier for the device.
+	DeviceId   string          `json:"device_id"`
+	DeviceType PhoneDeviceType `json:"device_type,omitempty"`
+	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
+	CapabilitiesSupported []PhoneCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
+	// Properties of the device.
+	Properties *PhoneProperties `json:"properties,omitempty"`
+	// Location information for the device.
+	Location *PhoneLocation `json:"location,omitempty"`
+	// Unique identifier for the Seam workspace associated with the device.
+	WorkspaceId string `json:"workspace_id"`
+	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
+	Errors []*PhoneErrorsItem `json:"errors,omitempty"`
+	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
+	Warnings []*PhoneWarningsItem `json:"warnings,omitempty"`
+	// Date and time at which the device object was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Indicates whether Seam manages the device.
+	IsManaged                          string                                   `json:"is_managed"`
+	AssaAbloyCredentialServiceMetadata *PhoneAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NoiseThresholdsCreateResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler NoiseThresholdsCreateResponse
+func (p *Phone) UnmarshalJSON(data []byte) error {
+	type unmarshaler Phone
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NoiseThresholdsCreateResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = Phone(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NoiseThresholdsCreateResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *Phone) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type NoiseThresholdsDeleteResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+type PhoneAssaAbloyCredentialServiceMetadata struct {
+	HasActiveEndpoint bool                                                    `json:"has_active_endpoint"`
+	Endpoints         []*PhoneAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NoiseThresholdsDeleteResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler NoiseThresholdsDeleteResponse
+func (p *PhoneAssaAbloyCredentialServiceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneAssaAbloyCredentialServiceMetadata
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NoiseThresholdsDeleteResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = PhoneAssaAbloyCredentialServiceMetadata(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NoiseThresholdsDeleteResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *PhoneAssaAbloyCredentialServiceMetadata) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type NoiseThresholdsGetResponse struct {
-	NoiseThreshold *NoiseThreshold `json:"noise_threshold,omitempty"`
-	Ok             bool            `json:"ok"`
+type PhoneAssaAbloyCredentialServiceMetadataEndpointsItem struct {
+	EndpointId string `json:"endpoint_id"`
+	IsActive   bool   `json:"is_active"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NoiseThresholdsGetResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler NoiseThresholdsGetResponse
+func (p *PhoneAssaAbloyCredentialServiceMetadataEndpointsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneAssaAbloyCredentialServiceMetadataEndpointsItem
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NoiseThresholdsGetResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = PhoneAssaAbloyCredentialServiceMetadataEndpointsItem(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NoiseThresholdsGetResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *PhoneAssaAbloyCredentialServiceMetadataEndpointsItem) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type NoiseThresholdsListResponse struct {
-	NoiseThresholds []*NoiseThreshold `json:"noise_thresholds,omitempty"`
-	Ok              bool              `json:"ok"`
+type PhoneCapabilitiesSupportedItem string
+
+const (
+	PhoneCapabilitiesSupportedItemAccessCode     PhoneCapabilitiesSupportedItem = "access_code"
+	PhoneCapabilitiesSupportedItemLock           PhoneCapabilitiesSupportedItem = "lock"
+	PhoneCapabilitiesSupportedItemNoiseDetection PhoneCapabilitiesSupportedItem = "noise_detection"
+	PhoneCapabilitiesSupportedItemThermostat     PhoneCapabilitiesSupportedItem = "thermostat"
+	PhoneCapabilitiesSupportedItemBattery        PhoneCapabilitiesSupportedItem = "battery"
+	PhoneCapabilitiesSupportedItemPhone          PhoneCapabilitiesSupportedItem = "phone"
+)
+
+func NewPhoneCapabilitiesSupportedItemFromString(s string) (PhoneCapabilitiesSupportedItem, error) {
+	switch s {
+	case "access_code":
+		return PhoneCapabilitiesSupportedItemAccessCode, nil
+	case "lock":
+		return PhoneCapabilitiesSupportedItemLock, nil
+	case "noise_detection":
+		return PhoneCapabilitiesSupportedItemNoiseDetection, nil
+	case "thermostat":
+		return PhoneCapabilitiesSupportedItemThermostat, nil
+	case "battery":
+		return PhoneCapabilitiesSupportedItemBattery, nil
+	case "phone":
+		return PhoneCapabilitiesSupportedItemPhone, nil
+	}
+	var t PhoneCapabilitiesSupportedItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PhoneCapabilitiesSupportedItem) Ptr() *PhoneCapabilitiesSupportedItem {
+	return &p
+}
+
+type PhoneDeviceType string
+
+const (
+	PhoneDeviceTypeAndroidPhone PhoneDeviceType = "android_phone"
+	PhoneDeviceTypeIosPhone     PhoneDeviceType = "ios_phone"
+)
+
+func NewPhoneDeviceTypeFromString(s string) (PhoneDeviceType, error) {
+	switch s {
+	case "android_phone":
+		return PhoneDeviceTypeAndroidPhone, nil
+	case "ios_phone":
+		return PhoneDeviceTypeIosPhone, nil
+	}
+	var t PhoneDeviceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PhoneDeviceType) Ptr() *PhoneDeviceType {
+	return &p
+}
+
+type PhoneErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NoiseThresholdsListResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler NoiseThresholdsListResponse
+func (p *PhoneErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneErrorsItem
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NoiseThresholdsListResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = PhoneErrorsItem(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NoiseThresholdsListResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *PhoneErrorsItem) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type NoiseThresholdsUpdateResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+// Location information for the device.
+type PhoneLocation struct {
+	// Name of the device location.
+	LocationName *string `json:"location_name,omitempty"`
+	// Time zone of the device location.
+	Timezone *string `json:"timezone,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NoiseThresholdsUpdateResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler NoiseThresholdsUpdateResponse
+func (p *PhoneLocation) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneLocation
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NoiseThresholdsUpdateResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = PhoneLocation(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NoiseThresholdsUpdateResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *PhoneLocation) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type NukiDeviceMetadata struct {
-	KeypadBatteryCritical *bool `json:"keypad_battery_critical,omitempty"`
+// Properties of the device.
+type PhoneProperties struct {
+	AssaAbloyCredentialServiceMetadata *PhonePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (n *NukiDeviceMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler NukiDeviceMetadata
+func (p *PhoneProperties) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneProperties
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*n = NukiDeviceMetadata(value)
-	n._rawJSON = json.RawMessage(data)
+	*p = PhoneProperties(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (n *NukiDeviceMetadata) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+func (p *PhoneProperties) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", n)
+	return fmt.Sprintf("%#v", p)
 }
 
-type SchlageDeviceMetadata struct {
-	DeviceId         string  `json:"device_id"`
-	DeviceName       string  `json:"device_name"`
-	AccessCodeLength int     `json:"access_code_length"`
-	Model            *string `json:"model,omitempty"`
-	LocationId       *string `json:"location_id,omitempty"`
+type PhonePropertiesAssaAbloyCredentialServiceMetadata struct {
+	HasActiveEndpoint bool                                                              `json:"has_active_endpoint"`
+	Endpoints         []*PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (s *SchlageDeviceMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler SchlageDeviceMetadata
+func (p *PhonePropertiesAssaAbloyCredentialServiceMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhonePropertiesAssaAbloyCredentialServiceMetadata
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SchlageDeviceMetadata(value)
-	s._rawJSON = json.RawMessage(data)
+	*p = PhonePropertiesAssaAbloyCredentialServiceMetadata(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (s *SchlageDeviceMetadata) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+func (p *PhonePropertiesAssaAbloyCredentialServiceMetadata) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", s)
+	return fmt.Sprintf("%#v", p)
 }
 
-type ServiceByServiceNameResponse struct {
-	Ok                      bool           `json:"ok"`
-	LastServiceEvaluationAt string         `json:"last_service_evaluation_at"`
-	ServiceHealth           *ServiceHealth `json:"service_health,omitempty"`
+type PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem struct {
+	EndpointId string `json:"endpoint_id"`
+	IsActive   bool   `json:"is_active"`
 
 	_rawJSON json.RawMessage
 }
 
-func (s *ServiceByServiceNameResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ServiceByServiceNameResponse
+func (p *PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = ServiceByServiceNameResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	*p = PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem(value)
+	p._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (s *ServiceByServiceNameResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+func (p *PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := core.StringifyJSON(p); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", s)
+	return fmt.Sprintf("%#v", p)
+}
+
+type PhoneWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (p *PhoneWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhoneWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PhoneWarningsItem(value)
+	p._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PhoneWarningsItem) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+type ProviderCategory string
+
+const (
+	ProviderCategoryStable             ProviderCategory = "stable"
+	ProviderCategoryConsumerSmartlocks ProviderCategory = "consumer_smartlocks"
+)
+
+func NewProviderCategoryFromString(s string) (ProviderCategory, error) {
+	switch s {
+	case "stable":
+		return ProviderCategoryStable, nil
+	case "consumer_smartlocks":
+		return ProviderCategoryConsumerSmartlocks, nil
+	}
+	var t ProviderCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p ProviderCategory) Ptr() *ProviderCategory {
+	return &p
 }
 
 type ServiceHealth struct {
@@ -2076,464 +2151,114 @@ func (s ServiceHealthStatus) Ptr() *ServiceHealthStatus {
 	return &s
 }
 
-type SimulateCreateUnmanagedAccessCodeResponse struct {
-	AccessCode *SimulateCreateUnmanagedAccessCodeResponseAccessCode `json:"access_code,omitempty"`
-	Ok         bool                                                 `json:"ok"`
+type UnmanagedAccessCode struct {
+	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+	Type UnmanagedAccessCodeType `json:"type,omitempty"`
+	// Unique identifier for the access code.
+	AccessCodeId string `json:"access_code_id"`
+	// Unique identifier for the device associated with the access code.
+	DeviceId string `json:"device_id"`
+	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
+	Name *string `json:"name,omitempty"`
+	// Code used for access. Typically, a numeric or alphanumeric string.
+	Code *string `json:"code,omitempty"`
+	// Date and time at which the access code was created.
+	CreatedAt time.Time   `json:"created_at"`
+	Errors    interface{} `json:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty"`
+	IsManaged string      `json:"is_managed"`
+	// Date and time at which the time-bound access code becomes active.
+	StartsAt *time.Time `json:"starts_at,omitempty"`
+	// Date and time after which the time-bound access code becomes inactive.
+	EndsAt *time.Time `json:"ends_at,omitempty"`
+	status string
 
 	_rawJSON json.RawMessage
 }
 
-func (s *SimulateCreateUnmanagedAccessCodeResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SimulateCreateUnmanagedAccessCodeResponse
+func (u *UnmanagedAccessCode) Status() string {
+	return u.status
+}
+
+func (u *UnmanagedAccessCode) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedAccessCode
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SimulateCreateUnmanagedAccessCodeResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	*u = UnmanagedAccessCode(value)
+	u.status = "set"
+	u._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (s *SimulateCreateUnmanagedAccessCodeResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCode struct {
-	Type      string
-	Ongoing   *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing
-	TimeBound *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeFromOngoing(value *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) *SimulateCreateUnmanagedAccessCodeResponseAccessCode {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCode{Type: "ongoing", Ongoing: value}
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeFromTimeBound(value *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) *SimulateCreateUnmanagedAccessCodeResponseAccessCode {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCode{Type: "time_bound", TimeBound: value}
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCode) UnmarshalJSON(data []byte) error {
-	var unmarshaler struct {
-		Type string `json:"type"`
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	s.Type = unmarshaler.Type
-	switch unmarshaler.Type {
-	case "ongoing":
-		value := new(SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		s.Ongoing = value
-	case "time_bound":
-		value := new(SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		s.TimeBound = value
-	}
-	return nil
-}
-
-func (s SimulateCreateUnmanagedAccessCodeResponseAccessCode) MarshalJSON() ([]byte, error) {
-	switch s.Type {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.Type, s)
-	case "ongoing":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing
-		}{
-			Type: s.Type,
-			SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing: s.Ongoing,
-		}
-		return json.Marshal(marshaler)
-	case "time_bound":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
-		}{
-			Type: s.Type,
-			SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound: s.TimeBound,
-		}
-		return json.Marshal(marshaler)
-	}
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeVisitor interface {
-	VisitOngoing(*SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) error
-	VisitTimeBound(*SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) error
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCode) Accept(visitor SimulateCreateUnmanagedAccessCodeResponseAccessCodeVisitor) error {
-	switch s.Type {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.Type, s)
-	case "ongoing":
-		return visitor.VisitOngoing(s.Ongoing)
-	case "time_bound":
-		return visitor.VisitTimeBound(s.TimeBound)
-	}
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing struct {
-	AccessCodeId string                                                               `json:"access_code_id"`
-	Code         *string                                                              `json:"code,omitempty"`
-	CreatedAt    *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt `json:"created_at,omitempty"`
-	IsManaged    bool                                                                 `json:"is_managed"`
-	StartsAt     *string                                                              `json:"starts_at,omitempty"`
-	EndsAt       *string                                                              `json:"ends_at,omitempty"`
-	status       string
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) Status() string {
-	return s.status
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) UnmarshalJSON(data []byte) error {
-	type unmarshaler SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing(value)
-	s.status = "set"
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) MarshalJSON() ([]byte, error) {
-	type embed SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing
+func (u *UnmanagedAccessCode) MarshalJSON() ([]byte, error) {
+	type embed UnmanagedAccessCode
 	var marshaler = struct {
 		embed
 		Status string `json:"status"`
 	}{
-		embed:  embed(*s),
+		embed:  embed(*u),
 		Status: "set",
 	}
 	return json.Marshal(marshaler)
 }
 
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoing) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+func (u *UnmanagedAccessCode) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := core.StringifyJSON(u); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", s)
+	return fmt.Sprintf("%#v", u)
 }
 
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt struct {
-	typeName string
-	String   string
-	DateTime time.Time
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAtFromString(value string) *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt{typeName: "string", String: value}
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAtFromDateTime(value time.Time) *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt{typeName: "dateTime", DateTime: value}
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typeName = "string"
-		s.String = valueString
-		return nil
-	}
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		s.typeName = "dateTime"
-		s.DateTime = valueDateTime
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
-		return json.Marshal(s.String)
-	case "dateTime":
-		return json.Marshal(s.DateTime)
-	}
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAtVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAt) Accept(visitor SimulateCreateUnmanagedAccessCodeResponseAccessCodeOngoingCreatedAtVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
-		return visitor.VisitString(s.String)
-	case "dateTime":
-		return visitor.VisitDateTime(s.DateTime)
-	}
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound struct {
-	AccessCodeId string                                                                 `json:"access_code_id"`
-	Code         *string                                                                `json:"code,omitempty"`
-	CreatedAt    *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt `json:"created_at,omitempty"`
-	IsManaged    bool                                                                   `json:"is_managed"`
-	StartsAt     *string                                                                `json:"starts_at,omitempty"`
-	EndsAt       *string                                                                `json:"ends_at,omitempty"`
-	status       string
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) Status() string {
-	return s.status
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) UnmarshalJSON(data []byte) error {
-	type unmarshaler SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound(value)
-	s.status = "set"
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) MarshalJSON() ([]byte, error) {
-	type embed SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound
-	var marshaler = struct {
-		embed
-		Status string `json:"status"`
-	}{
-		embed:  embed(*s),
-		Status: "set",
-	}
-	return json.Marshal(marshaler)
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBound) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt struct {
-	typeName string
-	String   string
-	DateTime time.Time
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtFromString(value string) *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt{typeName: "string", String: value}
-}
-
-func NewSimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtFromDateTime(value time.Time) *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt {
-	return &SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt{typeName: "dateTime", DateTime: value}
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typeName = "string"
-		s.String = valueString
-		return nil
-	}
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		s.typeName = "dateTime"
-		s.DateTime = valueDateTime
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
-		return json.Marshal(s.String)
-	case "dateTime":
-		return json.Marshal(s.DateTime)
-	}
-}
-
-type SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
-}
-
-func (s *SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAt) Accept(visitor SimulateCreateUnmanagedAccessCodeResponseAccessCodeTimeBoundCreatedAtVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
-		return visitor.VisitString(s.String)
-	case "dateTime":
-		return visitor.VisitDateTime(s.DateTime)
-	}
-}
-
-type SimulateTriggerNoiseThresholdResponse struct {
-	Ok bool `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SimulateTriggerNoiseThresholdResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SimulateTriggerNoiseThresholdResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SimulateTriggerNoiseThresholdResponse(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SimulateTriggerNoiseThresholdResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SupportedCapabililty string
+// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+type UnmanagedAccessCodeType string
 
 const (
-	SupportedCapabililtyAccessCode     SupportedCapabililty = "access_code"
-	SupportedCapabililtyLock           SupportedCapabililty = "lock"
-	SupportedCapabililtyNoiseDetection SupportedCapabililty = "noise_detection"
-	SupportedCapabililtyThermostat     SupportedCapabililty = "thermostat"
-	SupportedCapabililtyBattery        SupportedCapabililty = "battery"
+	UnmanagedAccessCodeTypeTimeBound UnmanagedAccessCodeType = "time_bound"
+	UnmanagedAccessCodeTypeOngoing   UnmanagedAccessCodeType = "ongoing"
 )
 
-func NewSupportedCapabililtyFromString(s string) (SupportedCapabililty, error) {
+func NewUnmanagedAccessCodeTypeFromString(s string) (UnmanagedAccessCodeType, error) {
 	switch s {
-	case "access_code":
-		return SupportedCapabililtyAccessCode, nil
-	case "lock":
-		return SupportedCapabililtyLock, nil
-	case "noise_detection":
-		return SupportedCapabililtyNoiseDetection, nil
-	case "thermostat":
-		return SupportedCapabililtyThermostat, nil
-	case "battery":
-		return SupportedCapabililtyBattery, nil
+	case "time_bound":
+		return UnmanagedAccessCodeTypeTimeBound, nil
+	case "ongoing":
+		return UnmanagedAccessCodeTypeOngoing, nil
 	}
-	var t SupportedCapabililty
+	var t UnmanagedAccessCodeType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s SupportedCapabililty) Ptr() *SupportedCapabililty {
-	return &s
-}
-
-type UnmanagedConvertToManagedResponse struct {
-	Ok bool `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedConvertToManagedResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedConvertToManagedResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedConvertToManagedResponse(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedConvertToManagedResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedDeleteResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedDeleteResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedDeleteResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedDeleteResponse(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedDeleteResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
+func (u UnmanagedAccessCodeType) Ptr() *UnmanagedAccessCodeType {
+	return &u
 }
 
 type UnmanagedDevice struct {
-	DeviceId              string                         `json:"device_id"`
-	DeviceType            DeviceType                     `json:"device_type,omitempty"`
-	ConnectedAccountId    string                         `json:"connected_account_id"`
-	CapabilitiesSupported []SupportedCapabililty         `json:"capabilities_supported,omitempty"`
-	WorkspaceId           string                         `json:"workspace_id"`
-	Errors                []*UnmanagedDeviceErrorsItem   `json:"errors,omitempty"`
-	Warnings              []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
-	CreatedAt             time.Time                      `json:"created_at"`
-	IsManaged             bool                           `json:"is_managed"`
-	Properties            *UnmanagedDeviceProperties     `json:"properties,omitempty"`
+	// Unique identifier for the device.
+	DeviceId string `json:"device_id"`
+	// Type of the device.
+	DeviceType DeviceType `json:"device_type,omitempty"`
+	// Unique identifier for the account associated with the device.
+	ConnectedAccountId string `json:"connected_account_id"`
+	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
+	CapabilitiesSupported []UnmanagedDeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
+	// Unique identifier for the Seam workspace associated with the device.
+	WorkspaceId string `json:"workspace_id"`
+	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
+	Errors []*UnmanagedDeviceErrorsItem `json:"errors,omitempty"`
+	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
+	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
+	// Date and time at which the device object was created.
+	CreatedAt      time.Time                      `json:"created_at"`
+	IsManaged      string                         `json:"is_managed"`
+	Properties     *UnmanagedDeviceProperties     `json:"properties,omitempty"`
+	DeviceProvider *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2550,6 +2275,69 @@ func (u *UnmanagedDevice) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UnmanagedDevice) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedDeviceCapabilitiesSupportedItem string
+
+const (
+	UnmanagedDeviceCapabilitiesSupportedItemAccessCode     UnmanagedDeviceCapabilitiesSupportedItem = "access_code"
+	UnmanagedDeviceCapabilitiesSupportedItemLock           UnmanagedDeviceCapabilitiesSupportedItem = "lock"
+	UnmanagedDeviceCapabilitiesSupportedItemNoiseDetection UnmanagedDeviceCapabilitiesSupportedItem = "noise_detection"
+	UnmanagedDeviceCapabilitiesSupportedItemThermostat     UnmanagedDeviceCapabilitiesSupportedItem = "thermostat"
+	UnmanagedDeviceCapabilitiesSupportedItemBattery        UnmanagedDeviceCapabilitiesSupportedItem = "battery"
+	UnmanagedDeviceCapabilitiesSupportedItemPhone          UnmanagedDeviceCapabilitiesSupportedItem = "phone"
+)
+
+func NewUnmanagedDeviceCapabilitiesSupportedItemFromString(s string) (UnmanagedDeviceCapabilitiesSupportedItem, error) {
+	switch s {
+	case "access_code":
+		return UnmanagedDeviceCapabilitiesSupportedItemAccessCode, nil
+	case "lock":
+		return UnmanagedDeviceCapabilitiesSupportedItemLock, nil
+	case "noise_detection":
+		return UnmanagedDeviceCapabilitiesSupportedItemNoiseDetection, nil
+	case "thermostat":
+		return UnmanagedDeviceCapabilitiesSupportedItemThermostat, nil
+	case "battery":
+		return UnmanagedDeviceCapabilitiesSupportedItemBattery, nil
+	case "phone":
+		return UnmanagedDeviceCapabilitiesSupportedItemPhone, nil
+	}
+	var t UnmanagedDeviceCapabilitiesSupportedItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedDeviceCapabilitiesSupportedItem) Ptr() *UnmanagedDeviceCapabilitiesSupportedItem {
+	return &u
+}
+
+type UnmanagedDeviceDeviceProvider struct {
+	ProviderCategories interface{} `json:"provider_categories,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDeviceDeviceProvider) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDeviceDeviceProvider
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDeviceDeviceProvider(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDeviceDeviceProvider) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
@@ -2592,12 +2380,25 @@ func (u *UnmanagedDeviceErrorsItem) String() string {
 }
 
 type UnmanagedDeviceProperties struct {
-	Name         string                          `json:"name"`
-	Online       bool                            `json:"online"`
-	Manufacturer *string                         `json:"manufacturer,omitempty"`
-	ImageUrl     *string                         `json:"image_url,omitempty"`
-	ImageAltText *string                         `json:"image_alt_text,omitempty"`
-	Model        *UnmanagedDevicePropertiesModel `json:"model,omitempty"`
+	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
+	Name string `json:"name"`
+	// Indicates whether the device is online.
+	Online bool `json:"online"`
+	// Manufacturer of the device.
+	Manufacturer *string `json:"manufacturer,omitempty"`
+	// Image URL for the device.
+	ImageUrl *string `json:"image_url,omitempty"`
+	// Alt text for the device image.
+	ImageAltText *string `json:"image_alt_text,omitempty"`
+	// Indicates the battery level of the device as a decimal value between 0 and 1, inclusive.
+	BatteryLevel *float64 `json:"battery_level,omitempty"`
+	// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
+	Battery *UnmanagedDevicePropertiesBattery `json:"battery,omitempty"`
+	// Indicates whether it is currently possible to use online access codes for the device.
+	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty"`
+	// Indicates whether it is currently possible to use offline access codes for the device.
+	OfflineAccessCodesEnabled *bool                           `json:"offline_access_codes_enabled,omitempty"`
+	Model                     *UnmanagedDevicePropertiesModel `json:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2625,8 +2426,76 @@ func (u *UnmanagedDeviceProperties) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
+type UnmanagedDevicePropertiesBattery struct {
+	Level  float64                                `json:"level"`
+	Status UnmanagedDevicePropertiesBatteryStatus `json:"status,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDevicePropertiesBattery) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDevicePropertiesBattery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDevicePropertiesBattery(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDevicePropertiesBattery) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedDevicePropertiesBatteryStatus string
+
+const (
+	UnmanagedDevicePropertiesBatteryStatusCritical UnmanagedDevicePropertiesBatteryStatus = "critical"
+	UnmanagedDevicePropertiesBatteryStatusLow      UnmanagedDevicePropertiesBatteryStatus = "low"
+	UnmanagedDevicePropertiesBatteryStatusGood     UnmanagedDevicePropertiesBatteryStatus = "good"
+	UnmanagedDevicePropertiesBatteryStatusFull     UnmanagedDevicePropertiesBatteryStatus = "full"
+)
+
+func NewUnmanagedDevicePropertiesBatteryStatusFromString(s string) (UnmanagedDevicePropertiesBatteryStatus, error) {
+	switch s {
+	case "critical":
+		return UnmanagedDevicePropertiesBatteryStatusCritical, nil
+	case "low":
+		return UnmanagedDevicePropertiesBatteryStatusLow, nil
+	case "good":
+		return UnmanagedDevicePropertiesBatteryStatusGood, nil
+	case "full":
+		return UnmanagedDevicePropertiesBatteryStatusFull, nil
+	}
+	var t UnmanagedDevicePropertiesBatteryStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedDevicePropertiesBatteryStatus) Ptr() *UnmanagedDevicePropertiesBatteryStatus {
+	return &u
+}
+
 type UnmanagedDevicePropertiesModel struct {
+	// Display name of the device model.
 	DisplayName string `json:"display_name"`
+	// Display name that corresponds to the manufacturer-specific terminology for the device.
+	ManufacturerDisplayName string `json:"manufacturer_display_name"`
+	// Indicates whether the device supports offline access codes.
+	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty"`
+	// Indicates whether the device supports online access codes.
+	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty"`
+	// Indicates whether the device supports an accessory keypad.
+	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2673,253 +2542,6 @@ func (u *UnmanagedDeviceWarningsItem) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UnmanagedDeviceWarningsItem) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedGetResponse struct {
-	AccessCode *UnmanagedGetResponseAccessCode `json:"access_code,omitempty"`
-	Ok         bool                            `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedGetResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedGetResponse(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedGetResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedGetResponseAccessCode struct {
-	Type         UnmanagedGetResponseAccessCodeType `json:"type,omitempty"`
-	AccessCodeId string                             `json:"access_code_id"`
-	DeviceId     string                             `json:"device_id"`
-	Name         *string                            `json:"name,omitempty"`
-	Code         *string                            `json:"code,omitempty"`
-	CreatedAt    time.Time                          `json:"created_at"`
-	Errors       interface{}                        `json:"errors,omitempty"`
-	Warnings     interface{}                        `json:"warnings,omitempty"`
-	IsManaged    bool                               `json:"is_managed"`
-	StartsAt     *time.Time                         `json:"starts_at,omitempty"`
-	EndsAt       *time.Time                         `json:"ends_at,omitempty"`
-	status       string
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedGetResponseAccessCode) Status() string {
-	return u.status
-}
-
-func (u *UnmanagedGetResponseAccessCode) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedGetResponseAccessCode
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedGetResponseAccessCode(value)
-	u.status = "set"
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedGetResponseAccessCode) MarshalJSON() ([]byte, error) {
-	type embed UnmanagedGetResponseAccessCode
-	var marshaler = struct {
-		embed
-		Status string `json:"status"`
-	}{
-		embed:  embed(*u),
-		Status: "set",
-	}
-	return json.Marshal(marshaler)
-}
-
-func (u *UnmanagedGetResponseAccessCode) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedGetResponseAccessCodeType string
-
-const (
-	UnmanagedGetResponseAccessCodeTypeTimeBound UnmanagedGetResponseAccessCodeType = "time_bound"
-	UnmanagedGetResponseAccessCodeTypeOngoing   UnmanagedGetResponseAccessCodeType = "ongoing"
-)
-
-func NewUnmanagedGetResponseAccessCodeTypeFromString(s string) (UnmanagedGetResponseAccessCodeType, error) {
-	switch s {
-	case "time_bound":
-		return UnmanagedGetResponseAccessCodeTypeTimeBound, nil
-	case "ongoing":
-		return UnmanagedGetResponseAccessCodeTypeOngoing, nil
-	}
-	var t UnmanagedGetResponseAccessCodeType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (u UnmanagedGetResponseAccessCodeType) Ptr() *UnmanagedGetResponseAccessCodeType {
-	return &u
-}
-
-type UnmanagedListResponse struct {
-	Devices []*UnmanagedDevice `json:"devices,omitempty"`
-	Ok      bool               `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedListResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedListResponse(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedListResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedListResponseAccessCodesItem struct {
-	Type         UnmanagedListResponseAccessCodesItemType `json:"type,omitempty"`
-	AccessCodeId string                                   `json:"access_code_id"`
-	DeviceId     string                                   `json:"device_id"`
-	Name         *string                                  `json:"name,omitempty"`
-	Code         *string                                  `json:"code,omitempty"`
-	CreatedAt    time.Time                                `json:"created_at"`
-	Errors       interface{}                              `json:"errors,omitempty"`
-	Warnings     interface{}                              `json:"warnings,omitempty"`
-	IsManaged    bool                                     `json:"is_managed"`
-	StartsAt     *time.Time                               `json:"starts_at,omitempty"`
-	EndsAt       *time.Time                               `json:"ends_at,omitempty"`
-	status       string
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedListResponseAccessCodesItem) Status() string {
-	return u.status
-}
-
-func (u *UnmanagedListResponseAccessCodesItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedListResponseAccessCodesItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedListResponseAccessCodesItem(value)
-	u.status = "set"
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedListResponseAccessCodesItem) MarshalJSON() ([]byte, error) {
-	type embed UnmanagedListResponseAccessCodesItem
-	var marshaler = struct {
-		embed
-		Status string `json:"status"`
-	}{
-		embed:  embed(*u),
-		Status: "set",
-	}
-	return json.Marshal(marshaler)
-}
-
-func (u *UnmanagedListResponseAccessCodesItem) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UnmanagedListResponseAccessCodesItemType string
-
-const (
-	UnmanagedListResponseAccessCodesItemTypeTimeBound UnmanagedListResponseAccessCodesItemType = "time_bound"
-	UnmanagedListResponseAccessCodesItemTypeOngoing   UnmanagedListResponseAccessCodesItemType = "ongoing"
-)
-
-func NewUnmanagedListResponseAccessCodesItemTypeFromString(s string) (UnmanagedListResponseAccessCodesItemType, error) {
-	switch s {
-	case "time_bound":
-		return UnmanagedListResponseAccessCodesItemTypeTimeBound, nil
-	case "ongoing":
-		return UnmanagedListResponseAccessCodesItemTypeOngoing, nil
-	}
-	var t UnmanagedListResponseAccessCodesItemType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (u UnmanagedListResponseAccessCodesItemType) Ptr() *UnmanagedListResponseAccessCodesItemType {
-	return &u
-}
-
-type UnmanagedUpdateResponse struct {
-	Ok bool `json:"ok"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedUpdateResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UnmanagedUpdateResponse(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UnmanagedUpdateResponse) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
@@ -2993,4 +2615,320 @@ func (w *Workspace) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
+}
+
+type ConnectedAccountsGetRequestConnectedAccountId struct {
+	ConnectedAccountId string `json:"connected_account_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestConnectedAccountId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestConnectedAccountId(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountsGetRequestEmail struct {
+	Email string `json:"email"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestEmail) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestEmail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestEmail(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestEmail) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type NetworksGetResponseNetwork struct {
+	NetworkId   string    `json:"network_id"`
+	WorkspaceId string    `json:"workspace_id"`
+	DisplayName string    `json:"display_name"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NetworksGetResponseNetwork) UnmarshalJSON(data []byte) error {
+	type unmarshaler NetworksGetResponseNetwork
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NetworksGetResponseNetwork(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NetworksGetResponseNetwork) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NetworksListResponseNetworksItem struct {
+	NetworkId   string    `json:"network_id"`
+	WorkspaceId string    `json:"workspace_id"`
+	DisplayName string    `json:"display_name"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NetworksListResponseNetworksItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler NetworksListResponseNetworksItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NetworksListResponseNetworksItem(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NetworksListResponseNetworksItem) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting string
+
+const (
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff      ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "off"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "cool"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat_cool"
+)
+
+func NewThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingFromString(s string) (ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting, error) {
+	switch s {
+	case "off":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff, nil
+	case "heat":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat, nil
+	case "cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool, nil
+	case "heat_cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool, nil
+	}
+	var t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting) Ptr() *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting {
+	return &t
+}
+
+type UserIdentitiesCreateResponseUserIdentity struct {
+	UserIdentityId  string    `json:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name"`
+	FullName        *string   `json:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at"`
+	WorkspaceId     string    `json:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesCreateResponseUserIdentity) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesCreateResponseUserIdentity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesCreateResponseUserIdentity(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesCreateResponseUserIdentity) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesGetRequestUserIdentityId struct {
+	UserIdentityId string `json:"user_identity_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityId(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesGetRequestUserIdentityKey struct {
+	UserIdentityKey string `json:"user_identity_key"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityKey(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesGetResponseUserIdentity struct {
+	UserIdentityId  string    `json:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name"`
+	FullName        *string   `json:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at"`
+	WorkspaceId     string    `json:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesGetResponseUserIdentity) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetResponseUserIdentity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetResponseUserIdentity(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetResponseUserIdentity) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesListResponseUserIdentitiesItem struct {
+	UserIdentityId  string    `json:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name"`
+	FullName        *string   `json:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at"`
+	WorkspaceId     string    `json:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesListResponseUserIdentitiesItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesListResponseUserIdentitiesItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesListResponseUserIdentitiesItem(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesListResponseUserIdentitiesItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }

@@ -10,6 +10,7 @@ import (
 
 type ConnectedAccountsDeleteRequest struct {
 	ConnectedAccountId string `json:"connected_account_id"`
+	Sync               *bool  `json:"sync,omitempty"`
 }
 
 type ConnectedAccountsDeleteResponse struct {
@@ -156,4 +157,39 @@ func (c *ConnectedAccountsListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountsUpdateResponse struct {
+	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty"`
+	Ok               bool              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsUpdateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsUpdateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountsUpdateRequest struct {
+	ConnectedAccountId            string `json:"connected_account_id"`
+	AutomaticallyManageNewDevices *bool  `json:"automatically_manage_new_devices,omitempty"`
 }
