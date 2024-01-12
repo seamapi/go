@@ -9,7 +9,6 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
-	useridentities "github.com/seamapi/go/useridentities"
 	enrollmentautomations "github.com/seamapi/go/useridentities/enrollmentautomations"
 	io "io"
 	http "net/http"
@@ -36,7 +35,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) AddAcsUser(ctx context.Context, request *useridentities.UserIdentitiesAddAcsUserRequest) (*useridentities.UserIdentitiesAddAcsUserResponse, error) {
+func (c *Client) AddAcsUser(ctx context.Context, request *seamapigo.UserIdentitiesAddAcsUserRequest) (*seamapigo.UserIdentitiesAddAcsUserResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -69,7 +68,7 @@ func (c *Client) AddAcsUser(ctx context.Context, request *useridentities.UserIde
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesAddAcsUserResponse
+	var response *seamapigo.UserIdentitiesAddAcsUserResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -86,7 +85,7 @@ func (c *Client) AddAcsUser(ctx context.Context, request *useridentities.UserIde
 	return response, nil
 }
 
-func (c *Client) Create(ctx context.Context, request *useridentities.UserIdentitiesCreateRequest) (*useridentities.UserIdentitiesCreateResponseUserIdentity, error) {
+func (c *Client) Create(ctx context.Context, request *seamapigo.UserIdentitiesCreateRequest) (*seamapigo.UserIdentitiesCreateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -119,7 +118,7 @@ func (c *Client) Create(ctx context.Context, request *useridentities.UserIdentit
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesCreateResponse
+	var response *seamapigo.UserIdentitiesCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -133,10 +132,10 @@ func (c *Client) Create(ctx context.Context, request *useridentities.UserIdentit
 	); err != nil {
 		return nil, err
 	}
-	return response.UserIdentity, nil
+	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *useridentities.UserIdentitiesGetRequest) (*useridentities.UserIdentitiesGetResponseUserIdentity, error) {
+func (c *Client) Get(ctx context.Context, request *seamapigo.UserIdentitiesGetRequest) (*seamapigo.UserIdentitiesGetResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -169,7 +168,7 @@ func (c *Client) Get(ctx context.Context, request *useridentities.UserIdentities
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesGetResponse
+	var response *seamapigo.UserIdentitiesGetResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -183,10 +182,10 @@ func (c *Client) Get(ctx context.Context, request *useridentities.UserIdentities
 	); err != nil {
 		return nil, err
 	}
-	return response.UserIdentity, nil
+	return response, nil
 }
 
-func (c *Client) GrantAccessToDevice(ctx context.Context, request *useridentities.UserIdentitiesGrantAccessToDeviceRequest) (*useridentities.UserIdentitiesGrantAccessToDeviceResponse, error) {
+func (c *Client) GrantAccessToDevice(ctx context.Context, request *seamapigo.UserIdentitiesGrantAccessToDeviceRequest) (*seamapigo.UserIdentitiesGrantAccessToDeviceResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -219,7 +218,7 @@ func (c *Client) GrantAccessToDevice(ctx context.Context, request *useridentitie
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesGrantAccessToDeviceResponse
+	var response *seamapigo.UserIdentitiesGrantAccessToDeviceResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -236,7 +235,7 @@ func (c *Client) GrantAccessToDevice(ctx context.Context, request *useridentitie
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context) ([]*useridentities.UserIdentitiesListResponseUserIdentitiesItem, error) {
+func (c *Client) List(ctx context.Context) ([]*seamapigo.UserIdentitiesListResponseUserIdentitiesItem, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -269,7 +268,7 @@ func (c *Client) List(ctx context.Context) ([]*useridentities.UserIdentitiesList
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesListResponse
+	var response *seamapigo.UserIdentitiesListResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -285,7 +284,7 @@ func (c *Client) List(ctx context.Context) ([]*useridentities.UserIdentitiesList
 	return response.UserIdentities, nil
 }
 
-func (c *Client) ListAccessibleDevices(ctx context.Context, request *useridentities.UserIdentitiesListAccessibleDevicesRequest) (*useridentities.UserIdentitiesListAccessibleDevicesResponse, error) {
+func (c *Client) ListAccessibleDevices(ctx context.Context, request *seamapigo.UserIdentitiesListAccessibleDevicesRequest) (*seamapigo.UserIdentitiesListAccessibleDevicesResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -318,7 +317,7 @@ func (c *Client) ListAccessibleDevices(ctx context.Context, request *useridentit
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesListAccessibleDevicesResponse
+	var response *seamapigo.UserIdentitiesListAccessibleDevicesResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -335,7 +334,57 @@ func (c *Client) ListAccessibleDevices(ctx context.Context, request *useridentit
 	return response, nil
 }
 
-func (c *Client) ListAcsUsers(ctx context.Context, request *useridentities.UserIdentitiesListAcsUsersRequest) (*useridentities.UserIdentitiesListAcsUsersResponse, error) {
+func (c *Client) ListAcsSystems(ctx context.Context, request *seamapigo.UserIdentitiesListAcsSystemsRequest) (*seamapigo.UserIdentitiesListAcsSystemsResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "user_identities/list_acs_systems"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.UserIdentitiesListAcsSystemsResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *Client) ListAcsUsers(ctx context.Context, request *seamapigo.UserIdentitiesListAcsUsersRequest) (*seamapigo.UserIdentitiesListAcsUsersResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -368,7 +417,7 @@ func (c *Client) ListAcsUsers(ctx context.Context, request *useridentities.UserI
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesListAcsUsersResponse
+	var response *seamapigo.UserIdentitiesListAcsUsersResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -385,7 +434,7 @@ func (c *Client) ListAcsUsers(ctx context.Context, request *useridentities.UserI
 	return response, nil
 }
 
-func (c *Client) RemoveAcsUser(ctx context.Context, request *useridentities.UserIdentitiesRemoveAcsUserRequest) (*useridentities.UserIdentitiesRemoveAcsUserResponse, error) {
+func (c *Client) RemoveAcsUser(ctx context.Context, request *seamapigo.UserIdentitiesRemoveAcsUserRequest) (*seamapigo.UserIdentitiesRemoveAcsUserResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -418,7 +467,7 @@ func (c *Client) RemoveAcsUser(ctx context.Context, request *useridentities.User
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesRemoveAcsUserResponse
+	var response *seamapigo.UserIdentitiesRemoveAcsUserResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -435,7 +484,7 @@ func (c *Client) RemoveAcsUser(ctx context.Context, request *useridentities.User
 	return response, nil
 }
 
-func (c *Client) RevokeAccessToDevice(ctx context.Context, request *useridentities.UserIdentitiesRevokeAccessToDeviceRequest) (*useridentities.UserIdentitiesRevokeAccessToDeviceResponse, error) {
+func (c *Client) RevokeAccessToDevice(ctx context.Context, request *seamapigo.UserIdentitiesRevokeAccessToDeviceRequest) (*seamapigo.UserIdentitiesRevokeAccessToDeviceResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -468,7 +517,7 @@ func (c *Client) RevokeAccessToDevice(ctx context.Context, request *useridentiti
 		return apiError
 	}
 
-	var response *useridentities.UserIdentitiesRevokeAccessToDeviceResponse
+	var response *seamapigo.UserIdentitiesRevokeAccessToDeviceResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{

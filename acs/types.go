@@ -106,6 +106,8 @@ type CredentialsAssignResponseAcsCredential struct {
 	ExternalTypeDisplayName *string                                             `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                           `json:"created_at"`
 	WorkspaceId             string                                              `json:"workspace_id"`
+	StartsAt                *string                                             `json:"starts_at,omitempty"`
+	EndsAt                  *string                                             `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -198,6 +200,8 @@ type CredentialsCreateResponseAcsCredential struct {
 	ExternalTypeDisplayName *string                                             `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                           `json:"created_at"`
 	WorkspaceId             string                                              `json:"workspace_id"`
+	StartsAt                *string                                             `json:"starts_at,omitempty"`
+	EndsAt                  *string                                             `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -290,6 +294,8 @@ type CredentialsGetResponseAcsCredential struct {
 	ExternalTypeDisplayName *string                                          `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                        `json:"created_at"`
 	WorkspaceId             string                                           `json:"workspace_id"`
+	StartsAt                *string                                          `json:"starts_at,omitempty"`
+	EndsAt                  *string                                          `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -429,6 +435,35 @@ func (c *CredentialsListRequestTwo) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsListRequestUserIdentityId struct {
+	UserIdentityId string `json:"user_identity_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsListRequestUserIdentityId) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListRequestUserIdentityId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListRequestUserIdentityId(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListRequestUserIdentityId) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsListRequestZero struct {
 	AcsUserId string `json:"acs_user_id"`
 
@@ -470,6 +505,8 @@ type CredentialsListResponseAcsCredentialsItem struct {
 	ExternalTypeDisplayName *string                                                `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                              `json:"created_at"`
 	WorkspaceId             string                                                 `json:"workspace_id"`
+	StartsAt                *string                                                `json:"starts_at,omitempty"`
+	EndsAt                  *string                                                `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -562,6 +599,8 @@ type CredentialsUnassignResponseAcsCredential struct {
 	ExternalTypeDisplayName *string                                               `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                             `json:"created_at"`
 	WorkspaceId             string                                                `json:"workspace_id"`
+	StartsAt                *string                                               `json:"starts_at,omitempty"`
+	EndsAt                  *string                                               `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -654,6 +693,8 @@ type CredentialsUpdateResponseAcsCredential struct {
 	ExternalTypeDisplayName *string                                             `json:"external_type_display_name,omitempty"`
 	CreatedAt               time.Time                                           `json:"created_at"`
 	WorkspaceId             string                                              `json:"workspace_id"`
+	StartsAt                *string                                             `json:"starts_at,omitempty"`
+	EndsAt                  *string                                             `json:"ends_at,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -796,4 +837,36 @@ func (e *EntrancesListResponseAcsEntrancesItem) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
+}
+
+type UsersListAccessibleEntrancesResponseAcsEntrancesItem struct {
+	AcsEntranceId string    `json:"acs_entrance_id"`
+	DisplayName   string    `json:"display_name"`
+	AcsSystemId   string    `json:"acs_system_id"`
+	CreatedAt     time.Time `json:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersListAccessibleEntrancesResponseAcsEntrancesItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersListAccessibleEntrancesResponseAcsEntrancesItem(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }

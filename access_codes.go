@@ -9,16 +9,22 @@ import (
 )
 
 type AccessCodesCreateRequest struct {
-	DeviceId                string  `json:"device_id"`
-	Name                    *string `json:"name,omitempty"`
-	StartsAt                *string `json:"starts_at,omitempty"`
-	EndsAt                  *string `json:"ends_at,omitempty"`
-	Code                    *string `json:"code,omitempty"`
-	Sync                    *bool   `json:"sync,omitempty"`
-	AttemptForOfflineDevice *bool   `json:"attempt_for_offline_device,omitempty"`
-	CommonCodeKey           *string `json:"common_code_key,omitempty"`
-	PreferNativeScheduling  *bool   `json:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool *bool   `json:"use_backup_access_code_pool,omitempty"`
+	DeviceId                      string                                   `json:"device_id"`
+	Name                          *string                                  `json:"name,omitempty"`
+	StartsAt                      *string                                  `json:"starts_at,omitempty"`
+	EndsAt                        *string                                  `json:"ends_at,omitempty"`
+	Code                          *string                                  `json:"code,omitempty"`
+	Sync                          *bool                                    `json:"sync,omitempty"`
+	AttemptForOfflineDevice       *bool                                    `json:"attempt_for_offline_device,omitempty"`
+	CommonCodeKey                 *string                                  `json:"common_code_key,omitempty"`
+	PreferNativeScheduling        *bool                                    `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool       *bool                                    `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification     *bool                                    `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool                                    `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode          *bool                                    `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode           *bool                                    `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                  *bool                                    `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding               *AccessCodesCreateRequestMaxTimeRounding `json:"max_time_rounding,omitempty"`
 }
 
 type AccessCodesCreateMultipleRequest struct {
@@ -31,12 +37,22 @@ type AccessCodesCreateMultipleRequest struct {
 	AttemptForOfflineDevice        *bool                                                           `json:"attempt_for_offline_device,omitempty"`
 	PreferNativeScheduling         *bool                                                           `json:"prefer_native_scheduling,omitempty"`
 	UseBackupAccessCodePool        *bool                                                           `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification      *bool                                                           `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed  *bool                                                           `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode           *bool                                                           `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode            *bool                                                           `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                   *bool                                                           `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding                *AccessCodesCreateMultipleRequestMaxTimeRounding                `json:"max_time_rounding,omitempty"`
 }
 
 type AccessCodesDeleteRequest struct {
 	DeviceId     *string `json:"device_id,omitempty"`
 	AccessCodeId string  `json:"access_code_id"`
 	Sync         *bool   `json:"sync,omitempty"`
+}
+
+type AccessCodesGenerateCodeRequest struct {
+	DeviceId string `json:"device_id"`
 }
 
 type AccessCodesGetRequest struct {
@@ -46,8 +62,9 @@ type AccessCodesGetRequest struct {
 }
 
 type AccessCodesListRequest struct {
-	DeviceId      string   `json:"device_id"`
-	AccessCodeIds []string `json:"access_code_ids,omitempty"`
+	DeviceId          string   `json:"device_id"`
+	AccessCodeIds     []string `json:"access_code_ids,omitempty"`
+	UserIdentifierKey *string  `json:"user_identifier_key,omitempty"`
 }
 
 type AccessCodesPullBackupAccessCodeRequest struct {
@@ -73,6 +90,34 @@ func NewAccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeSharedFromString
 }
 
 func (a AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared) Ptr() *AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared {
+	return &a
+}
+
+type AccessCodesCreateMultipleRequestMaxTimeRounding string
+
+const (
+	AccessCodesCreateMultipleRequestMaxTimeRoundingOneHour AccessCodesCreateMultipleRequestMaxTimeRounding = "1hour"
+	AccessCodesCreateMultipleRequestMaxTimeRoundingOneDay  AccessCodesCreateMultipleRequestMaxTimeRounding = "1day"
+	AccessCodesCreateMultipleRequestMaxTimeRoundingOneH    AccessCodesCreateMultipleRequestMaxTimeRounding = "1h"
+	AccessCodesCreateMultipleRequestMaxTimeRoundingOneD    AccessCodesCreateMultipleRequestMaxTimeRounding = "1d"
+)
+
+func NewAccessCodesCreateMultipleRequestMaxTimeRoundingFromString(s string) (AccessCodesCreateMultipleRequestMaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return AccessCodesCreateMultipleRequestMaxTimeRoundingOneHour, nil
+	case "1day":
+		return AccessCodesCreateMultipleRequestMaxTimeRoundingOneDay, nil
+	case "1h":
+		return AccessCodesCreateMultipleRequestMaxTimeRoundingOneH, nil
+	case "1d":
+		return AccessCodesCreateMultipleRequestMaxTimeRoundingOneD, nil
+	}
+	var t AccessCodesCreateMultipleRequestMaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodesCreateMultipleRequestMaxTimeRounding) Ptr() *AccessCodesCreateMultipleRequestMaxTimeRounding {
 	return &a
 }
 
@@ -104,6 +149,34 @@ func (a *AccessCodesCreateMultipleResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
+}
+
+type AccessCodesCreateRequestMaxTimeRounding string
+
+const (
+	AccessCodesCreateRequestMaxTimeRoundingOneHour AccessCodesCreateRequestMaxTimeRounding = "1hour"
+	AccessCodesCreateRequestMaxTimeRoundingOneDay  AccessCodesCreateRequestMaxTimeRounding = "1day"
+	AccessCodesCreateRequestMaxTimeRoundingOneH    AccessCodesCreateRequestMaxTimeRounding = "1h"
+	AccessCodesCreateRequestMaxTimeRoundingOneD    AccessCodesCreateRequestMaxTimeRounding = "1d"
+)
+
+func NewAccessCodesCreateRequestMaxTimeRoundingFromString(s string) (AccessCodesCreateRequestMaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return AccessCodesCreateRequestMaxTimeRoundingOneHour, nil
+	case "1day":
+		return AccessCodesCreateRequestMaxTimeRoundingOneDay, nil
+	case "1h":
+		return AccessCodesCreateRequestMaxTimeRoundingOneH, nil
+	case "1d":
+		return AccessCodesCreateRequestMaxTimeRoundingOneD, nil
+	}
+	var t AccessCodesCreateRequestMaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodesCreateRequestMaxTimeRounding) Ptr() *AccessCodesCreateRequestMaxTimeRounding {
+	return &a
 }
 
 type AccessCodesCreateResponse struct {
@@ -156,6 +229,36 @@ func (a *AccessCodesDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (a *AccessCodesDeleteResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AccessCodesGenerateCodeResponse struct {
+	GeneratedCode *AccessCode `json:"generated_code,omitempty"`
+	Ok            bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesGenerateCodeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesGenerateCodeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesGenerateCodeResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesGenerateCodeResponse) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -257,6 +360,34 @@ func (a *AccessCodesPullBackupAccessCodeResponse) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AccessCodesUpdateRequestMaxTimeRounding string
+
+const (
+	AccessCodesUpdateRequestMaxTimeRoundingOneHour AccessCodesUpdateRequestMaxTimeRounding = "1hour"
+	AccessCodesUpdateRequestMaxTimeRoundingOneDay  AccessCodesUpdateRequestMaxTimeRounding = "1day"
+	AccessCodesUpdateRequestMaxTimeRoundingOneH    AccessCodesUpdateRequestMaxTimeRounding = "1h"
+	AccessCodesUpdateRequestMaxTimeRoundingOneD    AccessCodesUpdateRequestMaxTimeRounding = "1d"
+)
+
+func NewAccessCodesUpdateRequestMaxTimeRoundingFromString(s string) (AccessCodesUpdateRequestMaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return AccessCodesUpdateRequestMaxTimeRoundingOneHour, nil
+	case "1day":
+		return AccessCodesUpdateRequestMaxTimeRoundingOneDay, nil
+	case "1h":
+		return AccessCodesUpdateRequestMaxTimeRoundingOneH, nil
+	case "1d":
+		return AccessCodesUpdateRequestMaxTimeRoundingOneD, nil
+	}
+	var t AccessCodesUpdateRequestMaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodesUpdateRequestMaxTimeRounding) Ptr() *AccessCodesUpdateRequestMaxTimeRounding {
+	return &a
+}
+
 type AccessCodesUpdateRequestType string
 
 const (
@@ -310,15 +441,22 @@ func (a *AccessCodesUpdateResponse) String() string {
 }
 
 type AccessCodesUpdateRequest struct {
-	Name                    *string                       `json:"name,omitempty"`
-	StartsAt                *string                       `json:"starts_at,omitempty"`
-	EndsAt                  *string                       `json:"ends_at,omitempty"`
-	Code                    *string                       `json:"code,omitempty"`
-	Sync                    *bool                         `json:"sync,omitempty"`
-	AttemptForOfflineDevice *bool                         `json:"attempt_for_offline_device,omitempty"`
-	PreferNativeScheduling  *bool                         `json:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool *bool                         `json:"use_backup_access_code_pool,omitempty"`
-	AccessCodeId            string                        `json:"access_code_id"`
-	DeviceId                *string                       `json:"device_id,omitempty"`
-	Type                    *AccessCodesUpdateRequestType `json:"type,omitempty"`
+	Name                          *string                                  `json:"name,omitempty"`
+	StartsAt                      *string                                  `json:"starts_at,omitempty"`
+	EndsAt                        *string                                  `json:"ends_at,omitempty"`
+	Code                          *string                                  `json:"code,omitempty"`
+	Sync                          *bool                                    `json:"sync,omitempty"`
+	AttemptForOfflineDevice       *bool                                    `json:"attempt_for_offline_device,omitempty"`
+	PreferNativeScheduling        *bool                                    `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool       *bool                                    `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification     *bool                                    `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool                                    `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode          *bool                                    `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode           *bool                                    `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                  *bool                                    `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding               *AccessCodesUpdateRequestMaxTimeRounding `json:"max_time_rounding,omitempty"`
+	AccessCodeId                  string                                   `json:"access_code_id"`
+	DeviceId                      *string                                  `json:"device_id,omitempty"`
+	Type                          *AccessCodesUpdateRequestType            `json:"type,omitempty"`
+	IsManaged                     *bool                                    `json:"is_managed,omitempty"`
 }

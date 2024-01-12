@@ -83,7 +83,7 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ConnectWebviewsC
 	return response.ConnectWebview, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsDeleteRequest) (bool, error) {
+func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsDeleteRequest) (*seamapigo.ConnectWebviewsDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -121,16 +121,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsD
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }
 
 func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectWebviewsGetRequest) (*seamapigo.ConnectWebview, error) {
@@ -183,7 +183,7 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectWebviewsGetR
 	return response.ConnectWebview, nil
 }
 
-func (c *Client) List(ctx context.Context) (*seamapigo.ConnectWebviewsListResponse, error) {
+func (c *Client) List(ctx context.Context, request *seamapigo.ConnectWebviewsListRequest) ([]*seamapigo.ConnectWebview, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -223,13 +223,14 @@ func (c *Client) List(ctx context.Context) (*seamapigo.ConnectWebviewsListRespon
 			URL:          endpointURL,
 			Method:       http.MethodPost,
 			Headers:      c.header,
+			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ConnectWebviews, nil
 }
 
 func (c *Client) View(ctx context.Context, request *seamapigo.ConnectWebviewsViewRequest) error {
