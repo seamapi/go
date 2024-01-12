@@ -6,7 +6,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 )
 
-func (c *Client) GetById(ctx context.Context, webhookId string) (*seamapigo.WebhooksGetResponse, error) {
+func (c *Client) GetById(ctx context.Context, webhookId string) (*seamapigo.Webhook, error) {
 	return c.Get(
 		ctx,
 		&seamapigo.WebhooksGetRequest{
