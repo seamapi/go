@@ -81,7 +81,7 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ClientSessionsCr
 	return response.ClientSession, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDeleteRequest) (bool, error) {
+func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDeleteRequest) (*seamapigo.ClientSessionsDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -119,16 +119,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDe
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }
 
 func (c *Client) Get(ctx context.Context, request *seamapigo.ClientSessionsGetRequest) (*seamapigo.ClientSession, error) {
@@ -181,6 +181,106 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ClientSessionsGetRe
 	return response.ClientSession, nil
 }
 
+func (c *Client) GetOrCreate(ctx context.Context, request *seamapigo.ClientSessionsGetOrCreateRequest) (*seamapigo.ClientSession, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "client_sessions/get_or_create"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ClientSessionsGetOrCreateResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response.ClientSession, nil
+}
+
+func (c *Client) GrantAccess(ctx context.Context, request *seamapigo.ClientSessionsGrantAccessRequest) (*seamapigo.ClientSessionsGrantAccessResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "client_sessions/grant_access"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ClientSessionsGrantAccessResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *Client) List(ctx context.Context, request *seamapigo.ClientSessionsListRequest) ([]*seamapigo.ClientSession, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
@@ -229,4 +329,54 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ClientSessionsList
 		return nil, err
 	}
 	return response.ClientSessions, nil
+}
+
+func (c *Client) Revoke(ctx context.Context, request *seamapigo.ClientSessionsRevokeRequest) (*seamapigo.ClientSessionsRevokeResponse, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "client_sessions/revoke"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ClientSessionsRevokeResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
 }

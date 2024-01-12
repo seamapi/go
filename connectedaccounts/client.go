@@ -31,7 +31,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectedAccountsDeleteRequest) (bool, error) {
+func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectedAccountsDeleteRequest) (*seamapigo.ConnectedAccountsDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -69,16 +69,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectedAccount
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }
 
 func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectedAccountsGetRequest) (*seamapigo.ConnectedAccount, error) {
@@ -178,4 +178,54 @@ func (c *Client) List(ctx context.Context) ([]*seamapigo.ConnectedAccount, error
 		return nil, err
 	}
 	return response.ConnectedAccounts, nil
+}
+
+func (c *Client) Update(ctx context.Context, request *seamapigo.ConnectedAccountsUpdateRequest) (*seamapigo.ConnectedAccount, error) {
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := baseURL + "/" + "connected_accounts/update"
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *seamapigo.ConnectedAccountsUpdateResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			Headers:      c.header,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response.ConnectedAccount, nil
 }

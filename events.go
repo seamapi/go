@@ -128,6 +128,14 @@ const (
 	EventsListRequestEventTypeDeviceTampered                              EventsListRequestEventType = "device.tampered"
 	EventsListRequestEventTypeDeviceLowBattery                            EventsListRequestEventType = "device.low_battery"
 	EventsListRequestEventTypeDeviceBatteryStatusChanged                  EventsListRequestEventType = "device.battery_status_changed"
+	EventsListRequestEventTypeDeviceThirdPartyIntegrationDetected         EventsListRequestEventType = "device.third_party_integration_detected"
+	EventsListRequestEventTypeDeviceThirdPartyIntegrationNoLongerDetected EventsListRequestEventType = "device.third_party_integration_no_longer_detected"
+	EventsListRequestEventTypeDeviceSaltoPrivacyModeActivated             EventsListRequestEventType = "device.salto.privacy_mode_activated"
+	EventsListRequestEventTypeDeviceSaltoPrivacyModeDeactivated           EventsListRequestEventType = "device.salto.privacy_mode_deactivated"
+	EventsListRequestEventTypeDeviceConnectionBecameFlaky                 EventsListRequestEventType = "device.connection_became_flaky"
+	EventsListRequestEventTypeDeviceConnectionStabilized                  EventsListRequestEventType = "device.connection_stabilized"
+	EventsListRequestEventTypeDeviceErrorSubscriptionRequired             EventsListRequestEventType = "device.error.subscription_required"
+	EventsListRequestEventTypeDeviceErrorSubscriptionRequiredResolved     EventsListRequestEventType = "device.error.subscription_required.resolved"
 	EventsListRequestEventTypeAccessCodeCreated                           EventsListRequestEventType = "access_code.created"
 	EventsListRequestEventTypeAccessCodeChanged                           EventsListRequestEventType = "access_code.changed"
 	EventsListRequestEventTypeAccessCodeScheduledOnDevice                 EventsListRequestEventType = "access_code.scheduled_on_device"
@@ -138,6 +146,8 @@ const (
 	EventsListRequestEventTypeAccessCodeDelayInSettingOnDevice            EventsListRequestEventType = "access_code.delay_in_setting_on_device"
 	EventsListRequestEventTypeAccessCodeFailedToRemoveFromDevice          EventsListRequestEventType = "access_code.failed_to_remove_from_device"
 	EventsListRequestEventTypeAccessCodeDelayInRemovingFromDevice         EventsListRequestEventType = "access_code.delay_in_removing_from_device"
+	EventsListRequestEventTypeAccessCodeDeletedExternalToSeam             EventsListRequestEventType = "access_code.deleted_external_to_seam"
+	EventsListRequestEventTypeAccessCodeModifiedExternalToSeam            EventsListRequestEventType = "access_code.modified_external_to_seam"
 	EventsListRequestEventTypeAccessCodeUnmanagedConvertedToManaged       EventsListRequestEventType = "access_code.unmanaged.converted_to_managed"
 	EventsListRequestEventTypeAccessCodeUnmanagedFailedToConvertToManaged EventsListRequestEventType = "access_code.unmanaged.failed_to_convert_to_managed"
 	EventsListRequestEventTypeAccessCodeUnmanagedCreated                  EventsListRequestEventType = "access_code.unmanaged.created"
@@ -145,7 +155,9 @@ const (
 	EventsListRequestEventTypeLockLocked                                  EventsListRequestEventType = "lock.locked"
 	EventsListRequestEventTypeLockUnlocked                                EventsListRequestEventType = "lock.unlocked"
 	EventsListRequestEventTypeConnectedAccountConnected                   EventsListRequestEventType = "connected_account.connected"
+	EventsListRequestEventTypeConnectedAccountSuccessfulLogin             EventsListRequestEventType = "connected_account.successful_login"
 	EventsListRequestEventTypeConnectedAccountCreated                     EventsListRequestEventType = "connected_account.created"
+	EventsListRequestEventTypeConnectedAccountDeleted                     EventsListRequestEventType = "connected_account.deleted"
 	EventsListRequestEventTypeConnectedAccountDisconnected                EventsListRequestEventType = "connected_account.disconnected"
 	EventsListRequestEventTypeConnectedAccountCompletedFirstSync          EventsListRequestEventType = "connected_account.completed_first_sync"
 	EventsListRequestEventTypeNoiseSensorNoiseThresholdTriggered          EventsListRequestEventType = "noise_sensor.noise_threshold_triggered"
@@ -174,6 +186,22 @@ func NewEventsListRequestEventTypeFromString(s string) (EventsListRequestEventTy
 		return EventsListRequestEventTypeDeviceLowBattery, nil
 	case "device.battery_status_changed":
 		return EventsListRequestEventTypeDeviceBatteryStatusChanged, nil
+	case "device.third_party_integration_detected":
+		return EventsListRequestEventTypeDeviceThirdPartyIntegrationDetected, nil
+	case "device.third_party_integration_no_longer_detected":
+		return EventsListRequestEventTypeDeviceThirdPartyIntegrationNoLongerDetected, nil
+	case "device.salto.privacy_mode_activated":
+		return EventsListRequestEventTypeDeviceSaltoPrivacyModeActivated, nil
+	case "device.salto.privacy_mode_deactivated":
+		return EventsListRequestEventTypeDeviceSaltoPrivacyModeDeactivated, nil
+	case "device.connection_became_flaky":
+		return EventsListRequestEventTypeDeviceConnectionBecameFlaky, nil
+	case "device.connection_stabilized":
+		return EventsListRequestEventTypeDeviceConnectionStabilized, nil
+	case "device.error.subscription_required":
+		return EventsListRequestEventTypeDeviceErrorSubscriptionRequired, nil
+	case "device.error.subscription_required.resolved":
+		return EventsListRequestEventTypeDeviceErrorSubscriptionRequiredResolved, nil
 	case "access_code.created":
 		return EventsListRequestEventTypeAccessCodeCreated, nil
 	case "access_code.changed":
@@ -194,6 +222,10 @@ func NewEventsListRequestEventTypeFromString(s string) (EventsListRequestEventTy
 		return EventsListRequestEventTypeAccessCodeFailedToRemoveFromDevice, nil
 	case "access_code.delay_in_removing_from_device":
 		return EventsListRequestEventTypeAccessCodeDelayInRemovingFromDevice, nil
+	case "access_code.deleted_external_to_seam":
+		return EventsListRequestEventTypeAccessCodeDeletedExternalToSeam, nil
+	case "access_code.modified_external_to_seam":
+		return EventsListRequestEventTypeAccessCodeModifiedExternalToSeam, nil
 	case "access_code.unmanaged.converted_to_managed":
 		return EventsListRequestEventTypeAccessCodeUnmanagedConvertedToManaged, nil
 	case "access_code.unmanaged.failed_to_convert_to_managed":
@@ -208,8 +240,12 @@ func NewEventsListRequestEventTypeFromString(s string) (EventsListRequestEventTy
 		return EventsListRequestEventTypeLockUnlocked, nil
 	case "connected_account.connected":
 		return EventsListRequestEventTypeConnectedAccountConnected, nil
+	case "connected_account.successful_login":
+		return EventsListRequestEventTypeConnectedAccountSuccessfulLogin, nil
 	case "connected_account.created":
 		return EventsListRequestEventTypeConnectedAccountCreated, nil
+	case "connected_account.deleted":
+		return EventsListRequestEventTypeConnectedAccountDeleted, nil
 	case "connected_account.disconnected":
 		return EventsListRequestEventTypeConnectedAccountDisconnected, nil
 	case "connected_account.completed_first_sync":
@@ -240,6 +276,14 @@ const (
 	EventsListRequestEventTypesItemDeviceTampered                              EventsListRequestEventTypesItem = "device.tampered"
 	EventsListRequestEventTypesItemDeviceLowBattery                            EventsListRequestEventTypesItem = "device.low_battery"
 	EventsListRequestEventTypesItemDeviceBatteryStatusChanged                  EventsListRequestEventTypesItem = "device.battery_status_changed"
+	EventsListRequestEventTypesItemDeviceThirdPartyIntegrationDetected         EventsListRequestEventTypesItem = "device.third_party_integration_detected"
+	EventsListRequestEventTypesItemDeviceThirdPartyIntegrationNoLongerDetected EventsListRequestEventTypesItem = "device.third_party_integration_no_longer_detected"
+	EventsListRequestEventTypesItemDeviceSaltoPrivacyModeActivated             EventsListRequestEventTypesItem = "device.salto.privacy_mode_activated"
+	EventsListRequestEventTypesItemDeviceSaltoPrivacyModeDeactivated           EventsListRequestEventTypesItem = "device.salto.privacy_mode_deactivated"
+	EventsListRequestEventTypesItemDeviceConnectionBecameFlaky                 EventsListRequestEventTypesItem = "device.connection_became_flaky"
+	EventsListRequestEventTypesItemDeviceConnectionStabilized                  EventsListRequestEventTypesItem = "device.connection_stabilized"
+	EventsListRequestEventTypesItemDeviceErrorSubscriptionRequired             EventsListRequestEventTypesItem = "device.error.subscription_required"
+	EventsListRequestEventTypesItemDeviceErrorSubscriptionRequiredResolved     EventsListRequestEventTypesItem = "device.error.subscription_required.resolved"
 	EventsListRequestEventTypesItemAccessCodeCreated                           EventsListRequestEventTypesItem = "access_code.created"
 	EventsListRequestEventTypesItemAccessCodeChanged                           EventsListRequestEventTypesItem = "access_code.changed"
 	EventsListRequestEventTypesItemAccessCodeScheduledOnDevice                 EventsListRequestEventTypesItem = "access_code.scheduled_on_device"
@@ -250,6 +294,8 @@ const (
 	EventsListRequestEventTypesItemAccessCodeDelayInSettingOnDevice            EventsListRequestEventTypesItem = "access_code.delay_in_setting_on_device"
 	EventsListRequestEventTypesItemAccessCodeFailedToRemoveFromDevice          EventsListRequestEventTypesItem = "access_code.failed_to_remove_from_device"
 	EventsListRequestEventTypesItemAccessCodeDelayInRemovingFromDevice         EventsListRequestEventTypesItem = "access_code.delay_in_removing_from_device"
+	EventsListRequestEventTypesItemAccessCodeDeletedExternalToSeam             EventsListRequestEventTypesItem = "access_code.deleted_external_to_seam"
+	EventsListRequestEventTypesItemAccessCodeModifiedExternalToSeam            EventsListRequestEventTypesItem = "access_code.modified_external_to_seam"
 	EventsListRequestEventTypesItemAccessCodeUnmanagedConvertedToManaged       EventsListRequestEventTypesItem = "access_code.unmanaged.converted_to_managed"
 	EventsListRequestEventTypesItemAccessCodeUnmanagedFailedToConvertToManaged EventsListRequestEventTypesItem = "access_code.unmanaged.failed_to_convert_to_managed"
 	EventsListRequestEventTypesItemAccessCodeUnmanagedCreated                  EventsListRequestEventTypesItem = "access_code.unmanaged.created"
@@ -257,7 +303,9 @@ const (
 	EventsListRequestEventTypesItemLockLocked                                  EventsListRequestEventTypesItem = "lock.locked"
 	EventsListRequestEventTypesItemLockUnlocked                                EventsListRequestEventTypesItem = "lock.unlocked"
 	EventsListRequestEventTypesItemConnectedAccountConnected                   EventsListRequestEventTypesItem = "connected_account.connected"
+	EventsListRequestEventTypesItemConnectedAccountSuccessfulLogin             EventsListRequestEventTypesItem = "connected_account.successful_login"
 	EventsListRequestEventTypesItemConnectedAccountCreated                     EventsListRequestEventTypesItem = "connected_account.created"
+	EventsListRequestEventTypesItemConnectedAccountDeleted                     EventsListRequestEventTypesItem = "connected_account.deleted"
 	EventsListRequestEventTypesItemConnectedAccountDisconnected                EventsListRequestEventTypesItem = "connected_account.disconnected"
 	EventsListRequestEventTypesItemConnectedAccountCompletedFirstSync          EventsListRequestEventTypesItem = "connected_account.completed_first_sync"
 	EventsListRequestEventTypesItemNoiseSensorNoiseThresholdTriggered          EventsListRequestEventTypesItem = "noise_sensor.noise_threshold_triggered"
@@ -286,6 +334,22 @@ func NewEventsListRequestEventTypesItemFromString(s string) (EventsListRequestEv
 		return EventsListRequestEventTypesItemDeviceLowBattery, nil
 	case "device.battery_status_changed":
 		return EventsListRequestEventTypesItemDeviceBatteryStatusChanged, nil
+	case "device.third_party_integration_detected":
+		return EventsListRequestEventTypesItemDeviceThirdPartyIntegrationDetected, nil
+	case "device.third_party_integration_no_longer_detected":
+		return EventsListRequestEventTypesItemDeviceThirdPartyIntegrationNoLongerDetected, nil
+	case "device.salto.privacy_mode_activated":
+		return EventsListRequestEventTypesItemDeviceSaltoPrivacyModeActivated, nil
+	case "device.salto.privacy_mode_deactivated":
+		return EventsListRequestEventTypesItemDeviceSaltoPrivacyModeDeactivated, nil
+	case "device.connection_became_flaky":
+		return EventsListRequestEventTypesItemDeviceConnectionBecameFlaky, nil
+	case "device.connection_stabilized":
+		return EventsListRequestEventTypesItemDeviceConnectionStabilized, nil
+	case "device.error.subscription_required":
+		return EventsListRequestEventTypesItemDeviceErrorSubscriptionRequired, nil
+	case "device.error.subscription_required.resolved":
+		return EventsListRequestEventTypesItemDeviceErrorSubscriptionRequiredResolved, nil
 	case "access_code.created":
 		return EventsListRequestEventTypesItemAccessCodeCreated, nil
 	case "access_code.changed":
@@ -306,6 +370,10 @@ func NewEventsListRequestEventTypesItemFromString(s string) (EventsListRequestEv
 		return EventsListRequestEventTypesItemAccessCodeFailedToRemoveFromDevice, nil
 	case "access_code.delay_in_removing_from_device":
 		return EventsListRequestEventTypesItemAccessCodeDelayInRemovingFromDevice, nil
+	case "access_code.deleted_external_to_seam":
+		return EventsListRequestEventTypesItemAccessCodeDeletedExternalToSeam, nil
+	case "access_code.modified_external_to_seam":
+		return EventsListRequestEventTypesItemAccessCodeModifiedExternalToSeam, nil
 	case "access_code.unmanaged.converted_to_managed":
 		return EventsListRequestEventTypesItemAccessCodeUnmanagedConvertedToManaged, nil
 	case "access_code.unmanaged.failed_to_convert_to_managed":
@@ -320,8 +388,12 @@ func NewEventsListRequestEventTypesItemFromString(s string) (EventsListRequestEv
 		return EventsListRequestEventTypesItemLockUnlocked, nil
 	case "connected_account.connected":
 		return EventsListRequestEventTypesItemConnectedAccountConnected, nil
+	case "connected_account.successful_login":
+		return EventsListRequestEventTypesItemConnectedAccountSuccessfulLogin, nil
 	case "connected_account.created":
 		return EventsListRequestEventTypesItemConnectedAccountCreated, nil
+	case "connected_account.deleted":
+		return EventsListRequestEventTypesItemConnectedAccountDeleted, nil
 	case "connected_account.disconnected":
 		return EventsListRequestEventTypesItemConnectedAccountDisconnected, nil
 	case "connected_account.completed_first_sync":

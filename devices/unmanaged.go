@@ -3,23 +3,452 @@
 package devices
 
 import (
+	json "encoding/json"
+	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
+	core "github.com/seamapi/go/core"
 	time "time"
 )
 
+type UnmanagedGetRequest struct {
+	DeviceId *string `json:"device_id,omitempty"`
+	Name     *string `json:"name,omitempty"`
+}
+
 type UnmanagedListRequest struct {
-	ConnectedAccountId  *string                 `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                 `json:"connect_webview_id,omitempty"`
-	DeviceType          *seamapigo.DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []seamapigo.DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *seamapigo.Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string                `json:"device_ids,omitempty"`
-	Limit               *float64                `json:"limit,omitempty"`
-	CreatedBefore       *time.Time              `json:"created_before,omitempty"`
+	// List all devices owned by this connected account
+	ConnectedAccountId  *string                               `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                              `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                               `json:"connect_webview_id,omitempty"`
+	DeviceType          *UnmanagedListRequestDeviceType       `json:"device_type,omitempty"`
+	DeviceTypes         []UnmanagedListRequestDeviceTypesItem `json:"device_types,omitempty"`
+	Manufacturer        *UnmanagedListRequestManufacturer     `json:"manufacturer,omitempty"`
+	DeviceIds           []string                              `json:"device_ids,omitempty"`
+	Limit               *float64                              `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                            `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                               `json:"user_identifier_key,omitempty"`
+}
+
+type UnmanagedGetResponse struct {
+	Device *seamapigo.UnmanagedDevice `json:"device,omitempty"`
+	Ok     bool                       `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedGetResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedGetResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedListRequestDeviceType string
+
+const (
+	UnmanagedListRequestDeviceTypeAkuvoxLock             UnmanagedListRequestDeviceType = "akuvox_lock"
+	UnmanagedListRequestDeviceTypeAugustLock             UnmanagedListRequestDeviceType = "august_lock"
+	UnmanagedListRequestDeviceTypeBrivoAccessPoint       UnmanagedListRequestDeviceType = "brivo_access_point"
+	UnmanagedListRequestDeviceTypeButterflymxPanel       UnmanagedListRequestDeviceType = "butterflymx_panel"
+	UnmanagedListRequestDeviceTypeAvigilonAltaEntry      UnmanagedListRequestDeviceType = "avigilon_alta_entry"
+	UnmanagedListRequestDeviceTypeDoorkingLock           UnmanagedListRequestDeviceType = "doorking_lock"
+	UnmanagedListRequestDeviceTypeGenieDoor              UnmanagedListRequestDeviceType = "genie_door"
+	UnmanagedListRequestDeviceTypeIglooLock              UnmanagedListRequestDeviceType = "igloo_lock"
+	UnmanagedListRequestDeviceTypeLinearLock             UnmanagedListRequestDeviceType = "linear_lock"
+	UnmanagedListRequestDeviceTypeLocklyLock             UnmanagedListRequestDeviceType = "lockly_lock"
+	UnmanagedListRequestDeviceTypeKwiksetLock            UnmanagedListRequestDeviceType = "kwikset_lock"
+	UnmanagedListRequestDeviceTypeNukiLock               UnmanagedListRequestDeviceType = "nuki_lock"
+	UnmanagedListRequestDeviceTypeSaltoLock              UnmanagedListRequestDeviceType = "salto_lock"
+	UnmanagedListRequestDeviceTypeSchlageLock            UnmanagedListRequestDeviceType = "schlage_lock"
+	UnmanagedListRequestDeviceTypeSeamRelay              UnmanagedListRequestDeviceType = "seam_relay"
+	UnmanagedListRequestDeviceTypeSmartthingsLock        UnmanagedListRequestDeviceType = "smartthings_lock"
+	UnmanagedListRequestDeviceTypeWyzeLock               UnmanagedListRequestDeviceType = "wyze_lock"
+	UnmanagedListRequestDeviceTypeYaleLock               UnmanagedListRequestDeviceType = "yale_lock"
+	UnmanagedListRequestDeviceTypeTwoNIntercom           UnmanagedListRequestDeviceType = "two_n_intercom"
+	UnmanagedListRequestDeviceTypeControlbywebDevice     UnmanagedListRequestDeviceType = "controlbyweb_device"
+	UnmanagedListRequestDeviceTypeTtlockLock             UnmanagedListRequestDeviceType = "ttlock_lock"
+	UnmanagedListRequestDeviceTypeIgloohomeLock          UnmanagedListRequestDeviceType = "igloohome_lock"
+	UnmanagedListRequestDeviceTypeHubitatLock            UnmanagedListRequestDeviceType = "hubitat_lock"
+	UnmanagedListRequestDeviceTypeFourSuitesDoor         UnmanagedListRequestDeviceType = "four_suites_door"
+	UnmanagedListRequestDeviceTypeDormakabaOracodeDoor   UnmanagedListRequestDeviceType = "dormakaba_oracode_door"
+	UnmanagedListRequestDeviceTypeNoiseawareActivityZone UnmanagedListRequestDeviceType = "noiseaware_activity_zone"
+	UnmanagedListRequestDeviceTypeMinutSensor            UnmanagedListRequestDeviceType = "minut_sensor"
+	UnmanagedListRequestDeviceTypeEcobeeThermostat       UnmanagedListRequestDeviceType = "ecobee_thermostat"
+	UnmanagedListRequestDeviceTypeNestThermostat         UnmanagedListRequestDeviceType = "nest_thermostat"
+	UnmanagedListRequestDeviceTypeIosPhone               UnmanagedListRequestDeviceType = "ios_phone"
+	UnmanagedListRequestDeviceTypeAndroidPhone           UnmanagedListRequestDeviceType = "android_phone"
+)
+
+func NewUnmanagedListRequestDeviceTypeFromString(s string) (UnmanagedListRequestDeviceType, error) {
+	switch s {
+	case "akuvox_lock":
+		return UnmanagedListRequestDeviceTypeAkuvoxLock, nil
+	case "august_lock":
+		return UnmanagedListRequestDeviceTypeAugustLock, nil
+	case "brivo_access_point":
+		return UnmanagedListRequestDeviceTypeBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return UnmanagedListRequestDeviceTypeButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return UnmanagedListRequestDeviceTypeAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return UnmanagedListRequestDeviceTypeDoorkingLock, nil
+	case "genie_door":
+		return UnmanagedListRequestDeviceTypeGenieDoor, nil
+	case "igloo_lock":
+		return UnmanagedListRequestDeviceTypeIglooLock, nil
+	case "linear_lock":
+		return UnmanagedListRequestDeviceTypeLinearLock, nil
+	case "lockly_lock":
+		return UnmanagedListRequestDeviceTypeLocklyLock, nil
+	case "kwikset_lock":
+		return UnmanagedListRequestDeviceTypeKwiksetLock, nil
+	case "nuki_lock":
+		return UnmanagedListRequestDeviceTypeNukiLock, nil
+	case "salto_lock":
+		return UnmanagedListRequestDeviceTypeSaltoLock, nil
+	case "schlage_lock":
+		return UnmanagedListRequestDeviceTypeSchlageLock, nil
+	case "seam_relay":
+		return UnmanagedListRequestDeviceTypeSeamRelay, nil
+	case "smartthings_lock":
+		return UnmanagedListRequestDeviceTypeSmartthingsLock, nil
+	case "wyze_lock":
+		return UnmanagedListRequestDeviceTypeWyzeLock, nil
+	case "yale_lock":
+		return UnmanagedListRequestDeviceTypeYaleLock, nil
+	case "two_n_intercom":
+		return UnmanagedListRequestDeviceTypeTwoNIntercom, nil
+	case "controlbyweb_device":
+		return UnmanagedListRequestDeviceTypeControlbywebDevice, nil
+	case "ttlock_lock":
+		return UnmanagedListRequestDeviceTypeTtlockLock, nil
+	case "igloohome_lock":
+		return UnmanagedListRequestDeviceTypeIgloohomeLock, nil
+	case "hubitat_lock":
+		return UnmanagedListRequestDeviceTypeHubitatLock, nil
+	case "four_suites_door":
+		return UnmanagedListRequestDeviceTypeFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return UnmanagedListRequestDeviceTypeDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return UnmanagedListRequestDeviceTypeNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return UnmanagedListRequestDeviceTypeMinutSensor, nil
+	case "ecobee_thermostat":
+		return UnmanagedListRequestDeviceTypeEcobeeThermostat, nil
+	case "nest_thermostat":
+		return UnmanagedListRequestDeviceTypeNestThermostat, nil
+	case "ios_phone":
+		return UnmanagedListRequestDeviceTypeIosPhone, nil
+	case "android_phone":
+		return UnmanagedListRequestDeviceTypeAndroidPhone, nil
+	}
+	var t UnmanagedListRequestDeviceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedListRequestDeviceType) Ptr() *UnmanagedListRequestDeviceType {
+	return &u
+}
+
+type UnmanagedListRequestDeviceTypesItem string
+
+const (
+	UnmanagedListRequestDeviceTypesItemAkuvoxLock             UnmanagedListRequestDeviceTypesItem = "akuvox_lock"
+	UnmanagedListRequestDeviceTypesItemAugustLock             UnmanagedListRequestDeviceTypesItem = "august_lock"
+	UnmanagedListRequestDeviceTypesItemBrivoAccessPoint       UnmanagedListRequestDeviceTypesItem = "brivo_access_point"
+	UnmanagedListRequestDeviceTypesItemButterflymxPanel       UnmanagedListRequestDeviceTypesItem = "butterflymx_panel"
+	UnmanagedListRequestDeviceTypesItemAvigilonAltaEntry      UnmanagedListRequestDeviceTypesItem = "avigilon_alta_entry"
+	UnmanagedListRequestDeviceTypesItemDoorkingLock           UnmanagedListRequestDeviceTypesItem = "doorking_lock"
+	UnmanagedListRequestDeviceTypesItemGenieDoor              UnmanagedListRequestDeviceTypesItem = "genie_door"
+	UnmanagedListRequestDeviceTypesItemIglooLock              UnmanagedListRequestDeviceTypesItem = "igloo_lock"
+	UnmanagedListRequestDeviceTypesItemLinearLock             UnmanagedListRequestDeviceTypesItem = "linear_lock"
+	UnmanagedListRequestDeviceTypesItemLocklyLock             UnmanagedListRequestDeviceTypesItem = "lockly_lock"
+	UnmanagedListRequestDeviceTypesItemKwiksetLock            UnmanagedListRequestDeviceTypesItem = "kwikset_lock"
+	UnmanagedListRequestDeviceTypesItemNukiLock               UnmanagedListRequestDeviceTypesItem = "nuki_lock"
+	UnmanagedListRequestDeviceTypesItemSaltoLock              UnmanagedListRequestDeviceTypesItem = "salto_lock"
+	UnmanagedListRequestDeviceTypesItemSchlageLock            UnmanagedListRequestDeviceTypesItem = "schlage_lock"
+	UnmanagedListRequestDeviceTypesItemSeamRelay              UnmanagedListRequestDeviceTypesItem = "seam_relay"
+	UnmanagedListRequestDeviceTypesItemSmartthingsLock        UnmanagedListRequestDeviceTypesItem = "smartthings_lock"
+	UnmanagedListRequestDeviceTypesItemWyzeLock               UnmanagedListRequestDeviceTypesItem = "wyze_lock"
+	UnmanagedListRequestDeviceTypesItemYaleLock               UnmanagedListRequestDeviceTypesItem = "yale_lock"
+	UnmanagedListRequestDeviceTypesItemTwoNIntercom           UnmanagedListRequestDeviceTypesItem = "two_n_intercom"
+	UnmanagedListRequestDeviceTypesItemControlbywebDevice     UnmanagedListRequestDeviceTypesItem = "controlbyweb_device"
+	UnmanagedListRequestDeviceTypesItemTtlockLock             UnmanagedListRequestDeviceTypesItem = "ttlock_lock"
+	UnmanagedListRequestDeviceTypesItemIgloohomeLock          UnmanagedListRequestDeviceTypesItem = "igloohome_lock"
+	UnmanagedListRequestDeviceTypesItemHubitatLock            UnmanagedListRequestDeviceTypesItem = "hubitat_lock"
+	UnmanagedListRequestDeviceTypesItemFourSuitesDoor         UnmanagedListRequestDeviceTypesItem = "four_suites_door"
+	UnmanagedListRequestDeviceTypesItemDormakabaOracodeDoor   UnmanagedListRequestDeviceTypesItem = "dormakaba_oracode_door"
+	UnmanagedListRequestDeviceTypesItemNoiseawareActivityZone UnmanagedListRequestDeviceTypesItem = "noiseaware_activity_zone"
+	UnmanagedListRequestDeviceTypesItemMinutSensor            UnmanagedListRequestDeviceTypesItem = "minut_sensor"
+	UnmanagedListRequestDeviceTypesItemEcobeeThermostat       UnmanagedListRequestDeviceTypesItem = "ecobee_thermostat"
+	UnmanagedListRequestDeviceTypesItemNestThermostat         UnmanagedListRequestDeviceTypesItem = "nest_thermostat"
+	UnmanagedListRequestDeviceTypesItemIosPhone               UnmanagedListRequestDeviceTypesItem = "ios_phone"
+	UnmanagedListRequestDeviceTypesItemAndroidPhone           UnmanagedListRequestDeviceTypesItem = "android_phone"
+)
+
+func NewUnmanagedListRequestDeviceTypesItemFromString(s string) (UnmanagedListRequestDeviceTypesItem, error) {
+	switch s {
+	case "akuvox_lock":
+		return UnmanagedListRequestDeviceTypesItemAkuvoxLock, nil
+	case "august_lock":
+		return UnmanagedListRequestDeviceTypesItemAugustLock, nil
+	case "brivo_access_point":
+		return UnmanagedListRequestDeviceTypesItemBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return UnmanagedListRequestDeviceTypesItemButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return UnmanagedListRequestDeviceTypesItemAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return UnmanagedListRequestDeviceTypesItemDoorkingLock, nil
+	case "genie_door":
+		return UnmanagedListRequestDeviceTypesItemGenieDoor, nil
+	case "igloo_lock":
+		return UnmanagedListRequestDeviceTypesItemIglooLock, nil
+	case "linear_lock":
+		return UnmanagedListRequestDeviceTypesItemLinearLock, nil
+	case "lockly_lock":
+		return UnmanagedListRequestDeviceTypesItemLocklyLock, nil
+	case "kwikset_lock":
+		return UnmanagedListRequestDeviceTypesItemKwiksetLock, nil
+	case "nuki_lock":
+		return UnmanagedListRequestDeviceTypesItemNukiLock, nil
+	case "salto_lock":
+		return UnmanagedListRequestDeviceTypesItemSaltoLock, nil
+	case "schlage_lock":
+		return UnmanagedListRequestDeviceTypesItemSchlageLock, nil
+	case "seam_relay":
+		return UnmanagedListRequestDeviceTypesItemSeamRelay, nil
+	case "smartthings_lock":
+		return UnmanagedListRequestDeviceTypesItemSmartthingsLock, nil
+	case "wyze_lock":
+		return UnmanagedListRequestDeviceTypesItemWyzeLock, nil
+	case "yale_lock":
+		return UnmanagedListRequestDeviceTypesItemYaleLock, nil
+	case "two_n_intercom":
+		return UnmanagedListRequestDeviceTypesItemTwoNIntercom, nil
+	case "controlbyweb_device":
+		return UnmanagedListRequestDeviceTypesItemControlbywebDevice, nil
+	case "ttlock_lock":
+		return UnmanagedListRequestDeviceTypesItemTtlockLock, nil
+	case "igloohome_lock":
+		return UnmanagedListRequestDeviceTypesItemIgloohomeLock, nil
+	case "hubitat_lock":
+		return UnmanagedListRequestDeviceTypesItemHubitatLock, nil
+	case "four_suites_door":
+		return UnmanagedListRequestDeviceTypesItemFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return UnmanagedListRequestDeviceTypesItemDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return UnmanagedListRequestDeviceTypesItemNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return UnmanagedListRequestDeviceTypesItemMinutSensor, nil
+	case "ecobee_thermostat":
+		return UnmanagedListRequestDeviceTypesItemEcobeeThermostat, nil
+	case "nest_thermostat":
+		return UnmanagedListRequestDeviceTypesItemNestThermostat, nil
+	case "ios_phone":
+		return UnmanagedListRequestDeviceTypesItemIosPhone, nil
+	case "android_phone":
+		return UnmanagedListRequestDeviceTypesItemAndroidPhone, nil
+	}
+	var t UnmanagedListRequestDeviceTypesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedListRequestDeviceTypesItem) Ptr() *UnmanagedListRequestDeviceTypesItem {
+	return &u
+}
+
+type UnmanagedListRequestManufacturer string
+
+const (
+	UnmanagedListRequestManufacturerAkuvox           UnmanagedListRequestManufacturer = "akuvox"
+	UnmanagedListRequestManufacturerAugust           UnmanagedListRequestManufacturer = "august"
+	UnmanagedListRequestManufacturerAvigilonAlta     UnmanagedListRequestManufacturer = "avigilon_alta"
+	UnmanagedListRequestManufacturerBrivo            UnmanagedListRequestManufacturer = "brivo"
+	UnmanagedListRequestManufacturerButterflymx      UnmanagedListRequestManufacturer = "butterflymx"
+	UnmanagedListRequestManufacturerDoorking         UnmanagedListRequestManufacturer = "doorking"
+	UnmanagedListRequestManufacturerFourSuites       UnmanagedListRequestManufacturer = "four_suites"
+	UnmanagedListRequestManufacturerGenie            UnmanagedListRequestManufacturer = "genie"
+	UnmanagedListRequestManufacturerIgloo            UnmanagedListRequestManufacturer = "igloo"
+	UnmanagedListRequestManufacturerKeywe            UnmanagedListRequestManufacturer = "keywe"
+	UnmanagedListRequestManufacturerKwikset          UnmanagedListRequestManufacturer = "kwikset"
+	UnmanagedListRequestManufacturerLinear           UnmanagedListRequestManufacturer = "linear"
+	UnmanagedListRequestManufacturerLockly           UnmanagedListRequestManufacturer = "lockly"
+	UnmanagedListRequestManufacturerNuki             UnmanagedListRequestManufacturer = "nuki"
+	UnmanagedListRequestManufacturerPhilia           UnmanagedListRequestManufacturer = "philia"
+	UnmanagedListRequestManufacturerSalto            UnmanagedListRequestManufacturer = "salto"
+	UnmanagedListRequestManufacturerSamsung          UnmanagedListRequestManufacturer = "samsung"
+	UnmanagedListRequestManufacturerSchlage          UnmanagedListRequestManufacturer = "schlage"
+	UnmanagedListRequestManufacturerSeam             UnmanagedListRequestManufacturer = "seam"
+	UnmanagedListRequestManufacturerUnknown          UnmanagedListRequestManufacturer = "unknown"
+	UnmanagedListRequestManufacturerWyze             UnmanagedListRequestManufacturer = "wyze"
+	UnmanagedListRequestManufacturerYale             UnmanagedListRequestManufacturer = "yale"
+	UnmanagedListRequestManufacturerMinut            UnmanagedListRequestManufacturer = "minut"
+	UnmanagedListRequestManufacturerTwoN             UnmanagedListRequestManufacturer = "two_n"
+	UnmanagedListRequestManufacturerTtlock           UnmanagedListRequestManufacturer = "ttlock"
+	UnmanagedListRequestManufacturerNest             UnmanagedListRequestManufacturer = "nest"
+	UnmanagedListRequestManufacturerIgloohome        UnmanagedListRequestManufacturer = "igloohome"
+	UnmanagedListRequestManufacturerEcobee           UnmanagedListRequestManufacturer = "ecobee"
+	UnmanagedListRequestManufacturerHubitat          UnmanagedListRequestManufacturer = "hubitat"
+	UnmanagedListRequestManufacturerControlbyweb     UnmanagedListRequestManufacturer = "controlbyweb"
+	UnmanagedListRequestManufacturerSmartthings      UnmanagedListRequestManufacturer = "smartthings"
+	UnmanagedListRequestManufacturerDormakabaOracode UnmanagedListRequestManufacturer = "dormakaba_oracode"
+)
+
+func NewUnmanagedListRequestManufacturerFromString(s string) (UnmanagedListRequestManufacturer, error) {
+	switch s {
+	case "akuvox":
+		return UnmanagedListRequestManufacturerAkuvox, nil
+	case "august":
+		return UnmanagedListRequestManufacturerAugust, nil
+	case "avigilon_alta":
+		return UnmanagedListRequestManufacturerAvigilonAlta, nil
+	case "brivo":
+		return UnmanagedListRequestManufacturerBrivo, nil
+	case "butterflymx":
+		return UnmanagedListRequestManufacturerButterflymx, nil
+	case "doorking":
+		return UnmanagedListRequestManufacturerDoorking, nil
+	case "four_suites":
+		return UnmanagedListRequestManufacturerFourSuites, nil
+	case "genie":
+		return UnmanagedListRequestManufacturerGenie, nil
+	case "igloo":
+		return UnmanagedListRequestManufacturerIgloo, nil
+	case "keywe":
+		return UnmanagedListRequestManufacturerKeywe, nil
+	case "kwikset":
+		return UnmanagedListRequestManufacturerKwikset, nil
+	case "linear":
+		return UnmanagedListRequestManufacturerLinear, nil
+	case "lockly":
+		return UnmanagedListRequestManufacturerLockly, nil
+	case "nuki":
+		return UnmanagedListRequestManufacturerNuki, nil
+	case "philia":
+		return UnmanagedListRequestManufacturerPhilia, nil
+	case "salto":
+		return UnmanagedListRequestManufacturerSalto, nil
+	case "samsung":
+		return UnmanagedListRequestManufacturerSamsung, nil
+	case "schlage":
+		return UnmanagedListRequestManufacturerSchlage, nil
+	case "seam":
+		return UnmanagedListRequestManufacturerSeam, nil
+	case "unknown":
+		return UnmanagedListRequestManufacturerUnknown, nil
+	case "wyze":
+		return UnmanagedListRequestManufacturerWyze, nil
+	case "yale":
+		return UnmanagedListRequestManufacturerYale, nil
+	case "minut":
+		return UnmanagedListRequestManufacturerMinut, nil
+	case "two_n":
+		return UnmanagedListRequestManufacturerTwoN, nil
+	case "ttlock":
+		return UnmanagedListRequestManufacturerTtlock, nil
+	case "nest":
+		return UnmanagedListRequestManufacturerNest, nil
+	case "igloohome":
+		return UnmanagedListRequestManufacturerIgloohome, nil
+	case "ecobee":
+		return UnmanagedListRequestManufacturerEcobee, nil
+	case "hubitat":
+		return UnmanagedListRequestManufacturerHubitat, nil
+	case "controlbyweb":
+		return UnmanagedListRequestManufacturerControlbyweb, nil
+	case "smartthings":
+		return UnmanagedListRequestManufacturerSmartthings, nil
+	case "dormakaba_oracode":
+		return UnmanagedListRequestManufacturerDormakabaOracode, nil
+	}
+	var t UnmanagedListRequestManufacturer
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedListRequestManufacturer) Ptr() *UnmanagedListRequestManufacturer {
+	return &u
+}
+
+type UnmanagedListResponse struct {
+	Devices []*seamapigo.UnmanagedDevice `json:"devices,omitempty"`
+	Ok      bool                         `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedListResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedListResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedUpdateResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedUpdateResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedUpdateResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedUpdateRequest struct {
 	DeviceId  string `json:"device_id"`
-	IsManaged bool   `json:"is_managed"`
+	IsManaged string `json:"is_managed"`
 }

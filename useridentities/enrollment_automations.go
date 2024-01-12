@@ -5,8 +5,13 @@ package useridentities
 import (
 	json "encoding/json"
 	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 )
+
+type EnrollmentAutomationsGetRequest struct {
+	EnrollmentAutomationId string `json:"enrollment_automation_id"`
+}
 
 type EnrollmentAutomationsLaunchRequest struct {
 	UserIdentityId               string  `json:"user_identity_id"`
@@ -14,6 +19,40 @@ type EnrollmentAutomationsLaunchRequest struct {
 	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty"`
 	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty"`
 	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty"`
+}
+
+type EnrollmentAutomationsListRequest struct {
+	UserIdentityId string `json:"user_identity_id"`
+}
+
+type EnrollmentAutomationsGetResponse struct {
+	EnrollmentAutomation *seamapigo.EnrollmentAutomation `json:"enrollment_automation,omitempty"`
+	Ok                   bool                            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EnrollmentAutomationsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentAutomationsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EnrollmentAutomationsGetResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentAutomationsGetResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EnrollmentAutomationsLaunchResponse struct {
@@ -35,6 +74,36 @@ func (e *EnrollmentAutomationsLaunchResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (e *EnrollmentAutomationsLaunchResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EnrollmentAutomationsListResponse struct {
+	EnrollmentAutomations []*seamapigo.EnrollmentAutomation `json:"enrollment_automations,omitempty"`
+	Ok                    bool                              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EnrollmentAutomationsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentAutomationsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EnrollmentAutomationsListResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentAutomationsListResponse) String() string {
 	if len(e._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value

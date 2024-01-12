@@ -35,7 +35,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteRequest) (bool, error) {
+func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteRequest) (*seamapigo.DevicesDeleteResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -73,16 +73,16 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteReq
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }
 
 func (c *Client) Get(ctx context.Context, request *seamapigo.DevicesGetRequest) (*seamapigo.Device, error) {
@@ -185,7 +185,7 @@ func (c *Client) List(ctx context.Context, request *seamapigo.DevicesListRequest
 	return response.Devices, nil
 }
 
-func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.DevicesListDeviceProvidersRequest) ([]*seamapigo.DevicesListDeviceProvidersResponseDeviceProvidersItem, error) {
+func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.DevicesListDeviceProvidersRequest) ([]*seamapigo.DeviceProvider, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -235,7 +235,7 @@ func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.Dev
 	return response.DeviceProviders, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *seamapigo.DevicesUpdateRequest) (bool, error) {
+func (c *Client) Update(ctx context.Context, request *seamapigo.DevicesUpdateRequest) (*seamapigo.DevicesUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -280,7 +280,7 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.DevicesUpdateReq
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return false, err
+		return nil, err
 	}
-	return response.Ok, nil
+	return response, nil
 }

@@ -9,6 +9,13 @@ import (
 	time "time"
 )
 
+type ThermostatsCoolRequest struct {
+	DeviceId                  string   `json:"device_id"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
+	Sync                      *bool    `json:"sync,omitempty"`
+}
+
 type ThermostatsGetRequest struct {
 	DeviceId *string `json:"device_id,omitempty"`
 	Name     *string `json:"name,omitempty"`
@@ -21,45 +28,68 @@ type ThermostatsHeatRequest struct {
 	Sync                      *bool    `json:"sync,omitempty"`
 }
 
+type ThermostatsHeatCoolRequest struct {
+	DeviceId                  string   `json:"device_id"`
+	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty"`
+	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty"`
+	Sync                      *bool    `json:"sync,omitempty"`
+}
+
 type ThermostatsListRequest struct {
-	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string      `json:"device_ids,omitempty"`
-	Limit               *float64      `json:"limit,omitempty"`
-	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
+	// List all devices owned by this connected account
+	ConnectedAccountId  *string                                 `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                 `json:"connect_webview_id,omitempty"`
+	DeviceType          *ThermostatsListRequestDeviceType       `json:"device_type,omitempty"`
+	DeviceTypes         []ThermostatsListRequestDeviceTypesItem `json:"device_types,omitempty"`
+	Manufacturer        *ThermostatsListRequestManufacturer     `json:"manufacturer,omitempty"`
+	DeviceIds           []string                                `json:"device_ids,omitempty"`
+	Limit               *float64                                `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                              `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                                 `json:"user_identifier_key,omitempty"`
+}
+
+type ThermostatsOffRequest struct {
+	DeviceId string `json:"device_id"`
+	Sync     *bool  `json:"sync,omitempty"`
 }
 
 type ThermostatsSetFanModeRequest struct {
-	DeviceId       string          `json:"device_id"`
-	FanMode        *FanModeSetting `json:"fan_mode,omitempty"`
-	FanModeSetting *FanModeSetting `json:"fan_mode_setting,omitempty"`
-	Sync           *bool           `json:"sync,omitempty"`
+	DeviceId       string                                      `json:"device_id"`
+	FanMode        *ThermostatsSetFanModeRequestFanMode        `json:"fan_mode,omitempty"`
+	FanModeSetting *ThermostatsSetFanModeRequestFanModeSetting `json:"fan_mode_setting,omitempty"`
+	Sync           *bool                                       `json:"sync,omitempty"`
 }
 
-type FanModeSetting string
+type ThermostatsCoolResponse struct {
+	Ok bool `json:"ok"`
 
-const (
-	FanModeSettingAuto FanModeSetting = "auto"
-	FanModeSettingOn   FanModeSetting = "on"
-)
+	_rawJSON json.RawMessage
+}
 
-func NewFanModeSettingFromString(s string) (FanModeSetting, error) {
-	switch s {
-	case "auto":
-		return FanModeSettingAuto, nil
-	case "on":
-		return FanModeSettingOn, nil
+func (t *ThermostatsCoolResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsCoolResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t FanModeSetting
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*t = ThermostatsCoolResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (f FanModeSetting) Ptr() *FanModeSetting {
-	return &f
+func (t *ThermostatsCoolResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsGetResponse struct {
@@ -81,6 +111,35 @@ func (t *ThermostatsGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (t *ThermostatsGetResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsHeatCoolResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsHeatCoolResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsHeatCoolResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsHeatCoolResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsHeatCoolResponse) String() string {
 	if len(t._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
 			return value
@@ -121,6 +180,336 @@ func (t *ThermostatsHeatResponse) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type ThermostatsListRequestDeviceType string
+
+const (
+	ThermostatsListRequestDeviceTypeAkuvoxLock             ThermostatsListRequestDeviceType = "akuvox_lock"
+	ThermostatsListRequestDeviceTypeAugustLock             ThermostatsListRequestDeviceType = "august_lock"
+	ThermostatsListRequestDeviceTypeBrivoAccessPoint       ThermostatsListRequestDeviceType = "brivo_access_point"
+	ThermostatsListRequestDeviceTypeButterflymxPanel       ThermostatsListRequestDeviceType = "butterflymx_panel"
+	ThermostatsListRequestDeviceTypeAvigilonAltaEntry      ThermostatsListRequestDeviceType = "avigilon_alta_entry"
+	ThermostatsListRequestDeviceTypeDoorkingLock           ThermostatsListRequestDeviceType = "doorking_lock"
+	ThermostatsListRequestDeviceTypeGenieDoor              ThermostatsListRequestDeviceType = "genie_door"
+	ThermostatsListRequestDeviceTypeIglooLock              ThermostatsListRequestDeviceType = "igloo_lock"
+	ThermostatsListRequestDeviceTypeLinearLock             ThermostatsListRequestDeviceType = "linear_lock"
+	ThermostatsListRequestDeviceTypeLocklyLock             ThermostatsListRequestDeviceType = "lockly_lock"
+	ThermostatsListRequestDeviceTypeKwiksetLock            ThermostatsListRequestDeviceType = "kwikset_lock"
+	ThermostatsListRequestDeviceTypeNukiLock               ThermostatsListRequestDeviceType = "nuki_lock"
+	ThermostatsListRequestDeviceTypeSaltoLock              ThermostatsListRequestDeviceType = "salto_lock"
+	ThermostatsListRequestDeviceTypeSchlageLock            ThermostatsListRequestDeviceType = "schlage_lock"
+	ThermostatsListRequestDeviceTypeSeamRelay              ThermostatsListRequestDeviceType = "seam_relay"
+	ThermostatsListRequestDeviceTypeSmartthingsLock        ThermostatsListRequestDeviceType = "smartthings_lock"
+	ThermostatsListRequestDeviceTypeWyzeLock               ThermostatsListRequestDeviceType = "wyze_lock"
+	ThermostatsListRequestDeviceTypeYaleLock               ThermostatsListRequestDeviceType = "yale_lock"
+	ThermostatsListRequestDeviceTypeTwoNIntercom           ThermostatsListRequestDeviceType = "two_n_intercom"
+	ThermostatsListRequestDeviceTypeControlbywebDevice     ThermostatsListRequestDeviceType = "controlbyweb_device"
+	ThermostatsListRequestDeviceTypeTtlockLock             ThermostatsListRequestDeviceType = "ttlock_lock"
+	ThermostatsListRequestDeviceTypeIgloohomeLock          ThermostatsListRequestDeviceType = "igloohome_lock"
+	ThermostatsListRequestDeviceTypeHubitatLock            ThermostatsListRequestDeviceType = "hubitat_lock"
+	ThermostatsListRequestDeviceTypeFourSuitesDoor         ThermostatsListRequestDeviceType = "four_suites_door"
+	ThermostatsListRequestDeviceTypeDormakabaOracodeDoor   ThermostatsListRequestDeviceType = "dormakaba_oracode_door"
+	ThermostatsListRequestDeviceTypeNoiseawareActivityZone ThermostatsListRequestDeviceType = "noiseaware_activity_zone"
+	ThermostatsListRequestDeviceTypeMinutSensor            ThermostatsListRequestDeviceType = "minut_sensor"
+	ThermostatsListRequestDeviceTypeEcobeeThermostat       ThermostatsListRequestDeviceType = "ecobee_thermostat"
+	ThermostatsListRequestDeviceTypeNestThermostat         ThermostatsListRequestDeviceType = "nest_thermostat"
+	ThermostatsListRequestDeviceTypeIosPhone               ThermostatsListRequestDeviceType = "ios_phone"
+	ThermostatsListRequestDeviceTypeAndroidPhone           ThermostatsListRequestDeviceType = "android_phone"
+)
+
+func NewThermostatsListRequestDeviceTypeFromString(s string) (ThermostatsListRequestDeviceType, error) {
+	switch s {
+	case "akuvox_lock":
+		return ThermostatsListRequestDeviceTypeAkuvoxLock, nil
+	case "august_lock":
+		return ThermostatsListRequestDeviceTypeAugustLock, nil
+	case "brivo_access_point":
+		return ThermostatsListRequestDeviceTypeBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return ThermostatsListRequestDeviceTypeButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return ThermostatsListRequestDeviceTypeAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return ThermostatsListRequestDeviceTypeDoorkingLock, nil
+	case "genie_door":
+		return ThermostatsListRequestDeviceTypeGenieDoor, nil
+	case "igloo_lock":
+		return ThermostatsListRequestDeviceTypeIglooLock, nil
+	case "linear_lock":
+		return ThermostatsListRequestDeviceTypeLinearLock, nil
+	case "lockly_lock":
+		return ThermostatsListRequestDeviceTypeLocklyLock, nil
+	case "kwikset_lock":
+		return ThermostatsListRequestDeviceTypeKwiksetLock, nil
+	case "nuki_lock":
+		return ThermostatsListRequestDeviceTypeNukiLock, nil
+	case "salto_lock":
+		return ThermostatsListRequestDeviceTypeSaltoLock, nil
+	case "schlage_lock":
+		return ThermostatsListRequestDeviceTypeSchlageLock, nil
+	case "seam_relay":
+		return ThermostatsListRequestDeviceTypeSeamRelay, nil
+	case "smartthings_lock":
+		return ThermostatsListRequestDeviceTypeSmartthingsLock, nil
+	case "wyze_lock":
+		return ThermostatsListRequestDeviceTypeWyzeLock, nil
+	case "yale_lock":
+		return ThermostatsListRequestDeviceTypeYaleLock, nil
+	case "two_n_intercom":
+		return ThermostatsListRequestDeviceTypeTwoNIntercom, nil
+	case "controlbyweb_device":
+		return ThermostatsListRequestDeviceTypeControlbywebDevice, nil
+	case "ttlock_lock":
+		return ThermostatsListRequestDeviceTypeTtlockLock, nil
+	case "igloohome_lock":
+		return ThermostatsListRequestDeviceTypeIgloohomeLock, nil
+	case "hubitat_lock":
+		return ThermostatsListRequestDeviceTypeHubitatLock, nil
+	case "four_suites_door":
+		return ThermostatsListRequestDeviceTypeFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return ThermostatsListRequestDeviceTypeDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return ThermostatsListRequestDeviceTypeNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return ThermostatsListRequestDeviceTypeMinutSensor, nil
+	case "ecobee_thermostat":
+		return ThermostatsListRequestDeviceTypeEcobeeThermostat, nil
+	case "nest_thermostat":
+		return ThermostatsListRequestDeviceTypeNestThermostat, nil
+	case "ios_phone":
+		return ThermostatsListRequestDeviceTypeIosPhone, nil
+	case "android_phone":
+		return ThermostatsListRequestDeviceTypeAndroidPhone, nil
+	}
+	var t ThermostatsListRequestDeviceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsListRequestDeviceType) Ptr() *ThermostatsListRequestDeviceType {
+	return &t
+}
+
+type ThermostatsListRequestDeviceTypesItem string
+
+const (
+	ThermostatsListRequestDeviceTypesItemAkuvoxLock             ThermostatsListRequestDeviceTypesItem = "akuvox_lock"
+	ThermostatsListRequestDeviceTypesItemAugustLock             ThermostatsListRequestDeviceTypesItem = "august_lock"
+	ThermostatsListRequestDeviceTypesItemBrivoAccessPoint       ThermostatsListRequestDeviceTypesItem = "brivo_access_point"
+	ThermostatsListRequestDeviceTypesItemButterflymxPanel       ThermostatsListRequestDeviceTypesItem = "butterflymx_panel"
+	ThermostatsListRequestDeviceTypesItemAvigilonAltaEntry      ThermostatsListRequestDeviceTypesItem = "avigilon_alta_entry"
+	ThermostatsListRequestDeviceTypesItemDoorkingLock           ThermostatsListRequestDeviceTypesItem = "doorking_lock"
+	ThermostatsListRequestDeviceTypesItemGenieDoor              ThermostatsListRequestDeviceTypesItem = "genie_door"
+	ThermostatsListRequestDeviceTypesItemIglooLock              ThermostatsListRequestDeviceTypesItem = "igloo_lock"
+	ThermostatsListRequestDeviceTypesItemLinearLock             ThermostatsListRequestDeviceTypesItem = "linear_lock"
+	ThermostatsListRequestDeviceTypesItemLocklyLock             ThermostatsListRequestDeviceTypesItem = "lockly_lock"
+	ThermostatsListRequestDeviceTypesItemKwiksetLock            ThermostatsListRequestDeviceTypesItem = "kwikset_lock"
+	ThermostatsListRequestDeviceTypesItemNukiLock               ThermostatsListRequestDeviceTypesItem = "nuki_lock"
+	ThermostatsListRequestDeviceTypesItemSaltoLock              ThermostatsListRequestDeviceTypesItem = "salto_lock"
+	ThermostatsListRequestDeviceTypesItemSchlageLock            ThermostatsListRequestDeviceTypesItem = "schlage_lock"
+	ThermostatsListRequestDeviceTypesItemSeamRelay              ThermostatsListRequestDeviceTypesItem = "seam_relay"
+	ThermostatsListRequestDeviceTypesItemSmartthingsLock        ThermostatsListRequestDeviceTypesItem = "smartthings_lock"
+	ThermostatsListRequestDeviceTypesItemWyzeLock               ThermostatsListRequestDeviceTypesItem = "wyze_lock"
+	ThermostatsListRequestDeviceTypesItemYaleLock               ThermostatsListRequestDeviceTypesItem = "yale_lock"
+	ThermostatsListRequestDeviceTypesItemTwoNIntercom           ThermostatsListRequestDeviceTypesItem = "two_n_intercom"
+	ThermostatsListRequestDeviceTypesItemControlbywebDevice     ThermostatsListRequestDeviceTypesItem = "controlbyweb_device"
+	ThermostatsListRequestDeviceTypesItemTtlockLock             ThermostatsListRequestDeviceTypesItem = "ttlock_lock"
+	ThermostatsListRequestDeviceTypesItemIgloohomeLock          ThermostatsListRequestDeviceTypesItem = "igloohome_lock"
+	ThermostatsListRequestDeviceTypesItemHubitatLock            ThermostatsListRequestDeviceTypesItem = "hubitat_lock"
+	ThermostatsListRequestDeviceTypesItemFourSuitesDoor         ThermostatsListRequestDeviceTypesItem = "four_suites_door"
+	ThermostatsListRequestDeviceTypesItemDormakabaOracodeDoor   ThermostatsListRequestDeviceTypesItem = "dormakaba_oracode_door"
+	ThermostatsListRequestDeviceTypesItemNoiseawareActivityZone ThermostatsListRequestDeviceTypesItem = "noiseaware_activity_zone"
+	ThermostatsListRequestDeviceTypesItemMinutSensor            ThermostatsListRequestDeviceTypesItem = "minut_sensor"
+	ThermostatsListRequestDeviceTypesItemEcobeeThermostat       ThermostatsListRequestDeviceTypesItem = "ecobee_thermostat"
+	ThermostatsListRequestDeviceTypesItemNestThermostat         ThermostatsListRequestDeviceTypesItem = "nest_thermostat"
+	ThermostatsListRequestDeviceTypesItemIosPhone               ThermostatsListRequestDeviceTypesItem = "ios_phone"
+	ThermostatsListRequestDeviceTypesItemAndroidPhone           ThermostatsListRequestDeviceTypesItem = "android_phone"
+)
+
+func NewThermostatsListRequestDeviceTypesItemFromString(s string) (ThermostatsListRequestDeviceTypesItem, error) {
+	switch s {
+	case "akuvox_lock":
+		return ThermostatsListRequestDeviceTypesItemAkuvoxLock, nil
+	case "august_lock":
+		return ThermostatsListRequestDeviceTypesItemAugustLock, nil
+	case "brivo_access_point":
+		return ThermostatsListRequestDeviceTypesItemBrivoAccessPoint, nil
+	case "butterflymx_panel":
+		return ThermostatsListRequestDeviceTypesItemButterflymxPanel, nil
+	case "avigilon_alta_entry":
+		return ThermostatsListRequestDeviceTypesItemAvigilonAltaEntry, nil
+	case "doorking_lock":
+		return ThermostatsListRequestDeviceTypesItemDoorkingLock, nil
+	case "genie_door":
+		return ThermostatsListRequestDeviceTypesItemGenieDoor, nil
+	case "igloo_lock":
+		return ThermostatsListRequestDeviceTypesItemIglooLock, nil
+	case "linear_lock":
+		return ThermostatsListRequestDeviceTypesItemLinearLock, nil
+	case "lockly_lock":
+		return ThermostatsListRequestDeviceTypesItemLocklyLock, nil
+	case "kwikset_lock":
+		return ThermostatsListRequestDeviceTypesItemKwiksetLock, nil
+	case "nuki_lock":
+		return ThermostatsListRequestDeviceTypesItemNukiLock, nil
+	case "salto_lock":
+		return ThermostatsListRequestDeviceTypesItemSaltoLock, nil
+	case "schlage_lock":
+		return ThermostatsListRequestDeviceTypesItemSchlageLock, nil
+	case "seam_relay":
+		return ThermostatsListRequestDeviceTypesItemSeamRelay, nil
+	case "smartthings_lock":
+		return ThermostatsListRequestDeviceTypesItemSmartthingsLock, nil
+	case "wyze_lock":
+		return ThermostatsListRequestDeviceTypesItemWyzeLock, nil
+	case "yale_lock":
+		return ThermostatsListRequestDeviceTypesItemYaleLock, nil
+	case "two_n_intercom":
+		return ThermostatsListRequestDeviceTypesItemTwoNIntercom, nil
+	case "controlbyweb_device":
+		return ThermostatsListRequestDeviceTypesItemControlbywebDevice, nil
+	case "ttlock_lock":
+		return ThermostatsListRequestDeviceTypesItemTtlockLock, nil
+	case "igloohome_lock":
+		return ThermostatsListRequestDeviceTypesItemIgloohomeLock, nil
+	case "hubitat_lock":
+		return ThermostatsListRequestDeviceTypesItemHubitatLock, nil
+	case "four_suites_door":
+		return ThermostatsListRequestDeviceTypesItemFourSuitesDoor, nil
+	case "dormakaba_oracode_door":
+		return ThermostatsListRequestDeviceTypesItemDormakabaOracodeDoor, nil
+	case "noiseaware_activity_zone":
+		return ThermostatsListRequestDeviceTypesItemNoiseawareActivityZone, nil
+	case "minut_sensor":
+		return ThermostatsListRequestDeviceTypesItemMinutSensor, nil
+	case "ecobee_thermostat":
+		return ThermostatsListRequestDeviceTypesItemEcobeeThermostat, nil
+	case "nest_thermostat":
+		return ThermostatsListRequestDeviceTypesItemNestThermostat, nil
+	case "ios_phone":
+		return ThermostatsListRequestDeviceTypesItemIosPhone, nil
+	case "android_phone":
+		return ThermostatsListRequestDeviceTypesItemAndroidPhone, nil
+	}
+	var t ThermostatsListRequestDeviceTypesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsListRequestDeviceTypesItem) Ptr() *ThermostatsListRequestDeviceTypesItem {
+	return &t
+}
+
+type ThermostatsListRequestManufacturer string
+
+const (
+	ThermostatsListRequestManufacturerAkuvox           ThermostatsListRequestManufacturer = "akuvox"
+	ThermostatsListRequestManufacturerAugust           ThermostatsListRequestManufacturer = "august"
+	ThermostatsListRequestManufacturerAvigilonAlta     ThermostatsListRequestManufacturer = "avigilon_alta"
+	ThermostatsListRequestManufacturerBrivo            ThermostatsListRequestManufacturer = "brivo"
+	ThermostatsListRequestManufacturerButterflymx      ThermostatsListRequestManufacturer = "butterflymx"
+	ThermostatsListRequestManufacturerDoorking         ThermostatsListRequestManufacturer = "doorking"
+	ThermostatsListRequestManufacturerFourSuites       ThermostatsListRequestManufacturer = "four_suites"
+	ThermostatsListRequestManufacturerGenie            ThermostatsListRequestManufacturer = "genie"
+	ThermostatsListRequestManufacturerIgloo            ThermostatsListRequestManufacturer = "igloo"
+	ThermostatsListRequestManufacturerKeywe            ThermostatsListRequestManufacturer = "keywe"
+	ThermostatsListRequestManufacturerKwikset          ThermostatsListRequestManufacturer = "kwikset"
+	ThermostatsListRequestManufacturerLinear           ThermostatsListRequestManufacturer = "linear"
+	ThermostatsListRequestManufacturerLockly           ThermostatsListRequestManufacturer = "lockly"
+	ThermostatsListRequestManufacturerNuki             ThermostatsListRequestManufacturer = "nuki"
+	ThermostatsListRequestManufacturerPhilia           ThermostatsListRequestManufacturer = "philia"
+	ThermostatsListRequestManufacturerSalto            ThermostatsListRequestManufacturer = "salto"
+	ThermostatsListRequestManufacturerSamsung          ThermostatsListRequestManufacturer = "samsung"
+	ThermostatsListRequestManufacturerSchlage          ThermostatsListRequestManufacturer = "schlage"
+	ThermostatsListRequestManufacturerSeam             ThermostatsListRequestManufacturer = "seam"
+	ThermostatsListRequestManufacturerUnknown          ThermostatsListRequestManufacturer = "unknown"
+	ThermostatsListRequestManufacturerWyze             ThermostatsListRequestManufacturer = "wyze"
+	ThermostatsListRequestManufacturerYale             ThermostatsListRequestManufacturer = "yale"
+	ThermostatsListRequestManufacturerMinut            ThermostatsListRequestManufacturer = "minut"
+	ThermostatsListRequestManufacturerTwoN             ThermostatsListRequestManufacturer = "two_n"
+	ThermostatsListRequestManufacturerTtlock           ThermostatsListRequestManufacturer = "ttlock"
+	ThermostatsListRequestManufacturerNest             ThermostatsListRequestManufacturer = "nest"
+	ThermostatsListRequestManufacturerIgloohome        ThermostatsListRequestManufacturer = "igloohome"
+	ThermostatsListRequestManufacturerEcobee           ThermostatsListRequestManufacturer = "ecobee"
+	ThermostatsListRequestManufacturerHubitat          ThermostatsListRequestManufacturer = "hubitat"
+	ThermostatsListRequestManufacturerControlbyweb     ThermostatsListRequestManufacturer = "controlbyweb"
+	ThermostatsListRequestManufacturerSmartthings      ThermostatsListRequestManufacturer = "smartthings"
+	ThermostatsListRequestManufacturerDormakabaOracode ThermostatsListRequestManufacturer = "dormakaba_oracode"
+)
+
+func NewThermostatsListRequestManufacturerFromString(s string) (ThermostatsListRequestManufacturer, error) {
+	switch s {
+	case "akuvox":
+		return ThermostatsListRequestManufacturerAkuvox, nil
+	case "august":
+		return ThermostatsListRequestManufacturerAugust, nil
+	case "avigilon_alta":
+		return ThermostatsListRequestManufacturerAvigilonAlta, nil
+	case "brivo":
+		return ThermostatsListRequestManufacturerBrivo, nil
+	case "butterflymx":
+		return ThermostatsListRequestManufacturerButterflymx, nil
+	case "doorking":
+		return ThermostatsListRequestManufacturerDoorking, nil
+	case "four_suites":
+		return ThermostatsListRequestManufacturerFourSuites, nil
+	case "genie":
+		return ThermostatsListRequestManufacturerGenie, nil
+	case "igloo":
+		return ThermostatsListRequestManufacturerIgloo, nil
+	case "keywe":
+		return ThermostatsListRequestManufacturerKeywe, nil
+	case "kwikset":
+		return ThermostatsListRequestManufacturerKwikset, nil
+	case "linear":
+		return ThermostatsListRequestManufacturerLinear, nil
+	case "lockly":
+		return ThermostatsListRequestManufacturerLockly, nil
+	case "nuki":
+		return ThermostatsListRequestManufacturerNuki, nil
+	case "philia":
+		return ThermostatsListRequestManufacturerPhilia, nil
+	case "salto":
+		return ThermostatsListRequestManufacturerSalto, nil
+	case "samsung":
+		return ThermostatsListRequestManufacturerSamsung, nil
+	case "schlage":
+		return ThermostatsListRequestManufacturerSchlage, nil
+	case "seam":
+		return ThermostatsListRequestManufacturerSeam, nil
+	case "unknown":
+		return ThermostatsListRequestManufacturerUnknown, nil
+	case "wyze":
+		return ThermostatsListRequestManufacturerWyze, nil
+	case "yale":
+		return ThermostatsListRequestManufacturerYale, nil
+	case "minut":
+		return ThermostatsListRequestManufacturerMinut, nil
+	case "two_n":
+		return ThermostatsListRequestManufacturerTwoN, nil
+	case "ttlock":
+		return ThermostatsListRequestManufacturerTtlock, nil
+	case "nest":
+		return ThermostatsListRequestManufacturerNest, nil
+	case "igloohome":
+		return ThermostatsListRequestManufacturerIgloohome, nil
+	case "ecobee":
+		return ThermostatsListRequestManufacturerEcobee, nil
+	case "hubitat":
+		return ThermostatsListRequestManufacturerHubitat, nil
+	case "controlbyweb":
+		return ThermostatsListRequestManufacturerControlbyweb, nil
+	case "smartthings":
+		return ThermostatsListRequestManufacturerSmartthings, nil
+	case "dormakaba_oracode":
+		return ThermostatsListRequestManufacturerDormakabaOracode, nil
+	}
+	var t ThermostatsListRequestManufacturer
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsListRequestManufacturer) Ptr() *ThermostatsListRequestManufacturer {
+	return &t
+}
+
 type ThermostatsListResponse struct {
 	Thermostats []*Device `json:"thermostats,omitempty"`
 	Ok          bool      `json:"ok"`
@@ -149,6 +538,79 @@ func (t *ThermostatsListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsOffResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (t *ThermostatsOffResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThermostatsOffResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThermostatsOffResponse(value)
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThermostatsOffResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThermostatsSetFanModeRequestFanMode string
+
+const (
+	ThermostatsSetFanModeRequestFanModeAuto ThermostatsSetFanModeRequestFanMode = "auto"
+	ThermostatsSetFanModeRequestFanModeOn   ThermostatsSetFanModeRequestFanMode = "on"
+)
+
+func NewThermostatsSetFanModeRequestFanModeFromString(s string) (ThermostatsSetFanModeRequestFanMode, error) {
+	switch s {
+	case "auto":
+		return ThermostatsSetFanModeRequestFanModeAuto, nil
+	case "on":
+		return ThermostatsSetFanModeRequestFanModeOn, nil
+	}
+	var t ThermostatsSetFanModeRequestFanMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsSetFanModeRequestFanMode) Ptr() *ThermostatsSetFanModeRequestFanMode {
+	return &t
+}
+
+type ThermostatsSetFanModeRequestFanModeSetting string
+
+const (
+	ThermostatsSetFanModeRequestFanModeSettingAuto ThermostatsSetFanModeRequestFanModeSetting = "auto"
+	ThermostatsSetFanModeRequestFanModeSettingOn   ThermostatsSetFanModeRequestFanModeSetting = "on"
+)
+
+func NewThermostatsSetFanModeRequestFanModeSettingFromString(s string) (ThermostatsSetFanModeRequestFanModeSetting, error) {
+	switch s {
+	case "auto":
+		return ThermostatsSetFanModeRequestFanModeSettingAuto, nil
+	case "on":
+		return ThermostatsSetFanModeRequestFanModeSettingOn, nil
+	}
+	var t ThermostatsSetFanModeRequestFanModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsSetFanModeRequestFanModeSetting) Ptr() *ThermostatsSetFanModeRequestFanModeSetting {
+	return &t
 }
 
 type ThermostatsSetFanModeResponse struct {
@@ -181,14 +643,14 @@ func (t *ThermostatsSetFanModeResponse) String() string {
 }
 
 type ThermostatsUpdateRequestDefaultClimateSetting struct {
-	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+	AutomaticHeatingEnabled   *bool                                                         `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                                         `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                                                      `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                                                      `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                                                      `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                                                      `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                                         `json:"manual_override_allowed,omitempty"`
 
 	_rawJSON json.RawMessage
 }

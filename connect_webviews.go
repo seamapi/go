@@ -9,14 +9,14 @@ import (
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode           *SelectionMode                  `json:"device_selection_mode,omitempty"`
-	CustomRedirectUrl             *string                         `json:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl      *string                         `json:"custom_redirect_failure_url,omitempty"`
-	AcceptedProviders             []AcceptedProvider              `json:"accepted_providers,omitempty"`
-	ProviderCategory              *ProviderCategory               `json:"provider_category,omitempty"`
-	CustomMetadata                map[string]*CustomMetadataValue `json:"custom_metadata,omitempty"`
-	AutomaticallyManageNewDevices *bool                           `json:"automatically_manage_new_devices,omitempty"`
-	WaitForDeviceCreation         *bool                           `json:"wait_for_device_creation,omitempty"`
+	DeviceSelectionMode           *ConnectWebviewsCreateRequestDeviceSelectionMode            `json:"device_selection_mode,omitempty"`
+	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty"`
+	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty"`
+	ProviderCategory              *ProviderCategory                                           `json:"provider_category,omitempty"`
+	CustomMetadata                map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices *bool                                                       `json:"automatically_manage_new_devices,omitempty"`
+	WaitForDeviceCreation         *bool                                                       `json:"wait_for_device_creation,omitempty"`
 }
 
 type ConnectWebviewsDeleteRequest struct {
@@ -27,36 +27,49 @@ type ConnectWebviewsGetRequest struct {
 	ConnectWebviewId string `json:"connect_webview_id"`
 }
 
+type ConnectWebviewsListRequest struct {
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+}
+
 type AcceptedProvider string
 
 const (
-	AcceptedProviderAkuvox         AcceptedProvider = "akuvox"
-	AcceptedProviderAugust         AcceptedProvider = "august"
-	AcceptedProviderAvigilonAlta   AcceptedProvider = "avigilon_alta"
-	AcceptedProviderBrivo          AcceptedProvider = "brivo"
-	AcceptedProviderButterflymx    AcceptedProvider = "butterflymx"
-	AcceptedProviderSchlage        AcceptedProvider = "schlage"
-	AcceptedProviderSmartthings    AcceptedProvider = "smartthings"
-	AcceptedProviderYale           AcceptedProvider = "yale"
-	AcceptedProviderGenie          AcceptedProvider = "genie"
-	AcceptedProviderDoorking       AcceptedProvider = "doorking"
-	AcceptedProviderSalto          AcceptedProvider = "salto"
-	AcceptedProviderLockly         AcceptedProvider = "lockly"
-	AcceptedProviderTtlock         AcceptedProvider = "ttlock"
-	AcceptedProviderLinear         AcceptedProvider = "linear"
-	AcceptedProviderNoiseaware     AcceptedProvider = "noiseaware"
-	AcceptedProviderNuki           AcceptedProvider = "nuki"
-	AcceptedProviderSeamRelayAdmin AcceptedProvider = "seam_relay_admin"
-	AcceptedProviderIgloo          AcceptedProvider = "igloo"
-	AcceptedProviderKwikset        AcceptedProvider = "kwikset"
-	AcceptedProviderMinut          AcceptedProvider = "minut"
-	AcceptedProviderMy2N           AcceptedProvider = "my_2n"
-	AcceptedProviderControlbyweb   AcceptedProvider = "controlbyweb"
-	AcceptedProviderNest           AcceptedProvider = "nest"
-	AcceptedProviderIgloohome      AcceptedProvider = "igloohome"
-	AcceptedProviderEcobee         AcceptedProvider = "ecobee"
-	AcceptedProviderHubitat        AcceptedProvider = "hubitat"
-	AcceptedProviderYaleAccess     AcceptedProvider = "yale_access"
+	AcceptedProviderAkuvox                     AcceptedProvider = "akuvox"
+	AcceptedProviderAugust                     AcceptedProvider = "august"
+	AcceptedProviderAvigilonAlta               AcceptedProvider = "avigilon_alta"
+	AcceptedProviderBrivo                      AcceptedProvider = "brivo"
+	AcceptedProviderButterflymx                AcceptedProvider = "butterflymx"
+	AcceptedProviderSchlage                    AcceptedProvider = "schlage"
+	AcceptedProviderSmartthings                AcceptedProvider = "smartthings"
+	AcceptedProviderYale                       AcceptedProvider = "yale"
+	AcceptedProviderGenie                      AcceptedProvider = "genie"
+	AcceptedProviderDoorking                   AcceptedProvider = "doorking"
+	AcceptedProviderSalto                      AcceptedProvider = "salto"
+	AcceptedProviderLockly                     AcceptedProvider = "lockly"
+	AcceptedProviderTtlock                     AcceptedProvider = "ttlock"
+	AcceptedProviderLinear                     AcceptedProvider = "linear"
+	AcceptedProviderNoiseaware                 AcceptedProvider = "noiseaware"
+	AcceptedProviderNuki                       AcceptedProvider = "nuki"
+	AcceptedProviderSeamRelayAdmin             AcceptedProvider = "seam_relay_admin"
+	AcceptedProviderIgloo                      AcceptedProvider = "igloo"
+	AcceptedProviderKwikset                    AcceptedProvider = "kwikset"
+	AcceptedProviderMinut                      AcceptedProvider = "minut"
+	AcceptedProviderMy2N                       AcceptedProvider = "my_2n"
+	AcceptedProviderControlbyweb               AcceptedProvider = "controlbyweb"
+	AcceptedProviderNest                       AcceptedProvider = "nest"
+	AcceptedProviderIgloohome                  AcceptedProvider = "igloohome"
+	AcceptedProviderEcobee                     AcceptedProvider = "ecobee"
+	AcceptedProviderHubitat                    AcceptedProvider = "hubitat"
+	AcceptedProviderFourSuites                 AcceptedProvider = "four_suites"
+	AcceptedProviderDormakabaOracode           AcceptedProvider = "dormakaba_oracode"
+	AcceptedProviderPti                        AcceptedProvider = "pti"
+	AcceptedProviderWyze                       AcceptedProvider = "wyze"
+	AcceptedProviderSeamPassport               AcceptedProvider = "seam_passport"
+	AcceptedProviderVisionline                 AcceptedProvider = "visionline"
+	AcceptedProviderAssaAbloyCredentialService AcceptedProvider = "assa_abloy_credential_service"
+	AcceptedProviderSeamBridge                 AcceptedProvider = "seam_bridge"
+	AcceptedProviderYaleAccess                 AcceptedProvider = "yale_access"
+	AcceptedProviderHidCm                      AcceptedProvider = "hid_cm"
 )
 
 func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
@@ -113,8 +126,26 @@ func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
 		return AcceptedProviderEcobee, nil
 	case "hubitat":
 		return AcceptedProviderHubitat, nil
+	case "four_suites":
+		return AcceptedProviderFourSuites, nil
+	case "dormakaba_oracode":
+		return AcceptedProviderDormakabaOracode, nil
+	case "pti":
+		return AcceptedProviderPti, nil
+	case "wyze":
+		return AcceptedProviderWyze, nil
+	case "seam_passport":
+		return AcceptedProviderSeamPassport, nil
+	case "visionline":
+		return AcceptedProviderVisionline, nil
+	case "assa_abloy_credential_service":
+		return AcceptedProviderAssaAbloyCredentialService, nil
+	case "seam_bridge":
+		return AcceptedProviderSeamBridge, nil
 	case "yale_access":
 		return AcceptedProviderYaleAccess, nil
+	case "hid_cm":
+		return AcceptedProviderHidCm, nil
 	}
 	var t AcceptedProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -122,6 +153,88 @@ func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
 
 func (a AcceptedProvider) Ptr() *AcceptedProvider {
 	return &a
+}
+
+type ConnectWebviewsCreateRequestCustomMetadataValue struct {
+	typeName string
+	String   string
+	Boolean  bool
+}
+
+func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) *ConnectWebviewsCreateRequestCustomMetadataValue {
+	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewConnectWebviewsCreateRequestCustomMetadataValueFromBoolean(value bool) *ConnectWebviewsCreateRequestCustomMetadataValue {
+	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectWebviewsCreateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	}
+}
+
+type ConnectWebviewsCreateRequestCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+}
+
+func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor ConnectWebviewsCreateRequestCustomMetadataValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	}
+}
+
+type ConnectWebviewsCreateRequestDeviceSelectionMode string
+
+const (
+	ConnectWebviewsCreateRequestDeviceSelectionModeNone     ConnectWebviewsCreateRequestDeviceSelectionMode = "none"
+	ConnectWebviewsCreateRequestDeviceSelectionModeSingle   ConnectWebviewsCreateRequestDeviceSelectionMode = "single"
+	ConnectWebviewsCreateRequestDeviceSelectionModeMultiple ConnectWebviewsCreateRequestDeviceSelectionMode = "multiple"
+)
+
+func NewConnectWebviewsCreateRequestDeviceSelectionModeFromString(s string) (ConnectWebviewsCreateRequestDeviceSelectionMode, error) {
+	switch s {
+	case "none":
+		return ConnectWebviewsCreateRequestDeviceSelectionModeNone, nil
+	case "single":
+		return ConnectWebviewsCreateRequestDeviceSelectionModeSingle, nil
+	case "multiple":
+		return ConnectWebviewsCreateRequestDeviceSelectionModeMultiple, nil
+	}
+	var t ConnectWebviewsCreateRequestDeviceSelectionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectWebviewsCreateRequestDeviceSelectionMode) Ptr() *ConnectWebviewsCreateRequestDeviceSelectionMode {
+	return &c
 }
 
 type ConnectWebviewsCreateResponse struct {
@@ -243,79 +356,6 @@ func (c *ConnectWebviewsListResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type CustomMetadataValue struct {
-	typeName       string
-	StringOptional *string
-	Double         float64
-	Boolean        bool
-}
-
-func NewCustomMetadataValueFromStringOptional(value *string) *CustomMetadataValue {
-	return &CustomMetadataValue{typeName: "stringOptional", StringOptional: value}
-}
-
-func NewCustomMetadataValueFromDouble(value float64) *CustomMetadataValue {
-	return &CustomMetadataValue{typeName: "double", Double: value}
-}
-
-func NewCustomMetadataValueFromBoolean(value bool) *CustomMetadataValue {
-	return &CustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func (c *CustomMetadataValue) UnmarshalJSON(data []byte) error {
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		c.typeName = "double"
-		c.Double = valueDouble
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		c.typeName = "boolean"
-		c.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CustomMetadataValue) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
-	case "double":
-		return json.Marshal(c.Double)
-	case "boolean":
-		return json.Marshal(c.Boolean)
-	}
-}
-
-type CustomMetadataValueVisitor interface {
-	VisitStringOptional(*string) error
-	VisitDouble(float64) error
-	VisitBoolean(bool) error
-}
-
-func (c *CustomMetadataValue) Accept(visitor CustomMetadataValueVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
-	case "double":
-		return visitor.VisitDouble(c.Double)
-	case "boolean":
-		return visitor.VisitBoolean(c.Boolean)
-	}
-}
-
 type ProviderCategory string
 
 const (
@@ -339,31 +379,6 @@ func NewProviderCategoryFromString(s string) (ProviderCategory, error) {
 
 func (p ProviderCategory) Ptr() *ProviderCategory {
 	return &p
-}
-
-type SelectionMode string
-
-const (
-	SelectionModeNone     SelectionMode = "none"
-	SelectionModeSingle   SelectionMode = "single"
-	SelectionModeMultiple SelectionMode = "multiple"
-)
-
-func NewSelectionModeFromString(s string) (SelectionMode, error) {
-	switch s {
-	case "none":
-		return SelectionModeNone, nil
-	case "single":
-		return SelectionModeSingle, nil
-	case "multiple":
-		return SelectionModeMultiple, nil
-	}
-	var t SelectionMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s SelectionMode) Ptr() *SelectionMode {
-	return &s
 }
 
 type ConnectWebviewsViewRequest struct {
