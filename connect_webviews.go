@@ -9,7 +9,7 @@ import (
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode           *ConnectWebviewsCreateRequestDeviceSelectionMode            `json:"device_selection_mode,omitempty"`
+	DeviceSelectionMode           *SelectionMode                                              `json:"device_selection_mode,omitempty"`
 	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty"`
 	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty"`
 	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty"`
@@ -210,31 +210,6 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor Connect
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
 	}
-}
-
-type ConnectWebviewsCreateRequestDeviceSelectionMode string
-
-const (
-	ConnectWebviewsCreateRequestDeviceSelectionModeNone     ConnectWebviewsCreateRequestDeviceSelectionMode = "none"
-	ConnectWebviewsCreateRequestDeviceSelectionModeSingle   ConnectWebviewsCreateRequestDeviceSelectionMode = "single"
-	ConnectWebviewsCreateRequestDeviceSelectionModeMultiple ConnectWebviewsCreateRequestDeviceSelectionMode = "multiple"
-)
-
-func NewConnectWebviewsCreateRequestDeviceSelectionModeFromString(s string) (ConnectWebviewsCreateRequestDeviceSelectionMode, error) {
-	switch s {
-	case "none":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeNone, nil
-	case "single":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeSingle, nil
-	case "multiple":
-		return ConnectWebviewsCreateRequestDeviceSelectionModeMultiple, nil
-	}
-	var t ConnectWebviewsCreateRequestDeviceSelectionMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ConnectWebviewsCreateRequestDeviceSelectionMode) Ptr() *ConnectWebviewsCreateRequestDeviceSelectionMode {
-	return &c
 }
 
 type ConnectWebviewsCreateResponse struct {

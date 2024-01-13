@@ -806,7 +806,7 @@ type ConnectWebview struct {
 	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty"`
 	Url                           string                                        `json:"url"`
 	WorkspaceId                   string                                        `json:"workspace_id"`
-	DeviceSelectionMode           ConnectWebviewDeviceSelectionMode             `json:"device_selection_mode,omitempty"`
+	DeviceSelectionMode           SelectionMode                                 `json:"device_selection_mode,omitempty"`
 	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty"`
 	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty"`
 	AnyProviderAllowed            bool                                          `json:"any_provider_allowed"`
@@ -903,31 +903,6 @@ func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomM
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
 	}
-}
-
-type ConnectWebviewDeviceSelectionMode string
-
-const (
-	ConnectWebviewDeviceSelectionModeNone     ConnectWebviewDeviceSelectionMode = "none"
-	ConnectWebviewDeviceSelectionModeSingle   ConnectWebviewDeviceSelectionMode = "single"
-	ConnectWebviewDeviceSelectionModeMultiple ConnectWebviewDeviceSelectionMode = "multiple"
-)
-
-func NewConnectWebviewDeviceSelectionModeFromString(s string) (ConnectWebviewDeviceSelectionMode, error) {
-	switch s {
-	case "none":
-		return ConnectWebviewDeviceSelectionModeNone, nil
-	case "single":
-		return ConnectWebviewDeviceSelectionModeSingle, nil
-	case "multiple":
-		return ConnectWebviewDeviceSelectionModeMultiple, nil
-	}
-	var t ConnectWebviewDeviceSelectionMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ConnectWebviewDeviceSelectionMode) Ptr() *ConnectWebviewDeviceSelectionMode {
-	return &c
 }
 
 type ConnectWebviewStatus string
@@ -4849,6 +4824,31 @@ func NewProviderCategoryFromString(s string) (ProviderCategory, error) {
 
 func (p ProviderCategory) Ptr() *ProviderCategory {
 	return &p
+}
+
+type SelectionMode string
+
+const (
+	SelectionModeNone     SelectionMode = "none"
+	SelectionModeSingle   SelectionMode = "single"
+	SelectionModeMultiple SelectionMode = "multiple"
+)
+
+func NewSelectionModeFromString(s string) (SelectionMode, error) {
+	switch s {
+	case "none":
+		return SelectionModeNone, nil
+	case "single":
+		return SelectionModeSingle, nil
+	case "multiple":
+		return SelectionModeMultiple, nil
+	}
+	var t SelectionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SelectionMode) Ptr() *SelectionMode {
+	return &s
 }
 
 type ServiceHealth struct {
