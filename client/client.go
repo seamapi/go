@@ -14,7 +14,9 @@ import (
 	events "github.com/seamapi/go/events"
 	healthclient "github.com/seamapi/go/health/client"
 	locks "github.com/seamapi/go/locks"
+	networks "github.com/seamapi/go/networks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
+	phonesclient "github.com/seamapi/go/phones/client"
 	thermostatsclient "github.com/seamapi/go/thermostats/client"
 	useridentitiesclient "github.com/seamapi/go/useridentities/client"
 	webhooks "github.com/seamapi/go/webhooks"
@@ -27,21 +29,23 @@ type Client struct {
 	caller  *core.Caller
 	header  http.Header
 
-	UserIdentities    *useridentitiesclient.Client
 	AccessCodes       *accesscodesclient.Client
-	Acs               *acsclient.Client
 	ActionAttempts    *actionattempts.Client
 	ClientSessions    *clientsessions.Client
-	ConnectedAccounts *connectedaccounts.Client
 	ConnectWebviews   *connectwebviews.Client
+	ConnectedAccounts *connectedaccounts.Client
 	Devices           *devicesclient.Client
 	Events            *events.Client
 	Health            *healthclient.Client
 	Locks             *locks.Client
-	NoiseSensors      *noisesensorsclient.Client
+	Networks          *networks.Client
+	Phones            *phonesclient.Client
 	Thermostats       *thermostatsclient.Client
+	UserIdentities    *useridentitiesclient.Client
 	Webhooks          *webhooks.Client
 	Workspaces        *workspaces.Client
+	Acs               *acsclient.Client
+	NoiseSensors      *noisesensorsclient.Client
 }
 
 func NewClient(opts ...core.ClientOption) *Client {
@@ -53,20 +57,22 @@ func NewClient(opts ...core.ClientOption) *Client {
 		baseURL:           options.BaseURL,
 		caller:            core.NewCaller(options.HTTPClient),
 		header:            options.ToHeader(),
-		UserIdentities:    useridentitiesclient.NewClient(opts...),
 		AccessCodes:       accesscodesclient.NewClient(opts...),
-		Acs:               acsclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),
 		ClientSessions:    clientsessions.NewClient(opts...),
-		ConnectedAccounts: connectedaccounts.NewClient(opts...),
 		ConnectWebviews:   connectwebviews.NewClient(opts...),
+		ConnectedAccounts: connectedaccounts.NewClient(opts...),
 		Devices:           devicesclient.NewClient(opts...),
 		Events:            events.NewClient(opts...),
 		Health:            healthclient.NewClient(opts...),
 		Locks:             locks.NewClient(opts...),
-		NoiseSensors:      noisesensorsclient.NewClient(opts...),
+		Networks:          networks.NewClient(opts...),
+		Phones:            phonesclient.NewClient(opts...),
 		Thermostats:       thermostatsclient.NewClient(opts...),
+		UserIdentities:    useridentitiesclient.NewClient(opts...),
 		Webhooks:          webhooks.NewClient(opts...),
 		Workspaces:        workspaces.NewClient(opts...),
+		Acs:               acsclient.NewClient(opts...),
+		NoiseSensors:      noisesensorsclient.NewClient(opts...),
 	}
 }

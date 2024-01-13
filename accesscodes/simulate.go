@@ -2,8 +2,45 @@
 
 package accesscodes
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
+	core "github.com/seamapi/go/core"
+)
+
 type SimulateCreateUnmanagedAccessCodeRequest struct {
 	DeviceId string `json:"device_id"`
 	Name     string `json:"name"`
 	Code     string `json:"code"`
+}
+
+type SimulateCreateUnmanagedAccessCodeResponse struct {
+	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty"`
+	Ok         bool                           `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateCreateUnmanagedAccessCodeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateCreateUnmanagedAccessCodeResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
