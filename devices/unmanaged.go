@@ -120,5 +120,5 @@ func (u *UnmanagedUpdateResponse) String() string {
 
 type UnmanagedUpdateRequest struct {
 	DeviceId  string `json:"device_id"`
-	IsManaged string `json:"is_managed"`
+	IsManaged bool   `json:"is_managed"`
 }

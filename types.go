@@ -31,7 +31,7 @@ type AccessCode struct {
 	Errors    interface{} `json:"errors,omitempty"`
 	Warnings  interface{} `json:"warnings,omitempty"`
 	// Indicates whether Seam manages the access code.
-	IsManaged string `json:"is_managed"`
+	IsManaged bool `json:"is_managed"`
 	// Date and time at which the time-bound access code becomes active.
 	StartsAt *time.Time `json:"starts_at,omitempty"`
 	// Date and time after which the time-bound access code becomes inactive.
@@ -1104,7 +1104,7 @@ type Device struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged string `json:"is_managed"`
+	IsManaged bool `json:"is_managed"`
 
 	_rawJSON json.RawMessage
 }
@@ -3123,7 +3123,7 @@ type Phone struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                          string                                   `json:"is_managed"`
+	IsManaged                          bool                                     `json:"is_managed"`
 	AssaAbloyCredentialServiceMetadata *PhoneAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -4922,7 +4922,7 @@ type UnmanagedAccessCode struct {
 	CreatedAt time.Time   `json:"created_at"`
 	Errors    interface{} `json:"errors,omitempty"`
 	Warnings  interface{} `json:"warnings,omitempty"`
-	IsManaged string      `json:"is_managed"`
+	IsManaged bool        `json:"is_managed"`
 	// Date and time at which the time-bound access code becomes active.
 	StartsAt *time.Time `json:"starts_at,omitempty"`
 	// Date and time after which the time-bound access code becomes inactive.
@@ -5012,7 +5012,7 @@ type UnmanagedDevice struct {
 	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
 	// Date and time at which the device object was created.
 	CreatedAt      time.Time                      `json:"created_at"`
-	IsManaged      string                         `json:"is_managed"`
+	IsManaged      bool                           `json:"is_managed"`
 	Properties     *UnmanagedDeviceProperties     `json:"properties,omitempty"`
 	DeviceProvider *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty"`
 
