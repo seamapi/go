@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) ByServiceName(ctx context.Context, request *health.ServiceByServiceNameRequest) (*seamapigo.ServiceByServiceNameResponse, error) {
+func (c *Client) ByServiceName(ctx context.Context, request *health.ServiceByServiceNameRequest) (*health.ServiceByServiceNameResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -65,7 +65,7 @@ func (c *Client) ByServiceName(ctx context.Context, request *health.ServiceBySer
 		return apiError
 	}
 
-	var response *seamapigo.ServiceByServiceNameResponse
+	var response *health.ServiceByServiceNameResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{

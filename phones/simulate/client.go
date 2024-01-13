@@ -8,8 +8,8 @@ import (
 	json "encoding/json"
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
-	accesscodes "github.com/seamapi/go/accesscodes"
 	core "github.com/seamapi/go/core"
+	phones "github.com/seamapi/go/phones"
 	io "io"
 	http "net/http"
 )
@@ -32,12 +32,12 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) CreateUnmanagedAccessCode(ctx context.Context, request *accesscodes.SimulateCreateUnmanagedAccessCodeRequest) (*seamapigo.UnmanagedAccessCode, error) {
+func (c *Client) CreateSandboxPhone(ctx context.Context, request *phones.SimulateCreateSandboxPhoneRequest) (*seamapigo.Phone, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "access_codes/simulate/create_unmanaged_access_code"
+	endpointURL := baseURL + "/" + "phones/simulate/create_sandbox_phone"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -65,7 +65,7 @@ func (c *Client) CreateUnmanagedAccessCode(ctx context.Context, request *accessc
 		return apiError
 	}
 
-	var response *accesscodes.SimulateCreateUnmanagedAccessCodeResponse
+	var response *phones.SimulateCreateSandboxPhoneResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -79,5 +79,5 @@ func (c *Client) CreateUnmanagedAccessCode(ctx context.Context, request *accessc
 	); err != nil {
 		return nil, err
 	}
-	return response.AccessCode, nil
+	return response.Phone, nil
 }
