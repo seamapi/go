@@ -31,16 +31,30 @@ func WithHTTPHeader(httpHeader http.Header) core.ClientOption {
 	}
 }
 
-// WithApiKey sets the 'Authorization: Bearer <apiKey>' header on every request.
-func WithApiKey(apiKey string) core.ClientOption {
+// WithToken sets the 'Authorization: Bearer <token>' header on every request.
+func WithToken(token string) core.ClientOption {
 	return func(opts *core.ClientOptions) {
-		opts.ApiKey = apiKey
+		opts.Token = token
 	}
 }
 
 // WithSeamWorkspace sets the seamWorkspace header on every request.
-func WithSeamWorkspace(seamWorkspace *string) core.ClientOption {
+func WithSeamWorkspace(seamWorkspace string) core.ClientOption {
 	return func(opts *core.ClientOptions) {
 		opts.SeamWorkspace = seamWorkspace
+	}
+}
+
+// WithSeamClientSessionToken sets the seamClientSessionToken header on every request.
+func WithSeamClientSessionToken(seamClientSessionToken string) core.ClientOption {
+	return func(opts *core.ClientOptions) {
+		opts.SeamClientSessionToken = seamClientSessionToken
+	}
+}
+
+// WithClientSessionToken sets the clientSessionToken header on every request.
+func WithClientSessionToken(clientSessionToken string) core.ClientOption {
+	return func(opts *core.ClientOptions) {
+		opts.ClientSessionToken = clientSessionToken
 	}
 }

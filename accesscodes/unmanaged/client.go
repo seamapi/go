@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) ConvertToManaged(ctx context.Context, request *accesscodes.UnmanagedConvertToManagedRequest) (*seamapigo.UnmanagedConvertToManagedResponse, error) {
+func (c *Client) ConvertToManaged(ctx context.Context, request *accesscodes.UnmanagedConvertToManagedRequest) (*accesscodes.UnmanagedConvertToManagedResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -65,7 +65,7 @@ func (c *Client) ConvertToManaged(ctx context.Context, request *accesscodes.Unma
 		return apiError
 	}
 
-	var response *seamapigo.UnmanagedConvertToManagedResponse
+	var response *accesscodes.UnmanagedConvertToManagedResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -82,7 +82,7 @@ func (c *Client) ConvertToManaged(ctx context.Context, request *accesscodes.Unma
 	return response, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *accesscodes.UnmanagedDeleteRequest) (*seamapigo.UnmanagedDeleteResponse, error) {
+func (c *Client) Delete(ctx context.Context, request *accesscodes.UnmanagedDeleteRequest) (*seamapigo.ActionAttempt, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -115,12 +115,12 @@ func (c *Client) Delete(ctx context.Context, request *accesscodes.UnmanagedDelet
 		return apiError
 	}
 
-	var response *seamapigo.UnmanagedDeleteResponse
+	var response *accesscodes.UnmanagedDeleteResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
@@ -129,10 +129,10 @@ func (c *Client) Delete(ctx context.Context, request *accesscodes.UnmanagedDelet
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *accesscodes.UnmanagedGetRequest) (*seamapigo.UnmanagedGetResponse, error) {
+func (c *Client) Get(ctx context.Context, request *accesscodes.UnmanagedGetRequest) (*seamapigo.UnmanagedAccessCode, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -165,7 +165,7 @@ func (c *Client) Get(ctx context.Context, request *accesscodes.UnmanagedGetReque
 		return apiError
 	}
 
-	var response *seamapigo.UnmanagedGetResponse
+	var response *accesscodes.UnmanagedGetResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -179,10 +179,10 @@ func (c *Client) Get(ctx context.Context, request *accesscodes.UnmanagedGetReque
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AccessCode, nil
 }
 
-func (c *Client) List(ctx context.Context, request *accesscodes.UnmanagedListRequest) (*seamapigo.UnmanagedListResponse, error) {
+func (c *Client) List(ctx context.Context, request *accesscodes.UnmanagedListRequest) ([]*seamapigo.UnmanagedAccessCode, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -215,7 +215,7 @@ func (c *Client) List(ctx context.Context, request *accesscodes.UnmanagedListReq
 		return apiError
 	}
 
-	var response *seamapigo.UnmanagedListResponse
+	var response *accesscodes.UnmanagedListResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -229,10 +229,10 @@ func (c *Client) List(ctx context.Context, request *accesscodes.UnmanagedListReq
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AccessCodes, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *accesscodes.UnmanagedUpdateRequest) (*seamapigo.UnmanagedUpdateResponse, error) {
+func (c *Client) Update(ctx context.Context, request *accesscodes.UnmanagedUpdateRequest) (*accesscodes.UnmanagedUpdateResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -265,7 +265,7 @@ func (c *Client) Update(ctx context.Context, request *accesscodes.UnmanagedUpdat
 		return apiError
 	}
 
-	var response *seamapigo.UnmanagedUpdateResponse
+	var response *accesscodes.UnmanagedUpdateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{

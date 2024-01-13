@@ -65,7 +65,7 @@ func (c *Client) Create(ctx context.Context, request *noisesensors.NoiseThreshol
 		return apiError
 	}
 
-	var response *seamapigo.NoiseThresholdsCreateResponse
+	var response *noisesensors.NoiseThresholdsCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -115,12 +115,12 @@ func (c *Client) Delete(ctx context.Context, request *noisesensors.NoiseThreshol
 		return apiError
 	}
 
-	var response *seamapigo.NoiseThresholdsDeleteResponse
+	var response *noisesensors.NoiseThresholdsDeleteResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
@@ -165,7 +165,7 @@ func (c *Client) Get(ctx context.Context, request *noisesensors.NoiseThresholdsG
 		return apiError
 	}
 
-	var response *seamapigo.NoiseThresholdsGetResponse
+	var response *noisesensors.NoiseThresholdsGetResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -215,7 +215,7 @@ func (c *Client) List(ctx context.Context, request *noisesensors.NoiseThresholds
 		return apiError
 	}
 
-	var response *seamapigo.NoiseThresholdsListResponse
+	var response *noisesensors.NoiseThresholdsListResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -265,7 +265,7 @@ func (c *Client) Update(ctx context.Context, request *noisesensors.NoiseThreshol
 		return apiError
 	}
 
-	var response *seamapigo.NoiseThresholdsUpdateResponse
+	var response *noisesensors.NoiseThresholdsUpdateResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
