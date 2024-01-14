@@ -9,16 +9,22 @@ import (
 )
 
 type AccessCodesCreateRequest struct {
-	DeviceId                string  `json:"device_id"`
-	Name                    *string `json:"name,omitempty"`
-	StartsAt                *string `json:"starts_at,omitempty"`
-	EndsAt                  *string `json:"ends_at,omitempty"`
-	Code                    *string `json:"code,omitempty"`
-	Sync                    *bool   `json:"sync,omitempty"`
-	AttemptForOfflineDevice *bool   `json:"attempt_for_offline_device,omitempty"`
-	CommonCodeKey           *string `json:"common_code_key,omitempty"`
-	PreferNativeScheduling  *bool   `json:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool *bool   `json:"use_backup_access_code_pool,omitempty"`
+	DeviceId                      string           `json:"device_id"`
+	Name                          *string          `json:"name,omitempty"`
+	StartsAt                      *string          `json:"starts_at,omitempty"`
+	EndsAt                        *string          `json:"ends_at,omitempty"`
+	Code                          *string          `json:"code,omitempty"`
+	Sync                          *bool            `json:"sync,omitempty"`
+	AttemptForOfflineDevice       *bool            `json:"attempt_for_offline_device,omitempty"`
+	CommonCodeKey                 *string          `json:"common_code_key,omitempty"`
+	PreferNativeScheduling        *bool            `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool       *bool            `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification     *bool            `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool            `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode          *bool            `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode           *bool            `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                  *bool            `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding               *MaxTimeRounding `json:"max_time_rounding,omitempty"`
 }
 
 type AccessCodesCreateMultipleRequest struct {
@@ -31,12 +37,22 @@ type AccessCodesCreateMultipleRequest struct {
 	AttemptForOfflineDevice        *bool                                                           `json:"attempt_for_offline_device,omitempty"`
 	PreferNativeScheduling         *bool                                                           `json:"prefer_native_scheduling,omitempty"`
 	UseBackupAccessCodePool        *bool                                                           `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification      *bool                                                           `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed  *bool                                                           `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode           *bool                                                           `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode            *bool                                                           `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                   *bool                                                           `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding                *MaxTimeRounding                                                `json:"max_time_rounding,omitempty"`
 }
 
 type AccessCodesDeleteRequest struct {
 	DeviceId     *string `json:"device_id,omitempty"`
 	AccessCodeId string  `json:"access_code_id"`
 	Sync         *bool   `json:"sync,omitempty"`
+}
+
+type AccessCodesGenerateCodeRequest struct {
+	DeviceId string `json:"device_id"`
 }
 
 type AccessCodesGetRequest struct {
@@ -46,8 +62,9 @@ type AccessCodesGetRequest struct {
 }
 
 type AccessCodesListRequest struct {
-	DeviceId      string   `json:"device_id"`
-	AccessCodeIds []string `json:"access_code_ids,omitempty"`
+	DeviceId          string   `json:"device_id"`
+	AccessCodeIds     []string `json:"access_code_ids,omitempty"`
+	UserIdentifierKey *string  `json:"user_identifier_key,omitempty"`
 }
 
 type AccessCodesPullBackupAccessCodeRequest struct {
@@ -156,6 +173,36 @@ func (a *AccessCodesDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (a *AccessCodesDeleteResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AccessCodesGenerateCodeResponse struct {
+	GeneratedCode *AccessCode `json:"generated_code,omitempty"`
+	Ok            bool        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCodesGenerateCodeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccessCodesGenerateCodeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AccessCodesGenerateCodeResponse(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCodesGenerateCodeResponse) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -310,15 +357,22 @@ func (a *AccessCodesUpdateResponse) String() string {
 }
 
 type AccessCodesUpdateRequest struct {
-	Name                    *string                       `json:"name,omitempty"`
-	StartsAt                *string                       `json:"starts_at,omitempty"`
-	EndsAt                  *string                       `json:"ends_at,omitempty"`
-	Code                    *string                       `json:"code,omitempty"`
-	Sync                    *bool                         `json:"sync,omitempty"`
-	AttemptForOfflineDevice *bool                         `json:"attempt_for_offline_device,omitempty"`
-	PreferNativeScheduling  *bool                         `json:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool *bool                         `json:"use_backup_access_code_pool,omitempty"`
-	AccessCodeId            string                        `json:"access_code_id"`
-	DeviceId                *string                       `json:"device_id,omitempty"`
-	Type                    *AccessCodesUpdateRequestType `json:"type,omitempty"`
+	Name                          *string                       `json:"name,omitempty"`
+	StartsAt                      *string                       `json:"starts_at,omitempty"`
+	EndsAt                        *string                       `json:"ends_at,omitempty"`
+	Code                          *string                       `json:"code,omitempty"`
+	Sync                          *bool                         `json:"sync,omitempty"`
+	AttemptForOfflineDevice       *bool                         `json:"attempt_for_offline_device,omitempty"`
+	PreferNativeScheduling        *bool                         `json:"prefer_native_scheduling,omitempty"`
+	UseBackupAccessCodePool       *bool                         `json:"use_backup_access_code_pool,omitempty"`
+	AllowExternalModification     *bool                         `json:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool                         `json:"is_external_modification_allowed,omitempty"`
+	UseOfflineAccessCode          *bool                         `json:"use_offline_access_code,omitempty"`
+	IsOfflineAccessCode           *bool                         `json:"is_offline_access_code,omitempty"`
+	IsOneTimeUse                  *bool                         `json:"is_one_time_use,omitempty"`
+	MaxTimeRounding               *MaxTimeRounding              `json:"max_time_rounding,omitempty"`
+	AccessCodeId                  string                        `json:"access_code_id"`
+	DeviceId                      *string                       `json:"device_id,omitempty"`
+	Type                          *AccessCodesUpdateRequestType `json:"type,omitempty"`
+	IsManaged                     *bool                         `json:"is_managed,omitempty"`
 }

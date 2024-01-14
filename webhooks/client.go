@@ -31,7 +31,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRequest) (*seamapigo.WebhooksCreateResponse, error) {
+func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRequest) (*seamapigo.Webhook, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -78,7 +78,7 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRe
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Webhook, nil
 }
 
 func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRequest) (*seamapigo.WebhooksDeleteResponse, error) {
@@ -119,7 +119,7 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRe
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodDelete,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
 			Response:     &response,
@@ -131,7 +131,7 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRe
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest) (*seamapigo.WebhooksGetResponse, error) {
+func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest) (*seamapigo.Webhook, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -178,10 +178,10 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest)
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Webhook, nil
 }
 
-func (c *Client) List(ctx context.Context) (*seamapigo.WebhooksListResponse, error) {
+func (c *Client) List(ctx context.Context) ([]*seamapigo.Webhook, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -219,7 +219,7 @@ func (c *Client) List(ctx context.Context) (*seamapigo.WebhooksListResponse, err
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodGet,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -227,5 +227,5 @@ func (c *Client) List(ctx context.Context) (*seamapigo.WebhooksListResponse, err
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Webhooks, nil
 }

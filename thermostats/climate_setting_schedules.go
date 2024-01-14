@@ -3,7 +3,10 @@
 package thermostats
 
 import (
+	json "encoding/json"
+	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
+	core "github.com/seamapi/go/core"
 )
 
 type ClimateSettingSchedulesCreateRequest struct {
@@ -32,7 +35,157 @@ type ClimateSettingSchedulesGetRequest struct {
 }
 
 type ClimateSettingSchedulesListRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId          string  `json:"device_id"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+}
+
+type ClimateSettingSchedulesCreateResponse struct {
+	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
+	Ok                     bool                              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesCreateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ClimateSettingSchedulesDeleteResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesDeleteResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ClimateSettingSchedulesGetResponse struct {
+	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
+	Ok                     bool                              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesGetResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesGetResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ClimateSettingSchedulesListResponse struct {
+	ClimateSettingSchedules []*seamapigo.ClimateSettingSchedule `json:"climate_setting_schedules,omitempty"`
+	Ok                      bool                                `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesListResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesListResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ClimateSettingSchedulesUpdateResponse struct {
+	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty"`
+	Ok                     bool                              `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClimateSettingSchedulesUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ClimateSettingSchedulesUpdateResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesUpdateRequest struct {

@@ -2,6 +2,13 @@
 
 package noisesensors
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
+	core "github.com/seamapi/go/core"
+)
+
 type NoiseThresholdsCreateRequest struct {
 	DeviceId               string   `json:"device_id"`
 	Sync                   *bool    `json:"sync,omitempty"`
@@ -23,7 +30,159 @@ type NoiseThresholdsGetRequest struct {
 }
 
 type NoiseThresholdsListRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId     string `json:"device_id"`
+	IsProgrammed *bool  `json:"is_programmed,omitempty"`
+}
+
+type NoiseThresholdsCreateResponse struct {
+	ActionAttempt  *seamapigo.ActionAttempt  `json:"action_attempt,omitempty"`
+	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty"`
+	Ok             bool                      `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsCreateResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsCreateResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NoiseThresholdsDeleteResponse struct {
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsDeleteResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsDeleteResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NoiseThresholdsGetResponse struct {
+	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty"`
+	Ok             bool                      `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsGetResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsGetResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsGetResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsGetResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NoiseThresholdsListResponse struct {
+	NoiseThresholds []*seamapigo.NoiseThreshold `json:"noise_thresholds,omitempty"`
+	Ok              bool                        `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsListResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsListResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsListResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsListResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NoiseThresholdsUpdateResponse struct {
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *NoiseThresholdsUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler NoiseThresholdsUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NoiseThresholdsUpdateResponse(value)
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NoiseThresholdsUpdateResponse) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsUpdateRequest struct {

@@ -8,6 +8,45 @@ import (
 	core "github.com/seamapi/go/core"
 )
 
+type WorkspacesCreateRequest struct {
+	Name string `json:"name"`
+	// The name shown inside the connect webview
+	ConnectPartnerName        string            `json:"connect_partner_name"`
+	IsSandbox                 *bool             `json:"is_sandbox,omitempty"`
+	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty"`
+	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty"`
+}
+
+type WorkspacesCreateResponse struct {
+	Workspace *Workspace `json:"workspace,omitempty"`
+	Ok        bool       `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WorkspacesCreateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WorkspacesCreateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WorkspacesCreateResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WorkspacesCreateResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
 type WorkspacesGetResponse struct {
 	Workspace *Workspace `json:"workspace,omitempty"`
 	Ok        bool       `json:"ok"`
@@ -69,8 +108,8 @@ func (w *WorkspacesListResponse) String() string {
 }
 
 type WorkspacesResetSandboxResponse struct {
-	Message string `json:"message"`
-	Ok      bool   `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -96,4 +135,26 @@ func (w *WorkspacesResetSandboxResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
+}
+
+type WebviewLogoShape string
+
+const (
+	WebviewLogoShapeCircle WebviewLogoShape = "circle"
+	WebviewLogoShapeSquare WebviewLogoShape = "square"
+)
+
+func NewWebviewLogoShapeFromString(s string) (WebviewLogoShape, error) {
+	switch s {
+	case "circle":
+		return WebviewLogoShapeCircle, nil
+	case "square":
+		return WebviewLogoShapeSquare, nil
+	}
+	var t WebviewLogoShape
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (w WebviewLogoShape) Ptr() *WebviewLogoShape {
+	return &w
 }

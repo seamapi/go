@@ -19,6 +19,7 @@ type DevicesGetRequest struct {
 }
 
 type DevicesListRequest struct {
+	// List all devices owned by this connected account
 	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
 	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
 	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
@@ -28,10 +29,11 @@ type DevicesListRequest struct {
 	DeviceIds           []string      `json:"device_ids,omitempty"`
 	Limit               *float64      `json:"limit,omitempty"`
 	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
+	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
 }
 
 type DevicesListDeviceProvidersRequest struct {
-	ProviderCategory *DevicesListDeviceProvidersRequestProviderCategory `json:"provider_category,omitempty"`
+	ProviderCategory *ProviderCategory `json:"provider_category,omitempty"`
 }
 
 type DevicesDeleteResponse struct {
@@ -93,31 +95,9 @@ func (d *DevicesGetResponse) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-type DevicesListDeviceProvidersRequestProviderCategory string
-
-const (
-	DevicesListDeviceProvidersRequestProviderCategoryStable             DevicesListDeviceProvidersRequestProviderCategory = "stable"
-	DevicesListDeviceProvidersRequestProviderCategoryConsumerSmartlocks DevicesListDeviceProvidersRequestProviderCategory = "consumer_smartlocks"
-)
-
-func NewDevicesListDeviceProvidersRequestProviderCategoryFromString(s string) (DevicesListDeviceProvidersRequestProviderCategory, error) {
-	switch s {
-	case "stable":
-		return DevicesListDeviceProvidersRequestProviderCategoryStable, nil
-	case "consumer_smartlocks":
-		return DevicesListDeviceProvidersRequestProviderCategoryConsumerSmartlocks, nil
-	}
-	var t DevicesListDeviceProvidersRequestProviderCategory
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (d DevicesListDeviceProvidersRequestProviderCategory) Ptr() *DevicesListDeviceProvidersRequestProviderCategory {
-	return &d
-}
-
 type DevicesListDeviceProvidersResponse struct {
-	DeviceProviders []*DevicesListDeviceProvidersResponseDeviceProvidersItem `json:"device_providers,omitempty"`
-	Ok              bool                                                     `json:"ok"`
+	DeviceProviders []*DeviceProvider `json:"device_providers,omitempty"`
+	Ok              bool              `json:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -164,33 +144,6 @@ func (d *DevicesListResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (d *DevicesListResponse) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DevicesUpdateRequestLocation struct {
-	_rawJSON json.RawMessage
-}
-
-func (d *DevicesUpdateRequestLocation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DevicesUpdateRequestLocation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DevicesUpdateRequestLocation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DevicesUpdateRequestLocation) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value
@@ -264,6 +217,5 @@ type DevicesUpdateRequest struct {
 	DeviceId   string                          `json:"device_id"`
 	Properties *DevicesUpdateRequestProperties `json:"properties,omitempty"`
 	Name       *string                         `json:"name,omitempty"`
-	Location   *DevicesUpdateRequestLocation   `json:"location,omitempty"`
 	IsManaged  *bool                           `json:"is_managed,omitempty"`
 }
