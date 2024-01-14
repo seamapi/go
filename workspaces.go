@@ -11,32 +11,10 @@ import (
 type WorkspacesCreateRequest struct {
 	Name string `json:"name"`
 	// The name shown inside the connect webview
-	ConnectPartnerName        string                                   `json:"connect_partner_name"`
-	IsSandbox                 *bool                                    `json:"is_sandbox,omitempty"`
-	WebviewPrimaryButtonColor *string                                  `json:"webview_primary_button_color,omitempty"`
-	WebviewLogoShape          *WorkspacesCreateRequestWebviewLogoShape `json:"webview_logo_shape,omitempty"`
-}
-
-type WorkspacesCreateRequestWebviewLogoShape string
-
-const (
-	WorkspacesCreateRequestWebviewLogoShapeCircle WorkspacesCreateRequestWebviewLogoShape = "circle"
-	WorkspacesCreateRequestWebviewLogoShapeSquare WorkspacesCreateRequestWebviewLogoShape = "square"
-)
-
-func NewWorkspacesCreateRequestWebviewLogoShapeFromString(s string) (WorkspacesCreateRequestWebviewLogoShape, error) {
-	switch s {
-	case "circle":
-		return WorkspacesCreateRequestWebviewLogoShapeCircle, nil
-	case "square":
-		return WorkspacesCreateRequestWebviewLogoShapeSquare, nil
-	}
-	var t WorkspacesCreateRequestWebviewLogoShape
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (w WorkspacesCreateRequestWebviewLogoShape) Ptr() *WorkspacesCreateRequestWebviewLogoShape {
-	return &w
+	ConnectPartnerName        string            `json:"connect_partner_name"`
+	IsSandbox                 *bool             `json:"is_sandbox,omitempty"`
+	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty"`
+	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty"`
 }
 
 type WorkspacesCreateResponse struct {
@@ -157,4 +135,26 @@ func (w *WorkspacesResetSandboxResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
+}
+
+type WebviewLogoShape string
+
+const (
+	WebviewLogoShapeCircle WebviewLogoShape = "circle"
+	WebviewLogoShapeSquare WebviewLogoShape = "square"
+)
+
+func NewWebviewLogoShapeFromString(s string) (WebviewLogoShape, error) {
+	switch s {
+	case "circle":
+		return WebviewLogoShapeCircle, nil
+	case "square":
+		return WebviewLogoShapeSquare, nil
+	}
+	var t WebviewLogoShape
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (w WebviewLogoShape) Ptr() *WebviewLogoShape {
+	return &w
 }
