@@ -2932,6 +2932,226 @@ func (e *Event) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+type EventType string
+
+const (
+	EventTypeDeviceConnected                             EventType = "device.connected"
+	EventTypeDeviceUnmanagedConnected                    EventType = "device.unmanaged.connected"
+	EventTypeDeviceDisconnected                          EventType = "device.disconnected"
+	EventTypeDeviceUnmanagedDisconnected                 EventType = "device.unmanaged.disconnected"
+	EventTypeDeviceConvertedToUnmanaged                  EventType = "device.converted_to_unmanaged"
+	EventTypeDeviceUnmanagedConvertedToManaged           EventType = "device.unmanaged.converted_to_managed"
+	EventTypeDeviceRemoved                               EventType = "device.removed"
+	EventTypeDeviceTampered                              EventType = "device.tampered"
+	EventTypeDeviceLowBattery                            EventType = "device.low_battery"
+	EventTypeDeviceBatteryStatusChanged                  EventType = "device.battery_status_changed"
+	EventTypeDeviceThirdPartyIntegrationDetected         EventType = "device.third_party_integration_detected"
+	EventTypeDeviceThirdPartyIntegrationNoLongerDetected EventType = "device.third_party_integration_no_longer_detected"
+	EventTypeDeviceSaltoPrivacyModeActivated             EventType = "device.salto.privacy_mode_activated"
+	EventTypeDeviceSaltoPrivacyModeDeactivated           EventType = "device.salto.privacy_mode_deactivated"
+	EventTypeDeviceConnectionBecameFlaky                 EventType = "device.connection_became_flaky"
+	EventTypeDeviceConnectionStabilized                  EventType = "device.connection_stabilized"
+	EventTypeDeviceErrorSubscriptionRequired             EventType = "device.error.subscription_required"
+	EventTypeDeviceErrorSubscriptionRequiredResolved     EventType = "device.error.subscription_required.resolved"
+	EventTypeAccessCodeCreated                           EventType = "access_code.created"
+	EventTypeAccessCodeChanged                           EventType = "access_code.changed"
+	EventTypeAccessCodeScheduledOnDevice                 EventType = "access_code.scheduled_on_device"
+	EventTypeAccessCodeSetOnDevice                       EventType = "access_code.set_on_device"
+	EventTypeAccessCodeDeleted                           EventType = "access_code.deleted"
+	EventTypeAccessCodeRemovedFromDevice                 EventType = "access_code.removed_from_device"
+	EventTypeAccessCodeFailedToSetOnDevice               EventType = "access_code.failed_to_set_on_device"
+	EventTypeAccessCodeDelayInSettingOnDevice            EventType = "access_code.delay_in_setting_on_device"
+	EventTypeAccessCodeFailedToRemoveFromDevice          EventType = "access_code.failed_to_remove_from_device"
+	EventTypeAccessCodeDelayInRemovingFromDevice         EventType = "access_code.delay_in_removing_from_device"
+	EventTypeAccessCodeDeletedExternalToSeam             EventType = "access_code.deleted_external_to_seam"
+	EventTypeAccessCodeModifiedExternalToSeam            EventType = "access_code.modified_external_to_seam"
+	EventTypeAccessCodeUnmanagedConvertedToManaged       EventType = "access_code.unmanaged.converted_to_managed"
+	EventTypeAccessCodeUnmanagedFailedToConvertToManaged EventType = "access_code.unmanaged.failed_to_convert_to_managed"
+	EventTypeAccessCodeUnmanagedCreated                  EventType = "access_code.unmanaged.created"
+	EventTypeAccessCodeUnmanagedRemoved                  EventType = "access_code.unmanaged.removed"
+	EventTypeLockLocked                                  EventType = "lock.locked"
+	EventTypeLockUnlocked                                EventType = "lock.unlocked"
+	EventTypeConnectedAccountConnected                   EventType = "connected_account.connected"
+	EventTypeConnectedAccountSuccessfulLogin             EventType = "connected_account.successful_login"
+	EventTypeConnectedAccountCreated                     EventType = "connected_account.created"
+	EventTypeConnectedAccountDeleted                     EventType = "connected_account.deleted"
+	EventTypeConnectedAccountDisconnected                EventType = "connected_account.disconnected"
+	EventTypeConnectedAccountCompletedFirstSync          EventType = "connected_account.completed_first_sync"
+	EventTypeNoiseSensorNoiseThresholdTriggered          EventType = "noise_sensor.noise_threshold_triggered"
+	EventTypeAccessCodeBackupAccessCodePulled            EventType = "access_code.backup_access_code_pulled"
+)
+
+func NewEventTypeFromString(s string) (EventType, error) {
+	switch s {
+	case "device.connected":
+		return EventTypeDeviceConnected, nil
+	case "device.unmanaged.connected":
+		return EventTypeDeviceUnmanagedConnected, nil
+	case "device.disconnected":
+		return EventTypeDeviceDisconnected, nil
+	case "device.unmanaged.disconnected":
+		return EventTypeDeviceUnmanagedDisconnected, nil
+	case "device.converted_to_unmanaged":
+		return EventTypeDeviceConvertedToUnmanaged, nil
+	case "device.unmanaged.converted_to_managed":
+		return EventTypeDeviceUnmanagedConvertedToManaged, nil
+	case "device.removed":
+		return EventTypeDeviceRemoved, nil
+	case "device.tampered":
+		return EventTypeDeviceTampered, nil
+	case "device.low_battery":
+		return EventTypeDeviceLowBattery, nil
+	case "device.battery_status_changed":
+		return EventTypeDeviceBatteryStatusChanged, nil
+	case "device.third_party_integration_detected":
+		return EventTypeDeviceThirdPartyIntegrationDetected, nil
+	case "device.third_party_integration_no_longer_detected":
+		return EventTypeDeviceThirdPartyIntegrationNoLongerDetected, nil
+	case "device.salto.privacy_mode_activated":
+		return EventTypeDeviceSaltoPrivacyModeActivated, nil
+	case "device.salto.privacy_mode_deactivated":
+		return EventTypeDeviceSaltoPrivacyModeDeactivated, nil
+	case "device.connection_became_flaky":
+		return EventTypeDeviceConnectionBecameFlaky, nil
+	case "device.connection_stabilized":
+		return EventTypeDeviceConnectionStabilized, nil
+	case "device.error.subscription_required":
+		return EventTypeDeviceErrorSubscriptionRequired, nil
+	case "device.error.subscription_required.resolved":
+		return EventTypeDeviceErrorSubscriptionRequiredResolved, nil
+	case "access_code.created":
+		return EventTypeAccessCodeCreated, nil
+	case "access_code.changed":
+		return EventTypeAccessCodeChanged, nil
+	case "access_code.scheduled_on_device":
+		return EventTypeAccessCodeScheduledOnDevice, nil
+	case "access_code.set_on_device":
+		return EventTypeAccessCodeSetOnDevice, nil
+	case "access_code.deleted":
+		return EventTypeAccessCodeDeleted, nil
+	case "access_code.removed_from_device":
+		return EventTypeAccessCodeRemovedFromDevice, nil
+	case "access_code.failed_to_set_on_device":
+		return EventTypeAccessCodeFailedToSetOnDevice, nil
+	case "access_code.delay_in_setting_on_device":
+		return EventTypeAccessCodeDelayInSettingOnDevice, nil
+	case "access_code.failed_to_remove_from_device":
+		return EventTypeAccessCodeFailedToRemoveFromDevice, nil
+	case "access_code.delay_in_removing_from_device":
+		return EventTypeAccessCodeDelayInRemovingFromDevice, nil
+	case "access_code.deleted_external_to_seam":
+		return EventTypeAccessCodeDeletedExternalToSeam, nil
+	case "access_code.modified_external_to_seam":
+		return EventTypeAccessCodeModifiedExternalToSeam, nil
+	case "access_code.unmanaged.converted_to_managed":
+		return EventTypeAccessCodeUnmanagedConvertedToManaged, nil
+	case "access_code.unmanaged.failed_to_convert_to_managed":
+		return EventTypeAccessCodeUnmanagedFailedToConvertToManaged, nil
+	case "access_code.unmanaged.created":
+		return EventTypeAccessCodeUnmanagedCreated, nil
+	case "access_code.unmanaged.removed":
+		return EventTypeAccessCodeUnmanagedRemoved, nil
+	case "lock.locked":
+		return EventTypeLockLocked, nil
+	case "lock.unlocked":
+		return EventTypeLockUnlocked, nil
+	case "connected_account.connected":
+		return EventTypeConnectedAccountConnected, nil
+	case "connected_account.successful_login":
+		return EventTypeConnectedAccountSuccessfulLogin, nil
+	case "connected_account.created":
+		return EventTypeConnectedAccountCreated, nil
+	case "connected_account.deleted":
+		return EventTypeConnectedAccountDeleted, nil
+	case "connected_account.disconnected":
+		return EventTypeConnectedAccountDisconnected, nil
+	case "connected_account.completed_first_sync":
+		return EventTypeConnectedAccountCompletedFirstSync, nil
+	case "noise_sensor.noise_threshold_triggered":
+		return EventTypeNoiseSensorNoiseThresholdTriggered, nil
+	case "access_code.backup_access_code_pulled":
+		return EventTypeAccessCodeBackupAccessCodePulled, nil
+	}
+	var t EventType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventType) Ptr() *EventType {
+	return &e
+}
+
+type FanMode string
+
+const (
+	FanModeAuto FanMode = "auto"
+	FanModeOn   FanMode = "on"
+)
+
+func NewFanModeFromString(s string) (FanMode, error) {
+	switch s {
+	case "auto":
+		return FanModeAuto, nil
+	case "on":
+		return FanModeOn, nil
+	}
+	var t FanMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (f FanMode) Ptr() *FanMode {
+	return &f
+}
+
+type FanModeSetting string
+
+const (
+	FanModeSettingAuto FanModeSetting = "auto"
+	FanModeSettingOn   FanModeSetting = "on"
+)
+
+func NewFanModeSettingFromString(s string) (FanModeSetting, error) {
+	switch s {
+	case "auto":
+		return FanModeSettingAuto, nil
+	case "on":
+		return FanModeSettingOn, nil
+	}
+	var t FanModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (f FanModeSetting) Ptr() *FanModeSetting {
+	return &f
+}
+
+type HvacModeSetting string
+
+const (
+	HvacModeSettingOff      HvacModeSetting = "off"
+	HvacModeSettingHeat     HvacModeSetting = "heat"
+	HvacModeSettingCool     HvacModeSetting = "cool"
+	HvacModeSettingHeatCool HvacModeSetting = "heat_cool"
+)
+
+func NewHvacModeSettingFromString(s string) (HvacModeSetting, error) {
+	switch s {
+	case "off":
+		return HvacModeSettingOff, nil
+	case "heat":
+		return HvacModeSettingHeat, nil
+	case "cool":
+		return HvacModeSettingCool, nil
+	case "heat_cool":
+		return HvacModeSettingHeatCool, nil
+	}
+	var t HvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HvacModeSetting) Ptr() *HvacModeSetting {
+	return &h
+}
+
 type Manufacturer string
 
 const (
@@ -3041,6 +3261,34 @@ func NewManufacturerFromString(s string) (Manufacturer, error) {
 }
 
 func (m Manufacturer) Ptr() *Manufacturer {
+	return &m
+}
+
+type MaxTimeRounding string
+
+const (
+	MaxTimeRoundingOneHour MaxTimeRounding = "1hour"
+	MaxTimeRoundingOneDay  MaxTimeRounding = "1day"
+	MaxTimeRoundingOneH    MaxTimeRounding = "1h"
+	MaxTimeRoundingOneD    MaxTimeRounding = "1d"
+)
+
+func NewMaxTimeRoundingFromString(s string) (MaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return MaxTimeRoundingOneHour, nil
+	case "1day":
+		return MaxTimeRoundingOneDay, nil
+	case "1h":
+		return MaxTimeRoundingOneH, nil
+	case "1d":
+		return MaxTimeRoundingOneD, nil
+	}
+	var t MaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (m MaxTimeRounding) Ptr() *MaxTimeRounding {
 	return &m
 }
 
@@ -3304,6 +3552,28 @@ func (p *PhoneLocation) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)
+}
+
+type PhoneOperatingSystem string
+
+const (
+	PhoneOperatingSystemAndroid PhoneOperatingSystem = "android"
+	PhoneOperatingSystemIos     PhoneOperatingSystem = "ios"
+)
+
+func NewPhoneOperatingSystemFromString(s string) (PhoneOperatingSystem, error) {
+	switch s {
+	case "android":
+		return PhoneOperatingSystemAndroid, nil
+	case "ios":
+		return PhoneOperatingSystemIos, nil
+	}
+	var t PhoneOperatingSystem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PhoneOperatingSystem) Ptr() *PhoneOperatingSystem {
+	return &p
 }
 
 // Properties of the device.

@@ -58,7 +58,7 @@ type ThermostatsOffRequest struct {
 
 type ThermostatsSetFanModeRequest struct {
 	DeviceId       string                                      `json:"device_id"`
-	FanMode        *ThermostatsSetFanModeRequestFanMode        `json:"fan_mode,omitempty"`
+	FanMode        *FanMode                                    `json:"fan_mode,omitempty"`
 	FanModeSetting *ThermostatsSetFanModeRequestFanModeSetting `json:"fan_mode_setting,omitempty"`
 	Sync           *bool                                       `json:"sync,omitempty"`
 }
@@ -237,28 +237,6 @@ func (t *ThermostatsOffResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
-}
-
-type ThermostatsSetFanModeRequestFanMode string
-
-const (
-	ThermostatsSetFanModeRequestFanModeAuto ThermostatsSetFanModeRequestFanMode = "auto"
-	ThermostatsSetFanModeRequestFanModeOn   ThermostatsSetFanModeRequestFanMode = "on"
-)
-
-func NewThermostatsSetFanModeRequestFanModeFromString(s string) (ThermostatsSetFanModeRequestFanMode, error) {
-	switch s {
-	case "auto":
-		return ThermostatsSetFanModeRequestFanModeAuto, nil
-	case "on":
-		return ThermostatsSetFanModeRequestFanModeOn, nil
-	}
-	var t ThermostatsSetFanModeRequestFanMode
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (t ThermostatsSetFanModeRequestFanMode) Ptr() *ThermostatsSetFanModeRequestFanMode {
-	return &t
 }
 
 type ThermostatsSetFanModeRequestFanModeSetting string

@@ -52,10 +52,10 @@ func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) String() string {
 }
 
 type SimulateCreateSandboxPhoneRequestPhoneMetadata struct {
-	OperatingSystem    *SimulateCreateSandboxPhoneRequestPhoneMetadataOperatingSystem `json:"operating_system,omitempty"`
-	OsVersion          *string                                                        `json:"os_version,omitempty"`
-	DeviceManufacturer *string                                                        `json:"device_manufacturer,omitempty"`
-	DeviceModel        *string                                                        `json:"device_model,omitempty"`
+	OperatingSystem    *seamapigo.PhoneOperatingSystem `json:"operating_system,omitempty"`
+	OsVersion          *string                         `json:"os_version,omitempty"`
+	DeviceManufacturer *string                         `json:"device_manufacturer,omitempty"`
+	DeviceModel        *string                         `json:"device_model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
