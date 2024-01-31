@@ -713,21 +713,21 @@ func (c *ClientSession) String() string {
 }
 
 type ClimateSettingSchedule struct {
-	ClimateSettingScheduleId  string           `json:"climate_setting_schedule_id"`
-	DeviceId                  string           `json:"device_id"`
-	Name                      *string          `json:"name,omitempty"`
-	ScheduleStartsAt          string           `json:"schedule_starts_at"`
-	ScheduleEndsAt            string           `json:"schedule_ends_at"`
-	CreatedAt                 time.Time        `json:"created_at"`
-	Errors                    interface{}      `json:"errors,omitempty"`
-	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+	ClimateSettingScheduleId  string                                 `json:"climate_setting_schedule_id"`
+	DeviceId                  string                                 `json:"device_id"`
+	Name                      *string                                `json:"name,omitempty"`
+	ScheduleStartsAt          string                                 `json:"schedule_starts_at"`
+	ScheduleEndsAt            string                                 `json:"schedule_ends_at"`
+	CreatedAt                 time.Time                              `json:"created_at"`
+	Errors                    interface{}                            `json:"errors,omitempty"`
+	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                               `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                               `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                               `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty"`
 	scheduleType              string
 
 	_rawJSON json.RawMessage
@@ -771,6 +771,34 @@ func (c *ClimateSettingSchedule) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type ClimateSettingScheduleHvacModeSetting string
+
+const (
+	ClimateSettingScheduleHvacModeSettingOff      ClimateSettingScheduleHvacModeSetting = "off"
+	ClimateSettingScheduleHvacModeSettingHeat     ClimateSettingScheduleHvacModeSetting = "heat"
+	ClimateSettingScheduleHvacModeSettingCool     ClimateSettingScheduleHvacModeSetting = "cool"
+	ClimateSettingScheduleHvacModeSettingHeatCool ClimateSettingScheduleHvacModeSetting = "heat_cool"
+)
+
+func NewClimateSettingScheduleHvacModeSettingFromString(s string) (ClimateSettingScheduleHvacModeSetting, error) {
+	switch s {
+	case "off":
+		return ClimateSettingScheduleHvacModeSettingOff, nil
+	case "heat":
+		return ClimateSettingScheduleHvacModeSettingHeat, nil
+	case "cool":
+		return ClimateSettingScheduleHvacModeSettingCool, nil
+	case "heat_cool":
+		return ClimateSettingScheduleHvacModeSettingHeatCool, nil
+	}
+	var t ClimateSettingScheduleHvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ClimateSettingScheduleHvacModeSetting) Ptr() *ClimateSettingScheduleHvacModeSetting {
+	return &c
 }
 
 type ConnectWebview struct {
@@ -821,9 +849,10 @@ func (c *ConnectWebview) String() string {
 }
 
 type ConnectWebviewCustomMetadataValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
 }
 
 func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebviewCustomMetadataValue {
@@ -832,6 +861,10 @@ func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebvie
 
 func NewConnectWebviewCustomMetadataValueFromBoolean(value bool) *ConnectWebviewCustomMetadataValue {
 	return &ConnectWebviewCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectWebviewCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewCustomMetadataValue {
+	return &ConnectWebviewCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -847,6 +880,12 @@ func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		c.Boolean = valueBoolean
 		return nil
 	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -858,12 +897,15 @@ func (c ConnectWebviewCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectWebviewCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomMetadataValueVisitor) error {
@@ -874,6 +916,8 @@ func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomM
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -940,9 +984,10 @@ func (c *ConnectedAccount) String() string {
 }
 
 type ConnectedAccountCustomMetadataValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
 }
 
 func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAccountCustomMetadataValue {
@@ -951,6 +996,10 @@ func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAc
 
 func NewConnectedAccountCustomMetadataValueFromBoolean(value bool) *ConnectedAccountCustomMetadataValue {
 	return &ConnectedAccountCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectedAccountCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountCustomMetadataValue {
+	return &ConnectedAccountCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -966,6 +1015,12 @@ func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		c.Boolean = valueBoolean
 		return nil
 	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -977,12 +1032,15 @@ func (c ConnectedAccountCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCustomMetadataValueVisitor) error {
@@ -993,6 +1051,8 @@ func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCus
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -1051,7 +1111,8 @@ type Device struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged bool `json:"is_managed"`
+	IsManaged      bool                                  `json:"is_managed"`
+	CustomMetadata map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1111,6 +1172,79 @@ func NewDeviceCapabilitiesSupportedItemFromString(s string) (DeviceCapabilitiesS
 
 func (d DeviceCapabilitiesSupportedItem) Ptr() *DeviceCapabilitiesSupportedItem {
 	return &d
+}
+
+type DeviceCustomMetadataValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewDeviceCustomMetadataValueFromString(value string) *DeviceCustomMetadataValue {
+	return &DeviceCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewDeviceCustomMetadataValueFromBoolean(value bool) *DeviceCustomMetadataValue {
+	return &DeviceCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewDeviceCustomMetadataValueFromStringOptional(value *string) *DeviceCustomMetadataValue {
+	return &DeviceCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (d *DeviceCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		d.typeName = "string"
+		d.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		d.typeName = "boolean"
+		d.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		d.typeName = "stringOptional"
+		d.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
+}
+
+func (d DeviceCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch d.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return json.Marshal(d.String)
+	case "boolean":
+		return json.Marshal(d.Boolean)
+	case "stringOptional":
+		return json.Marshal(d.StringOptional)
+	}
+}
+
+type DeviceCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (d *DeviceCustomMetadataValue) Accept(visitor DeviceCustomMetadataValueVisitor) error {
+	switch d.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return visitor.VisitString(d.String)
+	case "boolean":
+		return visitor.VisitBoolean(d.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(d.StringOptional)
+	}
 }
 
 type DeviceErrorsItem struct {
@@ -1204,40 +1338,41 @@ type DeviceProperties struct {
 	// Deprecated. Use model.accessory_keypad_supported.
 	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty"`
 	// Deprecated. Use offline_access_codes_enabled.
-	SupportsOfflineAccessCodes         *bool                                               `json:"supports_offline_access_codes,omitempty"`
-	AugustMetadata                     *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty"`
-	AvigilonAltaMetadata               *DevicePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty"`
-	SchlageMetadata                    *DevicePropertiesSchlageMetadata                    `json:"schlage_metadata,omitempty"`
-	SmartthingsMetadata                *DevicePropertiesSmartthingsMetadata                `json:"smartthings_metadata,omitempty"`
-	LocklyMetadata                     *DevicePropertiesLocklyMetadata                     `json:"lockly_metadata,omitempty"`
-	NukiMetadata                       *DevicePropertiesNukiMetadata                       `json:"nuki_metadata,omitempty"`
-	KwiksetMetadata                    *DevicePropertiesKwiksetMetadata                    `json:"kwikset_metadata,omitempty"`
-	SaltoMetadata                      *DevicePropertiesSaltoMetadata                      `json:"salto_metadata,omitempty"`
-	GenieMetadata                      *DevicePropertiesGenieMetadata                      `json:"genie_metadata,omitempty"`
-	BrivoMetadata                      *DevicePropertiesBrivoMetadata                      `json:"brivo_metadata,omitempty"`
-	IglooMetadata                      *DevicePropertiesIglooMetadata                      `json:"igloo_metadata,omitempty"`
-	NoiseawareMetadata                 *DevicePropertiesNoiseawareMetadata                 `json:"noiseaware_metadata,omitempty"`
-	MinutMetadata                      *DevicePropertiesMinutMetadata                      `json:"minut_metadata,omitempty"`
-	FourSuitesMetadata                 *DevicePropertiesFourSuitesMetadata                 `json:"four_suites_metadata,omitempty"`
-	TwoNMetadata                       *DevicePropertiesTwoNMetadata                       `json:"two_n_metadata,omitempty"`
-	ControlbywebMetadata               *DevicePropertiesControlbywebMetadata               `json:"controlbyweb_metadata,omitempty"`
-	TtlockMetadata                     *DevicePropertiesTtlockMetadata                     `json:"ttlock_metadata,omitempty"`
-	SeamBridgeMetadata                 *DevicePropertiesSeamBridgeMetadata                 `json:"seam_bridge_metadata,omitempty"`
-	IgloohomeMetadata                  *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty"`
-	NestMetadata                       *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty"`
-	EcobeeMetadata                     *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty"`
-	HubitatMetadata                    *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
-	DormakabaOracodeMetadata           *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
-	WyzeMetadata                       *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
-	CodeConstraints                    []*DevicePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty"`
-	SupportedCodeLengths               []float64                                           `json:"supported_code_lengths,omitempty"`
-	MaxActiveCodesSupported            *float64                                            `json:"max_active_codes_supported,omitempty"`
-	SupportsBackupAccessCodePool       *bool                                               `json:"supports_backup_access_code_pool,omitempty"`
-	HasNativeEntryEvents               *bool                                               `json:"has_native_entry_events,omitempty"`
-	Locked                             *bool                                               `json:"locked,omitempty"`
-	KeypadBattery                      *DevicePropertiesKeypadBattery                      `json:"keypad_battery,omitempty"`
-	DoorOpen                           *bool                                               `json:"door_open,omitempty"`
-	AssaAbloyCredentialServiceMetadata *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
+	SupportsOfflineAccessCodes                      *bool                                               `json:"supports_offline_access_codes,omitempty"`
+	AssaAbloyCredentialServiceMetadata              *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
+	AugustMetadata                                  *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty"`
+	AvigilonAltaMetadata                            *DevicePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty"`
+	SchlageMetadata                                 *DevicePropertiesSchlageMetadata                    `json:"schlage_metadata,omitempty"`
+	SmartthingsMetadata                             *DevicePropertiesSmartthingsMetadata                `json:"smartthings_metadata,omitempty"`
+	LocklyMetadata                                  *DevicePropertiesLocklyMetadata                     `json:"lockly_metadata,omitempty"`
+	NukiMetadata                                    *DevicePropertiesNukiMetadata                       `json:"nuki_metadata,omitempty"`
+	KwiksetMetadata                                 *DevicePropertiesKwiksetMetadata                    `json:"kwikset_metadata,omitempty"`
+	SaltoMetadata                                   *DevicePropertiesSaltoMetadata                      `json:"salto_metadata,omitempty"`
+	GenieMetadata                                   *DevicePropertiesGenieMetadata                      `json:"genie_metadata,omitempty"`
+	BrivoMetadata                                   *DevicePropertiesBrivoMetadata                      `json:"brivo_metadata,omitempty"`
+	IglooMetadata                                   *DevicePropertiesIglooMetadata                      `json:"igloo_metadata,omitempty"`
+	NoiseawareMetadata                              *DevicePropertiesNoiseawareMetadata                 `json:"noiseaware_metadata,omitempty"`
+	MinutMetadata                                   *DevicePropertiesMinutMetadata                      `json:"minut_metadata,omitempty"`
+	FourSuitesMetadata                              *DevicePropertiesFourSuitesMetadata                 `json:"four_suites_metadata,omitempty"`
+	TwoNMetadata                                    *DevicePropertiesTwoNMetadata                       `json:"two_n_metadata,omitempty"`
+	ControlbywebMetadata                            *DevicePropertiesControlbywebMetadata               `json:"controlbyweb_metadata,omitempty"`
+	TtlockMetadata                                  *DevicePropertiesTtlockMetadata                     `json:"ttlock_metadata,omitempty"`
+	SeamBridgeMetadata                              *DevicePropertiesSeamBridgeMetadata                 `json:"seam_bridge_metadata,omitempty"`
+	IgloohomeMetadata                               *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty"`
+	NestMetadata                                    *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty"`
+	EcobeeMetadata                                  *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty"`
+	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
+	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
+	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
+	ExperimentalSupportedCodeFromAccessCodesLengths []float64                                           `json:"_experimental_supported_code_from_access_codes_lengths,omitempty"`
+	CodeConstraints                                 []*DevicePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty"`
+	SupportedCodeLengths                            []float64                                           `json:"supported_code_lengths,omitempty"`
+	MaxActiveCodesSupported                         *float64                                            `json:"max_active_codes_supported,omitempty"`
+	SupportsBackupAccessCodePool                    *bool                                               `json:"supports_backup_access_code_pool,omitempty"`
+	HasNativeEntryEvents                            *bool                                               `json:"has_native_entry_events,omitempty"`
+	Locked                                          *bool                                               `json:"locked,omitempty"`
+	KeypadBattery                                   *DevicePropertiesKeypadBattery                      `json:"keypad_battery,omitempty"`
+	DoorOpen                                        *bool                                               `json:"door_open,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3305,8 +3440,7 @@ type Phone struct {
 	DeviceType PhoneDeviceType `json:"device_type,omitempty"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
 	CapabilitiesSupported []PhoneCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
-	// Properties of the device.
-	Properties *PhoneProperties `json:"properties,omitempty"`
+	Properties            *PhoneProperties                 `json:"properties,omitempty"`
 	// Location information for the device.
 	Location *PhoneLocation `json:"location,omitempty"`
 	// Unique identifier for the Seam workspace associated with the device.
@@ -3318,8 +3452,8 @@ type Phone struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                          bool                                     `json:"is_managed"`
-	AssaAbloyCredentialServiceMetadata *PhoneAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
+	IsManaged      bool                                 `json:"is_managed"`
+	CustomMetadata map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3336,66 +3470,6 @@ func (p *Phone) UnmarshalJSON(data []byte) error {
 }
 
 func (p *Phone) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhoneAssaAbloyCredentialServiceMetadata struct {
-	HasActiveEndpoint bool                                                    `json:"has_active_endpoint"`
-	Endpoints         []*PhoneAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhoneAssaAbloyCredentialServiceMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhoneAssaAbloyCredentialServiceMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhoneAssaAbloyCredentialServiceMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhoneAssaAbloyCredentialServiceMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhoneAssaAbloyCredentialServiceMetadataEndpointsItem struct {
-	EndpointId string `json:"endpoint_id"`
-	IsActive   bool   `json:"is_active"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhoneAssaAbloyCredentialServiceMetadataEndpointsItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhoneAssaAbloyCredentialServiceMetadataEndpointsItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhoneAssaAbloyCredentialServiceMetadataEndpointsItem(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhoneAssaAbloyCredentialServiceMetadataEndpointsItem) String() string {
 	if len(p._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
@@ -3439,6 +3513,79 @@ func NewPhoneCapabilitiesSupportedItemFromString(s string) (PhoneCapabilitiesSup
 
 func (p PhoneCapabilitiesSupportedItem) Ptr() *PhoneCapabilitiesSupportedItem {
 	return &p
+}
+
+type PhoneCustomMetadataValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewPhoneCustomMetadataValueFromString(value string) *PhoneCustomMetadataValue {
+	return &PhoneCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewPhoneCustomMetadataValueFromBoolean(value bool) *PhoneCustomMetadataValue {
+	return &PhoneCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewPhoneCustomMetadataValueFromStringOptional(value *string) *PhoneCustomMetadataValue {
+	return &PhoneCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (p *PhoneCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		p.typeName = "string"
+		p.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		p.typeName = "boolean"
+		p.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		p.typeName = "stringOptional"
+		p.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+}
+
+func (p PhoneCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch p.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
+	case "string":
+		return json.Marshal(p.String)
+	case "boolean":
+		return json.Marshal(p.Boolean)
+	case "stringOptional":
+		return json.Marshal(p.StringOptional)
+	}
+}
+
+type PhoneCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (p *PhoneCustomMetadataValue) Accept(visitor PhoneCustomMetadataValueVisitor) error {
+	switch p.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
+	case "string":
+		return visitor.VisitString(p.String)
+	case "boolean":
+		return visitor.VisitBoolean(p.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(p.StringOptional)
+	}
 }
 
 type PhoneDeviceType string
@@ -3548,67 +3695,7 @@ func (p PhoneOperatingSystem) Ptr() *PhoneOperatingSystem {
 	return &p
 }
 
-// Properties of the device.
 type PhoneProperties struct {
-	// Indicates whether the device is online.
-	Online bool `json:"online"`
-	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
-	Name  string                `json:"name"`
-	Model *PhonePropertiesModel `json:"model,omitempty"`
-	// Indicates whether the device has direct power.
-	HasDirectPower *bool `json:"has_direct_power,omitempty"`
-	// Indicates the battery level of the device as a decimal value between 0 and 1, inclusive.
-	BatteryLevel *float64 `json:"battery_level,omitempty"`
-	// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
-	Battery *PhonePropertiesBattery `json:"battery,omitempty"`
-	// Manufacturer of the device.
-	Manufacturer *string `json:"manufacturer,omitempty"`
-	// Image URL for the device.
-	ImageUrl *string `json:"image_url,omitempty"`
-	// Alt text for the device image.
-	ImageAltText *string `json:"image_alt_text,omitempty"`
-	// Serial number of the device.
-	SerialNumber *string `json:"serial_number,omitempty"`
-	// Indicates whether it is currently possible to use online access codes for the device.
-	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty"`
-	// Indicates whether it is currently possible to use offline access codes for the device.
-	OfflineAccessCodesEnabled *bool `json:"offline_access_codes_enabled,omitempty"`
-	// Deprecated. Use model.accessory_keypad_supported.
-	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty"`
-	// Deprecated. Use offline_access_codes_enabled.
-	SupportsOfflineAccessCodes         *bool                                              `json:"supports_offline_access_codes,omitempty"`
-	AugustMetadata                     *PhonePropertiesAugustMetadata                     `json:"august_metadata,omitempty"`
-	AvigilonAltaMetadata               *PhonePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty"`
-	SchlageMetadata                    *PhonePropertiesSchlageMetadata                    `json:"schlage_metadata,omitempty"`
-	SmartthingsMetadata                *PhonePropertiesSmartthingsMetadata                `json:"smartthings_metadata,omitempty"`
-	LocklyMetadata                     *PhonePropertiesLocklyMetadata                     `json:"lockly_metadata,omitempty"`
-	NukiMetadata                       *PhonePropertiesNukiMetadata                       `json:"nuki_metadata,omitempty"`
-	KwiksetMetadata                    *PhonePropertiesKwiksetMetadata                    `json:"kwikset_metadata,omitempty"`
-	SaltoMetadata                      *PhonePropertiesSaltoMetadata                      `json:"salto_metadata,omitempty"`
-	GenieMetadata                      *PhonePropertiesGenieMetadata                      `json:"genie_metadata,omitempty"`
-	BrivoMetadata                      *PhonePropertiesBrivoMetadata                      `json:"brivo_metadata,omitempty"`
-	IglooMetadata                      *PhonePropertiesIglooMetadata                      `json:"igloo_metadata,omitempty"`
-	NoiseawareMetadata                 *PhonePropertiesNoiseawareMetadata                 `json:"noiseaware_metadata,omitempty"`
-	MinutMetadata                      *PhonePropertiesMinutMetadata                      `json:"minut_metadata,omitempty"`
-	FourSuitesMetadata                 *PhonePropertiesFourSuitesMetadata                 `json:"four_suites_metadata,omitempty"`
-	TwoNMetadata                       *PhonePropertiesTwoNMetadata                       `json:"two_n_metadata,omitempty"`
-	ControlbywebMetadata               *PhonePropertiesControlbywebMetadata               `json:"controlbyweb_metadata,omitempty"`
-	TtlockMetadata                     *PhonePropertiesTtlockMetadata                     `json:"ttlock_metadata,omitempty"`
-	SeamBridgeMetadata                 *PhonePropertiesSeamBridgeMetadata                 `json:"seam_bridge_metadata,omitempty"`
-	IgloohomeMetadata                  *PhonePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty"`
-	NestMetadata                       *PhonePropertiesNestMetadata                       `json:"nest_metadata,omitempty"`
-	EcobeeMetadata                     *PhonePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty"`
-	HubitatMetadata                    *PhonePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
-	DormakabaOracodeMetadata           *PhonePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
-	WyzeMetadata                       *PhonePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
-	CodeConstraints                    []*PhonePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty"`
-	SupportedCodeLengths               []float64                                          `json:"supported_code_lengths,omitempty"`
-	MaxActiveCodesSupported            *float64                                           `json:"max_active_codes_supported,omitempty"`
-	SupportsBackupAccessCodePool       *bool                                              `json:"supports_backup_access_code_pool,omitempty"`
-	HasNativeEntryEvents               *bool                                              `json:"has_native_entry_events,omitempty"`
-	Locked                             *bool                                              `json:"locked,omitempty"`
-	KeypadBattery                      *PhonePropertiesKeypadBattery                      `json:"keypad_battery,omitempty"`
-	DoorOpen                           *bool                                              `json:"door_open,omitempty"`
 	AssaAbloyCredentialServiceMetadata *PhonePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -3686,1325 +3773,6 @@ func (p *PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) Unmarsh
 }
 
 func (p *PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesAugustMetadata struct {
-	LockId             string  `json:"lock_id"`
-	LockName           string  `json:"lock_name"`
-	HouseName          string  `json:"house_name"`
-	HasKeypad          bool    `json:"has_keypad"`
-	KeypadBatteryLevel *string `json:"keypad_battery_level,omitempty"`
-	Model              *string `json:"model,omitempty"`
-	HouseId            *string `json:"house_id,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesAugustMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesAugustMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesAugustMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesAugustMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesAvigilonAltaMetadata struct {
-	EntryName string  `json:"entry_name"`
-	OrgName   string  `json:"org_name"`
-	ZoneId    float64 `json:"zone_id"`
-	ZoneName  string  `json:"zone_name"`
-	SiteId    float64 `json:"site_id"`
-	SiteName  string  `json:"site_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesAvigilonAltaMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesAvigilonAltaMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesAvigilonAltaMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesAvigilonAltaMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
-type PhonePropertiesBattery struct {
-	Level  float64                      `json:"level"`
-	Status PhonePropertiesBatteryStatus `json:"status,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesBattery) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesBattery
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesBattery(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesBattery) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesBatteryStatus string
-
-const (
-	PhonePropertiesBatteryStatusCritical PhonePropertiesBatteryStatus = "critical"
-	PhonePropertiesBatteryStatusLow      PhonePropertiesBatteryStatus = "low"
-	PhonePropertiesBatteryStatusGood     PhonePropertiesBatteryStatus = "good"
-	PhonePropertiesBatteryStatusFull     PhonePropertiesBatteryStatus = "full"
-)
-
-func NewPhonePropertiesBatteryStatusFromString(s string) (PhonePropertiesBatteryStatus, error) {
-	switch s {
-	case "critical":
-		return PhonePropertiesBatteryStatusCritical, nil
-	case "low":
-		return PhonePropertiesBatteryStatusLow, nil
-	case "good":
-		return PhonePropertiesBatteryStatusGood, nil
-	case "full":
-		return PhonePropertiesBatteryStatusFull, nil
-	}
-	var t PhonePropertiesBatteryStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (p PhonePropertiesBatteryStatus) Ptr() *PhonePropertiesBatteryStatus {
-	return &p
-}
-
-type PhonePropertiesBrivoMetadata struct {
-	DeviceName string `json:"device_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesBrivoMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesBrivoMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesBrivoMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesBrivoMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesCodeConstraintsItem struct {
-	typeName                                    string
-	PhonePropertiesCodeConstraintsItemZero      *PhonePropertiesCodeConstraintsItemZero
-	PhonePropertiesCodeConstraintsItemMaxLength *PhonePropertiesCodeConstraintsItemMaxLength
-}
-
-func NewPhonePropertiesCodeConstraintsItemFromPhonePropertiesCodeConstraintsItemZero(value *PhonePropertiesCodeConstraintsItemZero) *PhonePropertiesCodeConstraintsItem {
-	return &PhonePropertiesCodeConstraintsItem{typeName: "phonePropertiesCodeConstraintsItemZero", PhonePropertiesCodeConstraintsItemZero: value}
-}
-
-func NewPhonePropertiesCodeConstraintsItemFromPhonePropertiesCodeConstraintsItemMaxLength(value *PhonePropertiesCodeConstraintsItemMaxLength) *PhonePropertiesCodeConstraintsItem {
-	return &PhonePropertiesCodeConstraintsItem{typeName: "phonePropertiesCodeConstraintsItemMaxLength", PhonePropertiesCodeConstraintsItemMaxLength: value}
-}
-
-func (p *PhonePropertiesCodeConstraintsItem) UnmarshalJSON(data []byte) error {
-	valuePhonePropertiesCodeConstraintsItemZero := new(PhonePropertiesCodeConstraintsItemZero)
-	if err := json.Unmarshal(data, &valuePhonePropertiesCodeConstraintsItemZero); err == nil {
-		p.typeName = "phonePropertiesCodeConstraintsItemZero"
-		p.PhonePropertiesCodeConstraintsItemZero = valuePhonePropertiesCodeConstraintsItemZero
-		return nil
-	}
-	valuePhonePropertiesCodeConstraintsItemMaxLength := new(PhonePropertiesCodeConstraintsItemMaxLength)
-	if err := json.Unmarshal(data, &valuePhonePropertiesCodeConstraintsItemMaxLength); err == nil {
-		p.typeName = "phonePropertiesCodeConstraintsItemMaxLength"
-		p.PhonePropertiesCodeConstraintsItemMaxLength = valuePhonePropertiesCodeConstraintsItemMaxLength
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PhonePropertiesCodeConstraintsItem) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "phonePropertiesCodeConstraintsItemZero":
-		return json.Marshal(p.PhonePropertiesCodeConstraintsItemZero)
-	case "phonePropertiesCodeConstraintsItemMaxLength":
-		return json.Marshal(p.PhonePropertiesCodeConstraintsItemMaxLength)
-	}
-}
-
-type PhonePropertiesCodeConstraintsItemVisitor interface {
-	VisitPhonePropertiesCodeConstraintsItemZero(*PhonePropertiesCodeConstraintsItemZero) error
-	VisitPhonePropertiesCodeConstraintsItemMaxLength(*PhonePropertiesCodeConstraintsItemMaxLength) error
-}
-
-func (p *PhonePropertiesCodeConstraintsItem) Accept(visitor PhonePropertiesCodeConstraintsItemVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "phonePropertiesCodeConstraintsItemZero":
-		return visitor.VisitPhonePropertiesCodeConstraintsItemZero(p.PhonePropertiesCodeConstraintsItemZero)
-	case "phonePropertiesCodeConstraintsItemMaxLength":
-		return visitor.VisitPhonePropertiesCodeConstraintsItemMaxLength(p.PhonePropertiesCodeConstraintsItemMaxLength)
-	}
-}
-
-type PhonePropertiesCodeConstraintsItemMaxLength struct {
-	MinLength      *float64 `json:"min_length,omitempty"`
-	MaxLength      *float64 `json:"max_length,omitempty"`
-	constraintType string
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesCodeConstraintsItemMaxLength) ConstraintType() string {
-	return p.constraintType
-}
-
-func (p *PhonePropertiesCodeConstraintsItemMaxLength) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesCodeConstraintsItemMaxLength
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesCodeConstraintsItemMaxLength(value)
-	p.constraintType = "name_length"
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesCodeConstraintsItemMaxLength) MarshalJSON() ([]byte, error) {
-	type embed PhonePropertiesCodeConstraintsItemMaxLength
-	var marshaler = struct {
-		embed
-		ConstraintType string `json:"constraint_type"`
-	}{
-		embed:          embed(*p),
-		ConstraintType: "name_length",
-	}
-	return json.Marshal(marshaler)
-}
-
-func (p *PhonePropertiesCodeConstraintsItemMaxLength) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesCodeConstraintsItemZero struct {
-	ConstraintType PhonePropertiesCodeConstraintsItemZeroConstraintType `json:"constraint_type,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesCodeConstraintsItemZero) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesCodeConstraintsItemZero
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesCodeConstraintsItemZero(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesCodeConstraintsItemZero) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesCodeConstraintsItemZeroConstraintType string
-
-const (
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypeNoZeros                   PhonePropertiesCodeConstraintsItemZeroConstraintType = "no_zeros"
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypeCannotStartWith12         PhonePropertiesCodeConstraintsItemZeroConstraintType = "cannot_start_with_12"
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypeNoTripleConsecutiveInts   PhonePropertiesCodeConstraintsItemZeroConstraintType = "no_triple_consecutive_ints"
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypeCannotSpecifyPinCode      PhonePropertiesCodeConstraintsItemZeroConstraintType = "cannot_specify_pin_code"
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypePinCodeMatchesExistingSet PhonePropertiesCodeConstraintsItemZeroConstraintType = "pin_code_matches_existing_set"
-	PhonePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture         PhonePropertiesCodeConstraintsItemZeroConstraintType = "start_date_in_future"
-)
-
-func NewPhonePropertiesCodeConstraintsItemZeroConstraintTypeFromString(s string) (PhonePropertiesCodeConstraintsItemZeroConstraintType, error) {
-	switch s {
-	case "no_zeros":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypeNoZeros, nil
-	case "cannot_start_with_12":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypeCannotStartWith12, nil
-	case "no_triple_consecutive_ints":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypeNoTripleConsecutiveInts, nil
-	case "cannot_specify_pin_code":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypeCannotSpecifyPinCode, nil
-	case "pin_code_matches_existing_set":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypePinCodeMatchesExistingSet, nil
-	case "start_date_in_future":
-		return PhonePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture, nil
-	}
-	var t PhonePropertiesCodeConstraintsItemZeroConstraintType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (p PhonePropertiesCodeConstraintsItemZeroConstraintType) Ptr() *PhonePropertiesCodeConstraintsItemZeroConstraintType {
-	return &p
-}
-
-type PhonePropertiesControlbywebMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	RelayName  *string `json:"relay_name,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesControlbywebMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesControlbywebMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesControlbywebMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesControlbywebMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesDormakabaOracodeMetadata struct {
-	DoorId              float64                                                           `json:"door_id"`
-	DoorName            string                                                            `json:"door_name"`
-	DeviceId            *float64                                                          `json:"device_id,omitempty"`
-	SiteId              float64                                                           `json:"site_id"`
-	SiteName            string                                                            `json:"site_name"`
-	IanaTimezone        *string                                                           `json:"iana_timezone,omitempty"`
-	PredefinedTimeSlots []*PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem `json:"predefined_time_slots,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesDormakabaOracodeMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesDormakabaOracodeMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesDormakabaOracodeMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesDormakabaOracodeMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem struct {
-	Name                               string  `json:"name"`
-	Prefix                             float64 `json:"prefix"`
-	CheckInTime                        string  `json:"check_in_time"`
-	CheckOutTime                       string  `json:"check_out_time"`
-	Is24Hour                           bool    `json:"is_24_hour"`
-	IsBiweeklyMode                     bool    `json:"is_biweekly_mode"`
-	IsOneShot                          bool    `json:"is_one_shot"`
-	IsMaster                           bool    `json:"is_master"`
-	ExtDormakabaOracodeUserLevelPrefix float64 `json:"ext_dormakaba_oracode_user_level_prefix"`
-	DormakabaOracodeUserLevelId        string  `json:"dormakaba_oracode_user_level_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesEcobeeMetadata struct {
-	EcobeeDeviceId string `json:"ecobee_device_id"`
-	DeviceName     string `json:"device_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesEcobeeMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesEcobeeMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesEcobeeMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesEcobeeMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesFourSuitesMetadata struct {
-	DeviceId              float64 `json:"device_id"`
-	DeviceName            string  `json:"device_name"`
-	RecloseDelayInSeconds float64 `json:"reclose_delay_in_seconds"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesFourSuitesMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesFourSuitesMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesFourSuitesMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesFourSuitesMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesGenieMetadata struct {
-	DeviceName string `json:"device_name"`
-	DoorName   string `json:"door_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesGenieMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesGenieMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesGenieMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesGenieMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesHubitatMetadata struct {
-	DeviceId    string `json:"device_id"`
-	DeviceName  string `json:"device_name"`
-	DeviceLabel string `json:"device_label"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesHubitatMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesHubitatMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesHubitatMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesHubitatMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesIglooMetadata struct {
-	DeviceId string  `json:"device_id"`
-	BridgeId string  `json:"bridge_id"`
-	Model    *string `json:"model,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesIglooMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesIglooMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesIglooMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesIglooMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesIgloohomeMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	BridgeId   *string `json:"bridge_id,omitempty"`
-	BridgeName *string `json:"bridge_name,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesIgloohomeMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesIgloohomeMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesIgloohomeMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesIgloohomeMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesKeypadBattery struct {
-	Level float64 `json:"level"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesKeypadBattery) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesKeypadBattery
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesKeypadBattery(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesKeypadBattery) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesKwiksetMetadata struct {
-	DeviceId    string `json:"device_id"`
-	DeviceName  string `json:"device_name"`
-	ModelNumber string `json:"model_number"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesKwiksetMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesKwiksetMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesKwiksetMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesKwiksetMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesLocklyMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	Model      *string `json:"model,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesLocklyMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesLocklyMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesLocklyMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesLocklyMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadata struct {
-	DeviceId           string                                          `json:"device_id"`
-	DeviceName         string                                          `json:"device_name"`
-	LatestSensorValues *PhonePropertiesMinutMetadataLatestSensorValues `json:"latest_sensor_values,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValues struct {
-	Temperature    *PhonePropertiesMinutMetadataLatestSensorValuesTemperature    `json:"temperature,omitempty"`
-	Sound          *PhonePropertiesMinutMetadataLatestSensorValuesSound          `json:"sound,omitempty"`
-	Humidity       *PhonePropertiesMinutMetadataLatestSensorValuesHumidity       `json:"humidity,omitempty"`
-	Pressure       *PhonePropertiesMinutMetadataLatestSensorValuesPressure       `json:"pressure,omitempty"`
-	AccelerometerZ *PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ `json:"accelerometer_z,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValues) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValues
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValues(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValues) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesAccelerometerZ) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValuesHumidity struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesHumidity) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValuesHumidity
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValuesHumidity(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesHumidity) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValuesPressure struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesPressure) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValuesPressure
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValuesPressure(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesPressure) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValuesSound struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesSound) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValuesSound
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValuesSound(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesSound) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesMinutMetadataLatestSensorValuesTemperature struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesTemperature) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesMinutMetadataLatestSensorValuesTemperature
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesMinutMetadataLatestSensorValuesTemperature(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesMinutMetadataLatestSensorValuesTemperature) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesModel struct {
-	// Display name of the device model.
-	DisplayName string `json:"display_name"`
-	// Display name that corresponds to the manufacturer-specific terminology for the device.
-	ManufacturerDisplayName string `json:"manufacturer_display_name"`
-	// Indicates whether the device supports offline access codes.
-	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty"`
-	// Indicates whether the device supports online access codes.
-	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty"`
-	// Indicates whether the device supports an accessory keypad.
-	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesModel) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesModel
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesModel(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesModel) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesNestMetadata struct {
-	NestDeviceId string `json:"nest_device_id"`
-	DeviceName   string `json:"device_name"`
-	CustomName   string `json:"custom_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesNestMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesNestMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesNestMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesNestMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesNoiseawareMetadata struct {
-	DeviceModel       PhonePropertiesNoiseawareMetadataDeviceModel `json:"device_model,omitempty"`
-	NoiseLevelNrs     float64                                      `json:"noise_level_nrs"`
-	NoiseLevelDecibel float64                                      `json:"noise_level_decibel"`
-	DeviceName        string                                       `json:"device_name"`
-	DeviceId          string                                       `json:"device_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesNoiseawareMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesNoiseawareMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesNoiseawareMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesNoiseawareMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesNoiseawareMetadataDeviceModel string
-
-const (
-	PhonePropertiesNoiseawareMetadataDeviceModelIndoor  PhonePropertiesNoiseawareMetadataDeviceModel = "indoor"
-	PhonePropertiesNoiseawareMetadataDeviceModelOutdoor PhonePropertiesNoiseawareMetadataDeviceModel = "outdoor"
-)
-
-func NewPhonePropertiesNoiseawareMetadataDeviceModelFromString(s string) (PhonePropertiesNoiseawareMetadataDeviceModel, error) {
-	switch s {
-	case "indoor":
-		return PhonePropertiesNoiseawareMetadataDeviceModelIndoor, nil
-	case "outdoor":
-		return PhonePropertiesNoiseawareMetadataDeviceModelOutdoor, nil
-	}
-	var t PhonePropertiesNoiseawareMetadataDeviceModel
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (p PhonePropertiesNoiseawareMetadataDeviceModel) Ptr() *PhonePropertiesNoiseawareMetadataDeviceModel {
-	return &p
-}
-
-type PhonePropertiesNukiMetadata struct {
-	DeviceId              string `json:"device_id"`
-	DeviceName            string `json:"device_name"`
-	KeypadBatteryCritical *bool  `json:"keypad_battery_critical,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesNukiMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesNukiMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesNukiMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesNukiMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesSaltoMetadata struct {
-	LockId            string  `json:"lock_id"`
-	CustomerReference string  `json:"customer_reference"`
-	LockType          string  `json:"lock_type"`
-	BatteryLevel      string  `json:"battery_level"`
-	LockedState       string  `json:"locked_state"`
-	Model             *string `json:"model,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesSaltoMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesSaltoMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesSaltoMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesSaltoMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesSchlageMetadata struct {
-	DeviceId         string  `json:"device_id"`
-	DeviceName       string  `json:"device_name"`
-	AccessCodeLength float64 `json:"access_code_length"`
-	Model            *string `json:"model,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesSchlageMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesSchlageMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesSchlageMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesSchlageMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesSeamBridgeMetadata struct {
-	UnlockMethod *PhonePropertiesSeamBridgeMetadataUnlockMethod `json:"unlock_method,omitempty"`
-	DeviceNum    float64                                        `json:"device_num"`
-	Name         string                                         `json:"name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesSeamBridgeMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesSeamBridgeMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesSeamBridgeMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesSeamBridgeMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesSeamBridgeMetadataUnlockMethod string
-
-const (
-	PhonePropertiesSeamBridgeMetadataUnlockMethodBridge   PhonePropertiesSeamBridgeMetadataUnlockMethod = "bridge"
-	PhonePropertiesSeamBridgeMetadataUnlockMethodDoorking PhonePropertiesSeamBridgeMetadataUnlockMethod = "doorking"
-)
-
-func NewPhonePropertiesSeamBridgeMetadataUnlockMethodFromString(s string) (PhonePropertiesSeamBridgeMetadataUnlockMethod, error) {
-	switch s {
-	case "bridge":
-		return PhonePropertiesSeamBridgeMetadataUnlockMethodBridge, nil
-	case "doorking":
-		return PhonePropertiesSeamBridgeMetadataUnlockMethodDoorking, nil
-	}
-	var t PhonePropertiesSeamBridgeMetadataUnlockMethod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (p PhonePropertiesSeamBridgeMetadataUnlockMethod) Ptr() *PhonePropertiesSeamBridgeMetadataUnlockMethod {
-	return &p
-}
-
-type PhonePropertiesSmartthingsMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	Model      *string `json:"model,omitempty"`
-	LocationId *string `json:"location_id,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesSmartthingsMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesSmartthingsMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesSmartthingsMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesSmartthingsMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesTtlockMetadata struct {
-	LockId    float64 `json:"lock_id"`
-	LockAlias string  `json:"lock_alias"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesTtlockMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesTtlockMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesTtlockMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesTtlockMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesTwoNMetadata struct {
-	DeviceId   float64 `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesTwoNMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesTwoNMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesTwoNMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesTwoNMetadata) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PhonePropertiesWyzeMetadata struct {
-	DeviceId        string `json:"device_id"`
-	DeviceName      string `json:"device_name"`
-	ProductName     string `json:"product_name"`
-	ProductType     string `json:"product_type"`
-	ProductModel    string `json:"product_model"`
-	DeviceInfoModel string `json:"device_info_model"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PhonePropertiesWyzeMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler PhonePropertiesWyzeMetadata
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PhonePropertiesWyzeMetadata(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PhonePropertiesWyzeMetadata) String() string {
 	if len(p._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
@@ -5735,6 +4503,34 @@ func (n *NetworksListResponseNetworksItem) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
+}
+
+type ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting string
+
+const (
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff      ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "off"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "cool"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat_cool"
+)
+
+func NewThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingFromString(s string) (ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting, error) {
+	switch s {
+	case "off":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff, nil
+	case "heat":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat, nil
+	case "cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool, nil
+	case "heat_cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool, nil
+	}
+	var t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting) Ptr() *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting {
+	return &t
 }
 
 type UserIdentitiesCreateResponseUserIdentity struct {

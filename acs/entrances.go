@@ -22,6 +22,12 @@ type EntrancesListRequest struct {
 	AcsCredentialId *string `json:"acs_credential_id,omitempty"`
 }
 
+type EntrancesListCredentialsWithAccessRequest struct {
+	AcsEntranceId  *string  `json:"acs_entrance_id,omitempty"`
+	AcsEntranceIds []string `json:"acs_entrance_ids,omitempty"`
+	IncludeIf      []string `json:"include_if,omitempty"`
+}
+
 type EntrancesGetResponse struct {
 	AcsEntrance *EntrancesGetResponseAcsEntrance `json:"acs_entrance,omitempty"`
 	Ok          bool                             `json:"ok"`
@@ -70,6 +76,36 @@ func (e *EntrancesGrantAccessResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (e *EntrancesGrantAccessResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesListCredentialsWithAccessResponse struct {
+	AcsCredentials []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItem `json:"acs_credentials,omitempty"`
+	Ok             bool                                                            `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesListCredentialsWithAccessResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesListCredentialsWithAccessResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesListCredentialsWithAccessResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesListCredentialsWithAccessResponse) String() string {
 	if len(e._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value

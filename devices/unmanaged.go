@@ -17,16 +17,17 @@ type UnmanagedGetRequest struct {
 
 type UnmanagedListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                 `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                 `json:"connect_webview_id,omitempty"`
-	DeviceType          *seamapigo.DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []seamapigo.DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *seamapigo.Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string                `json:"device_ids,omitempty"`
-	Limit               *float64                `json:"limit,omitempty"`
-	CreatedBefore       *time.Time              `json:"created_before,omitempty"`
-	UserIdentifierKey   *string                 `json:"user_identifier_key,omitempty"`
+	ConnectedAccountId  *string                                                `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                               `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                                `json:"connect_webview_id,omitempty"`
+	DeviceType          *seamapigo.DeviceType                                  `json:"device_type,omitempty"`
+	DeviceTypes         []seamapigo.DeviceType                                 `json:"device_types,omitempty"`
+	Manufacturer        *seamapigo.Manufacturer                                `json:"manufacturer,omitempty"`
+	DeviceIds           []string                                               `json:"device_ids,omitempty"`
+	Limit               *float64                                               `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                                             `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                                                `json:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*UnmanagedListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
 }
 
 type UnmanagedGetResponse struct {
@@ -57,6 +58,79 @@ func (u *UnmanagedGetResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
+}
+
+type UnmanagedListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewUnmanagedListRequestCustomMetadataHasValueFromString(value string) *UnmanagedListRequestCustomMetadataHasValue {
+	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewUnmanagedListRequestCustomMetadataHasValueFromBoolean(value bool) *UnmanagedListRequestCustomMetadataHasValue {
+	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewUnmanagedListRequestCustomMetadataHasValueFromStringOptional(value *string) *UnmanagedListRequestCustomMetadataHasValue {
+	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (u *UnmanagedListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		u.typeName = "string"
+		u.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		u.typeName = "boolean"
+		u.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		u.typeName = "stringOptional"
+		u.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
+}
+
+func (u UnmanagedListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch u.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
+	case "string":
+		return json.Marshal(u.String)
+	case "boolean":
+		return json.Marshal(u.Boolean)
+	case "stringOptional":
+		return json.Marshal(u.StringOptional)
+	}
+}
+
+type UnmanagedListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (u *UnmanagedListRequestCustomMetadataHasValue) Accept(visitor UnmanagedListRequestCustomMetadataHasValueVisitor) error {
+	switch u.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
+	case "string":
+		return visitor.VisitString(u.String)
+	case "boolean":
+		return visitor.VisitBoolean(u.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(u.StringOptional)
+	}
 }
 
 type UnmanagedListResponse struct {
