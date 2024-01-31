@@ -39,16 +39,17 @@ type ThermostatsHeatCoolRequest struct {
 
 type ThermostatsListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string      `json:"device_ids,omitempty"`
-	Limit               *float64      `json:"limit,omitempty"`
-	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
-	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
+	ConnectedAccountId  *string                                                  `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                                 `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                                  `json:"connect_webview_id,omitempty"`
+	DeviceType          *DeviceType                                              `json:"device_type,omitempty"`
+	DeviceTypes         []DeviceType                                             `json:"device_types,omitempty"`
+	Manufacturer        *Manufacturer                                            `json:"manufacturer,omitempty"`
+	DeviceIds           []string                                                 `json:"device_ids,omitempty"`
+	Limit               *float64                                                 `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                                               `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                                                  `json:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*ThermostatsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
 }
 
 type ThermostatsOffRequest struct {
@@ -180,6 +181,79 @@ func (t *ThermostatsHeatResponse) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type ThermostatsListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewThermostatsListRequestCustomMetadataHasValueFromString(value string) *ThermostatsListRequestCustomMetadataHasValue {
+	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewThermostatsListRequestCustomMetadataHasValueFromBoolean(value bool) *ThermostatsListRequestCustomMetadataHasValue {
+	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewThermostatsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ThermostatsListRequestCustomMetadataHasValue {
+	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (t *ThermostatsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		t.typeName = "boolean"
+		t.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		t.typeName = "stringOptional"
+		t.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t ThermostatsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return json.Marshal(t.String)
+	case "boolean":
+		return json.Marshal(t.Boolean)
+	case "stringOptional":
+		return json.Marshal(t.StringOptional)
+	}
+}
+
+type ThermostatsListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (t *ThermostatsListRequestCustomMetadataHasValue) Accept(visitor ThermostatsListRequestCustomMetadataHasValueVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return visitor.VisitString(t.String)
+	case "boolean":
+		return visitor.VisitBoolean(t.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(t.StringOptional)
+	}
+}
+
 type ThermostatsListResponse struct {
 	Thermostats []*Device `json:"thermostats,omitempty"`
 	Ok          bool      `json:"ok"`
@@ -291,14 +365,14 @@ func (t *ThermostatsSetFanModeResponse) String() string {
 }
 
 type ThermostatsUpdateRequestDefaultClimateSetting struct {
-	AutomaticHeatingEnabled   *bool            `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool            `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *HvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64         `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64         `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64         `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64         `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool            `json:"manual_override_allowed,omitempty"`
+	AutomaticHeatingEnabled   *bool                                                         `json:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                                         `json:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting `json:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                                                      `json:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                                                      `json:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                                                      `json:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                                                      `json:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                                         `json:"manual_override_allowed,omitempty"`
 
 	_rawJSON json.RawMessage
 }

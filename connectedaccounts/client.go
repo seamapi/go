@@ -131,7 +131,7 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectedAccountsGe
 	return response.ConnectedAccount, nil
 }
 
-func (c *Client) List(ctx context.Context) ([]*seamapigo.ConnectedAccount, error) {
+func (c *Client) List(ctx context.Context, request *seamapigo.ConnectedAccountsListRequest) ([]*seamapigo.ConnectedAccount, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -171,6 +171,7 @@ func (c *Client) List(ctx context.Context) ([]*seamapigo.ConnectedAccount, error
 			URL:          endpointURL,
 			Method:       http.MethodPost,
 			Headers:      c.header,
+			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},

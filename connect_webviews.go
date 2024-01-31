@@ -29,6 +29,8 @@ type ConnectWebviewsGetRequest struct {
 
 type ConnectWebviewsListRequest struct {
 	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+	// Returns devices where the webview's custom_metadata contains all of the provided key/value pairs.
+	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
 }
 
 type AcceptedProvider string
@@ -70,6 +72,7 @@ const (
 	AcceptedProviderSeamBridge                 AcceptedProvider = "seam_bridge"
 	AcceptedProviderYaleAccess                 AcceptedProvider = "yale_access"
 	AcceptedProviderHidCm                      AcceptedProvider = "hid_cm"
+	AcceptedProviderGoogleNest                 AcceptedProvider = "google_nest"
 )
 
 func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
@@ -146,6 +149,8 @@ func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
 		return AcceptedProviderYaleAccess, nil
 	case "hid_cm":
 		return AcceptedProviderHidCm, nil
+	case "google_nest":
+		return AcceptedProviderGoogleNest, nil
 	}
 	var t AcceptedProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -156,9 +161,10 @@ func (a AcceptedProvider) Ptr() *AcceptedProvider {
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
 }
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) *ConnectWebviewsCreateRequestCustomMetadataValue {
@@ -167,6 +173,10 @@ func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) 
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromBoolean(value bool) *ConnectWebviewsCreateRequestCustomMetadataValue {
 	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectWebviewsCreateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewsCreateRequestCustomMetadataValue {
+	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -182,6 +192,12 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []b
 		c.Boolean = valueBoolean
 		return nil
 	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -193,12 +209,15 @@ func (c ConnectWebviewsCreateRequestCustomMetadataValue) MarshalJSON() ([]byte, 
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor ConnectWebviewsCreateRequestCustomMetadataValueVisitor) error {
@@ -209,6 +228,8 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor Connect
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -299,6 +320,79 @@ func (c *ConnectWebviewsGetResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectWebviewsListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewConnectWebviewsListRequestCustomMetadataHasValueFromString(value string) *ConnectWebviewsListRequestCustomMetadataHasValue {
+	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewConnectWebviewsListRequestCustomMetadataHasValueFromBoolean(value bool) *ConnectWebviewsListRequestCustomMetadataHasValue {
+	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectWebviewsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ConnectWebviewsListRequestCustomMetadataHasValue {
+	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (c *ConnectWebviewsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectWebviewsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
+	}
+}
+
+type ConnectWebviewsListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (c *ConnectWebviewsListRequestCustomMetadataHasValue) Accept(visitor ConnectWebviewsListRequestCustomMetadataHasValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
+	}
 }
 
 type ConnectWebviewsListResponse struct {
