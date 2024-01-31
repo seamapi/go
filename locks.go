@@ -16,16 +16,17 @@ type LocksGetRequest struct {
 
 type LocksListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string      `json:"device_ids,omitempty"`
-	Limit               *float64      `json:"limit,omitempty"`
-	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
-	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
+	ConnectedAccountId  *string                                            `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                           `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                            `json:"connect_webview_id,omitempty"`
+	DeviceType          *DeviceType                                        `json:"device_type,omitempty"`
+	DeviceTypes         []DeviceType                                       `json:"device_types,omitempty"`
+	Manufacturer        *Manufacturer                                      `json:"manufacturer,omitempty"`
+	DeviceIds           []string                                           `json:"device_ids,omitempty"`
+	Limit               *float64                                           `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                                         `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
 }
 
 type LocksLockDoorRequest struct {
@@ -62,6 +63,79 @@ func (l *LocksGetResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
+}
+
+type LocksListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewLocksListRequestCustomMetadataHasValueFromString(value string) *LocksListRequestCustomMetadataHasValue {
+	return &LocksListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewLocksListRequestCustomMetadataHasValueFromBoolean(value bool) *LocksListRequestCustomMetadataHasValue {
+	return &LocksListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewLocksListRequestCustomMetadataHasValueFromStringOptional(value *string) *LocksListRequestCustomMetadataHasValue {
+	return &LocksListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (l *LocksListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		l.typeName = "string"
+		l.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		l.typeName = "boolean"
+		l.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		l.typeName = "stringOptional"
+		l.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
+}
+
+func (l LocksListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch l.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", l.typeName, l)
+	case "string":
+		return json.Marshal(l.String)
+	case "boolean":
+		return json.Marshal(l.Boolean)
+	case "stringOptional":
+		return json.Marshal(l.StringOptional)
+	}
+}
+
+type LocksListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequestCustomMetadataHasValueVisitor) error {
+	switch l.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", l.typeName, l)
+	case "string":
+		return visitor.VisitString(l.String)
+	case "boolean":
+		return visitor.VisitBoolean(l.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(l.StringOptional)
+	}
 }
 
 type LocksListResponse struct {

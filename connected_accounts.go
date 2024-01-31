@@ -13,6 +13,11 @@ type ConnectedAccountsDeleteRequest struct {
 	Sync               *bool  `json:"sync,omitempty"`
 }
 
+type ConnectedAccountsListRequest struct {
+	// Returns devices where the account's custom_metadata contains all of the provided key/value pairs.
+	CustomMetadataHas map[string]*ConnectedAccountsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
+}
+
 type ConnectedAccountsDeleteResponse struct {
 	Ok bool `json:"ok"`
 
@@ -129,6 +134,79 @@ func (c *ConnectedAccountsGetResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type ConnectedAccountsListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewConnectedAccountsListRequestCustomMetadataHasValueFromString(value string) *ConnectedAccountsListRequestCustomMetadataHasValue {
+	return &ConnectedAccountsListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewConnectedAccountsListRequestCustomMetadataHasValueFromBoolean(value bool) *ConnectedAccountsListRequestCustomMetadataHasValue {
+	return &ConnectedAccountsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectedAccountsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ConnectedAccountsListRequestCustomMetadataHasValue {
+	return &ConnectedAccountsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (c *ConnectedAccountsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectedAccountsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
+	}
+}
+
+type ConnectedAccountsListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (c *ConnectedAccountsListRequestCustomMetadataHasValue) Accept(visitor ConnectedAccountsListRequestCustomMetadataHasValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
+	}
+}
+
 type ConnectedAccountsListResponse struct {
 	ConnectedAccounts []*ConnectedAccount `json:"connected_accounts,omitempty"`
 	Ok                bool                `json:"ok"`
@@ -157,6 +235,79 @@ func (c *ConnectedAccountsListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountsUpdateRequestCustomMetadataValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewConnectedAccountsUpdateRequestCustomMetadataValueFromString(value string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
+	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewConnectedAccountsUpdateRequestCustomMetadataValueFromBoolean(value bool) *ConnectedAccountsUpdateRequestCustomMetadataValue {
+	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewConnectedAccountsUpdateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
+	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		c.typeName = "stringOptional"
+		c.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectedAccountsUpdateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	case "stringOptional":
+		return json.Marshal(c.StringOptional)
+	}
+}
+
+type ConnectedAccountsUpdateRequestCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor ConnectedAccountsUpdateRequestCustomMetadataValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(c.StringOptional)
+	}
 }
 
 type ConnectedAccountsUpdateResponse struct {
@@ -190,6 +341,7 @@ func (c *ConnectedAccountsUpdateResponse) String() string {
 }
 
 type ConnectedAccountsUpdateRequest struct {
-	ConnectedAccountId            string `json:"connected_account_id"`
-	AutomaticallyManageNewDevices *bool  `json:"automatically_manage_new_devices,omitempty"`
+	ConnectedAccountId            string                                                        `json:"connected_account_id"`
+	AutomaticallyManageNewDevices *bool                                                         `json:"automatically_manage_new_devices,omitempty"`
+	CustomMetadata                map[string]*ConnectedAccountsUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
 }

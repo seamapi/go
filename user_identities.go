@@ -20,6 +20,10 @@ type UserIdentitiesCreateRequest struct {
 	FullName        *string `json:"full_name,omitempty"`
 }
 
+type UserIdentitiesDeleteRequest struct {
+	UserIdentityId string `json:"user_identity_id"`
+}
+
 type UserIdentitiesGrantAccessToDeviceRequest struct {
 	UserIdentityId string `json:"user_identity_id"`
 	DeviceId       string `json:"device_id"`
@@ -95,6 +99,35 @@ func (u *UserIdentitiesCreateResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UserIdentitiesCreateResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesDeleteResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesDeleteResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesDeleteResponse) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value

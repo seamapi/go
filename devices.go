@@ -20,16 +20,17 @@ type DevicesGetRequest struct {
 
 type DevicesListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string       `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string      `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string       `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType   `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType  `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer `json:"manufacturer,omitempty"`
-	DeviceIds           []string      `json:"device_ids,omitempty"`
-	Limit               *float64      `json:"limit,omitempty"`
-	CreatedBefore       *time.Time    `json:"created_before,omitempty"`
-	UserIdentifierKey   *string       `json:"user_identifier_key,omitempty"`
+	ConnectedAccountId  *string                                              `json:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                             `json:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                              `json:"connect_webview_id,omitempty"`
+	DeviceType          *DeviceType                                          `json:"device_type,omitempty"`
+	DeviceTypes         []DeviceType                                         `json:"device_types,omitempty"`
+	Manufacturer        *Manufacturer                                        `json:"manufacturer,omitempty"`
+	DeviceIds           []string                                             `json:"device_ids,omitempty"`
+	Limit               *float64                                             `json:"limit,omitempty"`
+	CreatedBefore       *time.Time                                           `json:"created_before,omitempty"`
+	UserIdentifierKey   *string                                              `json:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*DevicesListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
 }
 
 type DevicesListDeviceProvidersRequest struct {
@@ -125,6 +126,79 @@ func (d *DevicesListDeviceProvidersResponse) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
+type DevicesListRequestCustomMetadataHasValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewDevicesListRequestCustomMetadataHasValueFromString(value string) *DevicesListRequestCustomMetadataHasValue {
+	return &DevicesListRequestCustomMetadataHasValue{typeName: "string", String: value}
+}
+
+func NewDevicesListRequestCustomMetadataHasValueFromBoolean(value bool) *DevicesListRequestCustomMetadataHasValue {
+	return &DevicesListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+}
+
+func NewDevicesListRequestCustomMetadataHasValueFromStringOptional(value *string) *DevicesListRequestCustomMetadataHasValue {
+	return &DevicesListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (d *DevicesListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		d.typeName = "string"
+		d.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		d.typeName = "boolean"
+		d.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		d.typeName = "stringOptional"
+		d.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
+}
+
+func (d DevicesListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
+	switch d.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return json.Marshal(d.String)
+	case "boolean":
+		return json.Marshal(d.Boolean)
+	case "stringOptional":
+		return json.Marshal(d.StringOptional)
+	}
+}
+
+type DevicesListRequestCustomMetadataHasValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (d *DevicesListRequestCustomMetadataHasValue) Accept(visitor DevicesListRequestCustomMetadataHasValueVisitor) error {
+	switch d.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return visitor.VisitString(d.String)
+	case "boolean":
+		return visitor.VisitBoolean(d.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(d.StringOptional)
+	}
+}
+
 type DevicesListResponse struct {
 	Devices []*Device `json:"devices,omitempty"`
 	Ok      bool      `json:"ok"`
@@ -153,6 +227,79 @@ func (d *DevicesListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", d)
+}
+
+type DevicesUpdateRequestCustomMetadataValue struct {
+	typeName       string
+	String         string
+	Boolean        bool
+	StringOptional *string
+}
+
+func NewDevicesUpdateRequestCustomMetadataValueFromString(value string) *DevicesUpdateRequestCustomMetadataValue {
+	return &DevicesUpdateRequestCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewDevicesUpdateRequestCustomMetadataValueFromBoolean(value bool) *DevicesUpdateRequestCustomMetadataValue {
+	return &DevicesUpdateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func NewDevicesUpdateRequestCustomMetadataValueFromStringOptional(value *string) *DevicesUpdateRequestCustomMetadataValue {
+	return &DevicesUpdateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+}
+
+func (d *DevicesUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		d.typeName = "string"
+		d.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		d.typeName = "boolean"
+		d.Boolean = valueBoolean
+		return nil
+	}
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		d.typeName = "stringOptional"
+		d.StringOptional = valueStringOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
+}
+
+func (d DevicesUpdateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch d.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return json.Marshal(d.String)
+	case "boolean":
+		return json.Marshal(d.Boolean)
+	case "stringOptional":
+		return json.Marshal(d.StringOptional)
+	}
+}
+
+type DevicesUpdateRequestCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+	VisitStringOptional(*string) error
+}
+
+func (d *DevicesUpdateRequestCustomMetadataValue) Accept(visitor DevicesUpdateRequestCustomMetadataValueVisitor) error {
+	switch d.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
+	case "string":
+		return visitor.VisitString(d.String)
+	case "boolean":
+		return visitor.VisitBoolean(d.Boolean)
+	case "stringOptional":
+		return visitor.VisitStringOptional(d.StringOptional)
+	}
 }
 
 type DevicesUpdateRequestProperties struct {
@@ -214,8 +361,9 @@ func (d *DevicesUpdateResponse) String() string {
 }
 
 type DevicesUpdateRequest struct {
-	DeviceId   string                          `json:"device_id"`
-	Properties *DevicesUpdateRequestProperties `json:"properties,omitempty"`
-	Name       *string                         `json:"name,omitempty"`
-	IsManaged  *bool                           `json:"is_managed,omitempty"`
+	DeviceId       string                                              `json:"device_id"`
+	Properties     *DevicesUpdateRequestProperties                     `json:"properties,omitempty"`
+	Name           *string                                             `json:"name,omitempty"`
+	IsManaged      *bool                                               `json:"is_managed,omitempty"`
+	CustomMetadata map[string]*DevicesUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
 }

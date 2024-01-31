@@ -73,7 +73,7 @@ func (c *Client) GetHealth(ctx context.Context) (*seamapigo.HealthGetHealthRespo
 		ctx,
 		&core.CallParams{
 			URL:          endpointURL,
-			Method:       http.MethodGet,
+			Method:       http.MethodPost,
 			Headers:      c.header,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
