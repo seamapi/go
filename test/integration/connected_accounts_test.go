@@ -46,7 +46,7 @@ func TestConnectedAccounts(t *testing.T) {
 	// require.NoError(t, err)
 	// assert.Equal(t, connectedAccountID, emailAccount.ConnectedAccountId)
 
-	connectedAccounts, err := seam.ConnectedAccounts.List(ctx)
+	connectedAccounts, err := seam.ConnectedAccounts.List(ctx, &seamgo.ConnectedAccountsListRequest{})
 	require.NoError(t, err)
 	assert.Len(t, connectedAccounts, 2)
 
@@ -58,13 +58,13 @@ func TestConnectedAccounts(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	connectedAccounts, err = seam.ConnectedAccounts.List(ctx)
+	connectedAccounts, err = seam.ConnectedAccounts.List(ctx, &seamgo.ConnectedAccountsListRequest{})
 	require.NoError(t, err)
 	assert.Len(t, connectedAccounts, 1)
 }
 
 func getTestConnectedAccount(t *testing.T, seam *seamclient.Client) *seamgo.ConnectedAccount {
-	connectedAccounts, err := seam.ConnectedAccounts.List(context.Background())
+	connectedAccounts, err := seam.ConnectedAccounts.List(context.Background(), &seamgo.ConnectedAccountsListRequest{})
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(connectedAccounts), 1)
 	return connectedAccounts[0]
