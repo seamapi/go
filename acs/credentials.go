@@ -15,16 +15,14 @@ type CredentialsAssignRequest struct {
 }
 
 type CredentialsCreateRequest struct {
-	AcsUserId                                  string                                `json:"acs_user_id"`
-	AccessMethod                               CredentialsCreateRequestAccessMethod  `json:"access_method,omitempty"`
-	Code                                       *string                               `json:"code,omitempty"`
-	IsMultiPhoneSyncCredential                 *bool                                 `json:"is_multi_phone_sync_credential,omitempty"`
-	AssaAbloyCredentialServiceMobileEndpointId *string                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
-	ExternalType                               *CredentialsCreateRequestExternalType `json:"external_type,omitempty"`
-	CardFormat                                 *CredentialsCreateRequestCardFormat   `json:"card_format,omitempty"`
-	IsOverrideKey                              *bool                                 `json:"is_override_key,omitempty"`
-	StartsAt                                   *time.Time                            `json:"starts_at,omitempty"`
-	EndsAt                                     *time.Time                            `json:"ends_at,omitempty"`
+	AcsUserId                  string                                      `json:"acs_user_id"`
+	AccessMethod               CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty"`
+	Code                       *string                                     `json:"code,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                       `json:"is_multi_phone_sync_credential,omitempty"`
+	ExternalType               *CredentialsCreateRequestExternalType       `json:"external_type,omitempty"`
+	VisionlineMetadata         *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	StartsAt                   *time.Time                                  `json:"starts_at,omitempty"`
+	EndsAt                     *time.Time                                  `json:"ends_at,omitempty"`
 }
 
 type CredentialsDeleteRequest struct {
@@ -90,28 +88,6 @@ func (c CredentialsCreateRequestAccessMethod) Ptr() *CredentialsCreateRequestAcc
 	return &c
 }
 
-type CredentialsCreateRequestCardFormat string
-
-const (
-	CredentialsCreateRequestCardFormatTlCode CredentialsCreateRequestCardFormat = "TLCode"
-	CredentialsCreateRequestCardFormatRfid48 CredentialsCreateRequestCardFormat = "rfid48"
-)
-
-func NewCredentialsCreateRequestCardFormatFromString(s string) (CredentialsCreateRequestCardFormat, error) {
-	switch s {
-	case "TLCode":
-		return CredentialsCreateRequestCardFormatTlCode, nil
-	case "rfid48":
-		return CredentialsCreateRequestCardFormatRfid48, nil
-	}
-	var t CredentialsCreateRequestCardFormat
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CredentialsCreateRequestCardFormat) Ptr() *CredentialsCreateRequestCardFormat {
-	return &c
-}
-
 type CredentialsCreateRequestExternalType string
 
 const (
@@ -138,6 +114,37 @@ func NewCredentialsCreateRequestExternalTypeFromString(s string) (CredentialsCre
 
 func (c CredentialsCreateRequestExternalType) Ptr() *CredentialsCreateRequestExternalType {
 	return &c
+}
+
+type CredentialsCreateRequestVisionlineMetadata struct {
+	AssaAbloyCredentialServiceMobileEndpointId *string                                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
+	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat `json:"card_format,omitempty"`
+	IsOverrideKey                              *bool                                                 `json:"is_override_key,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCreateRequestVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsCreateRequestVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsCreateResponse struct {
