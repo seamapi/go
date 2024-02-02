@@ -17,7 +17,7 @@ type ClientOptions struct {
 	BaseURL                string
 	HTTPClient             HTTPClient
 	HTTPHeader             http.Header
-	ApiKey                 string
+	Token                  string
 	SeamWorkspace          string
 	SeamClientSessionToken string
 	ClientSessionToken     string
@@ -37,8 +37,8 @@ func NewClientOptions() *ClientOptions {
 // on every request.
 func (c *ClientOptions) ToHeader() http.Header {
 	header := c.cloneHeader()
-	if c.ApiKey != "" {
-		header.Set("Authorization", "Bearer "+c.ApiKey)
+	if c.Token != "" {
+		header.Set("Authorization", "Bearer "+c.Token)
 	}
 	header.Set("seam-workspace", fmt.Sprintf("%v", c.SeamWorkspace))
 	header.Set("seam-client-session-token", fmt.Sprintf("%v", c.SeamClientSessionToken))
@@ -50,6 +50,6 @@ func (c *ClientOptions) cloneHeader() http.Header {
 	headers := c.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/seamapi/go")
-	headers.Set("X-Fern-SDK-Version", "v0.2.4")
+	headers.Set("X-Fern-SDK-Version", "v0.2.5")
 	return headers
 }
