@@ -189,6 +189,28 @@ func (c CredentialsAssignResponseAcsCredentialExternalType) Ptr() *CredentialsAs
 	return &c
 }
 
+type CredentialsCreateRequestVisionlineMetadataCardFormat string
+
+const (
+	CredentialsCreateRequestVisionlineMetadataCardFormatTlCode CredentialsCreateRequestVisionlineMetadataCardFormat = "TLCode"
+	CredentialsCreateRequestVisionlineMetadataCardFormatRfid48 CredentialsCreateRequestVisionlineMetadataCardFormat = "rfid48"
+)
+
+func NewCredentialsCreateRequestVisionlineMetadataCardFormatFromString(s string) (CredentialsCreateRequestVisionlineMetadataCardFormat, error) {
+	switch s {
+	case "TLCode":
+		return CredentialsCreateRequestVisionlineMetadataCardFormatTlCode, nil
+	case "rfid48":
+		return CredentialsCreateRequestVisionlineMetadataCardFormatRfid48, nil
+	}
+	var t CredentialsCreateRequestVisionlineMetadataCardFormat
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CredentialsCreateRequestVisionlineMetadataCardFormat) Ptr() *CredentialsCreateRequestVisionlineMetadataCardFormat {
+	return &c
+}
+
 type CredentialsCreateResponseAcsCredential struct {
 	AcsCredentialId            string                                              `json:"acs_credential_id"`
 	AcsUserId                  *string                                             `json:"acs_user_id,omitempty"`

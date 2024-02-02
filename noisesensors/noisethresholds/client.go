@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *noisesensors.NoiseThresholdsCreateRequest) (*seamapigo.ActionAttempt, error) {
+func (c *Client) Create(ctx context.Context, request *noisesensors.NoiseThresholdsCreateRequest) (*seamapigo.NoiseThreshold, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -79,7 +79,7 @@ func (c *Client) Create(ctx context.Context, request *noisesensors.NoiseThreshol
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response.NoiseThreshold, nil
 }
 
 func (c *Client) Delete(ctx context.Context, request *noisesensors.NoiseThresholdsDeleteRequest) (*seamapigo.ActionAttempt, error) {
