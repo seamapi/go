@@ -95,20 +95,21 @@ func (c *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisionin
 }
 
 type CredentialsAssignResponseAcsCredential struct {
-	AcsCredentialId            string                                              `json:"acs_credential_id"`
-	AcsUserId                  *string                                             `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                             `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                              `json:"acs_system_id"`
-	DisplayName                string                                              `json:"display_name"`
-	Code                       *string                                             `json:"code,omitempty"`
-	AccessMethod               CredentialsAssignResponseAcsCredentialAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsAssignResponseAcsCredentialExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                             `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                           `json:"created_at"`
-	WorkspaceId                string                                              `json:"workspace_id"`
-	StartsAt                   *string                                             `json:"starts_at,omitempty"`
-	EndsAt                     *string                                             `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                               `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id"`
+	DisplayName                string                                                    `json:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty"`
+	AccessMethod               CredentialsAssignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsAssignResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsAssignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -189,6 +190,35 @@ func (c CredentialsAssignResponseAcsCredentialExternalType) Ptr() *CredentialsAs
 	return &c
 }
 
+type CredentialsAssignResponseAcsCredentialVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsAssignResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsAssignResponseAcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsAssignResponseAcsCredentialVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsAssignResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsCreateRequestVisionlineMetadataCardFormat string
 
 const (
@@ -212,20 +242,21 @@ func (c CredentialsCreateRequestVisionlineMetadataCardFormat) Ptr() *Credentials
 }
 
 type CredentialsCreateResponseAcsCredential struct {
-	AcsCredentialId            string                                              `json:"acs_credential_id"`
-	AcsUserId                  *string                                             `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                             `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                              `json:"acs_system_id"`
-	DisplayName                string                                              `json:"display_name"`
-	Code                       *string                                             `json:"code,omitempty"`
-	AccessMethod               CredentialsCreateResponseAcsCredentialAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsCreateResponseAcsCredentialExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                             `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                           `json:"created_at"`
-	WorkspaceId                string                                              `json:"workspace_id"`
-	StartsAt                   *string                                             `json:"starts_at,omitempty"`
-	EndsAt                     *string                                             `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                               `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id"`
+	DisplayName                string                                                    `json:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty"`
+	AccessMethod               CredentialsCreateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsCreateResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsCreateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -306,21 +337,51 @@ func (c CredentialsCreateResponseAcsCredentialExternalType) Ptr() *CredentialsCr
 	return &c
 }
 
+type CredentialsCreateResponseAcsCredentialVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsCreateResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCreateResponseAcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsCreateResponseAcsCredentialVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsCreateResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsGetResponseAcsCredential struct {
-	AcsCredentialId            string                                           `json:"acs_credential_id"`
-	AcsUserId                  *string                                          `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                          `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                           `json:"acs_system_id"`
-	DisplayName                string                                           `json:"display_name"`
-	Code                       *string                                          `json:"code,omitempty"`
-	AccessMethod               CredentialsGetResponseAcsCredentialAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsGetResponseAcsCredentialExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                          `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                        `json:"created_at"`
-	WorkspaceId                string                                           `json:"workspace_id"`
-	StartsAt                   *string                                          `json:"starts_at,omitempty"`
-	EndsAt                     *string                                          `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                            `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                 `json:"acs_credential_id"`
+	AcsUserId                  *string                                                `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                 `json:"acs_system_id"`
+	DisplayName                string                                                 `json:"display_name"`
+	Code                       *string                                                `json:"code,omitempty"`
+	AccessMethod               CredentialsGetResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsGetResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                              `json:"created_at"`
+	WorkspaceId                string                                                 `json:"workspace_id"`
+	StartsAt                   *string                                                `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                  `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsGetResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -399,6 +460,35 @@ func NewCredentialsGetResponseAcsCredentialExternalTypeFromString(s string) (Cre
 
 func (c CredentialsGetResponseAcsCredentialExternalType) Ptr() *CredentialsGetResponseAcsCredentialExternalType {
 	return &c
+}
+
+type CredentialsGetResponseAcsCredentialVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsGetResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsGetResponseAcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsGetResponseAcsCredentialVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsGetResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsListRequestOne struct {
@@ -519,20 +609,21 @@ func (c *CredentialsListRequestZero) String() string {
 }
 
 type CredentialsListResponseAcsCredentialsItem struct {
-	AcsCredentialId            string                                                 `json:"acs_credential_id"`
-	AcsUserId                  *string                                                `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                 `json:"acs_system_id"`
-	DisplayName                string                                                 `json:"display_name"`
-	Code                       *string                                                `json:"code,omitempty"`
-	AccessMethod               CredentialsListResponseAcsCredentialsItemAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsListResponseAcsCredentialsItemExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                              `json:"created_at"`
-	WorkspaceId                string                                                 `json:"workspace_id"`
-	StartsAt                   *string                                                `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                  `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                       `json:"acs_credential_id"`
+	AcsUserId                  *string                                                      `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                      `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                       `json:"acs_system_id"`
+	DisplayName                string                                                       `json:"display_name"`
+	Code                       *string                                                      `json:"code,omitempty"`
+	AccessMethod               CredentialsListResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsListResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                      `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                    `json:"created_at"`
+	WorkspaceId                string                                                       `json:"workspace_id"`
+	StartsAt                   *string                                                      `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                      `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                        `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsListResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -613,21 +704,51 @@ func (c CredentialsListResponseAcsCredentialsItemExternalType) Ptr() *Credential
 	return &c
 }
 
+type CredentialsListResponseAcsCredentialsItemVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListResponseAcsCredentialsItemVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListResponseAcsCredentialsItemVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsUnassignResponseAcsCredential struct {
-	AcsCredentialId            string                                                `json:"acs_credential_id"`
-	AcsUserId                  *string                                               `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                               `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                `json:"acs_system_id"`
-	DisplayName                string                                                `json:"display_name"`
-	Code                       *string                                               `json:"code,omitempty"`
-	AccessMethod               CredentialsUnassignResponseAcsCredentialAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsUnassignResponseAcsCredentialExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                               `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                             `json:"created_at"`
-	WorkspaceId                string                                                `json:"workspace_id"`
-	StartsAt                   *string                                               `json:"starts_at,omitempty"`
-	EndsAt                     *string                                               `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                 `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                      `json:"acs_credential_id"`
+	AcsUserId                  *string                                                     `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                     `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                      `json:"acs_system_id"`
+	DisplayName                string                                                      `json:"display_name"`
+	Code                       *string                                                     `json:"code,omitempty"`
+	AccessMethod               CredentialsUnassignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsUnassignResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                     `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                   `json:"created_at"`
+	WorkspaceId                string                                                      `json:"workspace_id"`
+	StartsAt                   *string                                                     `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                     `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                       `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsUnassignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -708,21 +829,51 @@ func (c CredentialsUnassignResponseAcsCredentialExternalType) Ptr() *Credentials
 	return &c
 }
 
+type CredentialsUnassignResponseAcsCredentialVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUnassignResponseAcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUnassignResponseAcsCredentialVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsUpdateResponseAcsCredential struct {
-	AcsCredentialId            string                                              `json:"acs_credential_id"`
-	AcsUserId                  *string                                             `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                             `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                              `json:"acs_system_id"`
-	DisplayName                string                                              `json:"display_name"`
-	Code                       *string                                             `json:"code,omitempty"`
-	AccessMethod               CredentialsUpdateResponseAcsCredentialAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *CredentialsUpdateResponseAcsCredentialExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                             `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                           `json:"created_at"`
-	WorkspaceId                string                                              `json:"workspace_id"`
-	StartsAt                   *string                                             `json:"starts_at,omitempty"`
-	EndsAt                     *string                                             `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                               `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id"`
+	DisplayName                string                                                    `json:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty"`
+	AccessMethod               CredentialsUpdateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *CredentialsUpdateResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsUpdateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -801,6 +952,35 @@ func NewCredentialsUpdateResponseAcsCredentialExternalTypeFromString(s string) (
 
 func (c CredentialsUpdateResponseAcsCredentialExternalType) Ptr() *CredentialsUpdateResponseAcsCredentialExternalType {
 	return &c
+}
+
+type CredentialsUpdateResponseAcsCredentialVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUpdateResponseAcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUpdateResponseAcsCredentialVisionlineMetadata(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type EntrancesGetResponseAcsEntrance struct {
@@ -922,20 +1102,21 @@ func (e EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItemVisionlineD
 }
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItem struct {
-	AcsCredentialId            string                                                                    `json:"acs_credential_id"`
-	AcsUserId                  *string                                                                   `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                                   `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                                    `json:"acs_system_id"`
-	DisplayName                string                                                                    `json:"display_name"`
-	Code                       *string                                                                   `json:"code,omitempty"`
-	AccessMethod               EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod  `json:"access_method,omitempty"`
-	ExternalType               *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                                   `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                                 `json:"created_at"`
-	WorkspaceId                string                                                                    `json:"workspace_id"`
-	StartsAt                   *string                                                                   `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                                   `json:"ends_at,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                                     `json:"is_multi_phone_sync_credential,omitempty"`
+	AcsCredentialId            string                                                                          `json:"acs_credential_id"`
+	AcsUserId                  *string                                                                         `json:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                                         `json:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                                          `json:"acs_system_id"`
+	DisplayName                string                                                                          `json:"display_name"`
+	Code                       *string                                                                         `json:"code,omitempty"`
+	AccessMethod               EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
+	ExternalType               *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                                         `json:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                                       `json:"created_at"`
+	WorkspaceId                string                                                                          `json:"workspace_id"`
+	StartsAt                   *string                                                                         `json:"starts_at,omitempty"`
+	EndsAt                     *string                                                                         `json:"ends_at,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                                           `json:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1014,6 +1195,35 @@ func NewEntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType
 
 func (e EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType) Ptr() *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType {
 	return &e
+}
+
+type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata struct {
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EntrancesListResponseAcsEntrancesItem struct {
