@@ -23,9 +23,8 @@ type EntrancesListRequest struct {
 }
 
 type EntrancesListCredentialsWithAccessRequest struct {
-	AcsEntranceId  *string  `json:"acs_entrance_id,omitempty"`
-	AcsEntranceIds []string `json:"acs_entrance_ids,omitempty"`
-	IncludeIf      []string `json:"include_if,omitempty"`
+	AcsEntranceId string   `json:"acs_entrance_id"`
+	IncludeIf     []string `json:"include_if,omitempty"`
 }
 
 type EntrancesGetResponse struct {
