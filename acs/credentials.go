@@ -120,6 +120,7 @@ type CredentialsCreateRequestVisionlineMetadata struct {
 	AssaAbloyCredentialServiceMobileEndpointId *string                                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
 	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat `json:"card_format,omitempty"`
 	IsOverrideKey                              *bool                                                 `json:"is_override_key,omitempty"`
+	JoinerAcsCredentialIds                     []string                                              `json:"joiner_acs_credential_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
