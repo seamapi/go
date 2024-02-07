@@ -6,7 +6,6 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
-	time "time"
 )
 
 type CredentialsAssignRequest struct {
