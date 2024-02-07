@@ -6,7 +6,6 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
-	time "time"
 )
 
 type CredentialsAssignRequest struct {
@@ -21,8 +20,8 @@ type CredentialsCreateRequest struct {
 	IsMultiPhoneSyncCredential *bool                                       `json:"is_multi_phone_sync_credential,omitempty"`
 	ExternalType               *CredentialsCreateRequestExternalType       `json:"external_type,omitempty"`
 	VisionlineMetadata         *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty"`
-	StartsAt                   *time.Time                                  `json:"starts_at,omitempty"`
-	EndsAt                     *time.Time                                  `json:"ends_at,omitempty"`
+	StartsAt                   *string                                     `json:"starts_at,omitempty"`
+	EndsAt                     *string                                     `json:"ends_at,omitempty"`
 }
 
 type CredentialsDeleteRequest struct {
