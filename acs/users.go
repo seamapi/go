@@ -51,6 +51,10 @@ type UsersRemoveFromAccessGroupRequest struct {
 	AcsAccessGroupId string `json:"acs_access_group_id"`
 }
 
+type UsersRevokeAccessToAllEntrancesRequest struct {
+	AcsUserId string `json:"acs_user_id"`
+}
+
 type UsersSuspendRequest struct {
 	AcsUserId string `json:"acs_user_id"`
 }
@@ -223,6 +227,35 @@ func (u *UsersListResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UsersListResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UsersRevokeAccessToAllEntrancesResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersRevokeAccessToAllEntrancesResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersRevokeAccessToAllEntrancesResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersRevokeAccessToAllEntrancesResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersRevokeAccessToAllEntrancesResponse) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value

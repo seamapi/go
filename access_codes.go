@@ -30,6 +30,7 @@ type AccessCodesCreateRequest struct {
 type AccessCodesCreateMultipleRequest struct {
 	DeviceIds                      []string                                                        `json:"device_ids,omitempty"`
 	BehaviorWhenCodeCannotBeShared *AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared `json:"behavior_when_code_cannot_be_shared,omitempty"`
+	PreferredCodeLength            *float64                                                        `json:"preferred_code_length,omitempty"`
 	Name                           *string                                                         `json:"name,omitempty"`
 	StartsAt                       *string                                                         `json:"starts_at,omitempty"`
 	EndsAt                         *string                                                         `json:"ends_at,omitempty"`

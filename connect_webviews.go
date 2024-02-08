@@ -71,6 +71,7 @@ const (
 	AcceptedProviderAssaAbloyCredentialService AcceptedProvider = "assa_abloy_credential_service"
 	AcceptedProviderSeamBridge                 AcceptedProvider = "seam_bridge"
 	AcceptedProviderTedee                      AcceptedProvider = "tedee"
+	AcceptedProviderHoneywell                  AcceptedProvider = "honeywell"
 	AcceptedProviderYaleAccess                 AcceptedProvider = "yale_access"
 	AcceptedProviderHidCm                      AcceptedProvider = "hid_cm"
 	AcceptedProviderGoogleNest                 AcceptedProvider = "google_nest"
@@ -148,6 +149,8 @@ func NewAcceptedProviderFromString(s string) (AcceptedProvider, error) {
 		return AcceptedProviderSeamBridge, nil
 	case "tedee":
 		return AcceptedProviderTedee, nil
+	case "honeywell":
+		return AcceptedProviderHoneywell, nil
 	case "yale_access":
 		return AcceptedProviderYaleAccess, nil
 	case "hid_cm":
