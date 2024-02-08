@@ -1364,6 +1364,7 @@ type DeviceProperties struct {
 	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
 	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
 	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
+	TedeeMetadata                                   *DevicePropertiesTedeeMetadata                      `json:"tedee_metadata,omitempty"`
 	ExperimentalSupportedCodeFromAccessCodesLengths []float64                                           `json:"_experimental_supported_code_from_access_codes_lengths,omitempty"`
 	CodeConstraints                                 []*DevicePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty"`
 	SupportedCodeLengths                            []float64                                           `json:"supported_code_lengths,omitempty"`
@@ -1754,12 +1755,14 @@ func (d *DevicePropertiesCodeConstraintsItemZero) String() string {
 type DevicePropertiesCodeConstraintsItemZeroConstraintType string
 
 const (
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoZeros                   DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_zeros"
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotStartWith12         DevicePropertiesCodeConstraintsItemZeroConstraintType = "cannot_start_with_12"
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoTripleConsecutiveInts   DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_triple_consecutive_ints"
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotSpecifyPinCode      DevicePropertiesCodeConstraintsItemZeroConstraintType = "cannot_specify_pin_code"
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypePinCodeMatchesExistingSet DevicePropertiesCodeConstraintsItemZeroConstraintType = "pin_code_matches_existing_set"
-	DevicePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture         DevicePropertiesCodeConstraintsItemZeroConstraintType = "start_date_in_future"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoZeros                         DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_zeros"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotStartWith12               DevicePropertiesCodeConstraintsItemZeroConstraintType = "cannot_start_with_12"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoTripleConsecutiveInts         DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_triple_consecutive_ints"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotSpecifyPinCode            DevicePropertiesCodeConstraintsItemZeroConstraintType = "cannot_specify_pin_code"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypePinCodeMatchesExistingSet       DevicePropertiesCodeConstraintsItemZeroConstraintType = "pin_code_matches_existing_set"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture               DevicePropertiesCodeConstraintsItemZeroConstraintType = "start_date_in_future"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoAscendingOrDescendingSequence DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_ascending_or_descending_sequence"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeAtLeastThreeUniqueDigits        DevicePropertiesCodeConstraintsItemZeroConstraintType = "at_least_three_unique_digits"
 )
 
 func NewDevicePropertiesCodeConstraintsItemZeroConstraintTypeFromString(s string) (DevicePropertiesCodeConstraintsItemZeroConstraintType, error) {
@@ -1776,6 +1779,10 @@ func NewDevicePropertiesCodeConstraintsItemZeroConstraintTypeFromString(s string
 		return DevicePropertiesCodeConstraintsItemZeroConstraintTypePinCodeMatchesExistingSet, nil
 	case "start_date_in_future":
 		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture, nil
+	case "no_ascending_or_descending_sequence":
+		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoAscendingOrDescendingSequence, nil
+	case "at_least_three_unique_digits":
+		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeAtLeastThreeUniqueDigits, nil
 	}
 	var t DevicePropertiesCodeConstraintsItemZeroConstraintType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -2674,6 +2681,40 @@ func (d *DevicePropertiesSmartthingsMetadata) UnmarshalJSON(data []byte) error {
 }
 
 func (d *DevicePropertiesSmartthingsMetadata) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DevicePropertiesTedeeMetadata struct {
+	DeviceId     float64 `json:"device_id"`
+	SerialNumber string  `json:"serial_number"`
+	DeviceName   string  `json:"device_name"`
+	DeviceModel  string  `json:"device_model"`
+	BridgeId     float64 `json:"bridge_id"`
+	BridgeName   string  `json:"bridge_name"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesTedeeMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesTedeeMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesTedeeMetadata(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesTedeeMetadata) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value

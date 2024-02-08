@@ -139,3 +139,37 @@ func (w *WebhooksListResponse) String() string {
 	}
 	return fmt.Sprintf("%#v", w)
 }
+
+type WebhooksUpdateResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *WebhooksUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhooksUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhooksUpdateResponse(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhooksUpdateResponse) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
+type WebhooksUpdateRequest struct {
+	WebhookId  string   `json:"webhook_id"`
+	EventTypes []string `json:"event_types,omitempty"`
+}

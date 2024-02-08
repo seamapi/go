@@ -99,6 +99,7 @@ type CredentialsAssignResponseAcsCredential struct {
 	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                    `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                    `json:"display_name"`
 	Code                       *string                                                   `json:"code,omitempty"`
 	AccessMethod               CredentialsAssignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
@@ -192,6 +193,8 @@ func (c CredentialsAssignResponseAcsCredentialExternalType) Ptr() *CredentialsAs
 
 type CredentialsAssignResponseAcsCredentialVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -246,6 +249,7 @@ type CredentialsCreateResponseAcsCredential struct {
 	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                    `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                    `json:"display_name"`
 	Code                       *string                                                   `json:"code,omitempty"`
 	AccessMethod               CredentialsCreateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
@@ -339,6 +343,8 @@ func (c CredentialsCreateResponseAcsCredentialExternalType) Ptr() *CredentialsCr
 
 type CredentialsCreateResponseAcsCredentialVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -371,6 +377,7 @@ type CredentialsGetResponseAcsCredential struct {
 	AcsUserId                  *string                                                `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                 `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                 `json:"display_name"`
 	Code                       *string                                                `json:"code,omitempty"`
 	AccessMethod               CredentialsGetResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
@@ -464,6 +471,8 @@ func (c CredentialsGetResponseAcsCredentialExternalType) Ptr() *CredentialsGetRe
 
 type CredentialsGetResponseAcsCredentialVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -613,6 +622,7 @@ type CredentialsListResponseAcsCredentialsItem struct {
 	AcsUserId                  *string                                                      `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                      `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                       `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                      `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                       `json:"display_name"`
 	Code                       *string                                                      `json:"code,omitempty"`
 	AccessMethod               CredentialsListResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
@@ -706,6 +716,8 @@ func (c CredentialsListResponseAcsCredentialsItemExternalType) Ptr() *Credential
 
 type CredentialsListResponseAcsCredentialsItemVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -738,6 +750,7 @@ type CredentialsUnassignResponseAcsCredential struct {
 	AcsUserId                  *string                                                     `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                     `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                      `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                     `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                      `json:"display_name"`
 	Code                       *string                                                     `json:"code,omitempty"`
 	AccessMethod               CredentialsUnassignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
@@ -831,6 +844,8 @@ func (c CredentialsUnassignResponseAcsCredentialExternalType) Ptr() *Credentials
 
 type CredentialsUnassignResponseAcsCredentialVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -863,6 +878,7 @@ type CredentialsUpdateResponseAcsCredential struct {
 	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                    `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                    `json:"display_name"`
 	Code                       *string                                                   `json:"code,omitempty"`
 	AccessMethod               CredentialsUpdateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
@@ -956,6 +972,8 @@ func (c CredentialsUpdateResponseAcsCredentialExternalType) Ptr() *CredentialsUp
 
 type CredentialsUpdateResponseAcsCredentialVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1106,6 +1124,7 @@ type EntrancesListCredentialsWithAccessResponseAcsCredentialsItem struct {
 	AcsUserId                  *string                                                                         `json:"acs_user_id,omitempty"`
 	AcsCredentialPoolId        *string                                                                         `json:"acs_credential_pool_id,omitempty"`
 	AcsSystemId                string                                                                          `json:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                                         `json:"parent_acs_credential_id,omitempty"`
 	DisplayName                string                                                                          `json:"display_name"`
 	Code                       *string                                                                         `json:"code,omitempty"`
 	AccessMethod               EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
@@ -1199,6 +1218,8 @@ func (e EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata struct {
 	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
