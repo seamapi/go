@@ -1035,8 +1035,9 @@ func (e *EntrancesGetResponseAcsEntrance) String() string {
 }
 
 type EntrancesGetResponseAcsEntranceVisionlineMetadata struct {
-	DoorName string                                                           `json:"door_name"`
-	Profiles []*EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                           `json:"door_name"`
+	DoorCategory EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
+	Profiles     []*EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1062,6 +1063,37 @@ func (e *EntrancesGetResponseAcsEntranceVisionlineMetadata) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory string
+
+const (
+	EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryEntrance       EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory = "entrance"
+	EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryGuest          EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory = "guest"
+	EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryElevatorReader EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory = "elevator reader"
+	EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryCommon         EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory = "common"
+	EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryCommonPms      EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory = "common (PMS)"
+)
+
+func NewEntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryFromString(s string) (EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory, error) {
+	switch s {
+	case "entrance":
+		return EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryEntrance, nil
+	case "guest":
+		return EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryGuest, nil
+	case "elevator reader":
+		return EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryElevatorReader, nil
+	case "common":
+		return EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryCommon, nil
+	case "common (PMS)":
+		return EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategoryCommonPms, nil
+	}
+	var t EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory) Ptr() *EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory {
+	return &e
 }
 
 type EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem struct {
@@ -1281,8 +1313,9 @@ func (e *EntrancesListResponseAcsEntrancesItem) String() string {
 }
 
 type EntrancesListResponseAcsEntrancesItemVisionlineMetadata struct {
-	DoorName string                                                                 `json:"door_name"`
-	Profiles []*EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                                 `json:"door_name"`
+	DoorCategory EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
+	Profiles     []*EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1308,6 +1341,37 @@ func (e *EntrancesListResponseAcsEntrancesItemVisionlineMetadata) String() strin
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory string
+
+const (
+	EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryEntrance       EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "entrance"
+	EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryGuest          EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "guest"
+	EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryElevatorReader EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "elevator reader"
+	EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommon         EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "common"
+	EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommonPms      EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "common (PMS)"
+)
+
+func NewEntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryFromString(s string) (EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory, error) {
+	switch s {
+	case "entrance":
+		return EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryEntrance, nil
+	case "guest":
+		return EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryGuest, nil
+	case "elevator reader":
+		return EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryElevatorReader, nil
+	case "common":
+		return EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommon, nil
+	case "common (PMS)":
+		return EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommonPms, nil
+	}
+	var t EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory) Ptr() *EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory {
+	return &e
 }
 
 type EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem struct {
@@ -1399,8 +1463,9 @@ func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) String() string {
 }
 
 type UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata struct {
-	DoorName string                                                                                `json:"door_name"`
-	Profiles []*UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                                                `json:"door_name"`
+	DoorCategory UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
+	Profiles     []*UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1426,6 +1491,37 @@ func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata)
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
+}
+
+type UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory string
+
+const (
+	UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryEntrance       UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "entrance"
+	UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryGuest          UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "guest"
+	UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryElevatorReader UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "elevator reader"
+	UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommon         UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "common"
+	UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommonPms      UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory = "common (PMS)"
+)
+
+func NewUsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryFromString(s string) (UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory, error) {
+	switch s {
+	case "entrance":
+		return UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryEntrance, nil
+	case "guest":
+		return UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryGuest, nil
+	case "elevator reader":
+		return UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryElevatorReader, nil
+	case "common":
+		return UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommon, nil
+	case "common (PMS)":
+		return UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategoryCommonPms, nil
+	}
+	var t UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory) Ptr() *UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory {
+	return &u
 }
 
 type UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem struct {
