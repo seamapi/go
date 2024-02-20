@@ -1111,8 +1111,10 @@ type Device struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged      bool                                  `json:"is_managed"`
-	CustomMetadata map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty"`
+	IsManaged                   bool                                  `json:"is_managed"`
+	CustomMetadata              map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty"`
+	CanRemotelyUnlock           *bool                                 `json:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                                 `json:"can_program_online_access_codes,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1361,6 +1363,7 @@ type DeviceProperties struct {
 	IgloohomeMetadata                               *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty"`
 	NestMetadata                                    *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty"`
 	EcobeeMetadata                                  *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty"`
+	HoneywellMetadata                               *DevicePropertiesHoneywellMetadata                  `json:"honeywell_metadata,omitempty"`
 	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
 	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
 	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
@@ -1987,6 +1990,36 @@ func (d *DevicePropertiesGenieMetadata) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
+type DevicePropertiesHoneywellMetadata struct {
+	HoneywellDeviceId string `json:"honeywell_device_id"`
+	DeviceName        string `json:"device_name"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesHoneywellMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesHoneywellMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesHoneywellMetadata(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesHoneywellMetadata) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
 type DevicePropertiesHubitatMetadata struct {
 	DeviceId    string `json:"device_id"`
 	DeviceName  string `json:"device_name"`
@@ -2576,10 +2609,10 @@ func (d *DevicePropertiesSaltoMetadata) String() string {
 }
 
 type DevicePropertiesSchlageMetadata struct {
-	DeviceId         string  `json:"device_id"`
-	DeviceName       string  `json:"device_name"`
-	AccessCodeLength float64 `json:"access_code_length"`
-	Model            *string `json:"model,omitempty"`
+	DeviceId         string   `json:"device_id"`
+	DeviceName       string   `json:"device_name"`
+	AccessCodeLength *float64 `json:"access_code_length,omitempty"`
+	Model            *string  `json:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3493,8 +3526,10 @@ type Phone struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged      bool                                 `json:"is_managed"`
-	CustomMetadata map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty"`
+	IsManaged                   bool                                 `json:"is_managed"`
+	CustomMetadata              map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty"`
+	CanRemotelyUnlock           *bool                                `json:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                                `json:"can_program_online_access_codes,omitempty"`
 
 	_rawJSON json.RawMessage
 }

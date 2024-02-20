@@ -9,6 +9,10 @@ import (
 	core "github.com/seamapi/go/core"
 )
 
+type EnrollmentAutomationsDeleteRequest struct {
+	EnrollmentAutomationId string `json:"enrollment_automation_id"`
+}
+
 type EnrollmentAutomationsGetRequest struct {
 	EnrollmentAutomationId string `json:"enrollment_automation_id"`
 }
@@ -23,6 +27,35 @@ type EnrollmentAutomationsLaunchRequest struct {
 
 type EnrollmentAutomationsListRequest struct {
 	UserIdentityId string `json:"user_identity_id"`
+}
+
+type EnrollmentAutomationsDeleteResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EnrollmentAutomationsDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentAutomationsDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EnrollmentAutomationsDeleteResponse(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentAutomationsDeleteResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EnrollmentAutomationsGetResponse struct {

@@ -8,8 +8,41 @@ import (
 	core "github.com/seamapi/go/core"
 )
 
+type PhonesDeactivateRequest struct {
+	DeviceId string `json:"device_id"`
+}
+
 type PhonesListRequest struct {
 	OwnerUserIdentityId *string `json:"owner_user_identity_id,omitempty"`
+}
+
+type PhonesDeactivateResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (p *PhonesDeactivateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler PhonesDeactivateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PhonesDeactivateResponse(value)
+	p._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PhonesDeactivateResponse) String() string {
+	if len(p._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
 }
 
 type PhonesListResponse struct {

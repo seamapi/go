@@ -109,6 +109,8 @@ type CredentialsAssignResponseAcsCredential struct {
 	WorkspaceId                string                                                    `json:"workspace_id"`
 	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsAssignResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsAssignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsAssignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -161,6 +163,36 @@ func NewCredentialsAssignResponseAcsCredentialAccessMethodFromString(s string) (
 
 func (c CredentialsAssignResponseAcsCredentialAccessMethod) Ptr() *CredentialsAssignResponseAcsCredentialAccessMethod {
 	return &c
+}
+
+type CredentialsAssignResponseAcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsAssignResponseAcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsAssignResponseAcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsAssignResponseAcsCredentialErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsAssignResponseAcsCredentialErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsAssignResponseAcsCredentialExternalType string
@@ -222,6 +254,36 @@ func (c *CredentialsAssignResponseAcsCredentialVisionlineMetadata) String() stri
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsAssignResponseAcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsAssignResponseAcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsAssignResponseAcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsAssignResponseAcsCredentialWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsAssignResponseAcsCredentialWarningsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsCreateRequestVisionlineMetadataCardFormat string
 
 const (
@@ -259,6 +321,8 @@ type CredentialsCreateResponseAcsCredential struct {
 	WorkspaceId                string                                                    `json:"workspace_id"`
 	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsCreateResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsCreateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsCreateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -311,6 +375,36 @@ func NewCredentialsCreateResponseAcsCredentialAccessMethodFromString(s string) (
 
 func (c CredentialsCreateResponseAcsCredentialAccessMethod) Ptr() *CredentialsCreateResponseAcsCredentialAccessMethod {
 	return &c
+}
+
+type CredentialsCreateResponseAcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsCreateResponseAcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCreateResponseAcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsCreateResponseAcsCredentialErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsCreateResponseAcsCredentialErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsCreateResponseAcsCredentialExternalType string
@@ -372,6 +466,36 @@ func (c *CredentialsCreateResponseAcsCredentialVisionlineMetadata) String() stri
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsCreateResponseAcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsCreateResponseAcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCreateResponseAcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsCreateResponseAcsCredentialWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsCreateResponseAcsCredentialWarningsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsGetResponseAcsCredential struct {
 	AcsCredentialId            string                                                 `json:"acs_credential_id"`
 	AcsUserId                  *string                                                `json:"acs_user_id,omitempty"`
@@ -387,6 +511,8 @@ type CredentialsGetResponseAcsCredential struct {
 	WorkspaceId                string                                                 `json:"workspace_id"`
 	StartsAt                   *string                                                `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsGetResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsGetResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                  `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsGetResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -441,6 +567,36 @@ func (c CredentialsGetResponseAcsCredentialAccessMethod) Ptr() *CredentialsGetRe
 	return &c
 }
 
+type CredentialsGetResponseAcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsGetResponseAcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsGetResponseAcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsGetResponseAcsCredentialErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsGetResponseAcsCredentialErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsGetResponseAcsCredentialExternalType string
 
 const (
@@ -489,6 +645,36 @@ func (c *CredentialsGetResponseAcsCredentialVisionlineMetadata) UnmarshalJSON(da
 }
 
 func (c *CredentialsGetResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CredentialsGetResponseAcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsGetResponseAcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsGetResponseAcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsGetResponseAcsCredentialWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsGetResponseAcsCredentialWarningsItem) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -632,6 +818,8 @@ type CredentialsListResponseAcsCredentialsItem struct {
 	WorkspaceId                string                                                       `json:"workspace_id"`
 	StartsAt                   *string                                                      `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                      `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsListResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsListResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                        `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsListResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -684,6 +872,36 @@ func NewCredentialsListResponseAcsCredentialsItemAccessMethodFromString(s string
 
 func (c CredentialsListResponseAcsCredentialsItemAccessMethod) Ptr() *CredentialsListResponseAcsCredentialsItemAccessMethod {
 	return &c
+}
+
+type CredentialsListResponseAcsCredentialsItemErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListResponseAcsCredentialsItemErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListResponseAcsCredentialsItemErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsListResponseAcsCredentialsItemExternalType string
@@ -745,6 +963,36 @@ func (c *CredentialsListResponseAcsCredentialsItemVisionlineMetadata) String() s
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsListResponseAcsCredentialsItemWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListResponseAcsCredentialsItemWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListResponseAcsCredentialsItemWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListResponseAcsCredentialsItemWarningsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsUnassignResponseAcsCredential struct {
 	AcsCredentialId            string                                                      `json:"acs_credential_id"`
 	AcsUserId                  *string                                                     `json:"acs_user_id,omitempty"`
@@ -760,6 +1008,8 @@ type CredentialsUnassignResponseAcsCredential struct {
 	WorkspaceId                string                                                      `json:"workspace_id"`
 	StartsAt                   *string                                                     `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                     `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsUnassignResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsUnassignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                       `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsUnassignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -812,6 +1062,36 @@ func NewCredentialsUnassignResponseAcsCredentialAccessMethodFromString(s string)
 
 func (c CredentialsUnassignResponseAcsCredentialAccessMethod) Ptr() *CredentialsUnassignResponseAcsCredentialAccessMethod {
 	return &c
+}
+
+type CredentialsUnassignResponseAcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUnassignResponseAcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUnassignResponseAcsCredentialErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsUnassignResponseAcsCredentialExternalType string
@@ -873,6 +1153,36 @@ func (c *CredentialsUnassignResponseAcsCredentialVisionlineMetadata) String() st
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsUnassignResponseAcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUnassignResponseAcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUnassignResponseAcsCredentialWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUnassignResponseAcsCredentialWarningsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsUpdateResponseAcsCredential struct {
 	AcsCredentialId            string                                                    `json:"acs_credential_id"`
 	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
@@ -888,6 +1198,8 @@ type CredentialsUpdateResponseAcsCredential struct {
 	WorkspaceId                string                                                    `json:"workspace_id"`
 	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
+	Errors                     []*CredentialsUpdateResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*CredentialsUpdateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *CredentialsUpdateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -942,6 +1254,36 @@ func (c CredentialsUpdateResponseAcsCredentialAccessMethod) Ptr() *CredentialsUp
 	return &c
 }
 
+type CredentialsUpdateResponseAcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUpdateResponseAcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUpdateResponseAcsCredentialErrorsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialErrorsItem) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsUpdateResponseAcsCredentialExternalType string
 
 const (
@@ -990,6 +1332,36 @@ func (c *CredentialsUpdateResponseAcsCredentialVisionlineMetadata) UnmarshalJSON
 }
 
 func (c *CredentialsUpdateResponseAcsCredentialVisionlineMetadata) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CredentialsUpdateResponseAcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUpdateResponseAcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsUpdateResponseAcsCredentialWarningsItem(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsUpdateResponseAcsCredentialWarningsItem) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -1166,6 +1538,8 @@ type EntrancesListCredentialsWithAccessResponseAcsCredentialsItem struct {
 	WorkspaceId                string                                                                          `json:"workspace_id"`
 	StartsAt                   *string                                                                         `json:"starts_at,omitempty"`
 	EndsAt                     *string                                                                         `json:"ends_at,omitempty"`
+	Errors                     []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty"`
+	Warnings                   []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty"`
 	IsMultiPhoneSyncCredential *bool                                                                           `json:"is_multi_phone_sync_credential,omitempty"`
 	VisionlineMetadata         *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
 
@@ -1220,6 +1594,36 @@ func (e EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod
 	return &e
 }
 
+type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem struct {
+	ErrorCode string `json:"error_code"`
+	Message   string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType string
 
 const (
@@ -1268,6 +1672,36 @@ func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineM
 }
 
 func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem struct {
+	WarningCode string `json:"warning_code"`
+	Message     string `json:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem) String() string {
 	if len(e._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value
