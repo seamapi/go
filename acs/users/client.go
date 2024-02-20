@@ -32,7 +32,7 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAccessGroupRequest) error {
+func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAccessGroupRequest) (*acs.UsersAddToAccessGroupResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -65,6 +65,7 @@ func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAc
 		return apiError
 	}
 
+	var response *acs.UsersAddToAccessGroupResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -72,12 +73,13 @@ func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAc
 			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
+			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return response, nil
 }
 
 func (c *Client) Create(ctx context.Context, request *acs.UsersCreateRequest) (*acs.UsersCreateResponse, error) {
@@ -330,7 +332,7 @@ func (c *Client) ListAccessibleEntrances(ctx context.Context, request *acs.Users
 	return response, nil
 }
 
-func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRemoveFromAccessGroupRequest) error {
+func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRemoveFromAccessGroupRequest) (*acs.UsersRemoveFromAccessGroupResponse, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -363,6 +365,7 @@ func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRe
 		return apiError
 	}
 
+	var response *acs.UsersRemoveFromAccessGroupResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -370,12 +373,13 @@ func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRe
 			Method:       http.MethodPost,
 			Headers:      c.header,
 			Request:      request,
+			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return response, nil
 }
 
 func (c *Client) RevokeAccessToAllEntrances(ctx context.Context, request *acs.UsersRevokeAccessToAllEntrancesRequest) (*acs.UsersRevokeAccessToAllEntrancesResponse, error) {

@@ -432,3 +432,40 @@ func (u *UserIdentitiesRevokeAccessToDeviceResponse) String() string {
 	}
 	return fmt.Sprintf("%#v", u)
 }
+
+type UserIdentitiesUpdateResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesUpdateResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesUpdateResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesUpdateResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesUpdateResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesUpdateRequest struct {
+	UserIdentityId  string  `json:"user_identity_id"`
+	UserIdentityKey *string `json:"user_identity_key,omitempty"`
+	EmailAddress    *string `json:"email_address,omitempty"`
+	PhoneNumber     *string `json:"phone_number,omitempty"`
+	FullName        *string `json:"full_name,omitempty"`
+}

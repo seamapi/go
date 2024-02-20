@@ -59,6 +59,35 @@ type UsersSuspendRequest struct {
 	AcsUserId string `json:"acs_user_id"`
 }
 
+type UsersAddToAccessGroupResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersAddToAccessGroupResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersAddToAccessGroupResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersAddToAccessGroupResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersAddToAccessGroupResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
 type UsersCreateRequestAccessSchedule struct {
 	StartsAt time.Time `json:"starts_at"`
 	EndsAt   time.Time `json:"ends_at"`
@@ -227,6 +256,35 @@ func (u *UsersListResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UsersListResponse) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UsersRemoveFromAccessGroupResponse struct {
+	Ok bool `json:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersRemoveFromAccessGroupResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersRemoveFromAccessGroupResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersRemoveFromAccessGroupResponse(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersRemoveFromAccessGroupResponse) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
