@@ -5,9 +5,6 @@ README.md
 # Integration Tests
 test/
 
-# ISO Datetime Serialization
-acs/credentials.go
-
 # ci.yml installs Fake Seam
 .github/workflows/ci.yml
 
