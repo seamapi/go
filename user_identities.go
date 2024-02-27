@@ -9,50 +9,54 @@ import (
 )
 
 type UserIdentitiesAddAcsUserRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
-	AcsUserId      string `json:"acs_user_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	AcsUserId      string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UserIdentitiesCreateRequest struct {
-	UserIdentityKey *string `json:"user_identity_key,omitempty"`
-	EmailAddress    *string `json:"email_address,omitempty"`
-	PhoneNumber     *string `json:"phone_number,omitempty"`
-	FullName        *string `json:"full_name,omitempty"`
+	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	FullName        *string `json:"full_name,omitempty" url:"full_name,omitempty"`
 }
 
 type UserIdentitiesDeleteRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 }
 
 type UserIdentitiesGrantAccessToDeviceRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
-	DeviceId       string `json:"device_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	DeviceId       string `json:"device_id" url:"device_id"`
+}
+
+type UserIdentitiesListRequest struct {
+	CredentialManagerAcsSystemId *string `json:"credential_manager_acs_system_id,omitempty" url:"credential_manager_acs_system_id,omitempty"`
 }
 
 type UserIdentitiesListAccessibleDevicesRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 }
 
 type UserIdentitiesListAcsSystemsRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 }
 
 type UserIdentitiesListAcsUsersRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 }
 
 type UserIdentitiesRemoveAcsUserRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
-	AcsUserId      string `json:"acs_user_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	AcsUserId      string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UserIdentitiesRevokeAccessToDeviceRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
-	DeviceId       string `json:"device_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	DeviceId       string `json:"device_id" url:"device_id"`
 }
 
 type UserIdentitiesAddAcsUserResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -81,8 +85,8 @@ func (u *UserIdentitiesAddAcsUserResponse) String() string {
 }
 
 type UserIdentitiesCreateResponse struct {
-	UserIdentity *UserIdentitiesCreateResponseUserIdentity `json:"user_identity,omitempty"`
-	Ok           bool                                      `json:"ok"`
+	UserIdentity *UserIdentitiesCreateResponseUserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
+	Ok           bool                                      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -111,7 +115,7 @@ func (u *UserIdentitiesCreateResponse) String() string {
 }
 
 type UserIdentitiesDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -197,8 +201,8 @@ func (u *UserIdentitiesGetRequest) Accept(visitor UserIdentitiesGetRequestVisito
 }
 
 type UserIdentitiesGetResponse struct {
-	UserIdentity *UserIdentitiesGetResponseUserIdentity `json:"user_identity,omitempty"`
-	Ok           bool                                   `json:"ok"`
+	UserIdentity *UserIdentitiesGetResponseUserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
+	Ok           bool                                   `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -227,7 +231,7 @@ func (u *UserIdentitiesGetResponse) String() string {
 }
 
 type UserIdentitiesGrantAccessToDeviceResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -256,8 +260,8 @@ func (u *UserIdentitiesGrantAccessToDeviceResponse) String() string {
 }
 
 type UserIdentitiesListAccessibleDevicesResponse struct {
-	AccessibleDevices []*Device `json:"accessible_devices,omitempty"`
-	Ok                bool      `json:"ok"`
+	AccessibleDevices []*Device `json:"accessible_devices,omitempty" url:"accessible_devices,omitempty"`
+	Ok                bool      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -286,8 +290,8 @@ func (u *UserIdentitiesListAccessibleDevicesResponse) String() string {
 }
 
 type UserIdentitiesListAcsSystemsResponse struct {
-	AcsSystems []*AcsSystem `json:"acs_systems,omitempty"`
-	Ok         bool         `json:"ok"`
+	AcsSystems []*AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
+	Ok         bool         `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -316,8 +320,8 @@ func (u *UserIdentitiesListAcsSystemsResponse) String() string {
 }
 
 type UserIdentitiesListAcsUsersResponse struct {
-	AcsUsers []*AcsUser `json:"acs_users,omitempty"`
-	Ok       bool       `json:"ok"`
+	AcsUsers []*AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
+	Ok       bool       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -346,8 +350,8 @@ func (u *UserIdentitiesListAcsUsersResponse) String() string {
 }
 
 type UserIdentitiesListResponse struct {
-	UserIdentities []*UserIdentitiesListResponseUserIdentitiesItem `json:"user_identities,omitempty"`
-	Ok             bool                                            `json:"ok"`
+	UserIdentities []*UserIdentitiesListResponseUserIdentitiesItem `json:"user_identities,omitempty" url:"user_identities,omitempty"`
+	Ok             bool                                            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -376,7 +380,7 @@ func (u *UserIdentitiesListResponse) String() string {
 }
 
 type UserIdentitiesRemoveAcsUserResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -405,7 +409,7 @@ func (u *UserIdentitiesRemoveAcsUserResponse) String() string {
 }
 
 type UserIdentitiesRevokeAccessToDeviceResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -434,7 +438,7 @@ func (u *UserIdentitiesRevokeAccessToDeviceResponse) String() string {
 }
 
 type UserIdentitiesUpdateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -463,9 +467,9 @@ func (u *UserIdentitiesUpdateResponse) String() string {
 }
 
 type UserIdentitiesUpdateRequest struct {
-	UserIdentityId  string  `json:"user_identity_id"`
-	UserIdentityKey *string `json:"user_identity_key,omitempty"`
-	EmailAddress    *string `json:"email_address,omitempty"`
-	PhoneNumber     *string `json:"phone_number,omitempty"`
-	FullName        *string `json:"full_name,omitempty"`
+	UserIdentityId  string  `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	FullName        *string `json:"full_name,omitempty" url:"full_name,omitempty"`
 }

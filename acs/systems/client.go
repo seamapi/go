@@ -10,6 +10,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 	acs "github.com/seamapi/go/acs"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -20,24 +21,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Get(ctx context.Context, request *acs.SystemsGetRequest) (*acs.SystemsGetResponse, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *acs.SystemsGetRequest,
+	opts ...option.RequestOption,
+) (*acs.SystemsGetResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/systems/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -71,7 +85,9 @@ func (c *Client) Get(ctx context.Context, request *acs.SystemsGetRequest) (*acs.
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -82,12 +98,23 @@ func (c *Client) Get(ctx context.Context, request *acs.SystemsGetRequest) (*acs.
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context, request *acs.SystemsListRequest) (*acs.SystemsListResponse, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *acs.SystemsListRequest,
+	opts ...option.RequestOption,
+) (*acs.SystemsListResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/systems/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -121,7 +148,9 @@ func (c *Client) List(ctx context.Context, request *acs.SystemsListRequest) (*ac
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

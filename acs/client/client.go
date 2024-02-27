@@ -11,6 +11,7 @@ import (
 	systems "github.com/seamapi/go/acs/systems"
 	users "github.com/seamapi/go/acs/users"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	http "net/http"
 )
 
@@ -28,14 +29,16 @@ type Client struct {
 	Users                             *users.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:                           options.BaseURL,
-		caller:                            core.NewCaller(options.HTTPClient),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:                            options.ToHeader(),
 		AccessGroups:                      accessgroups.NewClient(opts...),
 		CredentialPools:                   credentialpools.NewClient(opts...),

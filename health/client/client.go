@@ -10,6 +10,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 	service "github.com/seamapi/go/health/service"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -22,25 +23,37 @@ type Client struct {
 	Service *service.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:  options.ToHeader(),
 		Service: service.NewClient(opts...),
 	}
 }
 
-func (c *Client) GetHealth(ctx context.Context) (*seamapigo.HealthGetHealthResponse, error) {
+func (c *Client) GetHealth(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*seamapigo.HealthGetHealthResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "health/get_health"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -74,7 +87,9 @@ func (c *Client) GetHealth(ctx context.Context) (*seamapigo.HealthGetHealthRespo
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
@@ -84,12 +99,23 @@ func (c *Client) GetHealth(ctx context.Context) (*seamapigo.HealthGetHealthRespo
 	return response, nil
 }
 
-func (c *Client) GetServiceHealth(ctx context.Context, request *seamapigo.HealthGetServiceHealthRequest) (*seamapigo.HealthGetServiceHealthResponse, error) {
+func (c *Client) GetServiceHealth(
+	ctx context.Context,
+	request *seamapigo.HealthGetServiceHealthRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.HealthGetServiceHealthResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "health/get_service_health"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -123,7 +149,9 @@ func (c *Client) GetServiceHealth(ctx context.Context, request *seamapigo.Health
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

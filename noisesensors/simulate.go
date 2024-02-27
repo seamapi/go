@@ -9,11 +9,11 @@ import (
 )
 
 type SimulateTriggerNoiseThresholdRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 }
 
 type SimulateTriggerNoiseThresholdResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

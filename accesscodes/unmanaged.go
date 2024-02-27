@@ -10,31 +10,31 @@ import (
 )
 
 type UnmanagedConvertToManagedRequest struct {
-	AccessCodeId                  string `json:"access_code_id"`
-	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty"`
-	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty"`
-	Force                         *bool  `json:"force,omitempty"`
-	Sync                          *bool  `json:"sync,omitempty"`
+	AccessCodeId                  string `json:"access_code_id" url:"access_code_id"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
+	Force                         *bool  `json:"force,omitempty" url:"force,omitempty"`
+	Sync                          *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }
 
 type UnmanagedDeleteRequest struct {
-	AccessCodeId string `json:"access_code_id"`
-	Sync         *bool  `json:"sync,omitempty"`
+	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
+	Sync         *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }
 
 type UnmanagedGetRequest struct {
-	DeviceId     *string `json:"device_id,omitempty"`
-	AccessCodeId *string `json:"access_code_id,omitempty"`
-	Code         *string `json:"code,omitempty"`
+	DeviceId     *string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	AccessCodeId *string `json:"access_code_id,omitempty" url:"access_code_id,omitempty"`
+	Code         *string `json:"code,omitempty" url:"code,omitempty"`
 }
 
 type UnmanagedListRequest struct {
-	DeviceId          string  `json:"device_id"`
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+	DeviceId          string  `json:"device_id" url:"device_id"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 }
 
 type UnmanagedConvertToManagedResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -63,8 +63,8 @@ func (u *UnmanagedConvertToManagedResponse) String() string {
 }
 
 type UnmanagedDeleteResponse struct {
-	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool                     `json:"ok"`
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -93,8 +93,8 @@ func (u *UnmanagedDeleteResponse) String() string {
 }
 
 type UnmanagedGetResponse struct {
-	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty"`
-	Ok         bool                           `json:"ok"`
+	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty" url:"access_code,omitempty"`
+	Ok         bool                           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -123,8 +123,8 @@ func (u *UnmanagedGetResponse) String() string {
 }
 
 type UnmanagedListResponse struct {
-	AccessCodes []*seamapigo.UnmanagedAccessCode `json:"access_codes,omitempty"`
-	Ok          bool                             `json:"ok"`
+	AccessCodes []*seamapigo.UnmanagedAccessCode `json:"access_codes,omitempty" url:"access_codes,omitempty"`
+	Ok          bool                             `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -153,7 +153,7 @@ func (u *UnmanagedListResponse) String() string {
 }
 
 type UnmanagedUpdateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -182,9 +182,9 @@ func (u *UnmanagedUpdateResponse) String() string {
 }
 
 type UnmanagedUpdateRequest struct {
-	AccessCodeId                  string `json:"access_code_id"`
-	IsManaged                     bool   `json:"is_managed"`
-	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty"`
-	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty"`
-	Force                         *bool  `json:"force,omitempty"`
+	AccessCodeId                  string `json:"access_code_id" url:"access_code_id"`
+	IsManaged                     bool   `json:"is_managed" url:"is_managed"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
+	Force                         *bool  `json:"force,omitempty" url:"force,omitempty"`
 }

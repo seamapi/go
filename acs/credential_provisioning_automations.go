@@ -9,16 +9,16 @@ import (
 )
 
 type CredentialProvisioningAutomationsLaunchRequest struct {
-	UserIdentityId               string  `json:"user_identity_id"`
-	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id"`
-	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty"`
-	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty"`
-	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty"`
+	UserIdentityId               string  `json:"user_identity_id" url:"user_identity_id"`
+	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"create_credential_manager_user,omitempty"`
+	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"credential_manager_acs_user_id,omitempty"`
 }
 
 type CredentialProvisioningAutomationsLaunchResponse struct {
-	AcsCredentialProvisioningAutomation *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation `json:"acs_credential_provisioning_automation,omitempty"`
-	Ok                                  bool                                                                                `json:"ok"`
+	AcsCredentialProvisioningAutomation *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation `json:"acs_credential_provisioning_automation,omitempty" url:"acs_credential_provisioning_automation,omitempty"`
+	Ok                                  bool                                                                                `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

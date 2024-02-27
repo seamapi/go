@@ -10,14 +10,14 @@ import (
 )
 
 type SimulateCreateUnmanagedAccessCodeRequest struct {
-	DeviceId string `json:"device_id"`
-	Name     string `json:"name"`
-	Code     string `json:"code"`
+	DeviceId string `json:"device_id" url:"device_id"`
+	Name     string `json:"name" url:"name"`
+	Code     string `json:"code" url:"code"`
 }
 
 type SimulateCreateUnmanagedAccessCodeResponse struct {
-	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty"`
-	Ok         bool                           `json:"ok"`
+	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty" url:"access_code,omitempty"`
+	Ok         bool                           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

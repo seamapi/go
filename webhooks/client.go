@@ -9,6 +9,7 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -19,24 +20,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRequest) (*seamapigo.Webhook, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *seamapigo.WebhooksCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.Webhook, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "webhooks/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -70,7 +84,9 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -81,12 +97,23 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.WebhooksCreateRe
 	return response.Webhook, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRequest) (*seamapigo.WebhooksDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *seamapigo.WebhooksDeleteRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.WebhooksDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "webhooks/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -120,7 +147,9 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -131,12 +160,23 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.WebhooksDeleteRe
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest) (*seamapigo.Webhook, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.WebhooksGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.Webhook, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "webhooks/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -170,7 +210,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest)
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -181,12 +223,22 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.WebhooksGetRequest)
 	return response.Webhook, nil
 }
 
-func (c *Client) List(ctx context.Context) ([]*seamapigo.Webhook, error) {
+func (c *Client) List(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) ([]*seamapigo.Webhook, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "webhooks/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -220,7 +272,9 @@ func (c *Client) List(ctx context.Context) ([]*seamapigo.Webhook, error) {
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
@@ -230,12 +284,23 @@ func (c *Client) List(ctx context.Context) ([]*seamapigo.Webhook, error) {
 	return response.Webhooks, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *seamapigo.WebhooksUpdateRequest) (*seamapigo.WebhooksUpdateResponse, error) {
+func (c *Client) Update(
+	ctx context.Context,
+	request *seamapigo.WebhooksUpdateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.WebhooksUpdateResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "webhooks/update"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -269,7 +334,9 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.WebhooksUpdateRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

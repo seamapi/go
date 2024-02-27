@@ -9,6 +9,7 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	thermostats "github.com/seamapi/go/thermostats"
 	io "io"
 	http "net/http"
@@ -20,24 +21,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSettingSchedulesCreateRequest) (*seamapigo.ClimateSettingSchedule, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *thermostats.ClimateSettingSchedulesCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClimateSettingSchedule, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "thermostats/climate_setting_schedules/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -71,7 +85,9 @@ func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSetting
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -82,12 +98,23 @@ func (c *Client) Create(ctx context.Context, request *thermostats.ClimateSetting
 	return response.ClimateSettingSchedule, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSettingSchedulesDeleteRequest) (*thermostats.ClimateSettingSchedulesDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *thermostats.ClimateSettingSchedulesDeleteRequest,
+	opts ...option.RequestOption,
+) (*thermostats.ClimateSettingSchedulesDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "thermostats/climate_setting_schedules/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -121,7 +148,9 @@ func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSetting
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -132,12 +161,23 @@ func (c *Client) Delete(ctx context.Context, request *thermostats.ClimateSetting
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSchedulesGetRequest) (*seamapigo.ClimateSettingSchedule, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *thermostats.ClimateSettingSchedulesGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClimateSettingSchedule, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "thermostats/climate_setting_schedules/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -171,7 +211,9 @@ func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSch
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -182,12 +224,23 @@ func (c *Client) Get(ctx context.Context, request *thermostats.ClimateSettingSch
 	return response.ClimateSettingSchedule, nil
 }
 
-func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSchedulesListRequest) ([]*seamapigo.ClimateSettingSchedule, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *thermostats.ClimateSettingSchedulesListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.ClimateSettingSchedule, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "thermostats/climate_setting_schedules/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -221,7 +274,9 @@ func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSc
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -232,12 +287,23 @@ func (c *Client) List(ctx context.Context, request *thermostats.ClimateSettingSc
 	return response.ClimateSettingSchedules, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSettingSchedulesUpdateRequest) (*seamapigo.ClimateSettingSchedule, error) {
+func (c *Client) Update(
+	ctx context.Context,
+	request *thermostats.ClimateSettingSchedulesUpdateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClimateSettingSchedule, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "thermostats/climate_setting_schedules/update"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -271,7 +337,9 @@ func (c *Client) Update(ctx context.Context, request *thermostats.ClimateSetting
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

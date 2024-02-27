@@ -10,6 +10,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 	acs "github.com/seamapi/go/acs"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -20,24 +21,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Get(ctx context.Context, request *acs.EntrancesGetRequest) (*acs.EntrancesGetResponse, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *acs.EntrancesGetRequest,
+	opts ...option.RequestOption,
+) (*acs.EntrancesGetResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/entrances/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -71,7 +85,9 @@ func (c *Client) Get(ctx context.Context, request *acs.EntrancesGetRequest) (*ac
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -82,12 +98,23 @@ func (c *Client) Get(ctx context.Context, request *acs.EntrancesGetRequest) (*ac
 	return response, nil
 }
 
-func (c *Client) GrantAccess(ctx context.Context, request *acs.EntrancesGrantAccessRequest) (*acs.EntrancesGrantAccessResponse, error) {
+func (c *Client) GrantAccess(
+	ctx context.Context,
+	request *acs.EntrancesGrantAccessRequest,
+	opts ...option.RequestOption,
+) (*acs.EntrancesGrantAccessResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/entrances/grant_access"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -121,7 +148,9 @@ func (c *Client) GrantAccess(ctx context.Context, request *acs.EntrancesGrantAcc
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -132,12 +161,23 @@ func (c *Client) GrantAccess(ctx context.Context, request *acs.EntrancesGrantAcc
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context, request *acs.EntrancesListRequest) (*acs.EntrancesListResponse, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *acs.EntrancesListRequest,
+	opts ...option.RequestOption,
+) (*acs.EntrancesListResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/entrances/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -171,7 +211,9 @@ func (c *Client) List(ctx context.Context, request *acs.EntrancesListRequest) (*
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -182,12 +224,23 @@ func (c *Client) List(ctx context.Context, request *acs.EntrancesListRequest) (*
 	return response, nil
 }
 
-func (c *Client) ListCredentialsWithAccess(ctx context.Context, request *acs.EntrancesListCredentialsWithAccessRequest) (*acs.EntrancesListCredentialsWithAccessResponse, error) {
+func (c *Client) ListCredentialsWithAccess(
+	ctx context.Context,
+	request *acs.EntrancesListCredentialsWithAccessRequest,
+	opts ...option.RequestOption,
+) (*acs.EntrancesListCredentialsWithAccessResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/entrances/list_credentials_with_access"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -221,7 +274,9 @@ func (c *Client) ListCredentialsWithAccess(ctx context.Context, request *acs.Ent
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

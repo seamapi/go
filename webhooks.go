@@ -9,21 +9,21 @@ import (
 )
 
 type WebhooksCreateRequest struct {
-	Url        string   `json:"url"`
-	EventTypes []string `json:"event_types,omitempty"`
+	Url        string   `json:"url" url:"url"`
+	EventTypes []string `json:"event_types,omitempty" url:"event_types,omitempty"`
 }
 
 type WebhooksDeleteRequest struct {
-	WebhookId string `json:"webhook_id"`
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
 }
 
 type WebhooksGetRequest struct {
-	WebhookId string `json:"webhook_id"`
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
 }
 
 type WebhooksCreateResponse struct {
-	Webhook *Webhook `json:"webhook,omitempty"`
-	Ok      bool     `json:"ok"`
+	Webhook *Webhook `json:"webhook,omitempty" url:"webhook,omitempty"`
+	Ok      bool     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -52,7 +52,7 @@ func (w *WebhooksCreateResponse) String() string {
 }
 
 type WebhooksDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -81,8 +81,8 @@ func (w *WebhooksDeleteResponse) String() string {
 }
 
 type WebhooksGetResponse struct {
-	Webhook *Webhook `json:"webhook,omitempty"`
-	Ok      bool     `json:"ok"`
+	Webhook *Webhook `json:"webhook,omitempty" url:"webhook,omitempty"`
+	Ok      bool     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -111,8 +111,8 @@ func (w *WebhooksGetResponse) String() string {
 }
 
 type WebhooksListResponse struct {
-	Webhooks []*Webhook `json:"webhooks,omitempty"`
-	Ok       bool       `json:"ok"`
+	Webhooks []*Webhook `json:"webhooks,omitempty" url:"webhooks,omitempty"`
+	Ok       bool       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -141,7 +141,7 @@ func (w *WebhooksListResponse) String() string {
 }
 
 type WebhooksUpdateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -170,6 +170,6 @@ func (w *WebhooksUpdateResponse) String() string {
 }
 
 type WebhooksUpdateRequest struct {
-	WebhookId  string   `json:"webhook_id"`
-	EventTypes []string `json:"event_types,omitempty"`
+	WebhookId  string   `json:"webhook_id" url:"webhook_id"`
+	EventTypes []string `json:"event_types,omitempty" url:"event_types,omitempty"`
 }

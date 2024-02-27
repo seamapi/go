@@ -9,6 +9,7 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -19,24 +20,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *seamapigo.ClientSessionsCreateRequest) (*seamapigo.ClientSession, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSession, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -70,7 +84,9 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ClientSessionsCr
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -81,12 +97,23 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ClientSessionsCr
 	return response.ClientSession, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDeleteRequest) (*seamapigo.ClientSessionsDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsDeleteRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSessionsDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -120,7 +147,9 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -131,12 +160,23 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ClientSessionsDe
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.ClientSessionsGetRequest) (*seamapigo.ClientSession, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSession, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -170,7 +210,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ClientSessionsGetRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -181,12 +223,23 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ClientSessionsGetRe
 	return response.ClientSession, nil
 }
 
-func (c *Client) GetOrCreate(ctx context.Context, request *seamapigo.ClientSessionsGetOrCreateRequest) (*seamapigo.ClientSession, error) {
+func (c *Client) GetOrCreate(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsGetOrCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSession, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/get_or_create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -220,7 +273,9 @@ func (c *Client) GetOrCreate(ctx context.Context, request *seamapigo.ClientSessi
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -231,12 +286,23 @@ func (c *Client) GetOrCreate(ctx context.Context, request *seamapigo.ClientSessi
 	return response.ClientSession, nil
 }
 
-func (c *Client) GrantAccess(ctx context.Context, request *seamapigo.ClientSessionsGrantAccessRequest) (*seamapigo.ClientSessionsGrantAccessResponse, error) {
+func (c *Client) GrantAccess(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsGrantAccessRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSessionsGrantAccessResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/grant_access"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -270,7 +336,9 @@ func (c *Client) GrantAccess(ctx context.Context, request *seamapigo.ClientSessi
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -281,12 +349,23 @@ func (c *Client) GrantAccess(ctx context.Context, request *seamapigo.ClientSessi
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context, request *seamapigo.ClientSessionsListRequest) ([]*seamapigo.ClientSession, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.ClientSession, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -320,7 +399,9 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ClientSessionsList
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -331,12 +412,23 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ClientSessionsList
 	return response.ClientSessions, nil
 }
 
-func (c *Client) Revoke(ctx context.Context, request *seamapigo.ClientSessionsRevokeRequest) (*seamapigo.ClientSessionsRevokeResponse, error) {
+func (c *Client) Revoke(
+	ctx context.Context,
+	request *seamapigo.ClientSessionsRevokeRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ClientSessionsRevokeResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "client_sessions/revoke"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -370,7 +462,9 @@ func (c *Client) Revoke(ctx context.Context, request *seamapigo.ClientSessionsRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

@@ -11,56 +11,56 @@ import (
 )
 
 type UsersAddToAccessGroupRequest struct {
-	AcsUserId        string `json:"acs_user_id"`
-	AcsAccessGroupId string `json:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
 }
 
 type UsersCreateRequest struct {
-	AcsSystemId       string                            `json:"acs_system_id"`
-	AcsAccessGroupIds []string                          `json:"acs_access_group_ids,omitempty"`
-	UserIdentityId    *string                           `json:"user_identity_id,omitempty"`
-	AccessSchedule    *UsersCreateRequestAccessSchedule `json:"access_schedule,omitempty"`
-	FullName          *string                           `json:"full_name,omitempty"`
+	AcsSystemId       string                            `json:"acs_system_id" url:"acs_system_id"`
+	AcsAccessGroupIds []string                          `json:"acs_access_group_ids,omitempty" url:"acs_access_group_ids,omitempty"`
+	UserIdentityId    *string                           `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	AccessSchedule    *UsersCreateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
+	FullName          *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
 	// Deprecated: use email_address.
-	Email        *string `json:"email,omitempty"`
-	PhoneNumber  *string `json:"phone_number,omitempty"`
-	EmailAddress *string `json:"email_address,omitempty"`
+	Email        *string `json:"email,omitempty" url:"email,omitempty"`
+	PhoneNumber  *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty" url:"email_address,omitempty"`
 }
 
 type UsersDeleteRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersGetRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersListRequest struct {
-	UserIdentityId           *string `json:"user_identity_id,omitempty"`
-	UserIdentityPhoneNumber  *string `json:"user_identity_phone_number,omitempty"`
-	UserIdentityEmailAddress *string `json:"user_identity_email_address,omitempty"`
-	AcsSystemId              *string `json:"acs_system_id,omitempty"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	UserIdentityPhoneNumber  *string `json:"user_identity_phone_number,omitempty" url:"user_identity_phone_number,omitempty"`
+	UserIdentityEmailAddress *string `json:"user_identity_email_address,omitempty" url:"user_identity_email_address,omitempty"`
+	AcsSystemId              *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
 }
 
 type UsersListAccessibleEntrancesRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersRemoveFromAccessGroupRequest struct {
-	AcsUserId        string `json:"acs_user_id"`
-	AcsAccessGroupId string `json:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
 }
 
 type UsersRevokeAccessToAllEntrancesRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersSuspendRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersAddToAccessGroupResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -89,21 +89,43 @@ func (u *UsersAddToAccessGroupResponse) String() string {
 }
 
 type UsersCreateRequestAccessSchedule struct {
-	StartsAt time.Time `json:"starts_at"`
-	EndsAt   time.Time `json:"ends_at"`
+	StartsAt time.Time `json:"starts_at" url:"starts_at"`
+	EndsAt   time.Time `json:"ends_at" url:"ends_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UsersCreateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
-	type unmarshaler UsersCreateRequestAccessSchedule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UsersCreateRequestAccessSchedule
+	var unmarshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UsersCreateRequestAccessSchedule(value)
+	*u = UsersCreateRequestAccessSchedule(unmarshaler.embed)
+	u.StartsAt = unmarshaler.StartsAt.Time()
+	u.EndsAt = unmarshaler.EndsAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UsersCreateRequestAccessSchedule) MarshalJSON() ([]byte, error) {
+	type embed UsersCreateRequestAccessSchedule
+	var marshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed:    embed(*u),
+		StartsAt: core.NewDateTime(u.StartsAt),
+		EndsAt:   core.NewDateTime(u.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UsersCreateRequestAccessSchedule) String() string {
@@ -119,8 +141,8 @@ func (u *UsersCreateRequestAccessSchedule) String() string {
 }
 
 type UsersCreateResponse struct {
-	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty"`
-	Ok      bool               `json:"ok"`
+	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty" url:"acs_user,omitempty"`
+	Ok      bool               `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -149,7 +171,7 @@ func (u *UsersCreateResponse) String() string {
 }
 
 type UsersDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -178,8 +200,8 @@ func (u *UsersDeleteResponse) String() string {
 }
 
 type UsersGetResponse struct {
-	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty"`
-	Ok      bool               `json:"ok"`
+	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty" url:"acs_user,omitempty"`
+	Ok      bool               `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -208,8 +230,8 @@ func (u *UsersGetResponse) String() string {
 }
 
 type UsersListAccessibleEntrancesResponse struct {
-	AcsEntrances []*UsersListAccessibleEntrancesResponseAcsEntrancesItem `json:"acs_entrances,omitempty"`
-	Ok           bool                                                    `json:"ok"`
+	AcsEntrances []*UsersListAccessibleEntrancesResponseAcsEntrancesItem `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                                                    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -238,8 +260,8 @@ func (u *UsersListAccessibleEntrancesResponse) String() string {
 }
 
 type UsersListResponse struct {
-	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty"`
-	Ok       bool                 `json:"ok"`
+	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
+	Ok       bool                 `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -268,7 +290,7 @@ func (u *UsersListResponse) String() string {
 }
 
 type UsersRemoveFromAccessGroupResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -297,7 +319,7 @@ func (u *UsersRemoveFromAccessGroupResponse) String() string {
 }
 
 type UsersRevokeAccessToAllEntrancesResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -326,7 +348,7 @@ func (u *UsersRevokeAccessToAllEntrancesResponse) String() string {
 }
 
 type UsersSuspendResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -355,7 +377,7 @@ func (u *UsersSuspendResponse) String() string {
 }
 
 type UsersUnsuspendResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -384,21 +406,43 @@ func (u *UsersUnsuspendResponse) String() string {
 }
 
 type UsersUpdateRequestAccessSchedule struct {
-	StartsAt time.Time `json:"starts_at"`
-	EndsAt   time.Time `json:"ends_at"`
+	StartsAt time.Time `json:"starts_at" url:"starts_at"`
+	EndsAt   time.Time `json:"ends_at" url:"ends_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UsersUpdateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
-	type unmarshaler UsersUpdateRequestAccessSchedule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UsersUpdateRequestAccessSchedule
+	var unmarshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UsersUpdateRequestAccessSchedule(value)
+	*u = UsersUpdateRequestAccessSchedule(unmarshaler.embed)
+	u.StartsAt = unmarshaler.StartsAt.Time()
+	u.EndsAt = unmarshaler.EndsAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UsersUpdateRequestAccessSchedule) MarshalJSON() ([]byte, error) {
+	type embed UsersUpdateRequestAccessSchedule
+	var marshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed:    embed(*u),
+		StartsAt: core.NewDateTime(u.StartsAt),
+		EndsAt:   core.NewDateTime(u.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UsersUpdateRequestAccessSchedule) String() string {
@@ -414,7 +458,7 @@ func (u *UsersUpdateRequestAccessSchedule) String() string {
 }
 
 type UsersUpdateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -443,16 +487,16 @@ func (u *UsersUpdateResponse) String() string {
 }
 
 type UsersUnsuspendRequest struct {
-	AcsUserId string `json:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type UsersUpdateRequest struct {
-	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty"`
-	AcsUserId      string                            `json:"acs_user_id"`
-	FullName       *string                           `json:"full_name,omitempty"`
+	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
+	AcsUserId      string                            `json:"acs_user_id" url:"acs_user_id"`
+	FullName       *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
 	// Deprecated: use email_address.
-	Email          *string `json:"email,omitempty"`
-	PhoneNumber    *string `json:"phone_number,omitempty"`
-	EmailAddress   *string `json:"email_address,omitempty"`
-	HidAcsSystemId *string `json:"hid_acs_system_id,omitempty"`
+	Email          *string `json:"email,omitempty" url:"email,omitempty"`
+	PhoneNumber    *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	EmailAddress   *string `json:"email_address,omitempty" url:"email_address,omitempty"`
+	HidAcsSystemId *string `json:"hid_acs_system_id,omitempty" url:"hid_acs_system_id,omitempty"`
 }

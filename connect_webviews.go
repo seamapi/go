@@ -9,28 +9,28 @@ import (
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode           *SelectionMode                                              `json:"device_selection_mode,omitempty"`
-	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty"`
-	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty"`
-	ProviderCategory              *ProviderCategory                                           `json:"provider_category,omitempty"`
-	CustomMetadata                map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
-	AutomaticallyManageNewDevices *bool                                                       `json:"automatically_manage_new_devices,omitempty"`
-	WaitForDeviceCreation         *bool                                                       `json:"wait_for_device_creation,omitempty"`
+	DeviceSelectionMode           *SelectionMode                                              `json:"device_selection_mode,omitempty" url:"device_selection_mode,omitempty"`
+	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty" url:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty" url:"custom_redirect_failure_url,omitempty"`
+	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
+	ProviderCategory              *ProviderCategory                                           `json:"provider_category,omitempty" url:"provider_category,omitempty"`
+	CustomMetadata                map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices *bool                                                       `json:"automatically_manage_new_devices,omitempty" url:"automatically_manage_new_devices,omitempty"`
+	WaitForDeviceCreation         *bool                                                       `json:"wait_for_device_creation,omitempty" url:"wait_for_device_creation,omitempty"`
 }
 
 type ConnectWebviewsDeleteRequest struct {
-	ConnectWebviewId string `json:"connect_webview_id"`
+	ConnectWebviewId string `json:"connect_webview_id" url:"connect_webview_id"`
 }
 
 type ConnectWebviewsGetRequest struct {
-	ConnectWebviewId string `json:"connect_webview_id"`
+	ConnectWebviewId string `json:"connect_webview_id" url:"connect_webview_id"`
 }
 
 type ConnectWebviewsListRequest struct {
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	// Returns devices where the webview's custom_metadata contains all of the provided key/value pairs.
-	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
+	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
 }
 
 type AcceptedProvider string
@@ -240,8 +240,8 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor Connect
 }
 
 type ConnectWebviewsCreateResponse struct {
-	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty"`
-	Ok             bool            `json:"ok"`
+	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty" url:"connect_webview,omitempty"`
+	Ok             bool            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -270,7 +270,7 @@ func (c *ConnectWebviewsCreateResponse) String() string {
 }
 
 type ConnectWebviewsDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -299,8 +299,8 @@ func (c *ConnectWebviewsDeleteResponse) String() string {
 }
 
 type ConnectWebviewsGetResponse struct {
-	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty"`
-	Ok             bool            `json:"ok"`
+	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty" url:"connect_webview,omitempty"`
+	Ok             bool            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -402,8 +402,8 @@ func (c *ConnectWebviewsListRequestCustomMetadataHasValue) Accept(visitor Connec
 }
 
 type ConnectWebviewsListResponse struct {
-	ConnectWebviews []*ConnectWebview `json:"connect_webviews,omitempty"`
-	Ok              bool              `json:"ok"`
+	ConnectWebviews []*ConnectWebview `json:"connect_webviews,omitempty" url:"connect_webviews,omitempty"`
+	Ok              bool              `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -432,6 +432,6 @@ func (c *ConnectWebviewsListResponse) String() string {
 }
 
 type ConnectWebviewsViewRequest struct {
-	ConnectWebviewId string `json:"-"`
-	AuthToken        string `json:"-"`
+	ConnectWebviewId string `json:"-" url:"connect_webview_id"`
+	AuthToken        string `json:"-" url:"auth_token"`
 }

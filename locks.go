@@ -10,34 +10,56 @@ import (
 )
 
 type LocksGetRequest struct {
-	DeviceId *string `json:"device_id,omitempty"`
-	Name     *string `json:"name,omitempty"`
+	DeviceId *string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	Name     *string `json:"name,omitempty" url:"name,omitempty"`
 }
 
 type LocksListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                                            `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                                           `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                                            `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType                                        `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType                                       `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer                                      `json:"manufacturer,omitempty"`
-	DeviceIds           []string                                           `json:"device_ids,omitempty"`
-	Limit               *float64                                           `json:"limit,omitempty"`
-	CreatedBefore       *time.Time                                         `json:"created_before,omitempty"`
-	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty"`
-	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
+	ConnectedAccountId  *string                                            `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                           `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                            `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
+	DeviceType          *DeviceType                                        `json:"device_type,omitempty" url:"device_type,omitempty"`
+	DeviceTypes         []DeviceType                                       `json:"device_types,omitempty" url:"device_types,omitempty"`
+	Manufacturer        *Manufacturer                                      `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
+	DeviceIds           []string                                           `json:"device_ids,omitempty" url:"device_ids,omitempty"`
+	Limit               *float64                                           `json:"limit,omitempty" url:"limit,omitempty"`
+	CreatedBefore       *time.Time                                         `json:"created_before,omitempty" url:"created_before,omitempty"`
+	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+}
+
+func (l *LocksListRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocksListRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*l = LocksListRequest(body)
+	return nil
+}
+
+func (l *LocksListRequest) MarshalJSON() ([]byte, error) {
+	type embed LocksListRequest
+	var marshaler = struct {
+		embed
+		CreatedBefore *core.DateTime `json:"created_before,omitempty"`
+	}{
+		embed:         embed(*l),
+		CreatedBefore: core.NewOptionalDateTime(l.CreatedBefore),
+	}
+	return json.Marshal(marshaler)
 }
 
 type LocksLockDoorRequest struct {
-	DeviceId string `json:"device_id"`
-	Sync     *bool  `json:"sync,omitempty"`
+	DeviceId string `json:"device_id" url:"device_id"`
+	Sync     *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }
 
 type LocksGetResponse struct {
-	Lock   *Device `json:"lock,omitempty"`
-	Device *Device `json:"device,omitempty"`
-	Ok     bool    `json:"ok"`
+	Lock   *Device `json:"lock,omitempty" url:"lock,omitempty"`
+	Device *Device `json:"device,omitempty" url:"device,omitempty"`
+	Ok     bool    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -139,9 +161,9 @@ func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequest
 }
 
 type LocksListResponse struct {
-	Locks   []*Device `json:"locks,omitempty"`
-	Devices []*Device `json:"devices,omitempty"`
-	Ok      bool      `json:"ok"`
+	Locks   []*Device `json:"locks,omitempty" url:"locks,omitempty"`
+	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
+	Ok      bool      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -170,8 +192,8 @@ func (l *LocksListResponse) String() string {
 }
 
 type LocksLockDoorResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -200,8 +222,8 @@ func (l *LocksLockDoorResponse) String() string {
 }
 
 type LocksUnlockDoorResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -230,6 +252,6 @@ func (l *LocksUnlockDoorResponse) String() string {
 }
 
 type LocksUnlockDoorRequest struct {
-	DeviceId string `json:"device_id"`
-	Sync     *bool  `json:"sync,omitempty"`
+	DeviceId string `json:"device_id" url:"device_id"`
+	Sync     *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }

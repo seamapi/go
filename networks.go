@@ -9,15 +9,15 @@ import (
 )
 
 type NetworksGetRequest struct {
-	NetworkId string `json:"network_id"`
+	NetworkId string `json:"network_id" url:"network_id"`
 }
 
 type NetworksListRequest struct {
 }
 
 type NetworksGetResponse struct {
-	Network *NetworksGetResponseNetwork `json:"network,omitempty"`
-	Ok      bool                        `json:"ok"`
+	Network *NetworksGetResponseNetwork `json:"network,omitempty" url:"network,omitempty"`
+	Ok      bool                        `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -46,8 +46,8 @@ func (n *NetworksGetResponse) String() string {
 }
 
 type NetworksListResponse struct {
-	Networks []*NetworksListResponseNetworksItem `json:"networks,omitempty"`
-	Ok       bool                                `json:"ok"`
+	Networks []*NetworksListResponseNetworksItem `json:"networks,omitempty" url:"networks,omitempty"`
+	Ok       bool                                `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

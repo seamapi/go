@@ -6,35 +6,64 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type CredentialsAssignRequest struct {
-	AcsUserId       string `json:"acs_user_id"`
-	AcsCredentialId string `json:"acs_credential_id"`
+	AcsUserId       string `json:"acs_user_id" url:"acs_user_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
 }
 
 type CredentialsCreateRequest struct {
-	AcsUserId                  string                                      `json:"acs_user_id"`
-	AccessMethod               CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty"`
-	Code                       *string                                     `json:"code,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                       `json:"is_multi_phone_sync_credential,omitempty"`
-	ExternalType               *CredentialsCreateRequestExternalType       `json:"external_type,omitempty"`
-	VisionlineMetadata         *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty"`
-	StartsAt                   *string                                     `json:"starts_at,omitempty"`
-	EndsAt                     *string                                     `json:"ends_at,omitempty"`
+	AcsUserId                  string                                      `json:"acs_user_id" url:"acs_user_id"`
+	AccessMethod               CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	Code                       *string                                     `json:"code,omitempty" url:"code,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                       `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	ExternalType               *string                                     `json:"external_type,omitempty" url:"external_type,omitempty"`
+	VisionlineMetadata         *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
+	StartsAt                   *time.Time                                  `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *time.Time                                  `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+}
+
+func (c *CredentialsCreateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCreateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CredentialsCreateRequest(body)
+	return nil
+}
+
+func (c *CredentialsCreateRequest) MarshalJSON() ([]byte, error) {
+	type embed CredentialsCreateRequest
+	var marshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt   *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:    embed(*c),
+		StartsAt: core.NewOptionalDateTime(c.StartsAt),
+		EndsAt:   core.NewOptionalDateTime(c.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 type CredentialsDeleteRequest struct {
-	AcsCredentialId string `json:"acs_credential_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
 }
 
 type CredentialsGetRequest struct {
-	AcsCredentialId string `json:"acs_credential_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+}
+
+type CredentialsListRequest struct {
+	IsMultiPhoneSyncCredential *bool `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
 }
 
 type CredentialsAssignResponse struct {
-	AcsCredential *CredentialsAssignResponseAcsCredential `json:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	AcsCredential *CredentialsAssignResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                                    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -87,39 +116,11 @@ func (c CredentialsCreateRequestAccessMethod) Ptr() *CredentialsCreateRequestAcc
 	return &c
 }
 
-type CredentialsCreateRequestExternalType string
-
-const (
-	CredentialsCreateRequestExternalTypePtiCard         CredentialsCreateRequestExternalType = "pti_card"
-	CredentialsCreateRequestExternalTypeBrivoCredential CredentialsCreateRequestExternalType = "brivo_credential"
-	CredentialsCreateRequestExternalTypeHidCredential   CredentialsCreateRequestExternalType = "hid_credential"
-	CredentialsCreateRequestExternalTypeVisionlineCard  CredentialsCreateRequestExternalType = "visionline_card"
-)
-
-func NewCredentialsCreateRequestExternalTypeFromString(s string) (CredentialsCreateRequestExternalType, error) {
-	switch s {
-	case "pti_card":
-		return CredentialsCreateRequestExternalTypePtiCard, nil
-	case "brivo_credential":
-		return CredentialsCreateRequestExternalTypeBrivoCredential, nil
-	case "hid_credential":
-		return CredentialsCreateRequestExternalTypeHidCredential, nil
-	case "visionline_card":
-		return CredentialsCreateRequestExternalTypeVisionlineCard, nil
-	}
-	var t CredentialsCreateRequestExternalType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CredentialsCreateRequestExternalType) Ptr() *CredentialsCreateRequestExternalType {
-	return &c
-}
-
 type CredentialsCreateRequestVisionlineMetadata struct {
-	AssaAbloyCredentialServiceMobileEndpointId *string                                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
-	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat `json:"card_format,omitempty"`
-	IsOverrideKey                              *bool                                                 `json:"is_override_key,omitempty"`
-	JoinerAcsCredentialIds                     []string                                              `json:"joiner_acs_credential_ids,omitempty"`
+	AssaAbloyCredentialServiceMobileEndpointId *string                                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty" url:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
+	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat `json:"card_format,omitempty" url:"card_format,omitempty"`
+	IsOverrideKey                              *bool                                                 `json:"is_override_key,omitempty" url:"is_override_key,omitempty"`
+	JoinerAcsCredentialIds                     []string                                              `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -148,8 +149,8 @@ func (c *CredentialsCreateRequestVisionlineMetadata) String() string {
 }
 
 type CredentialsCreateResponse struct {
-	AcsCredential *CredentialsCreateResponseAcsCredential `json:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	AcsCredential *CredentialsCreateResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                                    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -178,7 +179,7 @@ func (c *CredentialsCreateResponse) String() string {
 }
 
 type CredentialsDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -207,8 +208,8 @@ func (c *CredentialsDeleteResponse) String() string {
 }
 
 type CredentialsGetResponse struct {
-	AcsCredential *CredentialsGetResponseAcsCredential `json:"acs_credential,omitempty"`
-	Ok            bool                                 `json:"ok"`
+	AcsCredential *CredentialsGetResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                                 `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -236,98 +237,9 @@ func (c *CredentialsGetResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type CredentialsListRequest struct {
-	typeName                             string
-	CredentialsListRequestZero           *CredentialsListRequestZero
-	CredentialsListRequestOne            *CredentialsListRequestOne
-	CredentialsListRequestTwo            *CredentialsListRequestTwo
-	CredentialsListRequestUserIdentityId *CredentialsListRequestUserIdentityId
-}
-
-func NewCredentialsListRequestFromCredentialsListRequestZero(value *CredentialsListRequestZero) *CredentialsListRequest {
-	return &CredentialsListRequest{typeName: "credentialsListRequestZero", CredentialsListRequestZero: value}
-}
-
-func NewCredentialsListRequestFromCredentialsListRequestOne(value *CredentialsListRequestOne) *CredentialsListRequest {
-	return &CredentialsListRequest{typeName: "credentialsListRequestOne", CredentialsListRequestOne: value}
-}
-
-func NewCredentialsListRequestFromCredentialsListRequestTwo(value *CredentialsListRequestTwo) *CredentialsListRequest {
-	return &CredentialsListRequest{typeName: "credentialsListRequestTwo", CredentialsListRequestTwo: value}
-}
-
-func NewCredentialsListRequestFromCredentialsListRequestUserIdentityId(value *CredentialsListRequestUserIdentityId) *CredentialsListRequest {
-	return &CredentialsListRequest{typeName: "credentialsListRequestUserIdentityId", CredentialsListRequestUserIdentityId: value}
-}
-
-func (c *CredentialsListRequest) UnmarshalJSON(data []byte) error {
-	valueCredentialsListRequestZero := new(CredentialsListRequestZero)
-	if err := json.Unmarshal(data, &valueCredentialsListRequestZero); err == nil {
-		c.typeName = "credentialsListRequestZero"
-		c.CredentialsListRequestZero = valueCredentialsListRequestZero
-		return nil
-	}
-	valueCredentialsListRequestOne := new(CredentialsListRequestOne)
-	if err := json.Unmarshal(data, &valueCredentialsListRequestOne); err == nil {
-		c.typeName = "credentialsListRequestOne"
-		c.CredentialsListRequestOne = valueCredentialsListRequestOne
-		return nil
-	}
-	valueCredentialsListRequestTwo := new(CredentialsListRequestTwo)
-	if err := json.Unmarshal(data, &valueCredentialsListRequestTwo); err == nil {
-		c.typeName = "credentialsListRequestTwo"
-		c.CredentialsListRequestTwo = valueCredentialsListRequestTwo
-		return nil
-	}
-	valueCredentialsListRequestUserIdentityId := new(CredentialsListRequestUserIdentityId)
-	if err := json.Unmarshal(data, &valueCredentialsListRequestUserIdentityId); err == nil {
-		c.typeName = "credentialsListRequestUserIdentityId"
-		c.CredentialsListRequestUserIdentityId = valueCredentialsListRequestUserIdentityId
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CredentialsListRequest) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "credentialsListRequestZero":
-		return json.Marshal(c.CredentialsListRequestZero)
-	case "credentialsListRequestOne":
-		return json.Marshal(c.CredentialsListRequestOne)
-	case "credentialsListRequestTwo":
-		return json.Marshal(c.CredentialsListRequestTwo)
-	case "credentialsListRequestUserIdentityId":
-		return json.Marshal(c.CredentialsListRequestUserIdentityId)
-	}
-}
-
-type CredentialsListRequestVisitor interface {
-	VisitCredentialsListRequestZero(*CredentialsListRequestZero) error
-	VisitCredentialsListRequestOne(*CredentialsListRequestOne) error
-	VisitCredentialsListRequestTwo(*CredentialsListRequestTwo) error
-	VisitCredentialsListRequestUserIdentityId(*CredentialsListRequestUserIdentityId) error
-}
-
-func (c *CredentialsListRequest) Accept(visitor CredentialsListRequestVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "credentialsListRequestZero":
-		return visitor.VisitCredentialsListRequestZero(c.CredentialsListRequestZero)
-	case "credentialsListRequestOne":
-		return visitor.VisitCredentialsListRequestOne(c.CredentialsListRequestOne)
-	case "credentialsListRequestTwo":
-		return visitor.VisitCredentialsListRequestTwo(c.CredentialsListRequestTwo)
-	case "credentialsListRequestUserIdentityId":
-		return visitor.VisitCredentialsListRequestUserIdentityId(c.CredentialsListRequestUserIdentityId)
-	}
-}
-
 type CredentialsListResponse struct {
-	AcsCredentials []*CredentialsListResponseAcsCredentialsItem `json:"acs_credentials,omitempty"`
-	Ok             bool                                         `json:"ok"`
+	AcsCredentials []*CredentialsListResponseAcsCredentialsItem `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
+	Ok             bool                                         `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -356,8 +268,8 @@ func (c *CredentialsListResponse) String() string {
 }
 
 type CredentialsUnassignResponse struct {
-	AcsCredential *CredentialsUnassignResponseAcsCredential `json:"acs_credential,omitempty"`
-	Ok            bool                                      `json:"ok"`
+	AcsCredential *CredentialsUnassignResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                                      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -386,8 +298,8 @@ func (c *CredentialsUnassignResponse) String() string {
 }
 
 type CredentialsUpdateResponse struct {
-	AcsCredential *CredentialsUpdateResponseAcsCredential `json:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok"`
+	AcsCredential *CredentialsUpdateResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                                    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -416,11 +328,11 @@ func (c *CredentialsUpdateResponse) String() string {
 }
 
 type CredentialsUnassignRequest struct {
-	AcsUserId       string `json:"acs_user_id"`
-	AcsCredentialId string `json:"acs_credential_id"`
+	AcsUserId       string `json:"acs_user_id" url:"acs_user_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
 }
 
 type CredentialsUpdateRequest struct {
-	AcsCredentialId string `json:"acs_credential_id"`
-	Code            string `json:"code"`
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+	Code            string `json:"code" url:"code"`
 }

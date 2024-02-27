@@ -10,6 +10,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 	acs "github.com/seamapi/go/acs"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -20,24 +21,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAccessGroupRequest) (*acs.UsersAddToAccessGroupResponse, error) {
+func (c *Client) AddToAccessGroup(
+	ctx context.Context,
+	request *acs.UsersAddToAccessGroupRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersAddToAccessGroupResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/add_to_access_group"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -71,7 +85,9 @@ func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAc
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -82,12 +98,23 @@ func (c *Client) AddToAccessGroup(ctx context.Context, request *acs.UsersAddToAc
 	return response, nil
 }
 
-func (c *Client) Create(ctx context.Context, request *acs.UsersCreateRequest) (*acs.UsersCreateResponse, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *acs.UsersCreateRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersCreateResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -121,7 +148,9 @@ func (c *Client) Create(ctx context.Context, request *acs.UsersCreateRequest) (*
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -132,12 +161,23 @@ func (c *Client) Create(ctx context.Context, request *acs.UsersCreateRequest) (*
 	return response, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *acs.UsersDeleteRequest) (*acs.UsersDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *acs.UsersDeleteRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -171,7 +211,9 @@ func (c *Client) Delete(ctx context.Context, request *acs.UsersDeleteRequest) (*
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -182,12 +224,23 @@ func (c *Client) Delete(ctx context.Context, request *acs.UsersDeleteRequest) (*
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *acs.UsersGetRequest) (*acs.UsersGetResponse, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *acs.UsersGetRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersGetResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -221,7 +274,9 @@ func (c *Client) Get(ctx context.Context, request *acs.UsersGetRequest) (*acs.Us
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -232,12 +287,23 @@ func (c *Client) Get(ctx context.Context, request *acs.UsersGetRequest) (*acs.Us
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context, request *acs.UsersListRequest) (*acs.UsersListResponse, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *acs.UsersListRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersListResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -271,7 +337,9 @@ func (c *Client) List(ctx context.Context, request *acs.UsersListRequest) (*acs.
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -282,12 +350,23 @@ func (c *Client) List(ctx context.Context, request *acs.UsersListRequest) (*acs.
 	return response, nil
 }
 
-func (c *Client) ListAccessibleEntrances(ctx context.Context, request *acs.UsersListAccessibleEntrancesRequest) (*acs.UsersListAccessibleEntrancesResponse, error) {
+func (c *Client) ListAccessibleEntrances(
+	ctx context.Context,
+	request *acs.UsersListAccessibleEntrancesRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersListAccessibleEntrancesResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/list_accessible_entrances"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -321,7 +400,9 @@ func (c *Client) ListAccessibleEntrances(ctx context.Context, request *acs.Users
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -332,12 +413,23 @@ func (c *Client) ListAccessibleEntrances(ctx context.Context, request *acs.Users
 	return response, nil
 }
 
-func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRemoveFromAccessGroupRequest) (*acs.UsersRemoveFromAccessGroupResponse, error) {
+func (c *Client) RemoveFromAccessGroup(
+	ctx context.Context,
+	request *acs.UsersRemoveFromAccessGroupRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersRemoveFromAccessGroupResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/remove_from_access_group"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -371,7 +463,9 @@ func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRe
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -382,12 +476,23 @@ func (c *Client) RemoveFromAccessGroup(ctx context.Context, request *acs.UsersRe
 	return response, nil
 }
 
-func (c *Client) RevokeAccessToAllEntrances(ctx context.Context, request *acs.UsersRevokeAccessToAllEntrancesRequest) (*acs.UsersRevokeAccessToAllEntrancesResponse, error) {
+func (c *Client) RevokeAccessToAllEntrances(
+	ctx context.Context,
+	request *acs.UsersRevokeAccessToAllEntrancesRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersRevokeAccessToAllEntrancesResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/revoke_access_to_all_entrances"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -421,7 +526,9 @@ func (c *Client) RevokeAccessToAllEntrances(ctx context.Context, request *acs.Us
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -432,12 +539,23 @@ func (c *Client) RevokeAccessToAllEntrances(ctx context.Context, request *acs.Us
 	return response, nil
 }
 
-func (c *Client) Suspend(ctx context.Context, request *acs.UsersSuspendRequest) (*acs.UsersSuspendResponse, error) {
+func (c *Client) Suspend(
+	ctx context.Context,
+	request *acs.UsersSuspendRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersSuspendResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/suspend"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -471,7 +589,9 @@ func (c *Client) Suspend(ctx context.Context, request *acs.UsersSuspendRequest) 
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -482,12 +602,23 @@ func (c *Client) Suspend(ctx context.Context, request *acs.UsersSuspendRequest) 
 	return response, nil
 }
 
-func (c *Client) Unsuspend(ctx context.Context, request *acs.UsersUnsuspendRequest) (*acs.UsersUnsuspendResponse, error) {
+func (c *Client) Unsuspend(
+	ctx context.Context,
+	request *acs.UsersUnsuspendRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersUnsuspendResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/unsuspend"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -521,7 +652,9 @@ func (c *Client) Unsuspend(ctx context.Context, request *acs.UsersUnsuspendReque
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -532,12 +665,23 @@ func (c *Client) Unsuspend(ctx context.Context, request *acs.UsersUnsuspendReque
 	return response, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *acs.UsersUpdateRequest) (*acs.UsersUpdateResponse, error) {
+func (c *Client) Update(
+	ctx context.Context,
+	request *acs.UsersUpdateRequest,
+	opts ...option.RequestOption,
+) (*acs.UsersUpdateResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "acs/users/update"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -571,7 +715,9 @@ func (c *Client) Update(ctx context.Context, request *acs.UsersUpdateRequest) (*
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

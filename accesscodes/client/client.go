@@ -11,6 +11,7 @@ import (
 	simulate "github.com/seamapi/go/accesscodes/simulate"
 	unmanaged "github.com/seamapi/go/accesscodes/unmanaged"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -24,26 +25,39 @@ type Client struct {
 	Unmanaged *unmanaged.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:   options.BaseURL,
-		caller:    core.NewCaller(options.HTTPClient),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:    options.ToHeader(),
 		Simulate:  simulate.NewClient(opts...),
 		Unmanaged: unmanaged.NewClient(opts...),
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *seamapigo.AccessCodesCreateRequest) (*seamapigo.AccessCode, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *seamapigo.AccessCodesCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -77,7 +91,9 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.AccessCodesCreat
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -88,12 +104,23 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.AccessCodesCreat
 	return response.AccessCode, nil
 }
 
-func (c *Client) CreateMultiple(ctx context.Context, request *seamapigo.AccessCodesCreateMultipleRequest) ([]*seamapigo.AccessCode, error) {
+func (c *Client) CreateMultiple(
+	ctx context.Context,
+	request *seamapigo.AccessCodesCreateMultipleRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/create_multiple"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -127,7 +154,9 @@ func (c *Client) CreateMultiple(ctx context.Context, request *seamapigo.AccessCo
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -138,12 +167,23 @@ func (c *Client) CreateMultiple(ctx context.Context, request *seamapigo.AccessCo
 	return response.AccessCodes, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.AccessCodesDeleteRequest) (*seamapigo.ActionAttempt, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *seamapigo.AccessCodesDeleteRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ActionAttempt, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -177,7 +217,9 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.AccessCodesDelet
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -188,12 +230,23 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.AccessCodesDelet
 	return response.ActionAttempt, nil
 }
 
-func (c *Client) GenerateCode(ctx context.Context, request *seamapigo.AccessCodesGenerateCodeRequest) (*seamapigo.AccessCode, error) {
+func (c *Client) GenerateCode(
+	ctx context.Context,
+	request *seamapigo.AccessCodesGenerateCodeRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/generate_code"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -227,7 +280,9 @@ func (c *Client) GenerateCode(ctx context.Context, request *seamapigo.AccessCode
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -238,12 +293,23 @@ func (c *Client) GenerateCode(ctx context.Context, request *seamapigo.AccessCode
 	return response.GeneratedCode, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.AccessCodesGetRequest) (*seamapigo.AccessCode, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.AccessCodesGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -277,7 +343,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.AccessCodesGetReque
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -288,12 +356,23 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.AccessCodesGetReque
 	return response.AccessCode, nil
 }
 
-func (c *Client) List(ctx context.Context, request *seamapigo.AccessCodesListRequest) ([]*seamapigo.AccessCode, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *seamapigo.AccessCodesListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -327,7 +406,9 @@ func (c *Client) List(ctx context.Context, request *seamapigo.AccessCodesListReq
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -338,12 +419,23 @@ func (c *Client) List(ctx context.Context, request *seamapigo.AccessCodesListReq
 	return response.AccessCodes, nil
 }
 
-func (c *Client) PullBackupAccessCode(ctx context.Context, request *seamapigo.AccessCodesPullBackupAccessCodeRequest) (*seamapigo.AccessCode, error) {
+func (c *Client) PullBackupAccessCode(
+	ctx context.Context,
+	request *seamapigo.AccessCodesPullBackupAccessCodeRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.AccessCode, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/pull_backup_access_code"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -377,7 +469,9 @@ func (c *Client) PullBackupAccessCode(ctx context.Context, request *seamapigo.Ac
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -388,12 +482,23 @@ func (c *Client) PullBackupAccessCode(ctx context.Context, request *seamapigo.Ac
 	return response.BackupAccessCode, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *seamapigo.AccessCodesUpdateRequest) (*seamapigo.ActionAttempt, error) {
+func (c *Client) Update(
+	ctx context.Context,
+	request *seamapigo.AccessCodesUpdateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ActionAttempt, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "access_codes/update"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -427,7 +532,9 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.AccessCodesUpdat
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

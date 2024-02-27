@@ -9,15 +9,15 @@ import (
 )
 
 type PhonesDeactivateRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 }
 
 type PhonesListRequest struct {
-	OwnerUserIdentityId *string `json:"owner_user_identity_id,omitempty"`
+	OwnerUserIdentityId *string `json:"owner_user_identity_id,omitempty" url:"owner_user_identity_id,omitempty"`
 }
 
 type PhonesDeactivateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -46,8 +46,8 @@ func (p *PhonesDeactivateResponse) String() string {
 }
 
 type PhonesListResponse struct {
-	Phones []*Phone `json:"phones,omitempty"`
-	Ok     bool     `json:"ok"`
+	Phones []*Phone `json:"phones,omitempty" url:"phones,omitempty"`
+	Ok     bool     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

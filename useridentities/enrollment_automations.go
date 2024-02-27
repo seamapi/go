@@ -10,27 +10,27 @@ import (
 )
 
 type EnrollmentAutomationsDeleteRequest struct {
-	EnrollmentAutomationId string `json:"enrollment_automation_id"`
+	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"enrollment_automation_id"`
 }
 
 type EnrollmentAutomationsGetRequest struct {
-	EnrollmentAutomationId string `json:"enrollment_automation_id"`
+	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"enrollment_automation_id"`
 }
 
 type EnrollmentAutomationsLaunchRequest struct {
-	UserIdentityId               string  `json:"user_identity_id"`
-	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id"`
-	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty"`
-	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty"`
-	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty"`
+	UserIdentityId               string  `json:"user_identity_id" url:"user_identity_id"`
+	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"create_credential_manager_user,omitempty"`
+	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"credential_manager_acs_user_id,omitempty"`
 }
 
 type EnrollmentAutomationsListRequest struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 }
 
 type EnrollmentAutomationsDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -59,8 +59,8 @@ func (e *EnrollmentAutomationsDeleteResponse) String() string {
 }
 
 type EnrollmentAutomationsGetResponse struct {
-	EnrollmentAutomation *seamapigo.EnrollmentAutomation `json:"enrollment_automation,omitempty"`
-	Ok                   bool                            `json:"ok"`
+	EnrollmentAutomation *seamapigo.EnrollmentAutomation `json:"enrollment_automation,omitempty" url:"enrollment_automation,omitempty"`
+	Ok                   bool                            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -89,8 +89,8 @@ func (e *EnrollmentAutomationsGetResponse) String() string {
 }
 
 type EnrollmentAutomationsLaunchResponse struct {
-	EnrollmentAutomation *EnrollmentAutomationsLaunchResponseEnrollmentAutomation `json:"enrollment_automation,omitempty"`
-	Ok                   bool                                                     `json:"ok"`
+	EnrollmentAutomation *EnrollmentAutomationsLaunchResponseEnrollmentAutomation `json:"enrollment_automation,omitempty" url:"enrollment_automation,omitempty"`
+	Ok                   bool                                                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -119,8 +119,8 @@ func (e *EnrollmentAutomationsLaunchResponse) String() string {
 }
 
 type EnrollmentAutomationsListResponse struct {
-	EnrollmentAutomations []*seamapigo.EnrollmentAutomation `json:"enrollment_automations,omitempty"`
-	Ok                    bool                              `json:"ok"`
+	EnrollmentAutomations []*seamapigo.EnrollmentAutomation `json:"enrollment_automations,omitempty" url:"enrollment_automations,omitempty"`
+	Ok                    bool                              `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
