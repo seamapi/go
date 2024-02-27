@@ -10,34 +10,34 @@ import (
 )
 
 type NoiseThresholdsCreateRequest struct {
-	DeviceId               string   `json:"device_id"`
-	Sync                   *bool    `json:"sync,omitempty"`
-	Name                   *string  `json:"name,omitempty"`
-	StartsDailyAt          string   `json:"starts_daily_at"`
-	EndsDailyAt            string   `json:"ends_daily_at"`
-	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty"`
-	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty"`
+	DeviceId               string   `json:"device_id" url:"device_id"`
+	Sync                   *bool    `json:"sync,omitempty" url:"sync,omitempty"`
+	Name                   *string  `json:"name,omitempty" url:"name,omitempty"`
+	StartsDailyAt          string   `json:"starts_daily_at" url:"starts_daily_at"`
+	EndsDailyAt            string   `json:"ends_daily_at" url:"ends_daily_at"`
+	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"noise_threshold_decibels,omitempty"`
+	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"noise_threshold_nrs,omitempty"`
 }
 
 type NoiseThresholdsDeleteRequest struct {
-	NoiseThresholdId string `json:"noise_threshold_id"`
-	DeviceId         string `json:"device_id"`
-	Sync             *bool  `json:"sync,omitempty"`
+	NoiseThresholdId string `json:"noise_threshold_id" url:"noise_threshold_id"`
+	DeviceId         string `json:"device_id" url:"device_id"`
+	Sync             *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }
 
 type NoiseThresholdsGetRequest struct {
-	NoiseThresholdId string `json:"noise_threshold_id"`
+	NoiseThresholdId string `json:"noise_threshold_id" url:"noise_threshold_id"`
 }
 
 type NoiseThresholdsListRequest struct {
-	DeviceId     string `json:"device_id"`
-	IsProgrammed *bool  `json:"is_programmed,omitempty"`
+	DeviceId     string `json:"device_id" url:"device_id"`
+	IsProgrammed *bool  `json:"is_programmed,omitempty" url:"is_programmed,omitempty"`
 }
 
 type NoiseThresholdsCreateResponse struct {
-	ActionAttempt  *seamapigo.ActionAttempt  `json:"action_attempt,omitempty"`
-	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty"`
-	Ok             bool                      `json:"ok"`
+	ActionAttempt  *seamapigo.ActionAttempt  `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty" url:"noise_threshold,omitempty"`
+	Ok             bool                      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -66,8 +66,8 @@ func (n *NoiseThresholdsCreateResponse) String() string {
 }
 
 type NoiseThresholdsDeleteResponse struct {
-	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool                     `json:"ok"`
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -96,8 +96,8 @@ func (n *NoiseThresholdsDeleteResponse) String() string {
 }
 
 type NoiseThresholdsGetResponse struct {
-	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty"`
-	Ok             bool                      `json:"ok"`
+	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty" url:"noise_threshold,omitempty"`
+	Ok             bool                      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -126,8 +126,8 @@ func (n *NoiseThresholdsGetResponse) String() string {
 }
 
 type NoiseThresholdsListResponse struct {
-	NoiseThresholds []*seamapigo.NoiseThreshold `json:"noise_thresholds,omitempty"`
-	Ok              bool                        `json:"ok"`
+	NoiseThresholds []*seamapigo.NoiseThreshold `json:"noise_thresholds,omitempty" url:"noise_thresholds,omitempty"`
+	Ok              bool                        `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -156,8 +156,8 @@ func (n *NoiseThresholdsListResponse) String() string {
 }
 
 type NoiseThresholdsUpdateResponse struct {
-	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool                     `json:"ok"`
+	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -186,12 +186,12 @@ func (n *NoiseThresholdsUpdateResponse) String() string {
 }
 
 type NoiseThresholdsUpdateRequest struct {
-	NoiseThresholdId       string   `json:"noise_threshold_id"`
-	DeviceId               string   `json:"device_id"`
-	Sync                   *bool    `json:"sync,omitempty"`
-	Name                   *string  `json:"name,omitempty"`
-	StartsDailyAt          *string  `json:"starts_daily_at,omitempty"`
-	EndsDailyAt            *string  `json:"ends_daily_at,omitempty"`
-	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty"`
-	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty"`
+	NoiseThresholdId       string   `json:"noise_threshold_id" url:"noise_threshold_id"`
+	DeviceId               string   `json:"device_id" url:"device_id"`
+	Sync                   *bool    `json:"sync,omitempty" url:"sync,omitempty"`
+	Name                   *string  `json:"name,omitempty" url:"name,omitempty"`
+	StartsDailyAt          *string  `json:"starts_daily_at,omitempty" url:"starts_daily_at,omitempty"`
+	EndsDailyAt            *string  `json:"ends_daily_at,omitempty" url:"ends_daily_at,omitempty"`
+	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"noise_threshold_decibels,omitempty"`
+	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"noise_threshold_nrs,omitempty"`
 }

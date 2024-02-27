@@ -9,6 +9,7 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -19,24 +20,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.LocksGetRequest) (*seamapigo.Device, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.LocksGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.Device, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "locks/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -70,7 +84,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.LocksGetRequest) (*
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -81,12 +97,23 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.LocksGetRequest) (*
 	return response.Device, nil
 }
 
-func (c *Client) List(ctx context.Context, request *seamapigo.LocksListRequest) ([]*seamapigo.Device, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *seamapigo.LocksListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.Device, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "locks/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -120,7 +147,9 @@ func (c *Client) List(ctx context.Context, request *seamapigo.LocksListRequest) 
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -131,12 +160,23 @@ func (c *Client) List(ctx context.Context, request *seamapigo.LocksListRequest) 
 	return response.Devices, nil
 }
 
-func (c *Client) LockDoor(ctx context.Context, request *seamapigo.LocksLockDoorRequest) (*seamapigo.ActionAttempt, error) {
+func (c *Client) LockDoor(
+	ctx context.Context,
+	request *seamapigo.LocksLockDoorRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ActionAttempt, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "locks/lock_door"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -170,7 +210,9 @@ func (c *Client) LockDoor(ctx context.Context, request *seamapigo.LocksLockDoorR
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -181,12 +223,23 @@ func (c *Client) LockDoor(ctx context.Context, request *seamapigo.LocksLockDoorR
 	return response.ActionAttempt, nil
 }
 
-func (c *Client) UnlockDoor(ctx context.Context, request *seamapigo.LocksUnlockDoorRequest) (*seamapigo.ActionAttempt, error) {
+func (c *Client) UnlockDoor(
+	ctx context.Context,
+	request *seamapigo.LocksUnlockDoorRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ActionAttempt, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "locks/unlock_door"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -220,7 +273,9 @@ func (c *Client) UnlockDoor(ctx context.Context, request *seamapigo.LocksUnlockD
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

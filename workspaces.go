@@ -9,17 +9,17 @@ import (
 )
 
 type WorkspacesCreateRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// The name shown inside the connect webview
-	ConnectPartnerName        string            `json:"connect_partner_name"`
-	IsSandbox                 *bool             `json:"is_sandbox,omitempty"`
-	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty"`
-	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty"`
+	ConnectPartnerName        string            `json:"connect_partner_name" url:"connect_partner_name"`
+	IsSandbox                 *bool             `json:"is_sandbox,omitempty" url:"is_sandbox,omitempty"`
+	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty" url:"webview_primary_button_color,omitempty"`
+	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty" url:"webview_logo_shape,omitempty"`
 }
 
 type WorkspacesCreateResponse struct {
-	Workspace *Workspace `json:"workspace,omitempty"`
-	Ok        bool       `json:"ok"`
+	Workspace *Workspace `json:"workspace,omitempty" url:"workspace,omitempty"`
+	Ok        bool       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -48,8 +48,8 @@ func (w *WorkspacesCreateResponse) String() string {
 }
 
 type WorkspacesGetResponse struct {
-	Workspace *Workspace `json:"workspace,omitempty"`
-	Ok        bool       `json:"ok"`
+	Workspace *Workspace `json:"workspace,omitempty" url:"workspace,omitempty"`
+	Ok        bool       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -78,8 +78,8 @@ func (w *WorkspacesGetResponse) String() string {
 }
 
 type WorkspacesListResponse struct {
-	Workspaces []*Workspace `json:"workspaces,omitempty"`
-	Ok         bool         `json:"ok"`
+	Workspaces []*Workspace `json:"workspaces,omitempty" url:"workspaces,omitempty"`
+	Ok         bool         `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -108,8 +108,8 @@ func (w *WorkspacesListResponse) String() string {
 }
 
 type WorkspacesResetSandboxResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

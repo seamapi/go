@@ -9,16 +9,16 @@ import (
 )
 
 type ActionAttemptsGetRequest struct {
-	ActionAttemptId string `json:"action_attempt_id"`
+	ActionAttemptId string `json:"action_attempt_id" url:"action_attempt_id"`
 }
 
 type ActionAttemptsListRequest struct {
-	ActionAttemptIds []string `json:"action_attempt_ids,omitempty"`
+	ActionAttemptIds []string `json:"action_attempt_ids,omitempty" url:"action_attempt_ids,omitempty"`
 }
 
 type ActionAttemptsGetResponse struct {
-	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty"`
-	Ok            bool           `json:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -47,8 +47,8 @@ func (a *ActionAttemptsGetResponse) String() string {
 }
 
 type ActionAttemptsListResponse struct {
-	ActionAttempts []*ActionAttempt `json:"action_attempts,omitempty"`
-	Ok             bool             `json:"ok"`
+	ActionAttempts []*ActionAttempt `json:"action_attempts,omitempty" url:"action_attempts,omitempty"`
+	Ok             bool             `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

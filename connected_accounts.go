@@ -9,17 +9,17 @@ import (
 )
 
 type ConnectedAccountsDeleteRequest struct {
-	ConnectedAccountId string `json:"connected_account_id"`
-	Sync               *bool  `json:"sync,omitempty"`
+	ConnectedAccountId string `json:"connected_account_id" url:"connected_account_id"`
+	Sync               *bool  `json:"sync,omitempty" url:"sync,omitempty"`
 }
 
 type ConnectedAccountsListRequest struct {
 	// Returns devices where the account's custom_metadata contains all of the provided key/value pairs.
-	CustomMetadataHas map[string]*ConnectedAccountsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
+	CustomMetadataHas map[string]*ConnectedAccountsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
 }
 
 type ConnectedAccountsDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -105,8 +105,8 @@ func (c *ConnectedAccountsGetRequest) Accept(visitor ConnectedAccountsGetRequest
 }
 
 type ConnectedAccountsGetResponse struct {
-	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty"`
-	Ok               bool              `json:"ok"`
+	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty" url:"connected_account,omitempty"`
+	Ok               bool              `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -208,8 +208,8 @@ func (c *ConnectedAccountsListRequestCustomMetadataHasValue) Accept(visitor Conn
 }
 
 type ConnectedAccountsListResponse struct {
-	ConnectedAccounts []*ConnectedAccount `json:"connected_accounts,omitempty"`
-	Ok                bool                `json:"ok"`
+	ConnectedAccounts []*ConnectedAccount `json:"connected_accounts,omitempty" url:"connected_accounts,omitempty"`
+	Ok                bool                `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -311,8 +311,8 @@ func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor Conne
 }
 
 type ConnectedAccountsUpdateResponse struct {
-	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty"`
-	Ok               bool              `json:"ok"`
+	ConnectedAccount *ConnectedAccount `json:"connected_account,omitempty" url:"connected_account,omitempty"`
+	Ok               bool              `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -341,7 +341,7 @@ func (c *ConnectedAccountsUpdateResponse) String() string {
 }
 
 type ConnectedAccountsUpdateRequest struct {
-	ConnectedAccountId            string                                                        `json:"connected_account_id"`
-	AutomaticallyManageNewDevices *bool                                                         `json:"automatically_manage_new_devices,omitempty"`
-	CustomMetadata                map[string]*ConnectedAccountsUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
+	ConnectedAccountId            string                                                        `json:"connected_account_id" url:"connected_account_id"`
+	AutomaticallyManageNewDevices *bool                                                         `json:"automatically_manage_new_devices,omitempty" url:"automatically_manage_new_devices,omitempty"`
+	CustomMetadata                map[string]*ConnectedAccountsUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
 }

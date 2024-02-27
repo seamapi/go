@@ -10,13 +10,13 @@ import (
 )
 
 type ServiceByServiceNameRequest struct {
-	ServiceName string `json:"service_name"`
+	ServiceName string `json:"service_name" url:"service_name"`
 }
 
 type ServiceByServiceNameResponse struct {
-	Ok                      bool                     `json:"ok"`
-	LastServiceEvaluationAt string                   `json:"last_service_evaluation_at"`
-	ServiceHealth           *seamapigo.ServiceHealth `json:"service_health,omitempty"`
+	Ok                      bool                     `json:"ok" url:"ok"`
+	LastServiceEvaluationAt string                   `json:"last_service_evaluation_at" url:"last_service_evaluation_at"`
+	ServiceHealth           *seamapigo.ServiceHealth `json:"service_health,omitempty" url:"service_health,omitempty"`
 
 	_rawJSON json.RawMessage
 }

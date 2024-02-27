@@ -10,52 +10,97 @@ import (
 )
 
 type ClientSessionsCreateRequest struct {
-	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty"`
-	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty"`
-	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty"`
-	UserIdentityIds     []string   `json:"user_identity_ids,omitempty"`
-	ExpiresAt           *time.Time `json:"expires_at,omitempty"`
+	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+}
+
+func (c *ClientSessionsCreateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsCreateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = ClientSessionsCreateRequest(body)
+	return nil
+}
+
+func (c *ClientSessionsCreateRequest) MarshalJSON() ([]byte, error) {
+	type embed ClientSessionsCreateRequest
+	var marshaler = struct {
+		embed
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 type ClientSessionsDeleteRequest struct {
-	ClientSessionId string `json:"client_session_id"`
+	ClientSessionId string `json:"client_session_id" url:"client_session_id"`
 }
 
 type ClientSessionsGetRequest struct {
-	ClientSessionId   *string `json:"client_session_id,omitempty"`
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty"`
+	ClientSessionId   *string `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 }
 
 type ClientSessionsGetOrCreateRequest struct {
-	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty"`
-	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty"`
-	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty"`
-	UserIdentityIds     []string   `json:"user_identity_ids,omitempty"`
-	ExpiresAt           *time.Time `json:"expires_at,omitempty"`
+	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+}
+
+func (c *ClientSessionsGetOrCreateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClientSessionsGetOrCreateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = ClientSessionsGetOrCreateRequest(body)
+	return nil
+}
+
+func (c *ClientSessionsGetOrCreateRequest) MarshalJSON() ([]byte, error) {
+	type embed ClientSessionsGetOrCreateRequest
+	var marshaler = struct {
+		embed
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 type ClientSessionsGrantAccessRequest struct {
-	ClientSessionId     *string  `json:"client_session_id,omitempty"`
-	UserIdentifierKey   *string  `json:"user_identifier_key,omitempty"`
-	ConnectedAccountIds []string `json:"connected_account_ids,omitempty"`
-	ConnectWebviewIds   []string `json:"connect_webview_ids,omitempty"`
-	UserIdentityIds     []string `json:"user_identity_ids,omitempty"`
+	ClientSessionId     *string  `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	UserIdentifierKey   *string  `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	ConnectedAccountIds []string `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewIds   []string `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	UserIdentityIds     []string `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
 }
 
 type ClientSessionsListRequest struct {
-	ClientSessionId          *string `json:"client_session_id,omitempty"`
-	UserIdentifierKey        *string `json:"user_identifier_key,omitempty"`
-	ConnectWebviewId         *string `json:"connect_webview_id,omitempty"`
-	WithoutUserIdentifierKey *bool   `json:"without_user_identifier_key,omitempty"`
+	ClientSessionId          *string `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	UserIdentifierKey        *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	ConnectWebviewId         *string `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
+	WithoutUserIdentifierKey *bool   `json:"without_user_identifier_key,omitempty" url:"without_user_identifier_key,omitempty"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
 }
 
 type ClientSessionsRevokeRequest struct {
-	ClientSessionId string `json:"client_session_id"`
+	ClientSessionId string `json:"client_session_id" url:"client_session_id"`
 }
 
 type ClientSessionsCreateResponse struct {
-	ClientSession *ClientSession `json:"client_session,omitempty"`
-	Ok            bool           `json:"ok"`
+	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -84,7 +129,7 @@ func (c *ClientSessionsCreateResponse) String() string {
 }
 
 type ClientSessionsDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -113,8 +158,8 @@ func (c *ClientSessionsDeleteResponse) String() string {
 }
 
 type ClientSessionsGetOrCreateResponse struct {
-	ClientSession *ClientSession `json:"client_session,omitempty"`
-	Ok            bool           `json:"ok"`
+	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -143,8 +188,8 @@ func (c *ClientSessionsGetOrCreateResponse) String() string {
 }
 
 type ClientSessionsGetResponse struct {
-	ClientSession *ClientSession `json:"client_session,omitempty"`
-	Ok            bool           `json:"ok"`
+	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -173,8 +218,8 @@ func (c *ClientSessionsGetResponse) String() string {
 }
 
 type ClientSessionsGrantAccessResponse struct {
-	ClientSession *ClientSession `json:"client_session,omitempty"`
-	Ok            bool           `json:"ok"`
+	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -203,8 +248,8 @@ func (c *ClientSessionsGrantAccessResponse) String() string {
 }
 
 type ClientSessionsListResponse struct {
-	ClientSessions []*ClientSession `json:"client_sessions,omitempty"`
-	Ok             bool             `json:"ok"`
+	ClientSessions []*ClientSession `json:"client_sessions,omitempty" url:"client_sessions,omitempty"`
+	Ok             bool             `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -233,7 +278,7 @@ func (c *ClientSessionsListResponse) String() string {
 }
 
 type ClientSessionsRevokeResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

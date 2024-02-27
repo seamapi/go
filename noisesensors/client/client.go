@@ -6,6 +6,7 @@ import (
 	core "github.com/seamapi/go/core"
 	noisethresholds "github.com/seamapi/go/noisesensors/noisethresholds"
 	simulate "github.com/seamapi/go/noisesensors/simulate"
+	option "github.com/seamapi/go/option"
 	http "net/http"
 )
 
@@ -18,14 +19,16 @@ type Client struct {
 	Simulate        *simulate.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:         options.BaseURL,
-		caller:          core.NewCaller(options.HTTPClient),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:          options.ToHeader(),
 		NoiseThresholds: noisethresholds.NewClient(opts...),
 		Simulate:        simulate.NewClient(opts...),

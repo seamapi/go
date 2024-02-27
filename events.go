@@ -10,27 +10,27 @@ import (
 )
 
 type EventsGetRequest struct {
-	EventId   *string `json:"event_id,omitempty"`
-	EventType *string `json:"event_type,omitempty"`
-	DeviceId  *string `json:"device_id,omitempty"`
+	EventId   *string `json:"event_id,omitempty" url:"event_id,omitempty"`
+	EventType *string `json:"event_type,omitempty" url:"event_type,omitempty"`
+	DeviceId  *string `json:"device_id,omitempty" url:"device_id,omitempty"`
 }
 
 type EventsListRequest struct {
-	Since              *string                         `json:"since,omitempty"`
-	Between            []*EventsListRequestBetweenItem `json:"between,omitempty"`
-	DeviceId           *string                         `json:"device_id,omitempty"`
-	DeviceIds          []string                        `json:"device_ids,omitempty"`
-	AccessCodeId       *string                         `json:"access_code_id,omitempty"`
-	AccessCodeIds      []string                        `json:"access_code_ids,omitempty"`
-	EventType          *EventType                      `json:"event_type,omitempty"`
-	EventTypes         []EventType                     `json:"event_types,omitempty"`
-	ConnectedAccountId *string                         `json:"connected_account_id,omitempty"`
+	Since              *string                         `json:"since,omitempty" url:"since,omitempty"`
+	Between            []*EventsListRequestBetweenItem `json:"between,omitempty" url:"between,omitempty"`
+	DeviceId           *string                         `json:"device_id,omitempty" url:"device_id,omitempty"`
+	DeviceIds          []string                        `json:"device_ids,omitempty" url:"device_ids,omitempty"`
+	AccessCodeId       *string                         `json:"access_code_id,omitempty" url:"access_code_id,omitempty"`
+	AccessCodeIds      []string                        `json:"access_code_ids,omitempty" url:"access_code_ids,omitempty"`
+	EventType          *EventType                      `json:"event_type,omitempty" url:"event_type,omitempty"`
+	EventTypes         []EventType                     `json:"event_types,omitempty" url:"event_types,omitempty"`
+	ConnectedAccountId *string                         `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
 }
 
 type EventsGetResponse struct {
-	Event   *Event  `json:"event,omitempty"`
-	Message *string `json:"message,omitempty"`
-	Ok      bool    `json:"ok"`
+	Event   *Event  `json:"event,omitempty" url:"event,omitempty"`
+	Message *string `json:"message,omitempty" url:"message,omitempty"`
+	Ok      bool    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -79,10 +79,10 @@ func (e *EventsListRequestBetweenItem) UnmarshalJSON(data []byte) error {
 		e.String = valueString
 		return nil
 	}
-	var valueDateTime time.Time
+	var valueDateTime *core.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
 		e.typeName = "dateTime"
-		e.DateTime = valueDateTime
+		e.DateTime = valueDateTime.Time()
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
@@ -95,7 +95,7 @@ func (e EventsListRequestBetweenItem) MarshalJSON() ([]byte, error) {
 	case "string":
 		return json.Marshal(e.String)
 	case "dateTime":
-		return json.Marshal(e.DateTime)
+		return json.Marshal(core.NewDateTime(e.DateTime))
 	}
 }
 
@@ -116,9 +116,9 @@ func (e *EventsListRequestBetweenItem) Accept(visitor EventsListRequestBetweenIt
 }
 
 type EventsListResponse struct {
-	Events  []*Event `json:"events,omitempty"`
-	Message *string  `json:"message,omitempty"`
-	Ok      bool     `json:"ok"`
+	Events  []*Event `json:"events,omitempty" url:"events,omitempty"`
+	Message *string  `json:"message,omitempty" url:"message,omitempty"`
+	Ok      bool     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

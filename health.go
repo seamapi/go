@@ -9,13 +9,13 @@ import (
 )
 
 type HealthGetServiceHealthRequest struct {
-	Service string `json:"service"`
+	Service string `json:"service" url:"service"`
 }
 
 type HealthGetHealthResponse struct {
-	Ok                      bool             `json:"ok"`
-	LastServiceEvaluationAt *string          `json:"last_service_evaluation_at,omitempty"`
-	ServiceHealthStatuses   []*ServiceHealth `json:"service_health_statuses,omitempty"`
+	Ok                      bool             `json:"ok" url:"ok"`
+	LastServiceEvaluationAt *string          `json:"last_service_evaluation_at,omitempty" url:"last_service_evaluation_at,omitempty"`
+	ServiceHealthStatuses   []*ServiceHealth `json:"service_health_statuses,omitempty" url:"service_health_statuses,omitempty"`
 	msg                     string
 
 	_rawJSON json.RawMessage
@@ -26,12 +26,16 @@ func (h *HealthGetHealthResponse) Msg() string {
 }
 
 func (h *HealthGetHealthResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler HealthGetHealthResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed HealthGetHealthResponse
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*h),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*h = HealthGetHealthResponse(value)
+	*h = HealthGetHealthResponse(unmarshaler.embed)
 	h.msg = "I’m one with the Force. The Force is with me."
 	h._rawJSON = json.RawMessage(data)
 	return nil
@@ -62,9 +66,9 @@ func (h *HealthGetHealthResponse) String() string {
 }
 
 type HealthGetServiceHealthResponse struct {
-	Ok                      bool           `json:"ok"`
-	LastServiceEvaluationAt string         `json:"last_service_evaluation_at"`
-	ServiceHealth           *ServiceHealth `json:"service_health,omitempty"`
+	Ok                      bool           `json:"ok" url:"ok"`
+	LastServiceEvaluationAt string         `json:"last_service_evaluation_at" url:"last_service_evaluation_at"`
+	ServiceHealth           *ServiceHealth `json:"service_health,omitempty" url:"service_health,omitempty"`
 
 	_rawJSON json.RawMessage
 }

@@ -9,27 +9,27 @@ import (
 )
 
 type EntrancesGetRequest struct {
-	AcsEntranceId string `json:"acs_entrance_id"`
+	AcsEntranceId string `json:"acs_entrance_id" url:"acs_entrance_id"`
 }
 
 type EntrancesGrantAccessRequest struct {
-	AcsEntranceId string `json:"acs_entrance_id"`
-	AcsUserId     string `json:"acs_user_id"`
+	AcsEntranceId string `json:"acs_entrance_id" url:"acs_entrance_id"`
+	AcsUserId     string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type EntrancesListRequest struct {
-	AcsSystemId     *string `json:"acs_system_id,omitempty"`
-	AcsCredentialId *string `json:"acs_credential_id,omitempty"`
+	AcsSystemId     *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	AcsCredentialId *string `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
 }
 
 type EntrancesListCredentialsWithAccessRequest struct {
-	AcsEntranceId string   `json:"acs_entrance_id"`
-	IncludeIf     []string `json:"include_if,omitempty"`
+	AcsEntranceId string   `json:"acs_entrance_id" url:"acs_entrance_id"`
+	IncludeIf     []string `json:"include_if,omitempty" url:"include_if,omitempty"`
 }
 
 type EntrancesGetResponse struct {
-	AcsEntrance *EntrancesGetResponseAcsEntrance `json:"acs_entrance,omitempty"`
-	Ok          bool                             `json:"ok"`
+	AcsEntrance *EntrancesGetResponseAcsEntrance `json:"acs_entrance,omitempty" url:"acs_entrance,omitempty"`
+	Ok          bool                             `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -58,7 +58,7 @@ func (e *EntrancesGetResponse) String() string {
 }
 
 type EntrancesGrantAccessResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -87,8 +87,8 @@ func (e *EntrancesGrantAccessResponse) String() string {
 }
 
 type EntrancesListCredentialsWithAccessResponse struct {
-	AcsCredentials []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItem `json:"acs_credentials,omitempty"`
-	Ok             bool                                                            `json:"ok"`
+	AcsCredentials []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItem `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
+	Ok             bool                                                            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -117,8 +117,8 @@ func (e *EntrancesListCredentialsWithAccessResponse) String() string {
 }
 
 type EntrancesListResponse struct {
-	AcsEntrances []*EntrancesListResponseAcsEntrancesItem `json:"acs_entrances,omitempty"`
-	Ok           bool                                     `json:"ok"`
+	AcsEntrances []*EntrancesListResponseAcsEntrancesItem `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

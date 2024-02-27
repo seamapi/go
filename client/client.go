@@ -16,6 +16,7 @@ import (
 	locks "github.com/seamapi/go/locks"
 	networks "github.com/seamapi/go/networks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
+	option "github.com/seamapi/go/option"
 	phonesclient "github.com/seamapi/go/phones/client"
 	thermostatsclient "github.com/seamapi/go/thermostats/client"
 	useridentitiesclient "github.com/seamapi/go/useridentities/client"
@@ -48,14 +49,16 @@ type Client struct {
 	NoiseSensors      *noisesensorsclient.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:           options.BaseURL,
-		caller:            core.NewCaller(options.HTTPClient),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:            options.ToHeader(),
 		AccessCodes:       accesscodesclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),

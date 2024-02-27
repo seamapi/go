@@ -11,58 +11,84 @@ import (
 
 type AccessCode struct {
 	// Unique identifier for a group of access codes that share the same code.
-	CommonCodeKey *string `json:"common_code_key,omitempty"`
+	CommonCodeKey *string `json:"common_code_key,omitempty" url:"common_code_key,omitempty"`
 	// Indicates whether the code is set on the device according to a preconfigured schedule.
-	IsScheduledOnDevice *bool `json:"is_scheduled_on_device,omitempty"`
+	IsScheduledOnDevice *bool `json:"is_scheduled_on_device,omitempty" url:"is_scheduled_on_device,omitempty"`
 	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
-	Type AccessCodeType `json:"type,omitempty"`
+	Type AccessCodeType `json:"type,omitempty" url:"type,omitempty"`
 	// Indicates whether the access code is waiting for a code assignment.
-	IsWaitingForCodeAssignment *bool `json:"is_waiting_for_code_assignment,omitempty"`
+	IsWaitingForCodeAssignment *bool `json:"is_waiting_for_code_assignment,omitempty" url:"is_waiting_for_code_assignment,omitempty"`
 	// Unique identifier for the access code.
-	AccessCodeId string `json:"access_code_id"`
+	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
 	// Unique identifier for the device associated with the access code.
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
 	// Code used for access. Typically, a numeric or alphanumeric string.
-	Code *string `json:"code,omitempty"`
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
 	// Date and time at which the access code was created.
-	CreatedAt time.Time   `json:"created_at"`
-	Errors    interface{} `json:"errors,omitempty"`
-	Warnings  interface{} `json:"warnings,omitempty"`
+	CreatedAt time.Time   `json:"created_at" url:"created_at"`
+	Errors    interface{} `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty" url:"warnings,omitempty"`
 	// Indicates whether Seam manages the access code.
-	IsManaged bool `json:"is_managed"`
+	IsManaged bool `json:"is_managed" url:"is_managed"`
 	// Date and time at which the time-bound access code becomes active.
-	StartsAt *time.Time `json:"starts_at,omitempty"`
+	StartsAt *time.Time `json:"starts_at,omitempty" url:"starts_at,omitempty"`
 	// Date and time after which the time-bound access code becomes inactive.
-	EndsAt *time.Time `json:"ends_at,omitempty"`
+	EndsAt *time.Time `json:"ends_at,omitempty" url:"ends_at,omitempty"`
 	// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
-	Status AccessCodeStatus `json:"status,omitempty"`
+	Status AccessCodeStatus `json:"status,omitempty" url:"status,omitempty"`
 	// Indicates whether a backup access code is available for use if the primary access code is lost or compromised.
-	IsBackupAccessCodeAvailable bool `json:"is_backup_access_code_available"`
+	IsBackupAccessCodeAvailable bool `json:"is_backup_access_code_available" url:"is_backup_access_code_available"`
 	// Indicates whether the access code is a backup code.
-	IsBackup *bool `json:"is_backup,omitempty"`
+	IsBackup *bool `json:"is_backup,omitempty" url:"is_backup,omitempty"`
 	// Identifier of the pulled backup access code. Used to associate the pulled backup access code with the original access code.
-	PulledBackupAccessCodeId *string `json:"pulled_backup_access_code_id,omitempty"`
+	PulledBackupAccessCodeId *string `json:"pulled_backup_access_code_id,omitempty" url:"pulled_backup_access_code_id,omitempty"`
 	// Indicates whether changes to the access code from external sources are permitted.
-	IsExternalModificationAllowed bool `json:"is_external_modification_allowed"`
+	IsExternalModificationAllowed bool `json:"is_external_modification_allowed" url:"is_external_modification_allowed"`
 	// Indicates whether the access code can only be used once. If "true," the code becomes invalid after the first use.
-	IsOneTimeUse bool `json:"is_one_time_use"`
+	IsOneTimeUse bool `json:"is_one_time_use" url:"is_one_time_use"`
 	// Indicates whether the access code is intended for use in offline scenarios. If "true," this code can be created on a device without a network connection.
-	IsOfflineAccessCode bool `json:"is_offline_access_code"`
+	IsOfflineAccessCode bool `json:"is_offline_access_code" url:"is_offline_access_code"`
 
 	_rawJSON json.RawMessage
 }
 
 func (a *AccessCode) UnmarshalJSON(data []byte) error {
-	type unmarshaler AccessCode
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AccessCode
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AccessCode(value)
+	*a = AccessCode(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a.StartsAt = unmarshaler.StartsAt.TimePtr()
+	a.EndsAt = unmarshaler.EndsAt.TimePtr()
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AccessCode) MarshalJSON() ([]byte, error) {
+	type embed AccessCode
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+		StartsAt:  core.NewOptionalDateTime(a.StartsAt),
+		EndsAt:    core.NewOptionalDateTime(a.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AccessCode) String() string {
@@ -133,30 +159,48 @@ func (a AccessCodeType) Ptr() *AccessCodeType {
 }
 
 type AcsAccessGroup struct {
-	AcsAccessGroupId string `json:"acs_access_group_id"`
-	AcsSystemId      string `json:"acs_system_id"`
-	WorkspaceId      string `json:"workspace_id"`
-	Name             string `json:"name"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsSystemId      string `json:"acs_system_id" url:"acs_system_id"`
+	WorkspaceId      string `json:"workspace_id" url:"workspace_id"`
+	Name             string `json:"name" url:"name"`
 	// deprecated: use external_type
-	AccessGroupType AcsAccessGroupAccessGroupType `json:"access_group_type,omitempty"`
+	AccessGroupType AcsAccessGroupAccessGroupType `json:"access_group_type,omitempty" url:"access_group_type,omitempty"`
 	// deprecated: use external_type_display_name
-	AccessGroupTypeDisplayName string                     `json:"access_group_type_display_name"`
-	ExternalType               AcsAccessGroupExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    string                     `json:"external_type_display_name"`
-	CreatedAt                  time.Time                  `json:"created_at"`
+	AccessGroupTypeDisplayName string                     `json:"access_group_type_display_name" url:"access_group_type_display_name"`
+	ExternalType               AcsAccessGroupExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    string                     `json:"external_type_display_name" url:"external_type_display_name"`
+	CreatedAt                  time.Time                  `json:"created_at" url:"created_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (a *AcsAccessGroup) UnmarshalJSON(data []byte) error {
-	type unmarshaler AcsAccessGroup
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AcsAccessGroup
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AcsAccessGroup(value)
+	*a = AcsAccessGroup(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AcsAccessGroup) MarshalJSON() ([]byte, error) {
+	type embed AcsAccessGroup
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AcsAccessGroup) String() string {
@@ -229,30 +273,48 @@ func (a AcsAccessGroupExternalType) Ptr() *AcsAccessGroupExternalType {
 }
 
 type AcsSystem struct {
-	AcsSystemId             string                `json:"acs_system_id"`
-	ExternalType            AcsSystemExternalType `json:"external_type,omitempty"`
-	ExternalTypeDisplayName string                `json:"external_type_display_name"`
+	AcsSystemId             string                `json:"acs_system_id" url:"acs_system_id"`
+	ExternalType            AcsSystemExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName string                `json:"external_type_display_name" url:"external_type_display_name"`
 	// deprecated: use external_type
-	SystemType AcsSystemSystemType `json:"system_type,omitempty"`
+	SystemType AcsSystemSystemType `json:"system_type,omitempty" url:"system_type,omitempty"`
 	// deprecated: use external_type_display_name
-	SystemTypeDisplayName string    `json:"system_type_display_name"`
-	Name                  string    `json:"name"`
-	CreatedAt             time.Time `json:"created_at"`
-	WorkspaceId           string    `json:"workspace_id"`
-	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty"`
+	SystemTypeDisplayName string    `json:"system_type_display_name" url:"system_type_display_name"`
+	Name                  string    `json:"name" url:"name"`
+	CreatedAt             time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId           string    `json:"workspace_id" url:"workspace_id"`
+	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (a *AcsSystem) UnmarshalJSON(data []byte) error {
-	type unmarshaler AcsSystem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AcsSystem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AcsSystem(value)
+	*a = AcsSystem(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AcsSystem) MarshalJSON() ([]byte, error) {
+	type embed AcsSystem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AcsSystem) String() string {
@@ -343,37 +405,55 @@ func (a AcsSystemSystemType) Ptr() *AcsSystemSystemType {
 }
 
 type AcsUser struct {
-	AcsUserId                string                 `json:"acs_user_id"`
-	AcsSystemId              string                 `json:"acs_system_id"`
-	HidAcsSystemId           *string                `json:"hid_acs_system_id,omitempty"`
-	WorkspaceId              string                 `json:"workspace_id"`
-	CreatedAt                time.Time              `json:"created_at"`
-	DisplayName              string                 `json:"display_name"`
-	ExternalType             *AcsUserExternalType   `json:"external_type,omitempty"`
-	ExternalTypeDisplayName  *string                `json:"external_type_display_name,omitempty"`
-	IsSuspended              bool                   `json:"is_suspended"`
-	AccessSchedule           *AcsUserAccessSchedule `json:"access_schedule,omitempty"`
-	UserIdentityId           *string                `json:"user_identity_id,omitempty"`
-	UserIdentityEmailAddress *string                `json:"user_identity_email_address,omitempty"`
-	UserIdentityPhoneNumber  *string                `json:"user_identity_phone_number,omitempty"`
-	FullName                 *string                `json:"full_name,omitempty"`
+	AcsUserId                string                 `json:"acs_user_id" url:"acs_user_id"`
+	AcsSystemId              string                 `json:"acs_system_id" url:"acs_system_id"`
+	HidAcsSystemId           *string                `json:"hid_acs_system_id,omitempty" url:"hid_acs_system_id,omitempty"`
+	WorkspaceId              string                 `json:"workspace_id" url:"workspace_id"`
+	CreatedAt                time.Time              `json:"created_at" url:"created_at"`
+	DisplayName              string                 `json:"display_name" url:"display_name"`
+	ExternalType             *AcsUserExternalType   `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName  *string                `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	IsSuspended              bool                   `json:"is_suspended" url:"is_suspended"`
+	AccessSchedule           *AcsUserAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
+	UserIdentityId           *string                `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	UserIdentityEmailAddress *string                `json:"user_identity_email_address,omitempty" url:"user_identity_email_address,omitempty"`
+	UserIdentityPhoneNumber  *string                `json:"user_identity_phone_number,omitempty" url:"user_identity_phone_number,omitempty"`
+	FullName                 *string                `json:"full_name,omitempty" url:"full_name,omitempty"`
 	// Deprecated: use email_address.
-	Email        *string `json:"email,omitempty"`
-	EmailAddress *string `json:"email_address,omitempty"`
-	PhoneNumber  *string `json:"phone_number,omitempty"`
+	Email        *string `json:"email,omitempty" url:"email,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber  *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (a *AcsUser) UnmarshalJSON(data []byte) error {
-	type unmarshaler AcsUser
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AcsUser
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AcsUser(value)
+	*a = AcsUser(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AcsUser) MarshalJSON() ([]byte, error) {
+	type embed AcsUser
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AcsUser) String() string {
@@ -389,21 +469,43 @@ func (a *AcsUser) String() string {
 }
 
 type AcsUserAccessSchedule struct {
-	StartsAt time.Time `json:"starts_at"`
-	EndsAt   time.Time `json:"ends_at"`
+	StartsAt time.Time `json:"starts_at" url:"starts_at"`
+	EndsAt   time.Time `json:"ends_at" url:"ends_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (a *AcsUserAccessSchedule) UnmarshalJSON(data []byte) error {
-	type unmarshaler AcsUserAccessSchedule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AcsUserAccessSchedule
+	var unmarshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AcsUserAccessSchedule(value)
+	*a = AcsUserAccessSchedule(unmarshaler.embed)
+	a.StartsAt = unmarshaler.StartsAt.Time()
+	a.EndsAt = unmarshaler.EndsAt.Time()
 	a._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AcsUserAccessSchedule) MarshalJSON() ([]byte, error) {
+	type embed AcsUserAccessSchedule
+	var marshaler = struct {
+		embed
+		StartsAt *core.DateTime `json:"starts_at"`
+		EndsAt   *core.DateTime `json:"ends_at"`
+	}{
+		embed:    embed(*a),
+		StartsAt: core.NewDateTime(a.StartsAt),
+		EndsAt:   core.NewDateTime(a.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (a *AcsUserAccessSchedule) String() string {
@@ -550,10 +652,10 @@ func (a *ActionAttempt) Accept(visitor ActionAttemptVisitor) error {
 }
 
 type ActionAttemptError struct {
-	ActionType      string                   `json:"action_type"`
-	ActionAttemptId string                   `json:"action_attempt_id"`
-	Result          *string                  `json:"result,omitempty"`
-	Error           *ActionAttemptErrorError `json:"error,omitempty"`
+	ActionType      string                   `json:"action_type" url:"action_type"`
+	ActionAttemptId string                   `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                  `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptErrorError `json:"error,omitempty" url:"error,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -582,8 +684,8 @@ func (a *ActionAttemptError) String() string {
 }
 
 type ActionAttemptErrorError struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -612,10 +714,10 @@ func (a *ActionAttemptErrorError) String() string {
 }
 
 type ActionAttemptPending struct {
-	ActionType      string  `json:"action_type"`
-	ActionAttemptId string  `json:"action_attempt_id"`
-	Result          *string `json:"result,omitempty"`
-	Error           *string `json:"error,omitempty"`
+	ActionType      string  `json:"action_type" url:"action_type"`
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -644,10 +746,10 @@ func (a *ActionAttemptPending) String() string {
 }
 
 type ActionAttemptSuccess struct {
-	ActionType      string      `json:"action_type"`
-	ActionAttemptId string      `json:"action_attempt_id"`
-	Result          interface{} `json:"result,omitempty"`
-	Error           *string     `json:"error,omitempty"`
+	ActionType      string      `json:"action_type" url:"action_type"`
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -676,28 +778,46 @@ func (a *ActionAttemptSuccess) String() string {
 }
 
 type ClientSession struct {
-	ClientSessionId     string    `json:"client_session_id"`
-	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty"`
-	CreatedAt           time.Time `json:"created_at"`
-	Token               string    `json:"token"`
-	DeviceCount         float64   `json:"device_count"`
-	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty"`
-	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty"`
-	UserIdentityIds     []string  `json:"user_identity_ids,omitempty"`
-	WorkspaceId         string    `json:"workspace_id"`
+	ClientSessionId     string    `json:"client_session_id" url:"client_session_id"`
+	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	CreatedAt           time.Time `json:"created_at" url:"created_at"`
+	Token               string    `json:"token" url:"token"`
+	DeviceCount         float64   `json:"device_count" url:"device_count"`
+	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	UserIdentityIds     []string  `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+	WorkspaceId         string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *ClientSession) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClientSession
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed ClientSession
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = ClientSession(value)
+	*c = ClientSession(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *ClientSession) MarshalJSON() ([]byte, error) {
+	type embed ClientSession
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *ClientSession) String() string {
@@ -713,21 +833,21 @@ func (c *ClientSession) String() string {
 }
 
 type ClimateSettingSchedule struct {
-	ClimateSettingScheduleId  string                                 `json:"climate_setting_schedule_id"`
-	DeviceId                  string                                 `json:"device_id"`
-	Name                      *string                                `json:"name,omitempty"`
-	ScheduleStartsAt          string                                 `json:"schedule_starts_at"`
-	ScheduleEndsAt            string                                 `json:"schedule_ends_at"`
-	CreatedAt                 time.Time                              `json:"created_at"`
-	Errors                    interface{}                            `json:"errors,omitempty"`
-	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64                               `json:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64                               `json:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64                               `json:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty"`
+	ClimateSettingScheduleId  string                                 `json:"climate_setting_schedule_id" url:"climate_setting_schedule_id"`
+	DeviceId                  string                                 `json:"device_id" url:"device_id"`
+	Name                      *string                                `json:"name,omitempty" url:"name,omitempty"`
+	ScheduleStartsAt          string                                 `json:"schedule_starts_at" url:"schedule_starts_at"`
+	ScheduleEndsAt            string                                 `json:"schedule_ends_at" url:"schedule_ends_at"`
+	CreatedAt                 time.Time                              `json:"created_at" url:"created_at"`
+	Errors                    interface{}                            `json:"errors,omitempty" url:"errors,omitempty"`
+	AutomaticHeatingEnabled   *bool                                  `json:"automatic_heating_enabled,omitempty" url:"automatic_heating_enabled,omitempty"`
+	AutomaticCoolingEnabled   *bool                                  `json:"automatic_cooling_enabled,omitempty" url:"automatic_cooling_enabled,omitempty"`
+	HvacModeSetting           *ClimateSettingScheduleHvacModeSetting `json:"hvac_mode_setting,omitempty" url:"hvac_mode_setting,omitempty"`
+	CoolingSetPointCelsius    *float64                               `json:"cooling_set_point_celsius,omitempty" url:"cooling_set_point_celsius,omitempty"`
+	HeatingSetPointCelsius    *float64                               `json:"heating_set_point_celsius,omitempty" url:"heating_set_point_celsius,omitempty"`
+	CoolingSetPointFahrenheit *float64                               `json:"cooling_set_point_fahrenheit,omitempty" url:"cooling_set_point_fahrenheit,omitempty"`
+	HeatingSetPointFahrenheit *float64                               `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
+	ManualOverrideAllowed     *bool                                  `json:"manual_override_allowed,omitempty" url:"manual_override_allowed,omitempty"`
 	scheduleType              string
 
 	_rawJSON json.RawMessage
@@ -738,12 +858,18 @@ func (c *ClimateSettingSchedule) ScheduleType() string {
 }
 
 func (c *ClimateSettingSchedule) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClimateSettingSchedule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed ClimateSettingSchedule
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = ClimateSettingSchedule(value)
+	*c = ClimateSettingSchedule(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c.scheduleType = "time_bound"
 	c._rawJSON = json.RawMessage(data)
 	return nil
@@ -753,9 +879,11 @@ func (c *ClimateSettingSchedule) MarshalJSON() ([]byte, error) {
 	type embed ClimateSettingSchedule
 	var marshaler = struct {
 		embed
-		ScheduleType string `json:"schedule_type"`
+		CreatedAt    *core.DateTime `json:"created_at"`
+		ScheduleType string         `json:"schedule_type"`
 	}{
 		embed:        embed(*c),
+		CreatedAt:    core.NewDateTime(c.CreatedAt),
 		ScheduleType: "time_bound",
 	}
 	return json.Marshal(marshaler)
@@ -802,38 +930,60 @@ func (c ClimateSettingScheduleHvacModeSetting) Ptr() *ClimateSettingScheduleHvac
 }
 
 type ConnectWebview struct {
-	ConnectWebviewId              string                                        `json:"connect_webview_id"`
-	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty"`
-	Url                           string                                        `json:"url"`
-	WorkspaceId                   string                                        `json:"workspace_id"`
-	DeviceSelectionMode           SelectionMode                                 `json:"device_selection_mode,omitempty"`
-	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty"`
-	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty"`
-	AnyProviderAllowed            bool                                          `json:"any_provider_allowed"`
-	AnyDeviceAllowed              bool                                          `json:"any_device_allowed"`
-	CreatedAt                     time.Time                                     `json:"created_at"`
-	LoginSuccessful               bool                                          `json:"login_successful"`
-	Status                        ConnectWebviewStatus                          `json:"status,omitempty"`
-	CustomRedirectUrl             *string                                       `json:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl      *string                                       `json:"custom_redirect_failure_url,omitempty"`
-	CustomMetadata                map[string]*ConnectWebviewCustomMetadataValue `json:"custom_metadata,omitempty"`
-	AutomaticallyManageNewDevices bool                                          `json:"automatically_manage_new_devices"`
-	WaitForDeviceCreation         bool                                          `json:"wait_for_device_creation"`
-	AuthorizedAt                  *time.Time                                    `json:"authorized_at,omitempty"`
-	SelectedProvider              *string                                       `json:"selected_provider,omitempty"`
+	ConnectWebviewId              string                                        `json:"connect_webview_id" url:"connect_webview_id"`
+	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	Url                           string                                        `json:"url" url:"url"`
+	WorkspaceId                   string                                        `json:"workspace_id" url:"workspace_id"`
+	DeviceSelectionMode           SelectionMode                                 `json:"device_selection_mode,omitempty" url:"device_selection_mode,omitempty"`
+	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
+	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty" url:"accepted_devices,omitempty"`
+	AnyProviderAllowed            bool                                          `json:"any_provider_allowed" url:"any_provider_allowed"`
+	AnyDeviceAllowed              bool                                          `json:"any_device_allowed" url:"any_device_allowed"`
+	CreatedAt                     time.Time                                     `json:"created_at" url:"created_at"`
+	LoginSuccessful               bool                                          `json:"login_successful" url:"login_successful"`
+	Status                        ConnectWebviewStatus                          `json:"status,omitempty" url:"status,omitempty"`
+	CustomRedirectUrl             *string                                       `json:"custom_redirect_url,omitempty" url:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                                       `json:"custom_redirect_failure_url,omitempty" url:"custom_redirect_failure_url,omitempty"`
+	CustomMetadata                map[string]*ConnectWebviewCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                          `json:"automatically_manage_new_devices" url:"automatically_manage_new_devices"`
+	WaitForDeviceCreation         bool                                          `json:"wait_for_device_creation" url:"wait_for_device_creation"`
+	AuthorizedAt                  *time.Time                                    `json:"authorized_at,omitempty" url:"authorized_at,omitempty"`
+	SelectedProvider              *string                                       `json:"selected_provider,omitempty" url:"selected_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *ConnectWebview) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConnectWebview
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed ConnectWebview
+	var unmarshaler = struct {
+		embed
+		CreatedAt    *core.DateTime `json:"created_at"`
+		AuthorizedAt *core.DateTime `json:"authorized_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = ConnectWebview(value)
+	*c = ConnectWebview(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+	c.AuthorizedAt = unmarshaler.AuthorizedAt.TimePtr()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *ConnectWebview) MarshalJSON() ([]byte, error) {
+	type embed ConnectWebview
+	var marshaler = struct {
+		embed
+		CreatedAt    *core.DateTime `json:"created_at"`
+		AuthorizedAt *core.DateTime `json:"authorized_at,omitempty"`
+	}{
+		embed:        embed(*c),
+		CreatedAt:    core.NewDateTime(c.CreatedAt),
+		AuthorizedAt: core.NewOptionalDateTime(c.AuthorizedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *ConnectWebview) String() string {
@@ -947,28 +1097,46 @@ func (c ConnectWebviewStatus) Ptr() *ConnectWebviewStatus {
 }
 
 type ConnectedAccount struct {
-	ConnectedAccountId            *string                                         `json:"connected_account_id,omitempty"`
-	CreatedAt                     *time.Time                                      `json:"created_at,omitempty"`
-	UserIdentifier                *ConnectedAccountUserIdentifier                 `json:"user_identifier,omitempty"`
-	AccountType                   *string                                         `json:"account_type,omitempty"`
-	AccountTypeDisplayName        string                                          `json:"account_type_display_name"`
-	Errors                        interface{}                                     `json:"errors,omitempty"`
-	Warnings                      interface{}                                     `json:"warnings,omitempty"`
-	CustomMetadata                map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty"`
-	AutomaticallyManageNewDevices bool                                            `json:"automatically_manage_new_devices"`
+	ConnectedAccountId            *string                                         `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	CreatedAt                     *time.Time                                      `json:"created_at,omitempty" url:"created_at,omitempty"`
+	UserIdentifier                *ConnectedAccountUserIdentifier                 `json:"user_identifier,omitempty" url:"user_identifier,omitempty"`
+	AccountType                   *string                                         `json:"account_type,omitempty" url:"account_type,omitempty"`
+	AccountTypeDisplayName        string                                          `json:"account_type_display_name" url:"account_type_display_name"`
+	Errors                        interface{}                                     `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                      interface{}                                     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	CustomMetadata                map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                            `json:"automatically_manage_new_devices" url:"automatically_manage_new_devices"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *ConnectedAccount) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConnectedAccount
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed ConnectedAccount
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = ConnectedAccount(value)
+	*c = ConnectedAccount(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.TimePtr()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *ConnectedAccount) MarshalJSON() ([]byte, error) {
+	type embed ConnectedAccount
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewOptionalDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *ConnectedAccount) String() string {
@@ -1057,11 +1225,11 @@ func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCus
 }
 
 type ConnectedAccountUserIdentifier struct {
-	Username  *string `json:"username,omitempty"`
-	ApiUrl    *string `json:"api_url,omitempty"`
-	Email     *string `json:"email,omitempty"`
-	Phone     *string `json:"phone,omitempty"`
-	Exclusive *bool   `json:"exclusive,omitempty"`
+	Username  *string `json:"username,omitempty" url:"username,omitempty"`
+	ApiUrl    *string `json:"api_url,omitempty" url:"api_url,omitempty"`
+	Email     *string `json:"email,omitempty" url:"email,omitempty"`
+	Phone     *string `json:"phone,omitempty" url:"phone,omitempty"`
+	Exclusive *bool   `json:"exclusive,omitempty" url:"exclusive,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1091,43 +1259,61 @@ func (c *ConnectedAccountUserIdentifier) String() string {
 
 type Device struct {
 	// Unique identifier for the device.
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 	// Type of the device.
-	DeviceType DeviceType `json:"device_type,omitempty"`
+	DeviceType DeviceType `json:"device_type,omitempty" url:"device_type,omitempty"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
-	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
+	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty" url:"capabilities_supported,omitempty"`
 	// Properties of the device.
-	Properties *DeviceProperties `json:"properties,omitempty"`
+	Properties *DeviceProperties `json:"properties,omitempty" url:"properties,omitempty"`
 	// Location information for the device.
-	Location *DeviceLocation `json:"location,omitempty"`
+	Location *DeviceLocation `json:"location,omitempty" url:"location,omitempty"`
 	// Unique identifier for the account associated with the device.
-	ConnectedAccountId string `json:"connected_account_id"`
+	ConnectedAccountId string `json:"connected_account_id" url:"connected_account_id"`
 	// Unique identifier for the Seam workspace associated with the device.
-	WorkspaceId string `json:"workspace_id"`
+	WorkspaceId string `json:"workspace_id" url:"workspace_id"`
 	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
-	Errors []*DeviceErrorsItem `json:"errors,omitempty"`
+	Errors []*DeviceErrorsItem `json:"errors,omitempty" url:"errors,omitempty"`
 	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
-	Warnings []*DeviceWarningsItem `json:"warnings,omitempty"`
+	Warnings []*DeviceWarningsItem `json:"warnings,omitempty" url:"warnings,omitempty"`
 	// Date and time at which the device object was created.
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                   bool                                  `json:"is_managed"`
-	CustomMetadata              map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty"`
-	CanRemotelyUnlock           *bool                                 `json:"can_remotely_unlock,omitempty"`
-	CanProgramOnlineAccessCodes *bool                                 `json:"can_program_online_access_codes,omitempty"`
+	IsManaged                   bool                                  `json:"is_managed" url:"is_managed"`
+	CustomMetadata              map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	CanRemotelyUnlock           *bool                                 `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                                 `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (d *Device) UnmarshalJSON(data []byte) error {
-	type unmarshaler Device
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed Device
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*d = Device(value)
+	*d = Device(unmarshaler.embed)
+	d.CreatedAt = unmarshaler.CreatedAt.Time()
 	d._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (d *Device) MarshalJSON() ([]byte, error) {
+	type embed Device
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*d),
+		CreatedAt: core.NewDateTime(d.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (d *Device) String() string {
@@ -1250,8 +1436,8 @@ func (d *DeviceCustomMetadataValue) Accept(visitor DeviceCustomMetadataValueVisi
 }
 
 type DeviceErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1282,9 +1468,9 @@ func (d *DeviceErrorsItem) String() string {
 // Location information for the device.
 type DeviceLocation struct {
 	// Name of the device location.
-	LocationName *string `json:"location_name,omitempty"`
+	LocationName *string `json:"location_name,omitempty" url:"location_name,omitempty"`
 	// Time zone of the device location.
-	Timezone *string `json:"timezone,omitempty"`
+	Timezone *string `json:"timezone,omitempty" url:"timezone,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1315,68 +1501,68 @@ func (d *DeviceLocation) String() string {
 // Properties of the device.
 type DeviceProperties struct {
 	// Indicates whether the device is online.
-	Online bool `json:"online"`
+	Online bool `json:"online" url:"online"`
 	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
-	Name  string                 `json:"name"`
-	Model *DevicePropertiesModel `json:"model,omitempty"`
+	Name  string                 `json:"name" url:"name"`
+	Model *DevicePropertiesModel `json:"model,omitempty" url:"model,omitempty"`
 	// Indicates whether the device has direct power.
-	HasDirectPower *bool `json:"has_direct_power,omitempty"`
+	HasDirectPower *bool `json:"has_direct_power,omitempty" url:"has_direct_power,omitempty"`
 	// Indicates the battery level of the device as a decimal value between 0 and 1, inclusive.
-	BatteryLevel *float64 `json:"battery_level,omitempty"`
+	BatteryLevel *float64 `json:"battery_level,omitempty" url:"battery_level,omitempty"`
 	// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
-	Battery *DevicePropertiesBattery `json:"battery,omitempty"`
+	Battery *DevicePropertiesBattery `json:"battery,omitempty" url:"battery,omitempty"`
 	// Manufacturer of the device.
-	Manufacturer *string `json:"manufacturer,omitempty"`
+	Manufacturer *string `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
 	// Image URL for the device.
-	ImageUrl *string `json:"image_url,omitempty"`
+	ImageUrl *string `json:"image_url,omitempty" url:"image_url,omitempty"`
 	// Alt text for the device image.
-	ImageAltText *string `json:"image_alt_text,omitempty"`
+	ImageAltText *string `json:"image_alt_text,omitempty" url:"image_alt_text,omitempty"`
 	// Serial number of the device.
-	SerialNumber *string `json:"serial_number,omitempty"`
+	SerialNumber *string `json:"serial_number,omitempty" url:"serial_number,omitempty"`
 	// Indicates whether it is currently possible to use online access codes for the device.
-	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty"`
+	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty" url:"online_access_codes_enabled,omitempty"`
 	// Indicates whether it is currently possible to use offline access codes for the device.
-	OfflineAccessCodesEnabled *bool `json:"offline_access_codes_enabled,omitempty"`
+	OfflineAccessCodesEnabled *bool `json:"offline_access_codes_enabled,omitempty" url:"offline_access_codes_enabled,omitempty"`
 	// Deprecated. Use model.accessory_keypad_supported.
-	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty"`
+	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty" url:"supports_accessory_keypad,omitempty"`
 	// Deprecated. Use offline_access_codes_enabled.
-	SupportsOfflineAccessCodes                      *bool                                               `json:"supports_offline_access_codes,omitempty"`
-	AssaAbloyCredentialServiceMetadata              *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
-	AugustMetadata                                  *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty"`
-	AvigilonAltaMetadata                            *DevicePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty"`
-	SchlageMetadata                                 *DevicePropertiesSchlageMetadata                    `json:"schlage_metadata,omitempty"`
-	SmartthingsMetadata                             *DevicePropertiesSmartthingsMetadata                `json:"smartthings_metadata,omitempty"`
-	LocklyMetadata                                  *DevicePropertiesLocklyMetadata                     `json:"lockly_metadata,omitempty"`
-	NukiMetadata                                    *DevicePropertiesNukiMetadata                       `json:"nuki_metadata,omitempty"`
-	KwiksetMetadata                                 *DevicePropertiesKwiksetMetadata                    `json:"kwikset_metadata,omitempty"`
-	SaltoMetadata                                   *DevicePropertiesSaltoMetadata                      `json:"salto_metadata,omitempty"`
-	GenieMetadata                                   *DevicePropertiesGenieMetadata                      `json:"genie_metadata,omitempty"`
-	BrivoMetadata                                   *DevicePropertiesBrivoMetadata                      `json:"brivo_metadata,omitempty"`
-	IglooMetadata                                   *DevicePropertiesIglooMetadata                      `json:"igloo_metadata,omitempty"`
-	NoiseawareMetadata                              *DevicePropertiesNoiseawareMetadata                 `json:"noiseaware_metadata,omitempty"`
-	MinutMetadata                                   *DevicePropertiesMinutMetadata                      `json:"minut_metadata,omitempty"`
-	FourSuitesMetadata                              *DevicePropertiesFourSuitesMetadata                 `json:"four_suites_metadata,omitempty"`
-	TwoNMetadata                                    *DevicePropertiesTwoNMetadata                       `json:"two_n_metadata,omitempty"`
-	ControlbywebMetadata                            *DevicePropertiesControlbywebMetadata               `json:"controlbyweb_metadata,omitempty"`
-	TtlockMetadata                                  *DevicePropertiesTtlockMetadata                     `json:"ttlock_metadata,omitempty"`
-	SeamBridgeMetadata                              *DevicePropertiesSeamBridgeMetadata                 `json:"seam_bridge_metadata,omitempty"`
-	IgloohomeMetadata                               *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty"`
-	NestMetadata                                    *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty"`
-	EcobeeMetadata                                  *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty"`
-	HoneywellMetadata                               *DevicePropertiesHoneywellMetadata                  `json:"honeywell_metadata,omitempty"`
-	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty"`
-	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty"`
-	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty"`
-	TedeeMetadata                                   *DevicePropertiesTedeeMetadata                      `json:"tedee_metadata,omitempty"`
-	ExperimentalSupportedCodeFromAccessCodesLengths []float64                                           `json:"_experimental_supported_code_from_access_codes_lengths,omitempty"`
-	CodeConstraints                                 []*DevicePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty"`
-	SupportedCodeLengths                            []float64                                           `json:"supported_code_lengths,omitempty"`
-	MaxActiveCodesSupported                         *float64                                            `json:"max_active_codes_supported,omitempty"`
-	SupportsBackupAccessCodePool                    *bool                                               `json:"supports_backup_access_code_pool,omitempty"`
-	HasNativeEntryEvents                            *bool                                               `json:"has_native_entry_events,omitempty"`
-	Locked                                          *bool                                               `json:"locked,omitempty"`
-	KeypadBattery                                   *DevicePropertiesKeypadBattery                      `json:"keypad_battery,omitempty"`
-	DoorOpen                                        *bool                                               `json:"door_open,omitempty"`
+	SupportsOfflineAccessCodes                      *bool                                               `json:"supports_offline_access_codes,omitempty" url:"supports_offline_access_codes,omitempty"`
+	AssaAbloyCredentialServiceMetadata              *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty" url:"assa_abloy_credential_service_metadata,omitempty"`
+	AugustMetadata                                  *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty" url:"august_metadata,omitempty"`
+	AvigilonAltaMetadata                            *DevicePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty" url:"avigilon_alta_metadata,omitempty"`
+	SchlageMetadata                                 *DevicePropertiesSchlageMetadata                    `json:"schlage_metadata,omitempty" url:"schlage_metadata,omitempty"`
+	SmartthingsMetadata                             *DevicePropertiesSmartthingsMetadata                `json:"smartthings_metadata,omitempty" url:"smartthings_metadata,omitempty"`
+	LocklyMetadata                                  *DevicePropertiesLocklyMetadata                     `json:"lockly_metadata,omitempty" url:"lockly_metadata,omitempty"`
+	NukiMetadata                                    *DevicePropertiesNukiMetadata                       `json:"nuki_metadata,omitempty" url:"nuki_metadata,omitempty"`
+	KwiksetMetadata                                 *DevicePropertiesKwiksetMetadata                    `json:"kwikset_metadata,omitempty" url:"kwikset_metadata,omitempty"`
+	SaltoMetadata                                   *DevicePropertiesSaltoMetadata                      `json:"salto_metadata,omitempty" url:"salto_metadata,omitempty"`
+	GenieMetadata                                   *DevicePropertiesGenieMetadata                      `json:"genie_metadata,omitempty" url:"genie_metadata,omitempty"`
+	BrivoMetadata                                   *DevicePropertiesBrivoMetadata                      `json:"brivo_metadata,omitempty" url:"brivo_metadata,omitempty"`
+	IglooMetadata                                   *DevicePropertiesIglooMetadata                      `json:"igloo_metadata,omitempty" url:"igloo_metadata,omitempty"`
+	NoiseawareMetadata                              *DevicePropertiesNoiseawareMetadata                 `json:"noiseaware_metadata,omitempty" url:"noiseaware_metadata,omitempty"`
+	MinutMetadata                                   *DevicePropertiesMinutMetadata                      `json:"minut_metadata,omitempty" url:"minut_metadata,omitempty"`
+	FourSuitesMetadata                              *DevicePropertiesFourSuitesMetadata                 `json:"four_suites_metadata,omitempty" url:"four_suites_metadata,omitempty"`
+	TwoNMetadata                                    *DevicePropertiesTwoNMetadata                       `json:"two_n_metadata,omitempty" url:"two_n_metadata,omitempty"`
+	ControlbywebMetadata                            *DevicePropertiesControlbywebMetadata               `json:"controlbyweb_metadata,omitempty" url:"controlbyweb_metadata,omitempty"`
+	TtlockMetadata                                  *DevicePropertiesTtlockMetadata                     `json:"ttlock_metadata,omitempty" url:"ttlock_metadata,omitempty"`
+	SeamBridgeMetadata                              *DevicePropertiesSeamBridgeMetadata                 `json:"seam_bridge_metadata,omitempty" url:"seam_bridge_metadata,omitempty"`
+	IgloohomeMetadata                               *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty" url:"igloohome_metadata,omitempty"`
+	NestMetadata                                    *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty" url:"nest_metadata,omitempty"`
+	EcobeeMetadata                                  *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty" url:"ecobee_metadata,omitempty"`
+	HoneywellMetadata                               *DevicePropertiesHoneywellMetadata                  `json:"honeywell_metadata,omitempty" url:"honeywell_metadata,omitempty"`
+	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty" url:"hubitat_metadata,omitempty"`
+	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty" url:"dormakaba_oracode_metadata,omitempty"`
+	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty" url:"wyze_metadata,omitempty"`
+	TedeeMetadata                                   *DevicePropertiesTedeeMetadata                      `json:"tedee_metadata,omitempty" url:"tedee_metadata,omitempty"`
+	ExperimentalSupportedCodeFromAccessCodesLengths []float64                                           `json:"_experimental_supported_code_from_access_codes_lengths,omitempty" url:"_experimental_supported_code_from_access_codes_lengths,omitempty"`
+	CodeConstraints                                 []*DevicePropertiesCodeConstraintsItem              `json:"code_constraints,omitempty" url:"code_constraints,omitempty"`
+	SupportedCodeLengths                            []float64                                           `json:"supported_code_lengths,omitempty" url:"supported_code_lengths,omitempty"`
+	MaxActiveCodesSupported                         *float64                                            `json:"max_active_codes_supported,omitempty" url:"max_active_codes_supported,omitempty"`
+	SupportsBackupAccessCodePool                    *bool                                               `json:"supports_backup_access_code_pool,omitempty" url:"supports_backup_access_code_pool,omitempty"`
+	HasNativeEntryEvents                            *bool                                               `json:"has_native_entry_events,omitempty" url:"has_native_entry_events,omitempty"`
+	Locked                                          *bool                                               `json:"locked,omitempty" url:"locked,omitempty"`
+	KeypadBattery                                   *DevicePropertiesKeypadBattery                      `json:"keypad_battery,omitempty" url:"keypad_battery,omitempty"`
+	DoorOpen                                        *bool                                               `json:"door_open,omitempty" url:"door_open,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1405,8 +1591,8 @@ func (d *DeviceProperties) String() string {
 }
 
 type DevicePropertiesAssaAbloyCredentialServiceMetadata struct {
-	HasActiveEndpoint bool                                                               `json:"has_active_endpoint"`
-	Endpoints         []*DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
+	HasActiveEndpoint bool                                                               `json:"has_active_endpoint" url:"has_active_endpoint"`
+	Endpoints         []*DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty" url:"endpoints,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1435,8 +1621,8 @@ func (d *DevicePropertiesAssaAbloyCredentialServiceMetadata) String() string {
 }
 
 type DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem struct {
-	EndpointId string `json:"endpoint_id"`
-	IsActive   bool   `json:"is_active"`
+	EndpointId string `json:"endpoint_id" url:"endpoint_id"`
+	IsActive   bool   `json:"is_active" url:"is_active"`
 
 	_rawJSON json.RawMessage
 }
@@ -1465,13 +1651,13 @@ func (d *DevicePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) String
 }
 
 type DevicePropertiesAugustMetadata struct {
-	LockId             string  `json:"lock_id"`
-	LockName           string  `json:"lock_name"`
-	HouseName          string  `json:"house_name"`
-	HasKeypad          bool    `json:"has_keypad"`
-	KeypadBatteryLevel *string `json:"keypad_battery_level,omitempty"`
-	Model              *string `json:"model,omitempty"`
-	HouseId            *string `json:"house_id,omitempty"`
+	LockId             string  `json:"lock_id" url:"lock_id"`
+	LockName           string  `json:"lock_name" url:"lock_name"`
+	HouseName          string  `json:"house_name" url:"house_name"`
+	HasKeypad          bool    `json:"has_keypad" url:"has_keypad"`
+	KeypadBatteryLevel *string `json:"keypad_battery_level,omitempty" url:"keypad_battery_level,omitempty"`
+	Model              *string `json:"model,omitempty" url:"model,omitempty"`
+	HouseId            *string `json:"house_id,omitempty" url:"house_id,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1500,12 +1686,12 @@ func (d *DevicePropertiesAugustMetadata) String() string {
 }
 
 type DevicePropertiesAvigilonAltaMetadata struct {
-	EntryName string  `json:"entry_name"`
-	OrgName   string  `json:"org_name"`
-	ZoneId    float64 `json:"zone_id"`
-	ZoneName  string  `json:"zone_name"`
-	SiteId    float64 `json:"site_id"`
-	SiteName  string  `json:"site_name"`
+	EntryName string  `json:"entry_name" url:"entry_name"`
+	OrgName   string  `json:"org_name" url:"org_name"`
+	ZoneId    float64 `json:"zone_id" url:"zone_id"`
+	ZoneName  string  `json:"zone_name" url:"zone_name"`
+	SiteId    float64 `json:"site_id" url:"site_id"`
+	SiteName  string  `json:"site_name" url:"site_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -1535,8 +1721,8 @@ func (d *DevicePropertiesAvigilonAltaMetadata) String() string {
 
 // Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
 type DevicePropertiesBattery struct {
-	Level  float64                       `json:"level"`
-	Status DevicePropertiesBatteryStatus `json:"status,omitempty"`
+	Level  float64                       `json:"level" url:"level"`
+	Status DevicePropertiesBatteryStatus `json:"status,omitempty" url:"status,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1593,7 +1779,7 @@ func (d DevicePropertiesBatteryStatus) Ptr() *DevicePropertiesBatteryStatus {
 }
 
 type DevicePropertiesBrivoMetadata struct {
-	DeviceName string `json:"device_name"`
+	DeviceName string `json:"device_name" url:"device_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -1679,8 +1865,8 @@ func (d *DevicePropertiesCodeConstraintsItem) Accept(visitor DevicePropertiesCod
 }
 
 type DevicePropertiesCodeConstraintsItemMaxLength struct {
-	MinLength      *float64 `json:"min_length,omitempty"`
-	MaxLength      *float64 `json:"max_length,omitempty"`
+	MinLength      *float64 `json:"min_length,omitempty" url:"min_length,omitempty"`
+	MaxLength      *float64 `json:"max_length,omitempty" url:"max_length,omitempty"`
 	constraintType string
 
 	_rawJSON json.RawMessage
@@ -1691,12 +1877,16 @@ func (d *DevicePropertiesCodeConstraintsItemMaxLength) ConstraintType() string {
 }
 
 func (d *DevicePropertiesCodeConstraintsItemMaxLength) UnmarshalJSON(data []byte) error {
-	type unmarshaler DevicePropertiesCodeConstraintsItemMaxLength
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed DevicePropertiesCodeConstraintsItemMaxLength
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*d = DevicePropertiesCodeConstraintsItemMaxLength(value)
+	*d = DevicePropertiesCodeConstraintsItemMaxLength(unmarshaler.embed)
 	d.constraintType = "name_length"
 	d._rawJSON = json.RawMessage(data)
 	return nil
@@ -1727,7 +1917,7 @@ func (d *DevicePropertiesCodeConstraintsItemMaxLength) String() string {
 }
 
 type DevicePropertiesCodeConstraintsItemZero struct {
-	ConstraintType DevicePropertiesCodeConstraintsItemZeroConstraintType `json:"constraint_type,omitempty"`
+	ConstraintType DevicePropertiesCodeConstraintsItemZeroConstraintType `json:"constraint_type,omitempty" url:"constraint_type,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1796,9 +1986,9 @@ func (d DevicePropertiesCodeConstraintsItemZeroConstraintType) Ptr() *DeviceProp
 }
 
 type DevicePropertiesControlbywebMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	RelayName  *string `json:"relay_name,omitempty"`
+	DeviceId   string  `json:"device_id" url:"device_id"`
+	DeviceName string  `json:"device_name" url:"device_name"`
+	RelayName  *string `json:"relay_name,omitempty" url:"relay_name,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1827,13 +2017,13 @@ func (d *DevicePropertiesControlbywebMetadata) String() string {
 }
 
 type DevicePropertiesDormakabaOracodeMetadata struct {
-	DoorId              float64                                                            `json:"door_id"`
-	DoorName            string                                                             `json:"door_name"`
-	DeviceId            *float64                                                           `json:"device_id,omitempty"`
-	SiteId              float64                                                            `json:"site_id"`
-	SiteName            string                                                             `json:"site_name"`
-	IanaTimezone        *string                                                            `json:"iana_timezone,omitempty"`
-	PredefinedTimeSlots []*DevicePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem `json:"predefined_time_slots,omitempty"`
+	DoorId              float64                                                            `json:"door_id" url:"door_id"`
+	DoorName            string                                                             `json:"door_name" url:"door_name"`
+	DeviceId            *float64                                                           `json:"device_id,omitempty" url:"device_id,omitempty"`
+	SiteId              float64                                                            `json:"site_id" url:"site_id"`
+	SiteName            string                                                             `json:"site_name" url:"site_name"`
+	IanaTimezone        *string                                                            `json:"iana_timezone,omitempty" url:"iana_timezone,omitempty"`
+	PredefinedTimeSlots []*DevicePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem `json:"predefined_time_slots,omitempty" url:"predefined_time_slots,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1862,16 +2052,16 @@ func (d *DevicePropertiesDormakabaOracodeMetadata) String() string {
 }
 
 type DevicePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem struct {
-	Name                               string  `json:"name"`
-	Prefix                             float64 `json:"prefix"`
-	CheckInTime                        string  `json:"check_in_time"`
-	CheckOutTime                       string  `json:"check_out_time"`
-	Is24Hour                           bool    `json:"is_24_hour"`
-	IsBiweeklyMode                     bool    `json:"is_biweekly_mode"`
-	IsOneShot                          bool    `json:"is_one_shot"`
-	IsMaster                           bool    `json:"is_master"`
-	ExtDormakabaOracodeUserLevelPrefix float64 `json:"ext_dormakaba_oracode_user_level_prefix"`
-	DormakabaOracodeUserLevelId        string  `json:"dormakaba_oracode_user_level_id"`
+	Name                               string  `json:"name" url:"name"`
+	Prefix                             float64 `json:"prefix" url:"prefix"`
+	CheckInTime                        string  `json:"check_in_time" url:"check_in_time"`
+	CheckOutTime                       string  `json:"check_out_time" url:"check_out_time"`
+	Is24Hour                           bool    `json:"is_24_hour" url:"is_24_hour"`
+	IsBiweeklyMode                     bool    `json:"is_biweekly_mode" url:"is_biweekly_mode"`
+	IsOneShot                          bool    `json:"is_one_shot" url:"is_one_shot"`
+	IsMaster                           bool    `json:"is_master" url:"is_master"`
+	ExtDormakabaOracodeUserLevelPrefix float64 `json:"ext_dormakaba_oracode_user_level_prefix" url:"ext_dormakaba_oracode_user_level_prefix"`
+	DormakabaOracodeUserLevelId        string  `json:"dormakaba_oracode_user_level_id" url:"dormakaba_oracode_user_level_id"`
 
 	_rawJSON json.RawMessage
 }
@@ -1900,8 +2090,8 @@ func (d *DevicePropertiesDormakabaOracodeMetadataPredefinedTimeSlotsItem) String
 }
 
 type DevicePropertiesEcobeeMetadata struct {
-	EcobeeDeviceId string `json:"ecobee_device_id"`
-	DeviceName     string `json:"device_name"`
+	EcobeeDeviceId string `json:"ecobee_device_id" url:"ecobee_device_id"`
+	DeviceName     string `json:"device_name" url:"device_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -1930,9 +2120,9 @@ func (d *DevicePropertiesEcobeeMetadata) String() string {
 }
 
 type DevicePropertiesFourSuitesMetadata struct {
-	DeviceId              float64 `json:"device_id"`
-	DeviceName            string  `json:"device_name"`
-	RecloseDelayInSeconds float64 `json:"reclose_delay_in_seconds"`
+	DeviceId              float64 `json:"device_id" url:"device_id"`
+	DeviceName            string  `json:"device_name" url:"device_name"`
+	RecloseDelayInSeconds float64 `json:"reclose_delay_in_seconds" url:"reclose_delay_in_seconds"`
 
 	_rawJSON json.RawMessage
 }
@@ -1961,8 +2151,8 @@ func (d *DevicePropertiesFourSuitesMetadata) String() string {
 }
 
 type DevicePropertiesGenieMetadata struct {
-	DeviceName string `json:"device_name"`
-	DoorName   string `json:"door_name"`
+	DeviceName string `json:"device_name" url:"device_name"`
+	DoorName   string `json:"door_name" url:"door_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -1991,8 +2181,8 @@ func (d *DevicePropertiesGenieMetadata) String() string {
 }
 
 type DevicePropertiesHoneywellMetadata struct {
-	HoneywellDeviceId string `json:"honeywell_device_id"`
-	DeviceName        string `json:"device_name"`
+	HoneywellDeviceId string `json:"honeywell_device_id" url:"honeywell_device_id"`
+	DeviceName        string `json:"device_name" url:"device_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -2021,9 +2211,9 @@ func (d *DevicePropertiesHoneywellMetadata) String() string {
 }
 
 type DevicePropertiesHubitatMetadata struct {
-	DeviceId    string `json:"device_id"`
-	DeviceName  string `json:"device_name"`
-	DeviceLabel string `json:"device_label"`
+	DeviceId    string `json:"device_id" url:"device_id"`
+	DeviceName  string `json:"device_name" url:"device_name"`
+	DeviceLabel string `json:"device_label" url:"device_label"`
 
 	_rawJSON json.RawMessage
 }
@@ -2052,9 +2242,9 @@ func (d *DevicePropertiesHubitatMetadata) String() string {
 }
 
 type DevicePropertiesIglooMetadata struct {
-	DeviceId string  `json:"device_id"`
-	BridgeId string  `json:"bridge_id"`
-	Model    *string `json:"model,omitempty"`
+	DeviceId string  `json:"device_id" url:"device_id"`
+	BridgeId string  `json:"bridge_id" url:"bridge_id"`
+	Model    *string `json:"model,omitempty" url:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2083,10 +2273,10 @@ func (d *DevicePropertiesIglooMetadata) String() string {
 }
 
 type DevicePropertiesIgloohomeMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	BridgeId   *string `json:"bridge_id,omitempty"`
-	BridgeName *string `json:"bridge_name,omitempty"`
+	DeviceId   string  `json:"device_id" url:"device_id"`
+	DeviceName string  `json:"device_name" url:"device_name"`
+	BridgeId   *string `json:"bridge_id,omitempty" url:"bridge_id,omitempty"`
+	BridgeName *string `json:"bridge_name,omitempty" url:"bridge_name,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2115,7 +2305,7 @@ func (d *DevicePropertiesIgloohomeMetadata) String() string {
 }
 
 type DevicePropertiesKeypadBattery struct {
-	Level float64 `json:"level"`
+	Level float64 `json:"level" url:"level"`
 
 	_rawJSON json.RawMessage
 }
@@ -2144,9 +2334,9 @@ func (d *DevicePropertiesKeypadBattery) String() string {
 }
 
 type DevicePropertiesKwiksetMetadata struct {
-	DeviceId    string `json:"device_id"`
-	DeviceName  string `json:"device_name"`
-	ModelNumber string `json:"model_number"`
+	DeviceId    string `json:"device_id" url:"device_id"`
+	DeviceName  string `json:"device_name" url:"device_name"`
+	ModelNumber string `json:"model_number" url:"model_number"`
 
 	_rawJSON json.RawMessage
 }
@@ -2175,9 +2365,9 @@ func (d *DevicePropertiesKwiksetMetadata) String() string {
 }
 
 type DevicePropertiesLocklyMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	Model      *string `json:"model,omitempty"`
+	DeviceId   string  `json:"device_id" url:"device_id"`
+	DeviceName string  `json:"device_name" url:"device_name"`
+	Model      *string `json:"model,omitempty" url:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2206,9 +2396,9 @@ func (d *DevicePropertiesLocklyMetadata) String() string {
 }
 
 type DevicePropertiesMinutMetadata struct {
-	DeviceId           string                                           `json:"device_id"`
-	DeviceName         string                                           `json:"device_name"`
-	LatestSensorValues *DevicePropertiesMinutMetadataLatestSensorValues `json:"latest_sensor_values,omitempty"`
+	DeviceId           string                                           `json:"device_id" url:"device_id"`
+	DeviceName         string                                           `json:"device_name" url:"device_name"`
+	LatestSensorValues *DevicePropertiesMinutMetadataLatestSensorValues `json:"latest_sensor_values,omitempty" url:"latest_sensor_values,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2237,11 +2427,11 @@ func (d *DevicePropertiesMinutMetadata) String() string {
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValues struct {
-	Temperature    *DevicePropertiesMinutMetadataLatestSensorValuesTemperature    `json:"temperature,omitempty"`
-	Sound          *DevicePropertiesMinutMetadataLatestSensorValuesSound          `json:"sound,omitempty"`
-	Humidity       *DevicePropertiesMinutMetadataLatestSensorValuesHumidity       `json:"humidity,omitempty"`
-	Pressure       *DevicePropertiesMinutMetadataLatestSensorValuesPressure       `json:"pressure,omitempty"`
-	AccelerometerZ *DevicePropertiesMinutMetadataLatestSensorValuesAccelerometerZ `json:"accelerometer_z,omitempty"`
+	Temperature    *DevicePropertiesMinutMetadataLatestSensorValuesTemperature    `json:"temperature,omitempty" url:"temperature,omitempty"`
+	Sound          *DevicePropertiesMinutMetadataLatestSensorValuesSound          `json:"sound,omitempty" url:"sound,omitempty"`
+	Humidity       *DevicePropertiesMinutMetadataLatestSensorValuesHumidity       `json:"humidity,omitempty" url:"humidity,omitempty"`
+	Pressure       *DevicePropertiesMinutMetadataLatestSensorValuesPressure       `json:"pressure,omitempty" url:"pressure,omitempty"`
+	AccelerometerZ *DevicePropertiesMinutMetadataLatestSensorValuesAccelerometerZ `json:"accelerometer_z,omitempty" url:"accelerometer_z,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2270,8 +2460,8 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValues) String() string {
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValuesAccelerometerZ struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
+	Time  string  `json:"time" url:"time"`
+	Value float64 `json:"value" url:"value"`
 
 	_rawJSON json.RawMessage
 }
@@ -2300,8 +2490,8 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesAccelerometerZ) String()
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValuesHumidity struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
+	Time  string  `json:"time" url:"time"`
+	Value float64 `json:"value" url:"value"`
 
 	_rawJSON json.RawMessage
 }
@@ -2330,8 +2520,8 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesHumidity) String() strin
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValuesPressure struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
+	Time  string  `json:"time" url:"time"`
+	Value float64 `json:"value" url:"value"`
 
 	_rawJSON json.RawMessage
 }
@@ -2360,8 +2550,8 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesPressure) String() strin
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValuesSound struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
+	Time  string  `json:"time" url:"time"`
+	Value float64 `json:"value" url:"value"`
 
 	_rawJSON json.RawMessage
 }
@@ -2390,8 +2580,8 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesSound) String() string {
 }
 
 type DevicePropertiesMinutMetadataLatestSensorValuesTemperature struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
+	Time  string  `json:"time" url:"time"`
+	Value float64 `json:"value" url:"value"`
 
 	_rawJSON json.RawMessage
 }
@@ -2421,15 +2611,15 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesTemperature) String() st
 
 type DevicePropertiesModel struct {
 	// Display name of the device model.
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"display_name" url:"display_name"`
 	// Display name that corresponds to the manufacturer-specific terminology for the device.
-	ManufacturerDisplayName string `json:"manufacturer_display_name"`
+	ManufacturerDisplayName string `json:"manufacturer_display_name" url:"manufacturer_display_name"`
 	// Indicates whether the device supports offline access codes.
-	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty"`
+	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.
-	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty"`
+	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty" url:"online_access_codes_supported,omitempty"`
 	// Indicates whether the device supports an accessory keypad.
-	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty"`
+	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty" url:"accessory_keypad_supported,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2458,9 +2648,9 @@ func (d *DevicePropertiesModel) String() string {
 }
 
 type DevicePropertiesNestMetadata struct {
-	NestDeviceId string `json:"nest_device_id"`
-	DeviceName   string `json:"device_name"`
-	CustomName   string `json:"custom_name"`
+	NestDeviceId string `json:"nest_device_id" url:"nest_device_id"`
+	DeviceName   string `json:"device_name" url:"device_name"`
+	CustomName   string `json:"custom_name" url:"custom_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -2489,11 +2679,11 @@ func (d *DevicePropertiesNestMetadata) String() string {
 }
 
 type DevicePropertiesNoiseawareMetadata struct {
-	DeviceModel       DevicePropertiesNoiseawareMetadataDeviceModel `json:"device_model,omitempty"`
-	NoiseLevelNrs     float64                                       `json:"noise_level_nrs"`
-	NoiseLevelDecibel float64                                       `json:"noise_level_decibel"`
-	DeviceName        string                                        `json:"device_name"`
-	DeviceId          string                                        `json:"device_id"`
+	DeviceModel       DevicePropertiesNoiseawareMetadataDeviceModel `json:"device_model,omitempty" url:"device_model,omitempty"`
+	NoiseLevelNrs     float64                                       `json:"noise_level_nrs" url:"noise_level_nrs"`
+	NoiseLevelDecibel float64                                       `json:"noise_level_decibel" url:"noise_level_decibel"`
+	DeviceName        string                                        `json:"device_name" url:"device_name"`
+	DeviceId          string                                        `json:"device_id" url:"device_id"`
 
 	_rawJSON json.RawMessage
 }
@@ -2544,9 +2734,9 @@ func (d DevicePropertiesNoiseawareMetadataDeviceModel) Ptr() *DevicePropertiesNo
 }
 
 type DevicePropertiesNukiMetadata struct {
-	DeviceId              string `json:"device_id"`
-	DeviceName            string `json:"device_name"`
-	KeypadBatteryCritical *bool  `json:"keypad_battery_critical,omitempty"`
+	DeviceId              string `json:"device_id" url:"device_id"`
+	DeviceName            string `json:"device_name" url:"device_name"`
+	KeypadBatteryCritical *bool  `json:"keypad_battery_critical,omitempty" url:"keypad_battery_critical,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2575,12 +2765,12 @@ func (d *DevicePropertiesNukiMetadata) String() string {
 }
 
 type DevicePropertiesSaltoMetadata struct {
-	LockId            string  `json:"lock_id"`
-	CustomerReference string  `json:"customer_reference"`
-	LockType          string  `json:"lock_type"`
-	BatteryLevel      string  `json:"battery_level"`
-	LockedState       string  `json:"locked_state"`
-	Model             *string `json:"model,omitempty"`
+	LockId            string  `json:"lock_id" url:"lock_id"`
+	CustomerReference string  `json:"customer_reference" url:"customer_reference"`
+	LockType          string  `json:"lock_type" url:"lock_type"`
+	BatteryLevel      string  `json:"battery_level" url:"battery_level"`
+	LockedState       string  `json:"locked_state" url:"locked_state"`
+	Model             *string `json:"model,omitempty" url:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2609,10 +2799,10 @@ func (d *DevicePropertiesSaltoMetadata) String() string {
 }
 
 type DevicePropertiesSchlageMetadata struct {
-	DeviceId         string   `json:"device_id"`
-	DeviceName       string   `json:"device_name"`
-	AccessCodeLength *float64 `json:"access_code_length,omitempty"`
-	Model            *string  `json:"model,omitempty"`
+	DeviceId         string   `json:"device_id" url:"device_id"`
+	DeviceName       string   `json:"device_name" url:"device_name"`
+	AccessCodeLength *float64 `json:"access_code_length,omitempty" url:"access_code_length,omitempty"`
+	Model            *string  `json:"model,omitempty" url:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2641,9 +2831,9 @@ func (d *DevicePropertiesSchlageMetadata) String() string {
 }
 
 type DevicePropertiesSeamBridgeMetadata struct {
-	UnlockMethod *DevicePropertiesSeamBridgeMetadataUnlockMethod `json:"unlock_method,omitempty"`
-	DeviceNum    float64                                         `json:"device_num"`
-	Name         string                                          `json:"name"`
+	UnlockMethod *DevicePropertiesSeamBridgeMetadataUnlockMethod `json:"unlock_method,omitempty" url:"unlock_method,omitempty"`
+	DeviceNum    float64                                         `json:"device_num" url:"device_num"`
+	Name         string                                          `json:"name" url:"name"`
 
 	_rawJSON json.RawMessage
 }
@@ -2694,10 +2884,10 @@ func (d DevicePropertiesSeamBridgeMetadataUnlockMethod) Ptr() *DevicePropertiesS
 }
 
 type DevicePropertiesSmartthingsMetadata struct {
-	DeviceId   string  `json:"device_id"`
-	DeviceName string  `json:"device_name"`
-	Model      *string `json:"model,omitempty"`
-	LocationId *string `json:"location_id,omitempty"`
+	DeviceId   string  `json:"device_id" url:"device_id"`
+	DeviceName string  `json:"device_name" url:"device_name"`
+	Model      *string `json:"model,omitempty" url:"model,omitempty"`
+	LocationId *string `json:"location_id,omitempty" url:"location_id,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2726,12 +2916,12 @@ func (d *DevicePropertiesSmartthingsMetadata) String() string {
 }
 
 type DevicePropertiesTedeeMetadata struct {
-	DeviceId     float64 `json:"device_id"`
-	SerialNumber string  `json:"serial_number"`
-	DeviceName   string  `json:"device_name"`
-	DeviceModel  string  `json:"device_model"`
-	BridgeId     float64 `json:"bridge_id"`
-	BridgeName   string  `json:"bridge_name"`
+	DeviceId     float64 `json:"device_id" url:"device_id"`
+	SerialNumber string  `json:"serial_number" url:"serial_number"`
+	DeviceName   string  `json:"device_name" url:"device_name"`
+	DeviceModel  string  `json:"device_model" url:"device_model"`
+	BridgeId     float64 `json:"bridge_id" url:"bridge_id"`
+	BridgeName   string  `json:"bridge_name" url:"bridge_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -2760,8 +2950,8 @@ func (d *DevicePropertiesTedeeMetadata) String() string {
 }
 
 type DevicePropertiesTtlockMetadata struct {
-	LockId    float64 `json:"lock_id"`
-	LockAlias string  `json:"lock_alias"`
+	LockId    float64 `json:"lock_id" url:"lock_id"`
+	LockAlias string  `json:"lock_alias" url:"lock_alias"`
 
 	_rawJSON json.RawMessage
 }
@@ -2790,8 +2980,8 @@ func (d *DevicePropertiesTtlockMetadata) String() string {
 }
 
 type DevicePropertiesTwoNMetadata struct {
-	DeviceId   float64 `json:"device_id"`
-	DeviceName string  `json:"device_name"`
+	DeviceId   float64 `json:"device_id" url:"device_id"`
+	DeviceName string  `json:"device_name" url:"device_name"`
 
 	_rawJSON json.RawMessage
 }
@@ -2820,12 +3010,12 @@ func (d *DevicePropertiesTwoNMetadata) String() string {
 }
 
 type DevicePropertiesWyzeMetadata struct {
-	DeviceId        string `json:"device_id"`
-	DeviceName      string `json:"device_name"`
-	ProductName     string `json:"product_name"`
-	ProductType     string `json:"product_type"`
-	ProductModel    string `json:"product_model"`
-	DeviceInfoModel string `json:"device_info_model"`
+	DeviceId        string `json:"device_id" url:"device_id"`
+	DeviceName      string `json:"device_name" url:"device_name"`
+	ProductName     string `json:"product_name" url:"product_name"`
+	ProductType     string `json:"product_type" url:"product_type"`
+	ProductModel    string `json:"product_model" url:"product_model"`
+	DeviceInfoModel string `json:"device_info_model" url:"device_info_model"`
 
 	_rawJSON json.RawMessage
 }
@@ -2854,10 +3044,10 @@ func (d *DevicePropertiesWyzeMetadata) String() string {
 }
 
 type DeviceProvider struct {
-	DeviceProviderName string                                 `json:"device_provider_name"`
-	DisplayName        string                                 `json:"display_name"`
-	ImageUrl           string                                 `json:"image_url"`
-	ProviderCategories []DeviceProviderProviderCategoriesItem `json:"provider_categories,omitempty"`
+	DeviceProviderName string                                 `json:"device_provider_name" url:"device_provider_name"`
+	DisplayName        string                                 `json:"display_name" url:"display_name"`
+	ImageUrl           string                                 `json:"image_url" url:"image_url"`
+	ProviderCategories []DeviceProviderProviderCategoriesItem `json:"provider_categories,omitempty" url:"provider_categories,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2890,6 +3080,8 @@ type DeviceProviderProviderCategoriesItem string
 const (
 	DeviceProviderProviderCategoriesItemStable             DeviceProviderProviderCategoriesItem = "stable"
 	DeviceProviderProviderCategoriesItemConsumerSmartlocks DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
+	DeviceProviderProviderCategoriesItemThermostats        DeviceProviderProviderCategoriesItem = "thermostats"
+	DeviceProviderProviderCategoriesItemNoiseSensors       DeviceProviderProviderCategoriesItem = "noise_sensors"
 )
 
 func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProviderProviderCategoriesItem, error) {
@@ -2898,6 +3090,10 @@ func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProvider
 		return DeviceProviderProviderCategoriesItemStable, nil
 	case "consumer_smartlocks":
 		return DeviceProviderProviderCategoriesItemConsumerSmartlocks, nil
+	case "thermostats":
+		return DeviceProviderProviderCategoriesItemThermostats, nil
+	case "noise_sensors":
+		return DeviceProviderProviderCategoriesItemNoiseSensors, nil
 	}
 	var t DeviceProviderProviderCategoriesItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3017,8 +3213,8 @@ func (d DeviceType) Ptr() *DeviceType {
 }
 
 type DeviceWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -3047,24 +3243,42 @@ func (d *DeviceWarningsItem) String() string {
 }
 
 type EnrollmentAutomation struct {
-	CredentialManagerAcsSystemId string    `json:"credential_manager_acs_system_id"`
-	UserIdentityId               string    `json:"user_identity_id"`
-	CreatedAt                    time.Time `json:"created_at"`
-	WorkspaceId                  string    `json:"workspace_id"`
-	EnrollmentAutomationId       string    `json:"enrollment_automation_id"`
+	CredentialManagerAcsSystemId string    `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	UserIdentityId               string    `json:"user_identity_id" url:"user_identity_id"`
+	CreatedAt                    time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId                  string    `json:"workspace_id" url:"workspace_id"`
+	EnrollmentAutomationId       string    `json:"enrollment_automation_id" url:"enrollment_automation_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (e *EnrollmentAutomation) UnmarshalJSON(data []byte) error {
-	type unmarshaler EnrollmentAutomation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EnrollmentAutomation
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EnrollmentAutomation(value)
+	*e = EnrollmentAutomation(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
 	e._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EnrollmentAutomation) MarshalJSON() ([]byte, error) {
+	type embed EnrollmentAutomation
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EnrollmentAutomation) String() string {
@@ -3080,25 +3294,47 @@ func (e *EnrollmentAutomation) String() string {
 }
 
 type Event struct {
-	EventId     string    `json:"event_id"`
-	DeviceId    *string   `json:"device_id,omitempty"`
-	EventType   string    `json:"event_type"`
-	WorkspaceId string    `json:"workspace_id"`
-	CreatedAt   time.Time `json:"created_at"`
-	OccurredAt  time.Time `json:"occurred_at"`
+	EventId     string    `json:"event_id" url:"event_id"`
+	DeviceId    *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	EventType   string    `json:"event_type" url:"event_type"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
+	OccurredAt  time.Time `json:"occurred_at" url:"occurred_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (e *Event) UnmarshalJSON(data []byte) error {
-	type unmarshaler Event
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed Event
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		OccurredAt *core.DateTime `json:"occurred_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = Event(value)
+	*e = Event(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+	e.OccurredAt = unmarshaler.OccurredAt.Time()
 	e._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *Event) MarshalJSON() ([]byte, error) {
+	type embed Event
+	var marshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		OccurredAt *core.DateTime `json:"occurred_at"`
+	}{
+		embed:      embed(*e),
+		CreatedAt:  core.NewDateTime(e.CreatedAt),
+		OccurredAt: core.NewDateTime(e.OccurredAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *Event) String() string {
@@ -3474,13 +3710,13 @@ func (m MaxTimeRounding) Ptr() *MaxTimeRounding {
 }
 
 type NoiseThreshold struct {
-	NoiseThresholdId       string   `json:"noise_threshold_id"`
-	DeviceId               string   `json:"device_id"`
-	Name                   string   `json:"name"`
-	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty"`
-	StartsDailyAt          string   `json:"starts_daily_at"`
-	EndsDailyAt            string   `json:"ends_daily_at"`
-	NoiseThresholdDecibels float64  `json:"noise_threshold_decibels"`
+	NoiseThresholdId       string   `json:"noise_threshold_id" url:"noise_threshold_id"`
+	DeviceId               string   `json:"device_id" url:"device_id"`
+	Name                   string   `json:"name" url:"name"`
+	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"noise_threshold_nrs,omitempty"`
+	StartsDailyAt          string   `json:"starts_daily_at" url:"starts_daily_at"`
+	EndsDailyAt            string   `json:"ends_daily_at" url:"ends_daily_at"`
+	NoiseThresholdDecibels float64  `json:"noise_threshold_decibels" url:"noise_threshold_decibels"`
 
 	_rawJSON json.RawMessage
 }
@@ -3510,39 +3746,57 @@ func (n *NoiseThreshold) String() string {
 
 type Phone struct {
 	// Unique identifier for the device.
-	DeviceId   string          `json:"device_id"`
-	DeviceType PhoneDeviceType `json:"device_type,omitempty"`
+	DeviceId   string          `json:"device_id" url:"device_id"`
+	DeviceType PhoneDeviceType `json:"device_type,omitempty" url:"device_type,omitempty"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
-	CapabilitiesSupported []PhoneCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
-	Properties            *PhoneProperties                 `json:"properties,omitempty"`
+	CapabilitiesSupported []PhoneCapabilitiesSupportedItem `json:"capabilities_supported,omitempty" url:"capabilities_supported,omitempty"`
+	Properties            *PhoneProperties                 `json:"properties,omitempty" url:"properties,omitempty"`
 	// Location information for the device.
-	Location *PhoneLocation `json:"location,omitempty"`
+	Location *PhoneLocation `json:"location,omitempty" url:"location,omitempty"`
 	// Unique identifier for the Seam workspace associated with the device.
-	WorkspaceId string `json:"workspace_id"`
+	WorkspaceId string `json:"workspace_id" url:"workspace_id"`
 	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
-	Errors []*PhoneErrorsItem `json:"errors,omitempty"`
+	Errors []*PhoneErrorsItem `json:"errors,omitempty" url:"errors,omitempty"`
 	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
-	Warnings []*PhoneWarningsItem `json:"warnings,omitempty"`
+	Warnings []*PhoneWarningsItem `json:"warnings,omitempty" url:"warnings,omitempty"`
 	// Date and time at which the device object was created.
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                   bool                                 `json:"is_managed"`
-	CustomMetadata              map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty"`
-	CanRemotelyUnlock           *bool                                `json:"can_remotely_unlock,omitempty"`
-	CanProgramOnlineAccessCodes *bool                                `json:"can_program_online_access_codes,omitempty"`
+	IsManaged                   bool                                 `json:"is_managed" url:"is_managed"`
+	CustomMetadata              map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	CanRemotelyUnlock           *bool                                `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                                `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (p *Phone) UnmarshalJSON(data []byte) error {
-	type unmarshaler Phone
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed Phone
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*p),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*p = Phone(value)
+	*p = Phone(unmarshaler.embed)
+	p.CreatedAt = unmarshaler.CreatedAt.Time()
 	p._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (p *Phone) MarshalJSON() ([]byte, error) {
+	type embed Phone
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*p),
+		CreatedAt: core.NewDateTime(p.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (p *Phone) String() string {
@@ -3687,8 +3941,8 @@ func (p PhoneDeviceType) Ptr() *PhoneDeviceType {
 }
 
 type PhoneErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -3719,9 +3973,9 @@ func (p *PhoneErrorsItem) String() string {
 // Location information for the device.
 type PhoneLocation struct {
 	// Name of the device location.
-	LocationName *string `json:"location_name,omitempty"`
+	LocationName *string `json:"location_name,omitempty" url:"location_name,omitempty"`
 	// Time zone of the device location.
-	Timezone *string `json:"timezone,omitempty"`
+	Timezone *string `json:"timezone,omitempty" url:"timezone,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3772,7 +4026,7 @@ func (p PhoneOperatingSystem) Ptr() *PhoneOperatingSystem {
 }
 
 type PhoneProperties struct {
-	AssaAbloyCredentialServiceMetadata *PhonePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty"`
+	AssaAbloyCredentialServiceMetadata *PhonePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty" url:"assa_abloy_credential_service_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3801,8 +4055,8 @@ func (p *PhoneProperties) String() string {
 }
 
 type PhonePropertiesAssaAbloyCredentialServiceMetadata struct {
-	HasActiveEndpoint bool                                                              `json:"has_active_endpoint"`
-	Endpoints         []*PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty"`
+	HasActiveEndpoint bool                                                              `json:"has_active_endpoint" url:"has_active_endpoint"`
+	Endpoints         []*PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem `json:"endpoints,omitempty" url:"endpoints,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3831,8 +4085,8 @@ func (p *PhonePropertiesAssaAbloyCredentialServiceMetadata) String() string {
 }
 
 type PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem struct {
-	EndpointId string `json:"endpoint_id"`
-	IsActive   bool   `json:"is_active"`
+	EndpointId string `json:"endpoint_id" url:"endpoint_id"`
+	IsActive   bool   `json:"is_active" url:"is_active"`
 
 	_rawJSON json.RawMessage
 }
@@ -3861,8 +4115,8 @@ func (p *PhonePropertiesAssaAbloyCredentialServiceMetadataEndpointsItem) String(
 }
 
 type PhoneWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -3938,9 +4192,9 @@ func (s SelectionMode) Ptr() *SelectionMode {
 }
 
 type ServiceHealth struct {
-	Service     string              `json:"service"`
-	Status      ServiceHealthStatus `json:"status,omitempty"`
-	Description string              `json:"description"`
+	Service     string              `json:"service" url:"service"`
+	Status      ServiceHealthStatus `json:"status,omitempty" url:"status,omitempty"`
+	Description string              `json:"description" url:"description"`
 
 	_rawJSON json.RawMessage
 }
@@ -3995,24 +4249,24 @@ func (s ServiceHealthStatus) Ptr() *ServiceHealthStatus {
 
 type UnmanagedAccessCode struct {
 	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
-	Type UnmanagedAccessCodeType `json:"type,omitempty"`
+	Type UnmanagedAccessCodeType `json:"type,omitempty" url:"type,omitempty"`
 	// Unique identifier for the access code.
-	AccessCodeId string `json:"access_code_id"`
+	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
 	// Unique identifier for the device associated with the access code.
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
 	// Code used for access. Typically, a numeric or alphanumeric string.
-	Code *string `json:"code,omitempty"`
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
 	// Date and time at which the access code was created.
-	CreatedAt time.Time   `json:"created_at"`
-	Errors    interface{} `json:"errors,omitempty"`
-	Warnings  interface{} `json:"warnings,omitempty"`
-	IsManaged bool        `json:"is_managed"`
+	CreatedAt time.Time   `json:"created_at" url:"created_at"`
+	Errors    interface{} `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsManaged bool        `json:"is_managed" url:"is_managed"`
 	// Date and time at which the time-bound access code becomes active.
-	StartsAt *time.Time `json:"starts_at,omitempty"`
+	StartsAt *time.Time `json:"starts_at,omitempty" url:"starts_at,omitempty"`
 	// Date and time after which the time-bound access code becomes inactive.
-	EndsAt *time.Time `json:"ends_at,omitempty"`
+	EndsAt *time.Time `json:"ends_at,omitempty" url:"ends_at,omitempty"`
 	status string
 
 	_rawJSON json.RawMessage
@@ -4023,12 +4277,22 @@ func (u *UnmanagedAccessCode) Status() string {
 }
 
 func (u *UnmanagedAccessCode) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedAccessCode
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UnmanagedAccessCode
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UnmanagedAccessCode(value)
+	*u = UnmanagedAccessCode(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
+	u.StartsAt = unmarshaler.StartsAt.TimePtr()
+	u.EndsAt = unmarshaler.EndsAt.TimePtr()
 	u.status = "set"
 	u._rawJSON = json.RawMessage(data)
 	return nil
@@ -4038,10 +4302,16 @@ func (u *UnmanagedAccessCode) MarshalJSON() ([]byte, error) {
 	type embed UnmanagedAccessCode
 	var marshaler = struct {
 		embed
-		Status string `json:"status"`
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+		Status    string         `json:"status"`
 	}{
-		embed:  embed(*u),
-		Status: "set",
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+		StartsAt:  core.NewOptionalDateTime(u.StartsAt),
+		EndsAt:    core.NewOptionalDateTime(u.EndsAt),
+		Status:    "set",
 	}
 	return json.Marshal(marshaler)
 }
@@ -4083,37 +4353,57 @@ func (u UnmanagedAccessCodeType) Ptr() *UnmanagedAccessCodeType {
 
 type UnmanagedDevice struct {
 	// Unique identifier for the device.
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 	// Type of the device.
-	DeviceType DeviceType `json:"device_type,omitempty"`
+	DeviceType DeviceType `json:"device_type,omitempty" url:"device_type,omitempty"`
 	// Unique identifier for the account associated with the device.
-	ConnectedAccountId string `json:"connected_account_id"`
+	ConnectedAccountId string `json:"connected_account_id" url:"connected_account_id"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
-	CapabilitiesSupported []UnmanagedDeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty"`
+	CapabilitiesSupported []UnmanagedDeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty" url:"capabilities_supported,omitempty"`
 	// Unique identifier for the Seam workspace associated with the device.
-	WorkspaceId string `json:"workspace_id"`
+	WorkspaceId string `json:"workspace_id" url:"workspace_id"`
 	// Array of errors associated with the device. Each error object within the array contains two fields: "error_code" and "message." "error_code" is a string that uniquely identifies the type of error, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the error, offering insights into the issue and potentially how to rectify it.
-	Errors []*UnmanagedDeviceErrorsItem `json:"errors,omitempty"`
+	Errors []*UnmanagedDeviceErrorsItem `json:"errors,omitempty" url:"errors,omitempty"`
 	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
-	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
+	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty" url:"warnings,omitempty"`
 	// Date and time at which the device object was created.
-	CreatedAt      time.Time                      `json:"created_at"`
-	IsManaged      bool                           `json:"is_managed"`
-	Properties     *UnmanagedDeviceProperties     `json:"properties,omitempty"`
-	DeviceProvider *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty"`
+	CreatedAt                   time.Time                      `json:"created_at" url:"created_at"`
+	IsManaged                   bool                           `json:"is_managed" url:"is_managed"`
+	Properties                  *UnmanagedDeviceProperties     `json:"properties,omitempty" url:"properties,omitempty"`
+	CanRemotelyUnlock           *bool                          `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                          `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	DeviceProvider              *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty" url:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UnmanagedDevice) UnmarshalJSON(data []byte) error {
-	type unmarshaler UnmanagedDevice
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UnmanagedDevice
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UnmanagedDevice(value)
+	*u = UnmanagedDevice(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UnmanagedDevice) MarshalJSON() ([]byte, error) {
+	type embed UnmanagedDevice
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UnmanagedDevice) String() string {
@@ -4163,7 +4453,7 @@ func (u UnmanagedDeviceCapabilitiesSupportedItem) Ptr() *UnmanagedDeviceCapabili
 }
 
 type UnmanagedDeviceDeviceProvider struct {
-	ProviderCategories interface{} `json:"provider_categories,omitempty"`
+	ProviderCategories interface{} `json:"provider_categories,omitempty" url:"provider_categories,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4192,8 +4482,8 @@ func (u *UnmanagedDeviceDeviceProvider) String() string {
 }
 
 type UnmanagedDeviceErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -4223,24 +4513,24 @@ func (u *UnmanagedDeviceErrorsItem) String() string {
 
 type UnmanagedDeviceProperties struct {
 	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Indicates whether the device is online.
-	Online bool `json:"online"`
+	Online bool `json:"online" url:"online"`
 	// Manufacturer of the device.
-	Manufacturer *string `json:"manufacturer,omitempty"`
+	Manufacturer *string `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
 	// Image URL for the device.
-	ImageUrl *string `json:"image_url,omitempty"`
+	ImageUrl *string `json:"image_url,omitempty" url:"image_url,omitempty"`
 	// Alt text for the device image.
-	ImageAltText *string `json:"image_alt_text,omitempty"`
+	ImageAltText *string `json:"image_alt_text,omitempty" url:"image_alt_text,omitempty"`
 	// Indicates the battery level of the device as a decimal value between 0 and 1, inclusive.
-	BatteryLevel *float64 `json:"battery_level,omitempty"`
+	BatteryLevel *float64 `json:"battery_level,omitempty" url:"battery_level,omitempty"`
 	// Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
-	Battery *UnmanagedDevicePropertiesBattery `json:"battery,omitempty"`
+	Battery *UnmanagedDevicePropertiesBattery `json:"battery,omitempty" url:"battery,omitempty"`
 	// Indicates whether it is currently possible to use online access codes for the device.
-	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty"`
+	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty" url:"online_access_codes_enabled,omitempty"`
 	// Indicates whether it is currently possible to use offline access codes for the device.
-	OfflineAccessCodesEnabled *bool                           `json:"offline_access_codes_enabled,omitempty"`
-	Model                     *UnmanagedDevicePropertiesModel `json:"model,omitempty"`
+	OfflineAccessCodesEnabled *bool                           `json:"offline_access_codes_enabled,omitempty" url:"offline_access_codes_enabled,omitempty"`
+	Model                     *UnmanagedDevicePropertiesModel `json:"model,omitempty" url:"model,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4270,8 +4560,8 @@ func (u *UnmanagedDeviceProperties) String() string {
 
 // Represents the current status of the battery charge level. Values are "critical," which indicates an extremely low level, suggesting imminent shutdown or an urgent need for charging; "low," which signifies that the battery is under the preferred threshold and should be charged soon; "good," which denotes a satisfactory charge level, adequate for normal use without the immediate need for recharging; and "full," which represents a battery that is fully charged, providing the maximum duration of usage.
 type UnmanagedDevicePropertiesBattery struct {
-	Level  float64                                `json:"level"`
-	Status UnmanagedDevicePropertiesBatteryStatus `json:"status,omitempty"`
+	Level  float64                                `json:"level" url:"level"`
+	Status UnmanagedDevicePropertiesBatteryStatus `json:"status,omitempty" url:"status,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4329,15 +4619,15 @@ func (u UnmanagedDevicePropertiesBatteryStatus) Ptr() *UnmanagedDeviceProperties
 
 type UnmanagedDevicePropertiesModel struct {
 	// Display name of the device model.
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"display_name" url:"display_name"`
 	// Display name that corresponds to the manufacturer-specific terminology for the device.
-	ManufacturerDisplayName string `json:"manufacturer_display_name"`
+	ManufacturerDisplayName string `json:"manufacturer_display_name" url:"manufacturer_display_name"`
 	// Indicates whether the device supports offline access codes.
-	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty"`
+	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.
-	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty"`
+	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty" url:"online_access_codes_supported,omitempty"`
 	// Indicates whether the device supports an accessory keypad.
-	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty"`
+	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty" url:"accessory_keypad_supported,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4366,8 +4656,8 @@ func (u *UnmanagedDevicePropertiesModel) String() string {
 }
 
 type UnmanagedDeviceWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -4396,10 +4686,10 @@ func (u *UnmanagedDeviceWarningsItem) String() string {
 }
 
 type Webhook struct {
-	WebhookId  string   `json:"webhook_id"`
-	Url        string   `json:"url"`
-	EventTypes []string `json:"event_types,omitempty"`
-	Secret     *string  `json:"secret,omitempty"`
+	WebhookId  string   `json:"webhook_id" url:"webhook_id"`
+	Url        string   `json:"url" url:"url"`
+	EventTypes []string `json:"event_types,omitempty" url:"event_types,omitempty"`
+	Secret     *string  `json:"secret,omitempty" url:"secret,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4428,10 +4718,10 @@ func (w *Webhook) String() string {
 }
 
 type Workspace struct {
-	WorkspaceId        string  `json:"workspace_id"`
-	Name               string  `json:"name"`
-	IsSandbox          bool    `json:"is_sandbox"`
-	ConnectPartnerName *string `json:"connect_partner_name,omitempty"`
+	WorkspaceId        string  `json:"workspace_id" url:"workspace_id"`
+	Name               string  `json:"name" url:"name"`
+	IsSandbox          bool    `json:"is_sandbox" url:"is_sandbox"`
+	ConnectPartnerName *string `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4460,7 +4750,7 @@ func (w *Workspace) String() string {
 }
 
 type ConnectedAccountsGetRequestConnectedAccountId struct {
-	ConnectedAccountId string `json:"connected_account_id"`
+	ConnectedAccountId string `json:"connected_account_id" url:"connected_account_id"`
 
 	_rawJSON json.RawMessage
 }
@@ -4489,7 +4779,7 @@ func (c *ConnectedAccountsGetRequestConnectedAccountId) String() string {
 }
 
 type ConnectedAccountsGetRequestEmail struct {
-	Email string `json:"email"`
+	Email string `json:"email" url:"email"`
 
 	_rawJSON json.RawMessage
 }
@@ -4518,23 +4808,41 @@ func (c *ConnectedAccountsGetRequestEmail) String() string {
 }
 
 type NetworksGetResponseNetwork struct {
-	NetworkId   string    `json:"network_id"`
-	WorkspaceId string    `json:"workspace_id"`
-	DisplayName string    `json:"display_name"`
-	CreatedAt   time.Time `json:"created_at"`
+	NetworkId   string    `json:"network_id" url:"network_id"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	DisplayName string    `json:"display_name" url:"display_name"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (n *NetworksGetResponseNetwork) UnmarshalJSON(data []byte) error {
-	type unmarshaler NetworksGetResponseNetwork
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed NetworksGetResponseNetwork
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*n),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*n = NetworksGetResponseNetwork(value)
+	*n = NetworksGetResponseNetwork(unmarshaler.embed)
+	n.CreatedAt = unmarshaler.CreatedAt.Time()
 	n._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (n *NetworksGetResponseNetwork) MarshalJSON() ([]byte, error) {
+	type embed NetworksGetResponseNetwork
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*n),
+		CreatedAt: core.NewDateTime(n.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (n *NetworksGetResponseNetwork) String() string {
@@ -4550,23 +4858,41 @@ func (n *NetworksGetResponseNetwork) String() string {
 }
 
 type NetworksListResponseNetworksItem struct {
-	NetworkId   string    `json:"network_id"`
-	WorkspaceId string    `json:"workspace_id"`
-	DisplayName string    `json:"display_name"`
-	CreatedAt   time.Time `json:"created_at"`
+	NetworkId   string    `json:"network_id" url:"network_id"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	DisplayName string    `json:"display_name" url:"display_name"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
 
 	_rawJSON json.RawMessage
 }
 
 func (n *NetworksListResponseNetworksItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler NetworksListResponseNetworksItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed NetworksListResponseNetworksItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*n),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*n = NetworksListResponseNetworksItem(value)
+	*n = NetworksListResponseNetworksItem(unmarshaler.embed)
+	n.CreatedAt = unmarshaler.CreatedAt.Time()
 	n._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (n *NetworksListResponseNetworksItem) MarshalJSON() ([]byte, error) {
+	type embed NetworksListResponseNetworksItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*n),
+		CreatedAt: core.NewDateTime(n.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (n *NetworksListResponseNetworksItem) String() string {
@@ -4610,27 +4936,45 @@ func (t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting) Ptr() *The
 }
 
 type UserIdentitiesCreateResponseUserIdentity struct {
-	UserIdentityId  string    `json:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name"`
-	FullName        *string   `json:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at"`
-	WorkspaceId     string    `json:"workspace_id"`
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UserIdentitiesCreateResponseUserIdentity) UnmarshalJSON(data []byte) error {
-	type unmarshaler UserIdentitiesCreateResponseUserIdentity
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UserIdentitiesCreateResponseUserIdentity
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UserIdentitiesCreateResponseUserIdentity(value)
+	*u = UserIdentitiesCreateResponseUserIdentity(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UserIdentitiesCreateResponseUserIdentity) MarshalJSON() ([]byte, error) {
+	type embed UserIdentitiesCreateResponseUserIdentity
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UserIdentitiesCreateResponseUserIdentity) String() string {
@@ -4646,7 +4990,7 @@ func (u *UserIdentitiesCreateResponseUserIdentity) String() string {
 }
 
 type UserIdentitiesGetRequestUserIdentityId struct {
-	UserIdentityId string `json:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 
 	_rawJSON json.RawMessage
 }
@@ -4675,7 +5019,7 @@ func (u *UserIdentitiesGetRequestUserIdentityId) String() string {
 }
 
 type UserIdentitiesGetRequestUserIdentityKey struct {
-	UserIdentityKey string `json:"user_identity_key"`
+	UserIdentityKey string `json:"user_identity_key" url:"user_identity_key"`
 
 	_rawJSON json.RawMessage
 }
@@ -4704,27 +5048,45 @@ func (u *UserIdentitiesGetRequestUserIdentityKey) String() string {
 }
 
 type UserIdentitiesGetResponseUserIdentity struct {
-	UserIdentityId  string    `json:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name"`
-	FullName        *string   `json:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at"`
-	WorkspaceId     string    `json:"workspace_id"`
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UserIdentitiesGetResponseUserIdentity) UnmarshalJSON(data []byte) error {
-	type unmarshaler UserIdentitiesGetResponseUserIdentity
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UserIdentitiesGetResponseUserIdentity
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UserIdentitiesGetResponseUserIdentity(value)
+	*u = UserIdentitiesGetResponseUserIdentity(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UserIdentitiesGetResponseUserIdentity) MarshalJSON() ([]byte, error) {
+	type embed UserIdentitiesGetResponseUserIdentity
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UserIdentitiesGetResponseUserIdentity) String() string {
@@ -4740,27 +5102,45 @@ func (u *UserIdentitiesGetResponseUserIdentity) String() string {
 }
 
 type UserIdentitiesListResponseUserIdentitiesItem struct {
-	UserIdentityId  string    `json:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name"`
-	FullName        *string   `json:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at"`
-	WorkspaceId     string    `json:"workspace_id"`
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UserIdentitiesListResponseUserIdentitiesItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler UserIdentitiesListResponseUserIdentitiesItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UserIdentitiesListResponseUserIdentitiesItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UserIdentitiesListResponseUserIdentitiesItem(value)
+	*u = UserIdentitiesListResponseUserIdentitiesItem(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UserIdentitiesListResponseUserIdentitiesItem) MarshalJSON() ([]byte, error) {
+	type embed UserIdentitiesListResponseUserIdentitiesItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UserIdentitiesListResponseUserIdentitiesItem) String() string {

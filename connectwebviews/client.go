@@ -7,12 +7,11 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
-	url "net/url"
 )
 
 type Client struct {
@@ -21,24 +20,37 @@ type Client struct {
 	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller:  core.NewCaller(options.HTTPClient),
-		header:  options.ToHeader(),
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Create(ctx context.Context, request *seamapigo.ConnectWebviewsCreateRequest) (*seamapigo.ConnectWebview, error) {
+func (c *Client) Create(
+	ctx context.Context,
+	request *seamapigo.ConnectWebviewsCreateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ConnectWebview, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "connect_webviews/create"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -72,7 +84,9 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ConnectWebviewsC
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -83,12 +97,23 @@ func (c *Client) Create(ctx context.Context, request *seamapigo.ConnectWebviewsC
 	return response.ConnectWebview, nil
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsDeleteRequest) (*seamapigo.ConnectWebviewsDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *seamapigo.ConnectWebviewsDeleteRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ConnectWebviewsDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "connect_webviews/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -122,7 +147,9 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsD
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -133,12 +160,23 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.ConnectWebviewsD
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectWebviewsGetRequest) (*seamapigo.ConnectWebview, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.ConnectWebviewsGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.ConnectWebview, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "connect_webviews/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -172,7 +210,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectWebviewsGetR
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -183,12 +223,23 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.ConnectWebviewsGetR
 	return response.ConnectWebview, nil
 }
 
-func (c *Client) List(ctx context.Context, request *seamapigo.ConnectWebviewsListRequest) ([]*seamapigo.ConnectWebview, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *seamapigo.ConnectWebviewsListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.ConnectWebview, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "connect_webviews/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -222,7 +273,9 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ConnectWebviewsLis
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -233,19 +286,31 @@ func (c *Client) List(ctx context.Context, request *seamapigo.ConnectWebviewsLis
 	return response.ConnectWebviews, nil
 }
 
-func (c *Client) View(ctx context.Context, request *seamapigo.ConnectWebviewsViewRequest) error {
+func (c *Client) View(
+	ctx context.Context,
+	request *seamapigo.ConnectWebviewsViewRequest,
+	opts ...option.RequestOption,
+) error {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "connect_webviews/view"
 
-	queryParams := make(url.Values)
-	queryParams.Add("connect_webview_id", fmt.Sprintf("%v", request.ConnectWebviewId))
-	queryParams.Add("auth_token", fmt.Sprintf("%v", request.AuthToken))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return err
+	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -278,7 +343,9 @@ func (c *Client) View(ctx context.Context, request *seamapigo.ConnectWebviewsVie
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodGet,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			ErrorDecoder: errorDecoder,
 		},
 	); err != nil {

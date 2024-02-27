@@ -10,16 +10,16 @@ import (
 )
 
 type SystemsGetRequest struct {
-	AcsSystemId string `json:"acs_system_id"`
+	AcsSystemId string `json:"acs_system_id" url:"acs_system_id"`
 }
 
 type SystemsListRequest struct {
-	ConnectedAccountId *string `json:"connected_account_id,omitempty"`
+	ConnectedAccountId *string `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
 }
 
 type SystemsGetResponse struct {
-	AcsSystem *seamapigo.AcsSystem `json:"acs_system,omitempty"`
-	Ok        bool                 `json:"ok"`
+	AcsSystem *seamapigo.AcsSystem `json:"acs_system,omitempty" url:"acs_system,omitempty"`
+	Ok        bool                 `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -48,8 +48,8 @@ func (s *SystemsGetResponse) String() string {
 }
 
 type SystemsListResponse struct {
-	AcsSystems []*seamapigo.AcsSystem `json:"acs_systems,omitempty"`
-	Ok         bool                   `json:"ok"`
+	AcsSystems []*seamapigo.AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
+	Ok         bool                   `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

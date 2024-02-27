@@ -9,12 +9,12 @@ import (
 )
 
 type CredentialPoolsListRequest struct {
-	AcsSystemId string `json:"acs_system_id"`
+	AcsSystemId string `json:"acs_system_id" url:"acs_system_id"`
 }
 
 type CredentialPoolsListResponse struct {
-	AcsCredentialPools []*CredentialPoolsListResponseAcsCredentialPoolsItem `json:"acs_credential_pools,omitempty"`
-	Ok                 bool                                                 `json:"ok"`
+	AcsCredentialPools []*CredentialPoolsListResponseAcsCredentialPoolsItem `json:"acs_credential_pools,omitempty" url:"acs_credential_pools,omitempty"`
+	Ok                 bool                                                 `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

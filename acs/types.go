@@ -10,12 +10,12 @@ import (
 )
 
 type CredentialPoolsListResponseAcsCredentialPoolsItem struct {
-	AcsCredentialPoolId     string    `json:"acs_credential_pool_id"`
-	AcsSystemId             string    `json:"acs_system_id"`
-	DisplayName             string    `json:"display_name"`
-	ExternalTypeDisplayName string    `json:"external_type_display_name"`
-	CreatedAt               time.Time `json:"created_at"`
-	WorkspaceId             string    `json:"workspace_id"`
+	AcsCredentialPoolId     string    `json:"acs_credential_pool_id" url:"acs_credential_pool_id"`
+	AcsSystemId             string    `json:"acs_system_id" url:"acs_system_id"`
+	DisplayName             string    `json:"display_name" url:"display_name"`
+	ExternalTypeDisplayName string    `json:"external_type_display_name" url:"external_type_display_name"`
+	CreatedAt               time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId             string    `json:"workspace_id" url:"workspace_id"`
 	externalType            string
 
 	_rawJSON json.RawMessage
@@ -26,12 +26,18 @@ func (c *CredentialPoolsListResponseAcsCredentialPoolsItem) ExternalType() strin
 }
 
 func (c *CredentialPoolsListResponseAcsCredentialPoolsItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialPoolsListResponseAcsCredentialPoolsItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialPoolsListResponseAcsCredentialPoolsItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialPoolsListResponseAcsCredentialPoolsItem(value)
+	*c = CredentialPoolsListResponseAcsCredentialPoolsItem(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c.externalType = "hid_part_number"
 	c._rawJSON = json.RawMessage(data)
 	return nil
@@ -41,9 +47,11 @@ func (c *CredentialPoolsListResponseAcsCredentialPoolsItem) MarshalJSON() ([]byt
 	type embed CredentialPoolsListResponseAcsCredentialPoolsItem
 	var marshaler = struct {
 		embed
-		ExternalType string `json:"external_type"`
+		CreatedAt    *core.DateTime `json:"created_at"`
+		ExternalType string         `json:"external_type"`
 	}{
 		embed:        embed(*c),
+		CreatedAt:    core.NewDateTime(c.CreatedAt),
 		ExternalType: "hid_part_number",
 	}
 	return json.Marshal(marshaler)
@@ -62,24 +70,42 @@ func (c *CredentialPoolsListResponseAcsCredentialPoolsItem) String() string {
 }
 
 type CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation struct {
-	AcsCredentialProvisioningAutomationId string    `json:"acs_credential_provisioning_automation_id"`
-	CredentialManagerAcsSystemId          string    `json:"credential_manager_acs_system_id"`
-	UserIdentityId                        string    `json:"user_identity_id"`
-	CreatedAt                             time.Time `json:"created_at"`
-	WorkspaceId                           string    `json:"workspace_id"`
+	AcsCredentialProvisioningAutomationId string    `json:"acs_credential_provisioning_automation_id" url:"acs_credential_provisioning_automation_id"`
+	CredentialManagerAcsSystemId          string    `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	UserIdentityId                        string    `json:"user_identity_id" url:"user_identity_id"`
+	CreatedAt                             time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId                           string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation(value)
+	*c = CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation) MarshalJSON() ([]byte, error) {
+	type embed CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation) String() string {
@@ -95,37 +121,55 @@ func (c *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisionin
 }
 
 type CredentialsAssignResponseAcsCredential struct {
-	AcsCredentialId            string                                                    `json:"acs_credential_id"`
-	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                    `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                    `json:"display_name"`
-	Code                       *string                                                   `json:"code,omitempty"`
-	AccessMethod               CredentialsAssignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsAssignResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                 `json:"created_at"`
-	WorkspaceId                string                                                    `json:"workspace_id"`
-	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsAssignResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsAssignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsAssignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                    `json:"display_name" url:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsAssignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsAssignResponseAcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsAssignResponseAcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsAssignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsAssignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsAssignResponseAcsCredential) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsAssignResponseAcsCredential
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsAssignResponseAcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsAssignResponseAcsCredential(value)
+	*c = CredentialsAssignResponseAcsCredential(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsAssignResponseAcsCredential) MarshalJSON() ([]byte, error) {
+	type embed CredentialsAssignResponseAcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsAssignResponseAcsCredential) String() string {
@@ -166,8 +210,8 @@ func (c CredentialsAssignResponseAcsCredentialAccessMethod) Ptr() *CredentialsAs
 }
 
 type CredentialsAssignResponseAcsCredentialErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -224,9 +268,9 @@ func (c CredentialsAssignResponseAcsCredentialExternalType) Ptr() *CredentialsAs
 }
 
 type CredentialsAssignResponseAcsCredentialVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -255,8 +299,8 @@ func (c *CredentialsAssignResponseAcsCredentialVisionlineMetadata) String() stri
 }
 
 type CredentialsAssignResponseAcsCredentialWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -307,37 +351,55 @@ func (c CredentialsCreateRequestVisionlineMetadataCardFormat) Ptr() *Credentials
 }
 
 type CredentialsCreateResponseAcsCredential struct {
-	AcsCredentialId            string                                                    `json:"acs_credential_id"`
-	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                    `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                    `json:"display_name"`
-	Code                       *string                                                   `json:"code,omitempty"`
-	AccessMethod               CredentialsCreateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsCreateResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                 `json:"created_at"`
-	WorkspaceId                string                                                    `json:"workspace_id"`
-	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsCreateResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsCreateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsCreateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                    `json:"display_name" url:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsCreateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsCreateResponseAcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsCreateResponseAcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsCreateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsCreateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsCreateResponseAcsCredential) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsCreateResponseAcsCredential
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsCreateResponseAcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsCreateResponseAcsCredential(value)
+	*c = CredentialsCreateResponseAcsCredential(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsCreateResponseAcsCredential) MarshalJSON() ([]byte, error) {
+	type embed CredentialsCreateResponseAcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsCreateResponseAcsCredential) String() string {
@@ -378,8 +440,8 @@ func (c CredentialsCreateResponseAcsCredentialAccessMethod) Ptr() *CredentialsCr
 }
 
 type CredentialsCreateResponseAcsCredentialErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -436,9 +498,9 @@ func (c CredentialsCreateResponseAcsCredentialExternalType) Ptr() *CredentialsCr
 }
 
 type CredentialsCreateResponseAcsCredentialVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -467,8 +529,8 @@ func (c *CredentialsCreateResponseAcsCredentialVisionlineMetadata) String() stri
 }
 
 type CredentialsCreateResponseAcsCredentialWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -497,37 +559,55 @@ func (c *CredentialsCreateResponseAcsCredentialWarningsItem) String() string {
 }
 
 type CredentialsGetResponseAcsCredential struct {
-	AcsCredentialId            string                                                 `json:"acs_credential_id"`
-	AcsUserId                  *string                                                `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                 `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                 `json:"display_name"`
-	Code                       *string                                                `json:"code,omitempty"`
-	AccessMethod               CredentialsGetResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsGetResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                              `json:"created_at"`
-	WorkspaceId                string                                                 `json:"workspace_id"`
-	StartsAt                   *string                                                `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsGetResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsGetResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                  `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsGetResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                 `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                 `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                 `json:"display_name" url:"display_name"`
+	Code                       *string                                                `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsGetResponseAcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsGetResponseAcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                              `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                 `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsGetResponseAcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsGetResponseAcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                  `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsGetResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsGetResponseAcsCredential) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsGetResponseAcsCredential
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsGetResponseAcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsGetResponseAcsCredential(value)
+	*c = CredentialsGetResponseAcsCredential(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsGetResponseAcsCredential) MarshalJSON() ([]byte, error) {
+	type embed CredentialsGetResponseAcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsGetResponseAcsCredential) String() string {
@@ -568,8 +648,8 @@ func (c CredentialsGetResponseAcsCredentialAccessMethod) Ptr() *CredentialsGetRe
 }
 
 type CredentialsGetResponseAcsCredentialErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -626,9 +706,9 @@ func (c CredentialsGetResponseAcsCredentialExternalType) Ptr() *CredentialsGetRe
 }
 
 type CredentialsGetResponseAcsCredentialVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -657,8 +737,8 @@ func (c *CredentialsGetResponseAcsCredentialVisionlineMetadata) String() string 
 }
 
 type CredentialsGetResponseAcsCredentialWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -686,155 +766,56 @@ func (c *CredentialsGetResponseAcsCredentialWarningsItem) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type CredentialsListRequestOne struct {
-	AcsSystemId string `json:"acs_system_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CredentialsListRequestOne) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsListRequestOne
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CredentialsListRequestOne(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CredentialsListRequestOne) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CredentialsListRequestTwo struct {
-	AcsUserId   string `json:"acs_user_id"`
-	AcsSystemId string `json:"acs_system_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CredentialsListRequestTwo) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsListRequestTwo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CredentialsListRequestTwo(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CredentialsListRequestTwo) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CredentialsListRequestUserIdentityId struct {
-	UserIdentityId string `json:"user_identity_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CredentialsListRequestUserIdentityId) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsListRequestUserIdentityId
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CredentialsListRequestUserIdentityId(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CredentialsListRequestUserIdentityId) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CredentialsListRequestZero struct {
-	AcsUserId string `json:"acs_user_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CredentialsListRequestZero) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsListRequestZero
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CredentialsListRequestZero(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CredentialsListRequestZero) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
 type CredentialsListResponseAcsCredentialsItem struct {
-	AcsCredentialId            string                                                       `json:"acs_credential_id"`
-	AcsUserId                  *string                                                      `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                      `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                       `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                      `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                       `json:"display_name"`
-	Code                       *string                                                      `json:"code,omitempty"`
-	AccessMethod               CredentialsListResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsListResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                      `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                    `json:"created_at"`
-	WorkspaceId                string                                                       `json:"workspace_id"`
-	StartsAt                   *string                                                      `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                      `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsListResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsListResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                        `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsListResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                       `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                      `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                      `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                       `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                      `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                       `json:"display_name" url:"display_name"`
+	Code                       *string                                                      `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsListResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsListResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                      `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                    `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                       `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                      `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                      `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsListResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsListResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                        `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsListResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsListResponseAcsCredentialsItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsListResponseAcsCredentialsItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsListResponseAcsCredentialsItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsListResponseAcsCredentialsItem(value)
+	*c = CredentialsListResponseAcsCredentialsItem(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsListResponseAcsCredentialsItem) MarshalJSON() ([]byte, error) {
+	type embed CredentialsListResponseAcsCredentialsItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsListResponseAcsCredentialsItem) String() string {
@@ -875,8 +856,8 @@ func (c CredentialsListResponseAcsCredentialsItemAccessMethod) Ptr() *Credential
 }
 
 type CredentialsListResponseAcsCredentialsItemErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -933,9 +914,9 @@ func (c CredentialsListResponseAcsCredentialsItemExternalType) Ptr() *Credential
 }
 
 type CredentialsListResponseAcsCredentialsItemVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -964,8 +945,8 @@ func (c *CredentialsListResponseAcsCredentialsItemVisionlineMetadata) String() s
 }
 
 type CredentialsListResponseAcsCredentialsItemWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -994,37 +975,55 @@ func (c *CredentialsListResponseAcsCredentialsItemWarningsItem) String() string 
 }
 
 type CredentialsUnassignResponseAcsCredential struct {
-	AcsCredentialId            string                                                      `json:"acs_credential_id"`
-	AcsUserId                  *string                                                     `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                     `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                      `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                     `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                      `json:"display_name"`
-	Code                       *string                                                     `json:"code,omitempty"`
-	AccessMethod               CredentialsUnassignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsUnassignResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                     `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                   `json:"created_at"`
-	WorkspaceId                string                                                      `json:"workspace_id"`
-	StartsAt                   *string                                                     `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                     `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsUnassignResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsUnassignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                       `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsUnassignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                      `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                     `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                     `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                      `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                     `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                      `json:"display_name" url:"display_name"`
+	Code                       *string                                                     `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsUnassignResponseAcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsUnassignResponseAcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                     `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                   `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                      `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                     `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                     `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsUnassignResponseAcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsUnassignResponseAcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                       `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsUnassignResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsUnassignResponseAcsCredential) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsUnassignResponseAcsCredential
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsUnassignResponseAcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsUnassignResponseAcsCredential(value)
+	*c = CredentialsUnassignResponseAcsCredential(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsUnassignResponseAcsCredential) MarshalJSON() ([]byte, error) {
+	type embed CredentialsUnassignResponseAcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsUnassignResponseAcsCredential) String() string {
@@ -1065,8 +1064,8 @@ func (c CredentialsUnassignResponseAcsCredentialAccessMethod) Ptr() *Credentials
 }
 
 type CredentialsUnassignResponseAcsCredentialErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1123,9 +1122,9 @@ func (c CredentialsUnassignResponseAcsCredentialExternalType) Ptr() *Credentials
 }
 
 type CredentialsUnassignResponseAcsCredentialVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1154,8 +1153,8 @@ func (c *CredentialsUnassignResponseAcsCredentialVisionlineMetadata) String() st
 }
 
 type CredentialsUnassignResponseAcsCredentialWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1184,37 +1183,55 @@ func (c *CredentialsUnassignResponseAcsCredentialWarningsItem) String() string {
 }
 
 type CredentialsUpdateResponseAcsCredential struct {
-	AcsCredentialId            string                                                    `json:"acs_credential_id"`
-	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                    `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                    `json:"display_name"`
-	Code                       *string                                                   `json:"code,omitempty"`
-	AccessMethod               CredentialsUpdateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *CredentialsUpdateResponseAcsCredentialExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                 `json:"created_at"`
-	WorkspaceId                string                                                    `json:"workspace_id"`
-	StartsAt                   *string                                                   `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                   `json:"ends_at,omitempty"`
-	Errors                     []*CredentialsUpdateResponseAcsCredentialErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*CredentialsUpdateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *CredentialsUpdateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                    `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                   `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                    `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                   `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                    `json:"display_name" url:"display_name"`
+	Code                       *string                                                   `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               CredentialsUpdateResponseAcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *CredentialsUpdateResponseAcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                   `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                 `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                    `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                   `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                   `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*CredentialsUpdateResponseAcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*CredentialsUpdateResponseAcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                     `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *CredentialsUpdateResponseAcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (c *CredentialsUpdateResponseAcsCredential) UnmarshalJSON(data []byte) error {
-	type unmarshaler CredentialsUpdateResponseAcsCredential
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed CredentialsUpdateResponseAcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*c = CredentialsUpdateResponseAcsCredential(value)
+	*c = CredentialsUpdateResponseAcsCredential(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
 	c._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (c *CredentialsUpdateResponseAcsCredential) MarshalJSON() ([]byte, error) {
+	type embed CredentialsUpdateResponseAcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (c *CredentialsUpdateResponseAcsCredential) String() string {
@@ -1255,8 +1272,8 @@ func (c CredentialsUpdateResponseAcsCredentialAccessMethod) Ptr() *CredentialsUp
 }
 
 type CredentialsUpdateResponseAcsCredentialErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1313,9 +1330,9 @@ func (c CredentialsUpdateResponseAcsCredentialExternalType) Ptr() *CredentialsUp
 }
 
 type CredentialsUpdateResponseAcsCredentialVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1344,8 +1361,8 @@ func (c *CredentialsUpdateResponseAcsCredentialVisionlineMetadata) String() stri
 }
 
 type CredentialsUpdateResponseAcsCredentialWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1374,24 +1391,42 @@ func (c *CredentialsUpdateResponseAcsCredentialWarningsItem) String() string {
 }
 
 type EntrancesGetResponseAcsEntrance struct {
-	AcsEntranceId      string                                             `json:"acs_entrance_id"`
-	DisplayName        string                                             `json:"display_name"`
-	AcsSystemId        string                                             `json:"acs_system_id"`
-	CreatedAt          time.Time                                          `json:"created_at"`
-	VisionlineMetadata *EntrancesGetResponseAcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsEntranceId      string                                             `json:"acs_entrance_id" url:"acs_entrance_id"`
+	DisplayName        string                                             `json:"display_name" url:"display_name"`
+	AcsSystemId        string                                             `json:"acs_system_id" url:"acs_system_id"`
+	CreatedAt          time.Time                                          `json:"created_at" url:"created_at"`
+	VisionlineMetadata *EntrancesGetResponseAcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (e *EntrancesGetResponseAcsEntrance) UnmarshalJSON(data []byte) error {
-	type unmarshaler EntrancesGetResponseAcsEntrance
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EntrancesGetResponseAcsEntrance
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntrancesGetResponseAcsEntrance(value)
+	*e = EntrancesGetResponseAcsEntrance(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
 	e._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EntrancesGetResponseAcsEntrance) MarshalJSON() ([]byte, error) {
+	type embed EntrancesGetResponseAcsEntrance
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EntrancesGetResponseAcsEntrance) String() string {
@@ -1407,9 +1442,9 @@ func (e *EntrancesGetResponseAcsEntrance) String() string {
 }
 
 type EntrancesGetResponseAcsEntranceVisionlineMetadata struct {
-	DoorName     string                                                           `json:"door_name"`
-	DoorCategory EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
-	Profiles     []*EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                           `json:"door_name" url:"door_name"`
+	DoorCategory EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory    `json:"door_category,omitempty" url:"door_category,omitempty"`
+	Profiles     []*EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem `json:"profiles,omitempty" url:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1469,8 +1504,8 @@ func (e EntrancesGetResponseAcsEntranceVisionlineMetadataDoorCategory) Ptr() *En
 }
 
 type EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItem struct {
-	VisionlineDoorProfileId   string                                                                                 `json:"visionline_door_profile_id"`
-	VisionlineDoorProfileType EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty"`
+	VisionlineDoorProfileId   string                                                                                 `json:"visionline_door_profile_id" url:"visionline_door_profile_id"`
+	VisionlineDoorProfileType EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty" url:"visionline_door_profile_type,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1524,37 +1559,55 @@ func (e EntrancesGetResponseAcsEntranceVisionlineMetadataProfilesItemVisionlineD
 }
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItem struct {
-	AcsCredentialId            string                                                                          `json:"acs_credential_id"`
-	AcsUserId                  *string                                                                         `json:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                                                                         `json:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                                                                          `json:"acs_system_id"`
-	ParentAcsCredentialId      *string                                                                         `json:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                                                                          `json:"display_name"`
-	Code                       *string                                                                         `json:"code,omitempty"`
-	AccessMethod               EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty"`
-	ExternalType               *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                                                                         `json:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                                                                       `json:"created_at"`
-	WorkspaceId                string                                                                          `json:"workspace_id"`
-	StartsAt                   *string                                                                         `json:"starts_at,omitempty"`
-	EndsAt                     *string                                                                         `json:"ends_at,omitempty"`
-	Errors                     []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty"`
-	Warnings                   []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                                                           `json:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsCredentialId            string                                                                          `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                                                                         `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                                                                         `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                                                                          `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                                                                         `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                                                                          `json:"display_name" url:"display_name"`
+	Code                       *string                                                                         `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                                                                         `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                                                                       `json:"created_at" url:"created_at"`
+	WorkspaceId                string                                                                          `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                                                                         `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                                                                         `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                                                                           `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler EntrancesListCredentialsWithAccessResponseAcsCredentialsItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EntrancesListCredentialsWithAccessResponseAcsCredentialsItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntrancesListCredentialsWithAccessResponseAcsCredentialsItem(value)
+	*e = EntrancesListCredentialsWithAccessResponseAcsCredentialsItem(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
 	e._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItem) MarshalJSON() ([]byte, error) {
+	type embed EntrancesListCredentialsWithAccessResponseAcsCredentialsItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItem) String() string {
@@ -1595,8 +1648,8 @@ func (e EntrancesListCredentialsWithAccessResponseAcsCredentialsItemAccessMethod
 }
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemErrorsItem struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1653,9 +1706,9 @@ func (e EntrancesListCredentialsWithAccessResponseAcsCredentialsItemExternalType
 }
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineMetadata struct {
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty"`
-	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty"`
-	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1684,8 +1737,8 @@ func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemVisionlineM
 }
 
 type EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsItem struct {
-	WarningCode string `json:"warning_code"`
-	Message     string `json:"message"`
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
@@ -1714,24 +1767,42 @@ func (e *EntrancesListCredentialsWithAccessResponseAcsCredentialsItemWarningsIte
 }
 
 type EntrancesListResponseAcsEntrancesItem struct {
-	AcsEntranceId      string                                                   `json:"acs_entrance_id"`
-	DisplayName        string                                                   `json:"display_name"`
-	AcsSystemId        string                                                   `json:"acs_system_id"`
-	CreatedAt          time.Time                                                `json:"created_at"`
-	VisionlineMetadata *EntrancesListResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsEntranceId      string                                                   `json:"acs_entrance_id" url:"acs_entrance_id"`
+	DisplayName        string                                                   `json:"display_name" url:"display_name"`
+	AcsSystemId        string                                                   `json:"acs_system_id" url:"acs_system_id"`
+	CreatedAt          time.Time                                                `json:"created_at" url:"created_at"`
+	VisionlineMetadata *EntrancesListResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (e *EntrancesListResponseAcsEntrancesItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler EntrancesListResponseAcsEntrancesItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EntrancesListResponseAcsEntrancesItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntrancesListResponseAcsEntrancesItem(value)
+	*e = EntrancesListResponseAcsEntrancesItem(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
 	e._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EntrancesListResponseAcsEntrancesItem) MarshalJSON() ([]byte, error) {
+	type embed EntrancesListResponseAcsEntrancesItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EntrancesListResponseAcsEntrancesItem) String() string {
@@ -1747,9 +1818,9 @@ func (e *EntrancesListResponseAcsEntrancesItem) String() string {
 }
 
 type EntrancesListResponseAcsEntrancesItemVisionlineMetadata struct {
-	DoorName     string                                                                 `json:"door_name"`
-	DoorCategory EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
-	Profiles     []*EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                                 `json:"door_name" url:"door_name"`
+	DoorCategory EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty" url:"door_category,omitempty"`
+	Profiles     []*EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty" url:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1809,8 +1880,8 @@ func (e EntrancesListResponseAcsEntrancesItemVisionlineMetadataDoorCategory) Ptr
 }
 
 type EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItem struct {
-	VisionlineDoorProfileId   string                                                                                       `json:"visionline_door_profile_id"`
-	VisionlineDoorProfileType EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty"`
+	VisionlineDoorProfileId   string                                                                                       `json:"visionline_door_profile_id" url:"visionline_door_profile_id"`
+	VisionlineDoorProfileType EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty" url:"visionline_door_profile_type,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1864,24 +1935,42 @@ func (e EntrancesListResponseAcsEntrancesItemVisionlineMetadataProfilesItemVisio
 }
 
 type UsersListAccessibleEntrancesResponseAcsEntrancesItem struct {
-	AcsEntranceId      string                                                                  `json:"acs_entrance_id"`
-	DisplayName        string                                                                  `json:"display_name"`
-	AcsSystemId        string                                                                  `json:"acs_system_id"`
-	CreatedAt          time.Time                                                               `json:"created_at"`
-	VisionlineMetadata *UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty"`
+	AcsEntranceId      string                                                                  `json:"acs_entrance_id" url:"acs_entrance_id"`
+	DisplayName        string                                                                  `json:"display_name" url:"display_name"`
+	AcsSystemId        string                                                                  `json:"acs_system_id" url:"acs_system_id"`
+	CreatedAt          time.Time                                                               `json:"created_at" url:"created_at"`
+	VisionlineMetadata *UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
 func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler UsersListAccessibleEntrancesResponseAcsEntrancesItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed UsersListAccessibleEntrancesResponseAcsEntrancesItem
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*u = UsersListAccessibleEntrancesResponseAcsEntrancesItem(value)
+	*u = UsersListAccessibleEntrancesResponseAcsEntrancesItem(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
 	u._rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) MarshalJSON() ([]byte, error) {
+	type embed UsersListAccessibleEntrancesResponseAcsEntrancesItem
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) String() string {
@@ -1897,9 +1986,9 @@ func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) String() string {
 }
 
 type UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata struct {
-	DoorName     string                                                                                `json:"door_name"`
-	DoorCategory UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty"`
-	Profiles     []*UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty"`
+	DoorName     string                                                                                `json:"door_name" url:"door_name"`
+	DoorCategory UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDoorCategory    `json:"door_category,omitempty" url:"door_category,omitempty"`
+	Profiles     []*UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem `json:"profiles,omitempty" url:"profiles,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1959,8 +2048,8 @@ func (u UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataDo
 }
 
 type UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItem struct {
-	VisionlineDoorProfileId   string                                                                                                      `json:"visionline_door_profile_id"`
-	VisionlineDoorProfileType UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty"`
+	VisionlineDoorProfileId   string                                                                                                      `json:"visionline_door_profile_id" url:"visionline_door_profile_id"`
+	VisionlineDoorProfileType UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty" url:"visionline_door_profile_type,omitempty"`
 
 	_rawJSON json.RawMessage
 }

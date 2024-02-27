@@ -10,35 +10,57 @@ import (
 )
 
 type DevicesDeleteRequest struct {
-	DeviceId string `json:"device_id"`
+	DeviceId string `json:"device_id" url:"device_id"`
 }
 
 type DevicesGetRequest struct {
-	DeviceId *string `json:"device_id,omitempty"`
-	Name     *string `json:"name,omitempty"`
+	DeviceId *string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	Name     *string `json:"name,omitempty" url:"name,omitempty"`
 }
 
 type DevicesListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                                              `json:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                                             `json:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                                              `json:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType                                          `json:"device_type,omitempty"`
-	DeviceTypes         []DeviceType                                         `json:"device_types,omitempty"`
-	Manufacturer        *Manufacturer                                        `json:"manufacturer,omitempty"`
-	DeviceIds           []string                                             `json:"device_ids,omitempty"`
-	Limit               *float64                                             `json:"limit,omitempty"`
-	CreatedBefore       *time.Time                                           `json:"created_before,omitempty"`
-	UserIdentifierKey   *string                                              `json:"user_identifier_key,omitempty"`
-	CustomMetadataHas   map[string]*DevicesListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty"`
+	ConnectedAccountId  *string                                              `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	ConnectedAccountIds []string                                             `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewId    *string                                              `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
+	DeviceType          *DeviceType                                          `json:"device_type,omitempty" url:"device_type,omitempty"`
+	DeviceTypes         []DeviceType                                         `json:"device_types,omitempty" url:"device_types,omitempty"`
+	Manufacturer        *Manufacturer                                        `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
+	DeviceIds           []string                                             `json:"device_ids,omitempty" url:"device_ids,omitempty"`
+	Limit               *float64                                             `json:"limit,omitempty" url:"limit,omitempty"`
+	CreatedBefore       *time.Time                                           `json:"created_before,omitempty" url:"created_before,omitempty"`
+	UserIdentifierKey   *string                                              `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	CustomMetadataHas   map[string]*DevicesListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+}
+
+func (d *DevicesListRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicesListRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*d = DevicesListRequest(body)
+	return nil
+}
+
+func (d *DevicesListRequest) MarshalJSON() ([]byte, error) {
+	type embed DevicesListRequest
+	var marshaler = struct {
+		embed
+		CreatedBefore *core.DateTime `json:"created_before,omitempty"`
+	}{
+		embed:         embed(*d),
+		CreatedBefore: core.NewOptionalDateTime(d.CreatedBefore),
+	}
+	return json.Marshal(marshaler)
 }
 
 type DevicesListDeviceProvidersRequest struct {
-	ProviderCategory *ProviderCategory `json:"provider_category,omitempty"`
+	ProviderCategory *ProviderCategory `json:"provider_category,omitempty" url:"provider_category,omitempty"`
 }
 
 type DevicesDeleteResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -67,8 +89,8 @@ func (d *DevicesDeleteResponse) String() string {
 }
 
 type DevicesGetResponse struct {
-	Device *Device `json:"device,omitempty"`
-	Ok     bool    `json:"ok"`
+	Device *Device `json:"device,omitempty" url:"device,omitempty"`
+	Ok     bool    `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -97,8 +119,8 @@ func (d *DevicesGetResponse) String() string {
 }
 
 type DevicesListDeviceProvidersResponse struct {
-	DeviceProviders []*DeviceProvider `json:"device_providers,omitempty"`
-	Ok              bool              `json:"ok"`
+	DeviceProviders []*DeviceProvider `json:"device_providers,omitempty" url:"device_providers,omitempty"`
+	Ok              bool              `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -200,8 +222,8 @@ func (d *DevicesListRequestCustomMetadataHasValue) Accept(visitor DevicesListReq
 }
 
 type DevicesListResponse struct {
-	Devices []*Device `json:"devices,omitempty"`
-	Ok      bool      `json:"ok"`
+	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
+	Ok      bool      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -303,7 +325,7 @@ func (d *DevicesUpdateRequestCustomMetadataValue) Accept(visitor DevicesUpdateRe
 }
 
 type DevicesUpdateRequestProperties struct {
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -332,7 +354,7 @@ func (d *DevicesUpdateRequestProperties) String() string {
 }
 
 type DevicesUpdateResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -361,9 +383,9 @@ func (d *DevicesUpdateResponse) String() string {
 }
 
 type DevicesUpdateRequest struct {
-	DeviceId       string                                              `json:"device_id"`
-	Properties     *DevicesUpdateRequestProperties                     `json:"properties,omitempty"`
-	Name           *string                                             `json:"name,omitempty"`
-	IsManaged      *bool                                               `json:"is_managed,omitempty"`
-	CustomMetadata map[string]*DevicesUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty"`
+	DeviceId       string                                              `json:"device_id" url:"device_id"`
+	Properties     *DevicesUpdateRequestProperties                     `json:"properties,omitempty" url:"properties,omitempty"`
+	Name           *string                                             `json:"name,omitempty" url:"name,omitempty"`
+	IsManaged      *bool                                               `json:"is_managed,omitempty" url:"is_managed,omitempty"`
+	CustomMetadata map[string]*DevicesUpdateRequestCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
 }

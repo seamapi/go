@@ -10,6 +10,7 @@ import (
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 	unmanaged "github.com/seamapi/go/devices/unmanaged"
+	option "github.com/seamapi/go/option"
 	io "io"
 	http "net/http"
 )
@@ -22,25 +23,38 @@ type Client struct {
 	Unmanaged *unmanaged.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:   options.BaseURL,
-		caller:    core.NewCaller(options.HTTPClient),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:    options.ToHeader(),
 		Unmanaged: unmanaged.NewClient(opts...),
 	}
 }
 
-func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteRequest) (*seamapigo.DevicesDeleteResponse, error) {
+func (c *Client) Delete(
+	ctx context.Context,
+	request *seamapigo.DevicesDeleteRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.DevicesDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "devices/delete"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -74,7 +88,9 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteReq
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -85,12 +101,23 @@ func (c *Client) Delete(ctx context.Context, request *seamapigo.DevicesDeleteReq
 	return response, nil
 }
 
-func (c *Client) Get(ctx context.Context, request *seamapigo.DevicesGetRequest) (*seamapigo.Device, error) {
+func (c *Client) Get(
+	ctx context.Context,
+	request *seamapigo.DevicesGetRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.Device, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "devices/get"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -124,7 +151,9 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.DevicesGetRequest) 
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -135,12 +164,23 @@ func (c *Client) Get(ctx context.Context, request *seamapigo.DevicesGetRequest) 
 	return response.Device, nil
 }
 
-func (c *Client) List(ctx context.Context, request *seamapigo.DevicesListRequest) ([]*seamapigo.Device, error) {
+func (c *Client) List(
+	ctx context.Context,
+	request *seamapigo.DevicesListRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.Device, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "devices/list"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -174,7 +214,9 @@ func (c *Client) List(ctx context.Context, request *seamapigo.DevicesListRequest
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -185,12 +227,23 @@ func (c *Client) List(ctx context.Context, request *seamapigo.DevicesListRequest
 	return response.Devices, nil
 }
 
-func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.DevicesListDeviceProvidersRequest) ([]*seamapigo.DeviceProvider, error) {
+func (c *Client) ListDeviceProviders(
+	ctx context.Context,
+	request *seamapigo.DevicesListDeviceProvidersRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.DeviceProvider, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "devices/list_device_providers"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -224,7 +277,9 @@ func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.Dev
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
@@ -235,12 +290,23 @@ func (c *Client) ListDeviceProviders(ctx context.Context, request *seamapigo.Dev
 	return response.DeviceProviders, nil
 }
 
-func (c *Client) Update(ctx context.Context, request *seamapigo.DevicesUpdateRequest) (*seamapigo.DevicesUpdateResponse, error) {
+func (c *Client) Update(
+	ctx context.Context,
+	request *seamapigo.DevicesUpdateRequest,
+	opts ...option.RequestOption,
+) (*seamapigo.DevicesUpdateResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
 	endpointURL := baseURL + "/" + "devices/update"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -274,7 +340,9 @@ func (c *Client) Update(ctx context.Context, request *seamapigo.DevicesUpdateReq
 		&core.CallParams{
 			URL:          endpointURL,
 			Method:       http.MethodPost,
-			Headers:      c.header,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
 			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,

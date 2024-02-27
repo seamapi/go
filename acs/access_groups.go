@@ -10,30 +10,30 @@ import (
 )
 
 type AccessGroupsAddUserRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id"`
-	AcsUserId        string `json:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type AccessGroupsGetRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
 }
 
 type AccessGroupsListRequest struct {
-	AcsSystemId *string `json:"acs_system_id,omitempty"`
-	AcsUserId   *string `json:"acs_user_id,omitempty"`
+	AcsSystemId *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	AcsUserId   *string `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
 }
 
 type AccessGroupsListUsersRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
 }
 
 type AccessGroupsRemoveUserRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id"`
-	AcsUserId        string `json:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
 }
 
 type AccessGroupsAddUserResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -62,8 +62,8 @@ func (a *AccessGroupsAddUserResponse) String() string {
 }
 
 type AccessGroupsGetResponse struct {
-	AcsAccessGroup *seamapigo.AcsAccessGroup `json:"acs_access_group,omitempty"`
-	Ok             bool                      `json:"ok"`
+	AcsAccessGroup *seamapigo.AcsAccessGroup `json:"acs_access_group,omitempty" url:"acs_access_group,omitempty"`
+	Ok             bool                      `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -92,8 +92,8 @@ func (a *AccessGroupsGetResponse) String() string {
 }
 
 type AccessGroupsListResponse struct {
-	AcsAccessGroups []*seamapigo.AcsAccessGroup `json:"acs_access_groups,omitempty"`
-	Ok              bool                        `json:"ok"`
+	AcsAccessGroups []*seamapigo.AcsAccessGroup `json:"acs_access_groups,omitempty" url:"acs_access_groups,omitempty"`
+	Ok              bool                        `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -122,8 +122,8 @@ func (a *AccessGroupsListResponse) String() string {
 }
 
 type AccessGroupsListUsersResponse struct {
-	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty"`
-	Ok       bool                 `json:"ok"`
+	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
+	Ok       bool                 `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -152,7 +152,7 @@ func (a *AccessGroupsListUsersResponse) String() string {
 }
 
 type AccessGroupsRemoveUserResponse struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
