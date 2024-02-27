@@ -47,6 +47,7 @@ type ClientSessionsListRequest struct {
 	UserIdentifierKey        *string `json:"user_identifier_key,omitempty"`
 	ConnectWebviewId         *string `json:"connect_webview_id,omitempty"`
 	WithoutUserIdentifierKey *bool   `json:"without_user_identifier_key,omitempty"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty"`
 }
 
 type ClientSessionsRevokeRequest struct {

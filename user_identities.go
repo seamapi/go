@@ -29,6 +29,10 @@ type UserIdentitiesGrantAccessToDeviceRequest struct {
 	DeviceId       string `json:"device_id"`
 }
 
+type UserIdentitiesListRequest struct {
+	CredentialManagerAcsSystemId *string `json:"credential_manager_acs_system_id,omitempty"`
+}
+
 type UserIdentitiesListAccessibleDevicesRequest struct {
 	UserIdentityId string `json:"user_identity_id"`
 }

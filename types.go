@@ -2890,6 +2890,8 @@ type DeviceProviderProviderCategoriesItem string
 const (
 	DeviceProviderProviderCategoriesItemStable             DeviceProviderProviderCategoriesItem = "stable"
 	DeviceProviderProviderCategoriesItemConsumerSmartlocks DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
+	DeviceProviderProviderCategoriesItemThermostats        DeviceProviderProviderCategoriesItem = "thermostats"
+	DeviceProviderProviderCategoriesItemNoiseSensors       DeviceProviderProviderCategoriesItem = "noise_sensors"
 )
 
 func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProviderProviderCategoriesItem, error) {
@@ -2898,6 +2900,10 @@ func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProvider
 		return DeviceProviderProviderCategoriesItemStable, nil
 	case "consumer_smartlocks":
 		return DeviceProviderProviderCategoriesItemConsumerSmartlocks, nil
+	case "thermostats":
+		return DeviceProviderProviderCategoriesItemThermostats, nil
+	case "noise_sensors":
+		return DeviceProviderProviderCategoriesItemNoiseSensors, nil
 	}
 	var t DeviceProviderProviderCategoriesItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -4097,10 +4103,12 @@ type UnmanagedDevice struct {
 	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
 	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty"`
 	// Date and time at which the device object was created.
-	CreatedAt      time.Time                      `json:"created_at"`
-	IsManaged      bool                           `json:"is_managed"`
-	Properties     *UnmanagedDeviceProperties     `json:"properties,omitempty"`
-	DeviceProvider *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty"`
+	CreatedAt                   time.Time                      `json:"created_at"`
+	IsManaged                   bool                           `json:"is_managed"`
+	Properties                  *UnmanagedDeviceProperties     `json:"properties,omitempty"`
+	CanRemotelyUnlock           *bool                          `json:"can_remotely_unlock,omitempty"`
+	CanProgramOnlineAccessCodes *bool                          `json:"can_program_online_access_codes,omitempty"`
+	DeviceProvider              *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }

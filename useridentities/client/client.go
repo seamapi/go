@@ -285,7 +285,7 @@ func (c *Client) GrantAccessToDevice(ctx context.Context, request *seamapigo.Use
 	return response, nil
 }
 
-func (c *Client) List(ctx context.Context) ([]*seamapigo.UserIdentitiesListResponseUserIdentitiesItem, error) {
+func (c *Client) List(ctx context.Context, request *seamapigo.UserIdentitiesListRequest) ([]*seamapigo.UserIdentitiesListResponseUserIdentitiesItem, error) {
 	baseURL := "https://connect.getseam.com"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -325,6 +325,7 @@ func (c *Client) List(ctx context.Context) ([]*seamapigo.UserIdentitiesListRespo
 			URL:          endpointURL,
 			Method:       http.MethodPost,
 			Headers:      c.header,
+			Request:      request,
 			Response:     &response,
 			ErrorDecoder: errorDecoder,
 		},
