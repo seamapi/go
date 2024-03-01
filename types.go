@@ -284,6 +284,8 @@ type AcsSystem struct {
 	CreatedAt             time.Time `json:"created_at" url:"created_at"`
 	WorkspaceId           string    `json:"workspace_id" url:"workspace_id"`
 	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ImageUrl              string    `json:"image_url" url:"image_url"`
+	ImageAltText          string    `json:"image_alt_text" url:"image_alt_text"`
 
 	_rawJSON json.RawMessage
 }
