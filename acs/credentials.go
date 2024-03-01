@@ -58,7 +58,10 @@ type CredentialsGetRequest struct {
 }
 
 type CredentialsListRequest struct {
-	IsMultiPhoneSyncCredential *bool `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	AcsUserId                  *string `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsSystemId                *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	UserIdentityId             *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	IsMultiPhoneSyncCredential *bool   `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
 }
 
 type CredentialsAssignResponse struct {

@@ -10,11 +10,10 @@ import (
 )
 
 type SimulateCreateSandboxPhoneRequest struct {
-	AssaAbloyCredentialServiceAcsSystemId string                                              `json:"assa_abloy_credential_service_acs_system_id" url:"assa_abloy_credential_service_acs_system_id"`
-	CustomSdkInstallationId               *string                                             `json:"custom_sdk_installation_id,omitempty" url:"custom_sdk_installation_id,omitempty"`
-	UserIdentityId                        string                                              `json:"user_identity_id" url:"user_identity_id"`
-	PhoneMetadata                         *SimulateCreateSandboxPhoneRequestPhoneMetadata     `json:"phone_metadata,omitempty" url:"phone_metadata,omitempty"`
-	AssaAbloyMetadata                     *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata `json:"assa_abloy_metadata,omitempty" url:"assa_abloy_metadata,omitempty"`
+	CustomSdkInstallationId *string                                             `json:"custom_sdk_installation_id,omitempty" url:"custom_sdk_installation_id,omitempty"`
+	UserIdentityId          string                                              `json:"user_identity_id" url:"user_identity_id"`
+	PhoneMetadata           *SimulateCreateSandboxPhoneRequestPhoneMetadata     `json:"phone_metadata,omitempty" url:"phone_metadata,omitempty"`
+	AssaAbloyMetadata       *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata `json:"assa_abloy_metadata,omitempty" url:"assa_abloy_metadata,omitempty"`
 }
 
 type SimulateCreateSandboxPhoneRequestAssaAbloyMetadata struct {
