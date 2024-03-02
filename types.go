@@ -3296,12 +3296,15 @@ func (e *EnrollmentAutomation) String() string {
 }
 
 type Event struct {
-	EventId     string    `json:"event_id" url:"event_id"`
-	DeviceId    *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
-	EventType   string    `json:"event_type" url:"event_type"`
-	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
-	CreatedAt   time.Time `json:"created_at" url:"created_at"`
-	OccurredAt  time.Time `json:"occurred_at" url:"occurred_at"`
+	EventId                string    `json:"event_id" url:"event_id"`
+	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
+	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
+	EventType              string    `json:"event_type" url:"event_type"`
+	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt              time.Time `json:"created_at" url:"created_at"`
+	OccurredAt             time.Time `json:"occurred_at" url:"occurred_at"`
 
 	_rawJSON json.RawMessage
 }
@@ -3398,6 +3401,9 @@ const (
 	EventTypeConnectedAccountCompletedFirstSync          EventType = "connected_account.completed_first_sync"
 	EventTypeNoiseSensorNoiseThresholdTriggered          EventType = "noise_sensor.noise_threshold_triggered"
 	EventTypeAccessCodeBackupAccessCodePulled            EventType = "access_code.backup_access_code_pulled"
+	EventTypeEnrollmentAutomationDeleted                 EventType = "enrollment_automation.deleted"
+	EventTypeAcsUserDeleted                              EventType = "acs_user.deleted"
+	EventTypeAcsCredentialDeleted                        EventType = "acs_credential.deleted"
 )
 
 func NewEventTypeFromString(s string) (EventType, error) {
@@ -3490,6 +3496,12 @@ func NewEventTypeFromString(s string) (EventType, error) {
 		return EventTypeNoiseSensorNoiseThresholdTriggered, nil
 	case "access_code.backup_access_code_pulled":
 		return EventTypeAccessCodeBackupAccessCodePulled, nil
+	case "enrollment_automation.deleted":
+		return EventTypeEnrollmentAutomationDeleted, nil
+	case "acs_user.deleted":
+		return EventTypeAcsUserDeleted, nil
+	case "acs_credential.deleted":
+		return EventTypeAcsCredentialDeleted, nil
 	}
 	var t EventType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
