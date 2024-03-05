@@ -3300,6 +3300,7 @@ type Event struct {
 	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
 	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
 	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	ClientSessionId        *string   `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
 	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
 	EventType              string    `json:"event_type" url:"event_type"`
 	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
@@ -3404,6 +3405,8 @@ const (
 	EventTypeEnrollmentAutomationDeleted                 EventType = "enrollment_automation.deleted"
 	EventTypeAcsUserDeleted                              EventType = "acs_user.deleted"
 	EventTypeAcsCredentialDeleted                        EventType = "acs_credential.deleted"
+	EventTypePhoneDeactivated                            EventType = "phone.deactivated"
+	EventTypeClientSessionDeleted                        EventType = "client_session.deleted"
 )
 
 func NewEventTypeFromString(s string) (EventType, error) {
@@ -3502,6 +3505,10 @@ func NewEventTypeFromString(s string) (EventType, error) {
 		return EventTypeAcsUserDeleted, nil
 	case "acs_credential.deleted":
 		return EventTypeAcsCredentialDeleted, nil
+	case "phone.deactivated":
+		return EventTypePhoneDeactivated, nil
+	case "client_session.deleted":
+		return EventTypeClientSessionDeleted, nil
 	}
 	var t EventType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
