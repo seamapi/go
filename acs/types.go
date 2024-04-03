@@ -1395,6 +1395,7 @@ type EntrancesGetResponseAcsEntrance struct {
 	DisplayName        string                                             `json:"display_name" url:"display_name"`
 	AcsSystemId        string                                             `json:"acs_system_id" url:"acs_system_id"`
 	CreatedAt          time.Time                                          `json:"created_at" url:"created_at"`
+	LatchMetadata      *EntrancesGetResponseAcsEntranceLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
 	VisionlineMetadata *EntrancesGetResponseAcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -1430,6 +1431,38 @@ func (e *EntrancesGetResponseAcsEntrance) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntrancesGetResponseAcsEntrance) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesGetResponseAcsEntranceLatchMetadata struct {
+	AccessibilityType string `json:"accessibility_type" url:"accessibility_type"`
+	Name              string `json:"name" url:"name"`
+	Type              string `json:"type" url:"type"`
+	IsConnected       bool   `json:"is_connected" url:"is_connected"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesGetResponseAcsEntranceLatchMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesGetResponseAcsEntranceLatchMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesGetResponseAcsEntranceLatchMetadata(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesGetResponseAcsEntranceLatchMetadata) String() string {
 	if len(e._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value
@@ -1771,6 +1804,7 @@ type EntrancesListResponseAcsEntrancesItem struct {
 	DisplayName        string                                                   `json:"display_name" url:"display_name"`
 	AcsSystemId        string                                                   `json:"acs_system_id" url:"acs_system_id"`
 	CreatedAt          time.Time                                                `json:"created_at" url:"created_at"`
+	LatchMetadata      *EntrancesListResponseAcsEntrancesItemLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
 	VisionlineMetadata *EntrancesListResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -1806,6 +1840,38 @@ func (e *EntrancesListResponseAcsEntrancesItem) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntrancesListResponseAcsEntrancesItem) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EntrancesListResponseAcsEntrancesItemLatchMetadata struct {
+	AccessibilityType string `json:"accessibility_type" url:"accessibility_type"`
+	Name              string `json:"name" url:"name"`
+	Type              string `json:"type" url:"type"`
+	IsConnected       bool   `json:"is_connected" url:"is_connected"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *EntrancesListResponseAcsEntrancesItemLatchMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntrancesListResponseAcsEntrancesItemLatchMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntrancesListResponseAcsEntrancesItemLatchMetadata(value)
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntrancesListResponseAcsEntrancesItemLatchMetadata) String() string {
 	if len(e._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
 			return value
@@ -1939,6 +2005,7 @@ type UsersListAccessibleEntrancesResponseAcsEntrancesItem struct {
 	DisplayName        string                                                                  `json:"display_name" url:"display_name"`
 	AcsSystemId        string                                                                  `json:"acs_system_id" url:"acs_system_id"`
 	CreatedAt          time.Time                                                               `json:"created_at" url:"created_at"`
+	LatchMetadata      *UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
 	VisionlineMetadata *UsersListAccessibleEntrancesResponseAcsEntrancesItemVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -1974,6 +2041,38 @@ func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) MarshalJSON() ([]
 }
 
 func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItem) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata struct {
+	AccessibilityType string `json:"accessibility_type" url:"accessibility_type"`
+	Name              string `json:"name" url:"name"`
+	Type              string `json:"type" url:"type"`
+	IsConnected       bool   `json:"is_connected" url:"is_connected"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UsersListAccessibleEntrancesResponseAcsEntrancesItemLatchMetadata) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value

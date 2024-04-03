@@ -163,9 +163,13 @@ type AcsAccessGroup struct {
 	AcsSystemId      string `json:"acs_system_id" url:"acs_system_id"`
 	WorkspaceId      string `json:"workspace_id" url:"workspace_id"`
 	Name             string `json:"name" url:"name"`
+	// ---
 	// deprecated: use external_type
+	// ---
 	AccessGroupType AcsAccessGroupAccessGroupType `json:"access_group_type,omitempty" url:"access_group_type,omitempty"`
+	// ---
 	// deprecated: use external_type_display_name
+	// ---
 	AccessGroupTypeDisplayName string                     `json:"access_group_type_display_name" url:"access_group_type_display_name"`
 	ExternalType               AcsAccessGroupExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
 	ExternalTypeDisplayName    string                     `json:"external_type_display_name" url:"external_type_display_name"`
@@ -215,7 +219,9 @@ func (a *AcsAccessGroup) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+// ---
 // deprecated: use external_type
+// ---
 type AcsAccessGroupAccessGroupType string
 
 const (
@@ -276,9 +282,13 @@ type AcsSystem struct {
 	AcsSystemId             string                `json:"acs_system_id" url:"acs_system_id"`
 	ExternalType            AcsSystemExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
 	ExternalTypeDisplayName string                `json:"external_type_display_name" url:"external_type_display_name"`
+	// ---
 	// deprecated: use external_type
+	// ---
 	SystemType AcsSystemSystemType `json:"system_type,omitempty" url:"system_type,omitempty"`
+	// ---
 	// deprecated: use external_type_display_name
+	// ---
 	SystemTypeDisplayName string    `json:"system_type_display_name" url:"system_type_display_name"`
 	Name                  string    `json:"name" url:"name"`
 	CreatedAt             time.Time `json:"created_at" url:"created_at"`
@@ -286,6 +296,7 @@ type AcsSystem struct {
 	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
 	ImageUrl              string    `json:"image_url" url:"image_url"`
 	ImageAltText          string    `json:"image_alt_text" url:"image_alt_text"`
+	CanAutomateEnrollment *bool     `json:"can_automate_enrollment,omitempty" url:"can_automate_enrollment,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -341,6 +352,7 @@ const (
 	AcsSystemExternalTypeHidCredentialManagerOrganization AcsSystemExternalType = "hid_credential_manager_organization"
 	AcsSystemExternalTypeVisionlineSystem                 AcsSystemExternalType = "visionline_system"
 	AcsSystemExternalTypeAssaAbloyCredentialService       AcsSystemExternalType = "assa_abloy_credential_service"
+	AcsSystemExternalTypeLatchBuilding                    AcsSystemExternalType = "latch_building"
 )
 
 func NewAcsSystemExternalTypeFromString(s string) (AcsSystemExternalType, error) {
@@ -359,6 +371,8 @@ func NewAcsSystemExternalTypeFromString(s string) (AcsSystemExternalType, error)
 		return AcsSystemExternalTypeVisionlineSystem, nil
 	case "assa_abloy_credential_service":
 		return AcsSystemExternalTypeAssaAbloyCredentialService, nil
+	case "latch_building":
+		return AcsSystemExternalTypeLatchBuilding, nil
 	}
 	var t AcsSystemExternalType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -368,7 +382,9 @@ func (a AcsSystemExternalType) Ptr() *AcsSystemExternalType {
 	return &a
 }
 
+// ---
 // deprecated: use external_type
+// ---
 type AcsSystemSystemType string
 
 const (
@@ -379,6 +395,7 @@ const (
 	AcsSystemSystemTypeHidCredentialManagerOrganization AcsSystemSystemType = "hid_credential_manager_organization"
 	AcsSystemSystemTypeVisionlineSystem                 AcsSystemSystemType = "visionline_system"
 	AcsSystemSystemTypeAssaAbloyCredentialService       AcsSystemSystemType = "assa_abloy_credential_service"
+	AcsSystemSystemTypeLatchBuilding                    AcsSystemSystemType = "latch_building"
 )
 
 func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
@@ -397,6 +414,8 @@ func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
 		return AcsSystemSystemTypeVisionlineSystem, nil
 	case "assa_abloy_credential_service":
 		return AcsSystemSystemTypeAssaAbloyCredentialService, nil
+	case "latch_building":
+		return AcsSystemSystemTypeLatchBuilding, nil
 	}
 	var t AcsSystemSystemType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -421,7 +440,9 @@ type AcsUser struct {
 	UserIdentityEmailAddress *string                `json:"user_identity_email_address,omitempty" url:"user_identity_email_address,omitempty"`
 	UserIdentityPhoneNumber  *string                `json:"user_identity_phone_number,omitempty" url:"user_identity_phone_number,omitempty"`
 	FullName                 *string                `json:"full_name,omitempty" url:"full_name,omitempty"`
-	// Deprecated: use email_address.
+	// ---
+	// deprecated: use email_address.
+	// ---
 	Email        *string `json:"email,omitempty" url:"email,omitempty"`
 	EmailAddress *string `json:"email_address,omitempty" url:"email_address,omitempty"`
 	PhoneNumber  *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
@@ -1264,6 +1285,10 @@ type Device struct {
 	DeviceId string `json:"device_id" url:"device_id"`
 	// Type of the device.
 	DeviceType DeviceType `json:"device_type,omitempty" url:"device_type,omitempty"`
+	// Optional nickname to describe the device, settable through Seam
+	Nickname *string `json:"nickname,omitempty" url:"nickname,omitempty"`
+	// Display name of the device, defaults to nickname (if it is set) or properties.appearance.name otherwise. Enables administrators and users to identify the device easily, especially when there are numerous devices.
+	DisplayName string `json:"display_name" url:"display_name"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
 	CapabilitiesSupported []DeviceCapabilitiesSupportedItem `json:"capabilities_supported,omitempty" url:"capabilities_supported,omitempty"`
 	// Properties of the device.
@@ -1284,7 +1309,9 @@ type Device struct {
 	IsManaged                   bool                                  `json:"is_managed" url:"is_managed"`
 	CustomMetadata              map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
 	CanRemotelyUnlock           *bool                                 `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock             *bool                                 `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
 	CanProgramOnlineAccessCodes *bool                                 `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval          *bool                                 `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1504,9 +1531,15 @@ func (d *DeviceLocation) String() string {
 type DeviceProperties struct {
 	// Indicates whether the device is online.
 	Online bool `json:"online" url:"online"`
-	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
-	Name  string                 `json:"name" url:"name"`
-	Model *DevicePropertiesModel `json:"model,omitempty" url:"model,omitempty"`
+	// ---
+	// deprecated: use device.display_name instead
+	// ---
+	// Name of the device.
+	Name string `json:"name" url:"name"`
+	// Represents the accessory keypad state.
+	AccessoryKeypad *DevicePropertiesAccessoryKeypad `json:"accessory_keypad,omitempty" url:"accessory_keypad,omitempty"`
+	Appearance      *DevicePropertiesAppearance      `json:"appearance,omitempty" url:"appearance,omitempty"`
+	Model           *DevicePropertiesModel           `json:"model,omitempty" url:"model,omitempty"`
 	// Indicates whether the device has direct power.
 	HasDirectPower *bool `json:"has_direct_power,omitempty" url:"has_direct_power,omitempty"`
 	// Indicates the battery level of the device as a decimal value between 0 and 1, inclusive.
@@ -1525,9 +1558,13 @@ type DeviceProperties struct {
 	OnlineAccessCodesEnabled *bool `json:"online_access_codes_enabled,omitempty" url:"online_access_codes_enabled,omitempty"`
 	// Indicates whether it is currently possible to use offline access codes for the device.
 	OfflineAccessCodesEnabled *bool `json:"offline_access_codes_enabled,omitempty" url:"offline_access_codes_enabled,omitempty"`
-	// Deprecated. Use model.accessory_keypad_supported.
+	// ---
+	// deprecated: use model.accessory_keypad_supported
+	// ---
 	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty" url:"supports_accessory_keypad,omitempty"`
-	// Deprecated. Use offline_access_codes_enabled.
+	// ---
+	// deprecated: use offline_access_codes_enabled
+	// ---
 	SupportsOfflineAccessCodes                      *bool                                               `json:"supports_offline_access_codes,omitempty" url:"supports_offline_access_codes,omitempty"`
 	AssaAbloyCredentialServiceMetadata              *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty" url:"assa_abloy_credential_service_metadata,omitempty"`
 	AugustMetadata                                  *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty" url:"august_metadata,omitempty"`
@@ -1551,7 +1588,7 @@ type DeviceProperties struct {
 	IgloohomeMetadata                               *DevicePropertiesIgloohomeMetadata                  `json:"igloohome_metadata,omitempty" url:"igloohome_metadata,omitempty"`
 	NestMetadata                                    *DevicePropertiesNestMetadata                       `json:"nest_metadata,omitempty" url:"nest_metadata,omitempty"`
 	EcobeeMetadata                                  *DevicePropertiesEcobeeMetadata                     `json:"ecobee_metadata,omitempty" url:"ecobee_metadata,omitempty"`
-	HoneywellMetadata                               *DevicePropertiesHoneywellMetadata                  `json:"honeywell_metadata,omitempty" url:"honeywell_metadata,omitempty"`
+	HoneywellResideoMetadata                        *DevicePropertiesHoneywellResideoMetadata           `json:"honeywell_resideo_metadata,omitempty" url:"honeywell_resideo_metadata,omitempty"`
 	HubitatMetadata                                 *DevicePropertiesHubitatMetadata                    `json:"hubitat_metadata,omitempty" url:"hubitat_metadata,omitempty"`
 	DormakabaOracodeMetadata                        *DevicePropertiesDormakabaOracodeMetadata           `json:"dormakaba_oracode_metadata,omitempty" url:"dormakaba_oracode_metadata,omitempty"`
 	WyzeMetadata                                    *DevicePropertiesWyzeMetadata                       `json:"wyze_metadata,omitempty" url:"wyze_metadata,omitempty"`
@@ -1581,6 +1618,67 @@ func (d *DeviceProperties) UnmarshalJSON(data []byte) error {
 }
 
 func (d *DeviceProperties) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Represents the accessory keypad state.
+type DevicePropertiesAccessoryKeypad struct {
+	// Indicates if the accessory_keypad is connected to the device.
+	IsConnected bool `json:"is_connected" url:"is_connected"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesAccessoryKeypad) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesAccessoryKeypad
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesAccessoryKeypad(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesAccessoryKeypad) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DevicePropertiesAppearance struct {
+	// Name of the device as seen from the provider API and application, not settable through Seam.
+	Name string `json:"name" url:"name"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesAppearance) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesAppearance
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesAppearance(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesAppearance) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value
@@ -2182,25 +2280,25 @@ func (d *DevicePropertiesGenieMetadata) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-type DevicePropertiesHoneywellMetadata struct {
-	HoneywellDeviceId string `json:"honeywell_device_id" url:"honeywell_device_id"`
-	DeviceName        string `json:"device_name" url:"device_name"`
+type DevicePropertiesHoneywellResideoMetadata struct {
+	HoneywellResideoDeviceId string `json:"honeywell_resideo_device_id" url:"honeywell_resideo_device_id"`
+	DeviceName               string `json:"device_name" url:"device_name"`
 
 	_rawJSON json.RawMessage
 }
 
-func (d *DevicePropertiesHoneywellMetadata) UnmarshalJSON(data []byte) error {
-	type unmarshaler DevicePropertiesHoneywellMetadata
+func (d *DevicePropertiesHoneywellResideoMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesHoneywellResideoMetadata
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*d = DevicePropertiesHoneywellMetadata(value)
+	*d = DevicePropertiesHoneywellResideoMetadata(value)
 	d._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (d *DevicePropertiesHoneywellMetadata) String() string {
+func (d *DevicePropertiesHoneywellResideoMetadata) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value
@@ -2612,10 +2710,14 @@ func (d *DevicePropertiesMinutMetadataLatestSensorValuesTemperature) String() st
 }
 
 type DevicePropertiesModel struct {
+	// Indicates whether the device can connect a accessory keypad.
+	CanConnectAccessoryKeypad *bool `json:"can_connect_accessory_keypad,omitempty" url:"can_connect_accessory_keypad,omitempty"`
 	// Display name of the device model.
 	DisplayName string `json:"display_name" url:"display_name"`
 	// Display name that corresponds to the manufacturer-specific terminology for the device.
 	ManufacturerDisplayName string `json:"manufacturer_display_name" url:"manufacturer_display_name"`
+	// Indicates whether the device has a built in accessory keypad.
+	HasBuiltInKeypad *bool `json:"has_built_in_keypad,omitempty" url:"has_built_in_keypad,omitempty"`
 	// Indicates whether the device supports offline access codes.
 	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.
@@ -2918,12 +3020,13 @@ func (d *DevicePropertiesSmartthingsMetadata) String() string {
 }
 
 type DevicePropertiesTedeeMetadata struct {
-	DeviceId     float64 `json:"device_id" url:"device_id"`
-	SerialNumber string  `json:"serial_number" url:"serial_number"`
-	DeviceName   string  `json:"device_name" url:"device_name"`
-	DeviceModel  string  `json:"device_model" url:"device_model"`
-	BridgeId     float64 `json:"bridge_id" url:"bridge_id"`
-	BridgeName   string  `json:"bridge_name" url:"bridge_name"`
+	DeviceId     float64  `json:"device_id" url:"device_id"`
+	SerialNumber string   `json:"serial_number" url:"serial_number"`
+	DeviceName   string   `json:"device_name" url:"device_name"`
+	DeviceModel  string   `json:"device_model" url:"device_model"`
+	BridgeId     float64  `json:"bridge_id" url:"bridge_id"`
+	BridgeName   string   `json:"bridge_name" url:"bridge_name"`
+	KeypadId     *float64 `json:"keypad_id,omitempty" url:"keypad_id,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3046,7 +3149,7 @@ func (d *DevicePropertiesWyzeMetadata) String() string {
 }
 
 type DeviceProvider struct {
-	DeviceProviderName string                                 `json:"device_provider_name" url:"device_provider_name"`
+	DeviceProviderName DeviceProviderDeviceProviderName       `json:"device_provider_name,omitempty" url:"device_provider_name,omitempty"`
 	DisplayName        string                                 `json:"display_name" url:"display_name"`
 	ImageUrl           string                                 `json:"image_url" url:"image_url"`
 	ProviderCategories []DeviceProviderProviderCategoriesItem `json:"provider_categories,omitempty" url:"provider_categories,omitempty"`
@@ -3077,13 +3180,141 @@ func (d *DeviceProvider) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
+type DeviceProviderDeviceProviderName string
+
+const (
+	DeviceProviderDeviceProviderNameAkuvox                     DeviceProviderDeviceProviderName = "akuvox"
+	DeviceProviderDeviceProviderNameAugust                     DeviceProviderDeviceProviderName = "august"
+	DeviceProviderDeviceProviderNameAvigilonAlta               DeviceProviderDeviceProviderName = "avigilon_alta"
+	DeviceProviderDeviceProviderNameBrivo                      DeviceProviderDeviceProviderName = "brivo"
+	DeviceProviderDeviceProviderNameButterflymx                DeviceProviderDeviceProviderName = "butterflymx"
+	DeviceProviderDeviceProviderNameSchlage                    DeviceProviderDeviceProviderName = "schlage"
+	DeviceProviderDeviceProviderNameSmartthings                DeviceProviderDeviceProviderName = "smartthings"
+	DeviceProviderDeviceProviderNameYale                       DeviceProviderDeviceProviderName = "yale"
+	DeviceProviderDeviceProviderNameGenie                      DeviceProviderDeviceProviderName = "genie"
+	DeviceProviderDeviceProviderNameDoorking                   DeviceProviderDeviceProviderName = "doorking"
+	DeviceProviderDeviceProviderNameSalto                      DeviceProviderDeviceProviderName = "salto"
+	DeviceProviderDeviceProviderNameLockly                     DeviceProviderDeviceProviderName = "lockly"
+	DeviceProviderDeviceProviderNameTtlock                     DeviceProviderDeviceProviderName = "ttlock"
+	DeviceProviderDeviceProviderNameLinear                     DeviceProviderDeviceProviderName = "linear"
+	DeviceProviderDeviceProviderNameNoiseaware                 DeviceProviderDeviceProviderName = "noiseaware"
+	DeviceProviderDeviceProviderNameNuki                       DeviceProviderDeviceProviderName = "nuki"
+	DeviceProviderDeviceProviderNameSeamRelayAdmin             DeviceProviderDeviceProviderName = "seam_relay_admin"
+	DeviceProviderDeviceProviderNameIgloo                      DeviceProviderDeviceProviderName = "igloo"
+	DeviceProviderDeviceProviderNameKwikset                    DeviceProviderDeviceProviderName = "kwikset"
+	DeviceProviderDeviceProviderNameMinut                      DeviceProviderDeviceProviderName = "minut"
+	DeviceProviderDeviceProviderNameMy2N                       DeviceProviderDeviceProviderName = "my_2n"
+	DeviceProviderDeviceProviderNameControlbyweb               DeviceProviderDeviceProviderName = "controlbyweb"
+	DeviceProviderDeviceProviderNameNest                       DeviceProviderDeviceProviderName = "nest"
+	DeviceProviderDeviceProviderNameIgloohome                  DeviceProviderDeviceProviderName = "igloohome"
+	DeviceProviderDeviceProviderNameEcobee                     DeviceProviderDeviceProviderName = "ecobee"
+	DeviceProviderDeviceProviderNameHubitat                    DeviceProviderDeviceProviderName = "hubitat"
+	DeviceProviderDeviceProviderNameFourSuites                 DeviceProviderDeviceProviderName = "four_suites"
+	DeviceProviderDeviceProviderNameDormakabaOracode           DeviceProviderDeviceProviderName = "dormakaba_oracode"
+	DeviceProviderDeviceProviderNamePti                        DeviceProviderDeviceProviderName = "pti"
+	DeviceProviderDeviceProviderNameWyze                       DeviceProviderDeviceProviderName = "wyze"
+	DeviceProviderDeviceProviderNameSeamPassport               DeviceProviderDeviceProviderName = "seam_passport"
+	DeviceProviderDeviceProviderNameVisionline                 DeviceProviderDeviceProviderName = "visionline"
+	DeviceProviderDeviceProviderNameAssaAbloyCredentialService DeviceProviderDeviceProviderName = "assa_abloy_credential_service"
+	DeviceProviderDeviceProviderNameSeamBridge                 DeviceProviderDeviceProviderName = "seam_bridge"
+	DeviceProviderDeviceProviderNameTedee                      DeviceProviderDeviceProviderName = "tedee"
+	DeviceProviderDeviceProviderNameHoneywellResideo           DeviceProviderDeviceProviderName = "honeywell_resideo"
+	DeviceProviderDeviceProviderNameLatch                      DeviceProviderDeviceProviderName = "latch"
+)
+
+func NewDeviceProviderDeviceProviderNameFromString(s string) (DeviceProviderDeviceProviderName, error) {
+	switch s {
+	case "akuvox":
+		return DeviceProviderDeviceProviderNameAkuvox, nil
+	case "august":
+		return DeviceProviderDeviceProviderNameAugust, nil
+	case "avigilon_alta":
+		return DeviceProviderDeviceProviderNameAvigilonAlta, nil
+	case "brivo":
+		return DeviceProviderDeviceProviderNameBrivo, nil
+	case "butterflymx":
+		return DeviceProviderDeviceProviderNameButterflymx, nil
+	case "schlage":
+		return DeviceProviderDeviceProviderNameSchlage, nil
+	case "smartthings":
+		return DeviceProviderDeviceProviderNameSmartthings, nil
+	case "yale":
+		return DeviceProviderDeviceProviderNameYale, nil
+	case "genie":
+		return DeviceProviderDeviceProviderNameGenie, nil
+	case "doorking":
+		return DeviceProviderDeviceProviderNameDoorking, nil
+	case "salto":
+		return DeviceProviderDeviceProviderNameSalto, nil
+	case "lockly":
+		return DeviceProviderDeviceProviderNameLockly, nil
+	case "ttlock":
+		return DeviceProviderDeviceProviderNameTtlock, nil
+	case "linear":
+		return DeviceProviderDeviceProviderNameLinear, nil
+	case "noiseaware":
+		return DeviceProviderDeviceProviderNameNoiseaware, nil
+	case "nuki":
+		return DeviceProviderDeviceProviderNameNuki, nil
+	case "seam_relay_admin":
+		return DeviceProviderDeviceProviderNameSeamRelayAdmin, nil
+	case "igloo":
+		return DeviceProviderDeviceProviderNameIgloo, nil
+	case "kwikset":
+		return DeviceProviderDeviceProviderNameKwikset, nil
+	case "minut":
+		return DeviceProviderDeviceProviderNameMinut, nil
+	case "my_2n":
+		return DeviceProviderDeviceProviderNameMy2N, nil
+	case "controlbyweb":
+		return DeviceProviderDeviceProviderNameControlbyweb, nil
+	case "nest":
+		return DeviceProviderDeviceProviderNameNest, nil
+	case "igloohome":
+		return DeviceProviderDeviceProviderNameIgloohome, nil
+	case "ecobee":
+		return DeviceProviderDeviceProviderNameEcobee, nil
+	case "hubitat":
+		return DeviceProviderDeviceProviderNameHubitat, nil
+	case "four_suites":
+		return DeviceProviderDeviceProviderNameFourSuites, nil
+	case "dormakaba_oracode":
+		return DeviceProviderDeviceProviderNameDormakabaOracode, nil
+	case "pti":
+		return DeviceProviderDeviceProviderNamePti, nil
+	case "wyze":
+		return DeviceProviderDeviceProviderNameWyze, nil
+	case "seam_passport":
+		return DeviceProviderDeviceProviderNameSeamPassport, nil
+	case "visionline":
+		return DeviceProviderDeviceProviderNameVisionline, nil
+	case "assa_abloy_credential_service":
+		return DeviceProviderDeviceProviderNameAssaAbloyCredentialService, nil
+	case "seam_bridge":
+		return DeviceProviderDeviceProviderNameSeamBridge, nil
+	case "tedee":
+		return DeviceProviderDeviceProviderNameTedee, nil
+	case "honeywell_resideo":
+		return DeviceProviderDeviceProviderNameHoneywellResideo, nil
+	case "latch":
+		return DeviceProviderDeviceProviderNameLatch, nil
+	}
+	var t DeviceProviderDeviceProviderName
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceProviderDeviceProviderName) Ptr() *DeviceProviderDeviceProviderName {
+	return &d
+}
+
 type DeviceProviderProviderCategoriesItem string
 
 const (
-	DeviceProviderProviderCategoriesItemStable             DeviceProviderProviderCategoriesItem = "stable"
-	DeviceProviderProviderCategoriesItemConsumerSmartlocks DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
-	DeviceProviderProviderCategoriesItemThermostats        DeviceProviderProviderCategoriesItem = "thermostats"
-	DeviceProviderProviderCategoriesItemNoiseSensors       DeviceProviderProviderCategoriesItem = "noise_sensors"
+	DeviceProviderProviderCategoriesItemStable               DeviceProviderProviderCategoriesItem = "stable"
+	DeviceProviderProviderCategoriesItemConsumerSmartlocks   DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
+	DeviceProviderProviderCategoriesItemThermostats          DeviceProviderProviderCategoriesItem = "thermostats"
+	DeviceProviderProviderCategoriesItemNoiseSensors         DeviceProviderProviderCategoriesItem = "noise_sensors"
+	DeviceProviderProviderCategoriesItemAccessControlSystems DeviceProviderProviderCategoriesItem = "access_control_systems"
 )
 
 func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProviderProviderCategoriesItem, error) {
@@ -3096,6 +3327,8 @@ func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProvider
 		return DeviceProviderProviderCategoriesItemThermostats, nil
 	case "noise_sensors":
 		return DeviceProviderProviderCategoriesItemNoiseSensors, nil
+	case "access_control_systems":
+		return DeviceProviderProviderCategoriesItemAccessControlSystems, nil
 	}
 	var t DeviceProviderProviderCategoriesItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3296,16 +3529,12 @@ func (e *EnrollmentAutomation) String() string {
 }
 
 type Event struct {
-	EventId                string    `json:"event_id" url:"event_id"`
-	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
-	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
-	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
-	ClientSessionId        *string   `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
-	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
-	EventType              string    `json:"event_type" url:"event_type"`
-	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
-	CreatedAt              time.Time `json:"created_at" url:"created_at"`
-	OccurredAt             time.Time `json:"occurred_at" url:"occurred_at"`
+	EventId     string    `json:"event_id" url:"event_id"`
+	DeviceId    *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	EventType   string    `json:"event_type" url:"event_type"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
+	OccurredAt  time.Time `json:"occurred_at" url:"occurred_at"`
 
 	_rawJSON json.RawMessage
 }
@@ -3769,6 +3998,10 @@ type Phone struct {
 	// Unique identifier for the device.
 	DeviceId   string          `json:"device_id" url:"device_id"`
 	DeviceType PhoneDeviceType `json:"device_type,omitempty" url:"device_type,omitempty"`
+	// Optional nickname to describe the device, settable through Seam
+	Nickname *string `json:"nickname,omitempty" url:"nickname,omitempty"`
+	// Display name of the device, defaults to nickname (if it is set) or properties.appearance.name otherwise. Enables administrators and users to identify the device easily, especially when there are numerous devices.
+	DisplayName string `json:"display_name" url:"display_name"`
 	// Collection of capabilities that the device supports when connected to Seam. Values are "access_code," which indicates that the device can manage and utilize digital PIN codes for secure access; "lock," which indicates that the device controls a door locking mechanism, enabling the remote opening and closing of doors and other entry points; "noise_detection," which indicates that the device supports monitoring and responding to ambient noise levels; "thermostat," which indicates that the device can regulate and adjust indoor temperatures; and "battery," which indicates that the device can manage battery life and health.
 	CapabilitiesSupported []PhoneCapabilitiesSupportedItem `json:"capabilities_supported,omitempty" url:"capabilities_supported,omitempty"`
 	Properties            *PhoneProperties                 `json:"properties,omitempty" url:"properties,omitempty"`
@@ -3786,7 +4019,9 @@ type Phone struct {
 	IsManaged                   bool                                 `json:"is_managed" url:"is_managed"`
 	CustomMetadata              map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
 	CanRemotelyUnlock           *bool                                `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock             *bool                                `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
 	CanProgramOnlineAccessCodes *bool                                `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval          *bool                                `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4392,7 +4627,9 @@ type UnmanagedDevice struct {
 	IsManaged                   bool                           `json:"is_managed" url:"is_managed"`
 	Properties                  *UnmanagedDeviceProperties     `json:"properties,omitempty" url:"properties,omitempty"`
 	CanRemotelyUnlock           *bool                          `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock             *bool                          `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
 	CanProgramOnlineAccessCodes *bool                          `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval          *bool                          `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
 	DeviceProvider              *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty" url:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -4533,7 +4770,10 @@ func (u *UnmanagedDeviceErrorsItem) String() string {
 }
 
 type UnmanagedDeviceProperties struct {
-	// Name of the device. Enables administrators and users to identify the device easily, especially when there are numerous devices.
+	// ---
+	// deprecated: use device.display_name instead
+	// ---
+	// Name of the device.
 	Name string `json:"name" url:"name"`
 	// Indicates whether the device is online.
 	Online bool `json:"online" url:"online"`
@@ -4639,10 +4879,14 @@ func (u UnmanagedDevicePropertiesBatteryStatus) Ptr() *UnmanagedDeviceProperties
 }
 
 type UnmanagedDevicePropertiesModel struct {
+	// Indicates whether the device can connect a accessory keypad.
+	CanConnectAccessoryKeypad *bool `json:"can_connect_accessory_keypad,omitempty" url:"can_connect_accessory_keypad,omitempty"`
 	// Display name of the device model.
 	DisplayName string `json:"display_name" url:"display_name"`
 	// Display name that corresponds to the manufacturer-specific terminology for the device.
 	ManufacturerDisplayName string `json:"manufacturer_display_name" url:"manufacturer_display_name"`
+	// Indicates whether the device has a built in accessory keypad.
+	HasBuiltInKeypad *bool `json:"has_built_in_keypad,omitempty" url:"has_built_in_keypad,omitempty"`
 	// Indicates whether the device supports offline access codes.
 	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.

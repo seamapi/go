@@ -25,6 +25,7 @@ type EventsListRequest struct {
 	EventType          *EventType                      `json:"event_type,omitempty" url:"event_type,omitempty"`
 	EventTypes         []EventType                     `json:"event_types,omitempty" url:"event_types,omitempty"`
 	ConnectedAccountId *string                         `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	Limit              *float64                        `json:"limit,omitempty" url:"limit,omitempty"`
 }
 
 type EventsGetResponse struct {
@@ -116,9 +117,8 @@ func (e *EventsListRequestBetweenItem) Accept(visitor EventsListRequestBetweenIt
 }
 
 type EventsListResponse struct {
-	Events  []*Event `json:"events,omitempty" url:"events,omitempty"`
-	Message *string  `json:"message,omitempty" url:"message,omitempty"`
-	Ok      bool     `json:"ok" url:"ok"`
+	Events []*Event `json:"events,omitempty" url:"events,omitempty"`
+	Ok     bool     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

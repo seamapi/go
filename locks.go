@@ -27,6 +27,8 @@ type LocksListRequest struct {
 	CreatedBefore       *time.Time                                         `json:"created_before,omitempty" url:"created_before,omitempty"`
 	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	IncludeIf           []LocksListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
+	ExcludeIf           []LocksListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
 }
 
 func (l *LocksListRequest) UnmarshalJSON(data []byte) error {
@@ -158,6 +160,62 @@ func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequest
 	case "stringOptional":
 		return visitor.VisitStringOptional(l.StringOptional)
 	}
+}
+
+type LocksListRequestExcludeIfItem string
+
+const (
+	LocksListRequestExcludeIfItemCanRemotelyUnlock           LocksListRequestExcludeIfItem = "can_remotely_unlock"
+	LocksListRequestExcludeIfItemCanRemotelyLock             LocksListRequestExcludeIfItem = "can_remotely_lock"
+	LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes LocksListRequestExcludeIfItem = "can_program_online_access_codes"
+	LocksListRequestExcludeIfItemCanSimulateRemoval          LocksListRequestExcludeIfItem = "can_simulate_removal"
+)
+
+func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExcludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return LocksListRequestExcludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return LocksListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return LocksListRequestExcludeIfItemCanSimulateRemoval, nil
+	}
+	var t LocksListRequestExcludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (l LocksListRequestExcludeIfItem) Ptr() *LocksListRequestExcludeIfItem {
+	return &l
+}
+
+type LocksListRequestIncludeIfItem string
+
+const (
+	LocksListRequestIncludeIfItemCanRemotelyUnlock           LocksListRequestIncludeIfItem = "can_remotely_unlock"
+	LocksListRequestIncludeIfItemCanRemotelyLock             LocksListRequestIncludeIfItem = "can_remotely_lock"
+	LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes LocksListRequestIncludeIfItem = "can_program_online_access_codes"
+	LocksListRequestIncludeIfItemCanSimulateRemoval          LocksListRequestIncludeIfItem = "can_simulate_removal"
+)
+
+func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestIncludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return LocksListRequestIncludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return LocksListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return LocksListRequestIncludeIfItemCanSimulateRemoval, nil
+	}
+	var t LocksListRequestIncludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (l LocksListRequestIncludeIfItem) Ptr() *LocksListRequestIncludeIfItem {
+	return &l
 }
 
 type LocksListResponse struct {

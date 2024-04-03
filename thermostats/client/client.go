@@ -42,7 +42,7 @@ func (c *Client) Cool(
 	ctx context.Context,
 	request *seamapigo.ThermostatsCoolRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ThermostatsCoolResponse, error) {
+) (*seamapigo.ActionAttempt, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -98,7 +98,7 @@ func (c *Client) Cool(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
 func (c *Client) Get(
@@ -168,7 +168,7 @@ func (c *Client) Heat(
 	ctx context.Context,
 	request *seamapigo.ThermostatsHeatRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ThermostatsHeatResponse, error) {
+) (*seamapigo.ActionAttempt, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -224,14 +224,14 @@ func (c *Client) Heat(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
 func (c *Client) HeatCool(
 	ctx context.Context,
 	request *seamapigo.ThermostatsHeatCoolRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ThermostatsHeatCoolResponse, error) {
+) (*seamapigo.ActionAttempt, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -287,7 +287,7 @@ func (c *Client) HeatCool(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
 func (c *Client) List(
@@ -357,7 +357,7 @@ func (c *Client) Off(
 	ctx context.Context,
 	request *seamapigo.ThermostatsOffRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ThermostatsOffResponse, error) {
+) (*seamapigo.ActionAttempt, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -413,14 +413,14 @@ func (c *Client) Off(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
 func (c *Client) SetFanMode(
 	ctx context.Context,
 	request *seamapigo.ThermostatsSetFanModeRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ThermostatsSetFanModeResponse, error) {
+) (*seamapigo.ActionAttempt, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -476,7 +476,7 @@ func (c *Client) SetFanMode(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.ActionAttempt, nil
 }
 
 func (c *Client) Update(
