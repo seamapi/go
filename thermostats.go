@@ -50,6 +50,8 @@ type ThermostatsListRequest struct {
 	CreatedBefore       *time.Time                                               `json:"created_before,omitempty" url:"created_before,omitempty"`
 	UserIdentifierKey   *string                                                  `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	CustomMetadataHas   map[string]*ThermostatsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	IncludeIf           []ThermostatsListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
+	ExcludeIf           []ThermostatsListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
 }
 
 func (t *ThermostatsListRequest) UnmarshalJSON(data []byte) error {
@@ -87,7 +89,8 @@ type ThermostatsSetFanModeRequest struct {
 }
 
 type ThermostatsCoolResponse struct {
-	Ok bool `json:"ok" url:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -146,7 +149,8 @@ func (t *ThermostatsGetResponse) String() string {
 }
 
 type ThermostatsHeatCoolResponse struct {
-	Ok bool `json:"ok" url:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -175,7 +179,8 @@ func (t *ThermostatsHeatCoolResponse) String() string {
 }
 
 type ThermostatsHeatResponse struct {
-	Ok bool `json:"ok" url:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -276,6 +281,62 @@ func (t *ThermostatsListRequestCustomMetadataHasValue) Accept(visitor Thermostat
 	}
 }
 
+type ThermostatsListRequestExcludeIfItem string
+
+const (
+	ThermostatsListRequestExcludeIfItemCanRemotelyUnlock           ThermostatsListRequestExcludeIfItem = "can_remotely_unlock"
+	ThermostatsListRequestExcludeIfItemCanRemotelyLock             ThermostatsListRequestExcludeIfItem = "can_remotely_lock"
+	ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes ThermostatsListRequestExcludeIfItem = "can_program_online_access_codes"
+	ThermostatsListRequestExcludeIfItemCanSimulateRemoval          ThermostatsListRequestExcludeIfItem = "can_simulate_removal"
+)
+
+func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsListRequestExcludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return ThermostatsListRequestExcludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return ThermostatsListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return ThermostatsListRequestExcludeIfItemCanSimulateRemoval, nil
+	}
+	var t ThermostatsListRequestExcludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsListRequestExcludeIfItem) Ptr() *ThermostatsListRequestExcludeIfItem {
+	return &t
+}
+
+type ThermostatsListRequestIncludeIfItem string
+
+const (
+	ThermostatsListRequestIncludeIfItemCanRemotelyUnlock           ThermostatsListRequestIncludeIfItem = "can_remotely_unlock"
+	ThermostatsListRequestIncludeIfItemCanRemotelyLock             ThermostatsListRequestIncludeIfItem = "can_remotely_lock"
+	ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes ThermostatsListRequestIncludeIfItem = "can_program_online_access_codes"
+	ThermostatsListRequestIncludeIfItemCanSimulateRemoval          ThermostatsListRequestIncludeIfItem = "can_simulate_removal"
+)
+
+func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsListRequestIncludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return ThermostatsListRequestIncludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return ThermostatsListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return ThermostatsListRequestIncludeIfItemCanSimulateRemoval, nil
+	}
+	var t ThermostatsListRequestIncludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsListRequestIncludeIfItem) Ptr() *ThermostatsListRequestIncludeIfItem {
+	return &t
+}
+
 type ThermostatsListResponse struct {
 	Thermostats []*Device `json:"thermostats,omitempty" url:"thermostats,omitempty"`
 	Ok          bool      `json:"ok" url:"ok"`
@@ -307,7 +368,8 @@ func (t *ThermostatsListResponse) String() string {
 }
 
 type ThermostatsOffResponse struct {
-	Ok bool `json:"ok" url:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -358,7 +420,8 @@ func (t ThermostatsSetFanModeRequestFanModeSetting) Ptr() *ThermostatsSetFanMode
 }
 
 type ThermostatsSetFanModeResponse struct {
-	Ok bool `json:"ok" url:"ok"`
+	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
+	Ok            bool           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

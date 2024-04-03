@@ -28,6 +28,8 @@ type UnmanagedListRequest struct {
 	CreatedBefore       *time.Time                                             `json:"created_before,omitempty" url:"created_before,omitempty"`
 	UserIdentifierKey   *string                                                `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	CustomMetadataHas   map[string]*UnmanagedListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	IncludeIf           []UnmanagedListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
+	ExcludeIf           []UnmanagedListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
 }
 
 func (u *UnmanagedListRequest) UnmarshalJSON(data []byte) error {
@@ -153,6 +155,62 @@ func (u *UnmanagedListRequestCustomMetadataHasValue) Accept(visitor UnmanagedLis
 	case "stringOptional":
 		return visitor.VisitStringOptional(u.StringOptional)
 	}
+}
+
+type UnmanagedListRequestExcludeIfItem string
+
+const (
+	UnmanagedListRequestExcludeIfItemCanRemotelyUnlock           UnmanagedListRequestExcludeIfItem = "can_remotely_unlock"
+	UnmanagedListRequestExcludeIfItemCanRemotelyLock             UnmanagedListRequestExcludeIfItem = "can_remotely_lock"
+	UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes UnmanagedListRequestExcludeIfItem = "can_program_online_access_codes"
+	UnmanagedListRequestExcludeIfItemCanSimulateRemoval          UnmanagedListRequestExcludeIfItem = "can_simulate_removal"
+)
+
+func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequestExcludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return UnmanagedListRequestExcludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return UnmanagedListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return UnmanagedListRequestExcludeIfItemCanSimulateRemoval, nil
+	}
+	var t UnmanagedListRequestExcludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedListRequestExcludeIfItem) Ptr() *UnmanagedListRequestExcludeIfItem {
+	return &u
+}
+
+type UnmanagedListRequestIncludeIfItem string
+
+const (
+	UnmanagedListRequestIncludeIfItemCanRemotelyUnlock           UnmanagedListRequestIncludeIfItem = "can_remotely_unlock"
+	UnmanagedListRequestIncludeIfItemCanRemotelyLock             UnmanagedListRequestIncludeIfItem = "can_remotely_lock"
+	UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes UnmanagedListRequestIncludeIfItem = "can_program_online_access_codes"
+	UnmanagedListRequestIncludeIfItemCanSimulateRemoval          UnmanagedListRequestIncludeIfItem = "can_simulate_removal"
+)
+
+func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequestIncludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return UnmanagedListRequestIncludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return UnmanagedListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return UnmanagedListRequestIncludeIfItemCanSimulateRemoval, nil
+	}
+	var t UnmanagedListRequestIncludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UnmanagedListRequestIncludeIfItem) Ptr() *UnmanagedListRequestIncludeIfItem {
+	return &u
 }
 
 type UnmanagedListResponse struct {

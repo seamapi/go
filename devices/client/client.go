@@ -9,6 +9,7 @@ import (
 	errors "errors"
 	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
+	simulate "github.com/seamapi/go/devices/simulate"
 	unmanaged "github.com/seamapi/go/devices/unmanaged"
 	option "github.com/seamapi/go/option"
 	io "io"
@@ -20,6 +21,7 @@ type Client struct {
 	caller  *core.Caller
 	header  http.Header
 
+	Simulate  *simulate.Client
 	Unmanaged *unmanaged.Client
 }
 
@@ -34,6 +36,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 			},
 		),
 		header:    options.ToHeader(),
+		Simulate:  simulate.NewClient(opts...),
 		Unmanaged: unmanaged.NewClient(opts...),
 	}
 }

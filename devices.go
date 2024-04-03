@@ -31,6 +31,8 @@ type DevicesListRequest struct {
 	CreatedBefore       *time.Time                                           `json:"created_before,omitempty" url:"created_before,omitempty"`
 	UserIdentifierKey   *string                                              `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	CustomMetadataHas   map[string]*DevicesListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	IncludeIf           []DevicesListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
+	ExcludeIf           []DevicesListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
 }
 
 func (d *DevicesListRequest) UnmarshalJSON(data []byte) error {
@@ -219,6 +221,62 @@ func (d *DevicesListRequestCustomMetadataHasValue) Accept(visitor DevicesListReq
 	case "stringOptional":
 		return visitor.VisitStringOptional(d.StringOptional)
 	}
+}
+
+type DevicesListRequestExcludeIfItem string
+
+const (
+	DevicesListRequestExcludeIfItemCanRemotelyUnlock           DevicesListRequestExcludeIfItem = "can_remotely_unlock"
+	DevicesListRequestExcludeIfItemCanRemotelyLock             DevicesListRequestExcludeIfItem = "can_remotely_lock"
+	DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes DevicesListRequestExcludeIfItem = "can_program_online_access_codes"
+	DevicesListRequestExcludeIfItemCanSimulateRemoval          DevicesListRequestExcludeIfItem = "can_simulate_removal"
+)
+
+func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestExcludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return DevicesListRequestExcludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return DevicesListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return DevicesListRequestExcludeIfItemCanSimulateRemoval, nil
+	}
+	var t DevicesListRequestExcludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DevicesListRequestExcludeIfItem) Ptr() *DevicesListRequestExcludeIfItem {
+	return &d
+}
+
+type DevicesListRequestIncludeIfItem string
+
+const (
+	DevicesListRequestIncludeIfItemCanRemotelyUnlock           DevicesListRequestIncludeIfItem = "can_remotely_unlock"
+	DevicesListRequestIncludeIfItemCanRemotelyLock             DevicesListRequestIncludeIfItem = "can_remotely_lock"
+	DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes DevicesListRequestIncludeIfItem = "can_program_online_access_codes"
+	DevicesListRequestIncludeIfItemCanSimulateRemoval          DevicesListRequestIncludeIfItem = "can_simulate_removal"
+)
+
+func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestIncludeIfItem, error) {
+	switch s {
+	case "can_remotely_unlock":
+		return DevicesListRequestIncludeIfItemCanRemotelyUnlock, nil
+	case "can_remotely_lock":
+		return DevicesListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_online_access_codes":
+		return DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
+	case "can_simulate_removal":
+		return DevicesListRequestIncludeIfItemCanSimulateRemoval, nil
+	}
+	var t DevicesListRequestIncludeIfItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DevicesListRequestIncludeIfItem) Ptr() *DevicesListRequestIncludeIfItem {
+	return &d
 }
 
 type DevicesListResponse struct {

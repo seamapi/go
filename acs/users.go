@@ -21,7 +21,9 @@ type UsersCreateRequest struct {
 	UserIdentityId    *string                           `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
 	AccessSchedule    *UsersCreateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
 	FullName          *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
-	// Deprecated: use email_address.
+	// ---
+	// deprecated: use email_address.
+	// ---
 	Email        *string `json:"email,omitempty" url:"email,omitempty"`
 	PhoneNumber  *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
 	EmailAddress *string `json:"email_address,omitempty" url:"email_address,omitempty"`
@@ -494,7 +496,9 @@ type UsersUpdateRequest struct {
 	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
 	AcsUserId      string                            `json:"acs_user_id" url:"acs_user_id"`
 	FullName       *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
-	// Deprecated: use email_address.
+	// ---
+	// deprecated: use email_address.
+	// ---
 	Email          *string `json:"email,omitempty" url:"email,omitempty"`
 	PhoneNumber    *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
 	EmailAddress   *string `json:"email_address,omitempty" url:"email_address,omitempty"`

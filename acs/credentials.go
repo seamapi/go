@@ -15,14 +15,15 @@ type CredentialsAssignRequest struct {
 }
 
 type CredentialsCreateRequest struct {
-	AcsUserId                  string                                      `json:"acs_user_id" url:"acs_user_id"`
-	AccessMethod               CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
-	Code                       *string                                     `json:"code,omitempty" url:"code,omitempty"`
-	IsMultiPhoneSyncCredential *bool                                       `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
-	ExternalType               *string                                     `json:"external_type,omitempty" url:"external_type,omitempty"`
-	VisionlineMetadata         *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
-	StartsAt                   *time.Time                                  `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                     *time.Time                                  `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	CredentialManagerAcsSystemId *string                                     `json:"credential_manager_acs_system_id,omitempty" url:"credential_manager_acs_system_id,omitempty"`
+	AcsUserId                    string                                      `json:"acs_user_id" url:"acs_user_id"`
+	AccessMethod                 CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	Code                         *string                                     `json:"code,omitempty" url:"code,omitempty"`
+	IsMultiPhoneSyncCredential   *bool                                       `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	AllowedAcsEntranceIds        []string                                    `json:"allowed_acs_entrance_ids,omitempty" url:"allowed_acs_entrance_ids,omitempty"`
+	VisionlineMetadata           *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
+	StartsAt                     *time.Time                                  `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                       *time.Time                                  `json:"ends_at,omitempty" url:"ends_at,omitempty"`
 }
 
 func (c *CredentialsCreateRequest) UnmarshalJSON(data []byte) error {
