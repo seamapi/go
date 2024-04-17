@@ -105,7 +105,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesCreateRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.UserIdentitiesCreateResponse, error) {
+) (*seamapigo.UserIdentity, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -161,7 +161,7 @@ func (c *Client) Create(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.UserIdentity, nil
 }
 
 func (c *Client) Delete(
@@ -231,7 +231,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesGetRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.UserIdentitiesGetResponse, error) {
+) (*seamapigo.UserIdentity, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -287,7 +287,7 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.UserIdentity, nil
 }
 
 func (c *Client) GrantAccessToDevice(
@@ -357,7 +357,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesListRequest,
 	opts ...option.RequestOption,
-) ([]*seamapigo.UserIdentitiesListResponseUserIdentitiesItem, error) {
+) ([]*seamapigo.UserIdentity, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -420,7 +420,7 @@ func (c *Client) ListAccessibleDevices(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesListAccessibleDevicesRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.UserIdentitiesListAccessibleDevicesResponse, error) {
+) ([]*seamapigo.Device, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -476,14 +476,14 @@ func (c *Client) ListAccessibleDevices(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Devices, nil
 }
 
 func (c *Client) ListAcsSystems(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesListAcsSystemsRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.UserIdentitiesListAcsSystemsResponse, error) {
+) ([]*seamapigo.AcsSystem, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -539,14 +539,14 @@ func (c *Client) ListAcsSystems(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsSystems, nil
 }
 
 func (c *Client) ListAcsUsers(
 	ctx context.Context,
 	request *seamapigo.UserIdentitiesListAcsUsersRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.UserIdentitiesListAcsUsersResponse, error) {
+) ([]*seamapigo.AcsUser, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -602,7 +602,7 @@ func (c *Client) ListAcsUsers(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsUsers, nil
 }
 
 func (c *Client) RemoveAcsUser(

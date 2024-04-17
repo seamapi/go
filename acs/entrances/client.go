@@ -39,7 +39,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *acs.EntrancesGetRequest,
 	opts ...option.RequestOption,
-) (*acs.EntrancesGetResponse, error) {
+) (*seamapigo.AcsEntrance, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -95,7 +95,7 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsEntrance, nil
 }
 
 func (c *Client) GrantAccess(
@@ -165,7 +165,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *acs.EntrancesListRequest,
 	opts ...option.RequestOption,
-) (*acs.EntrancesListResponse, error) {
+) ([]*seamapigo.AcsEntrance, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -221,14 +221,14 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsEntrances, nil
 }
 
 func (c *Client) ListCredentialsWithAccess(
 	ctx context.Context,
 	request *acs.EntrancesListCredentialsWithAccessRequest,
 	opts ...option.RequestOption,
-) (*acs.EntrancesListCredentialsWithAccessResponse, error) {
+) ([]*seamapigo.AcsCredential, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -284,5 +284,5 @@ func (c *Client) ListCredentialsWithAccess(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredentials, nil
 }

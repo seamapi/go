@@ -291,7 +291,7 @@ func (c *Client) Update(
 	ctx context.Context,
 	request *thermostats.ClimateSettingSchedulesUpdateRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ClimateSettingSchedule, error) {
+) (*thermostats.ClimateSettingSchedulesUpdateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -347,5 +347,5 @@ func (c *Client) Update(
 	); err != nil {
 		return nil, err
 	}
-	return response.ClimateSettingSchedule, nil
+	return response, nil
 }

@@ -85,10 +85,9 @@ func (u *UnmanagedGetResponse) String() string {
 }
 
 type UnmanagedListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewUnmanagedListRequestCustomMetadataHasValueFromString(value string) *UnmanagedListRequestCustomMetadataHasValue {
@@ -97,10 +96,6 @@ func NewUnmanagedListRequestCustomMetadataHasValueFromString(value string) *Unma
 
 func NewUnmanagedListRequestCustomMetadataHasValueFromBoolean(value bool) *UnmanagedListRequestCustomMetadataHasValue {
 	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewUnmanagedListRequestCustomMetadataHasValueFromStringOptional(value *string) *UnmanagedListRequestCustomMetadataHasValue {
-	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (u *UnmanagedListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -116,12 +111,6 @@ func (u *UnmanagedListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) 
 		u.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		u.typeName = "stringOptional"
-		u.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
 }
 
@@ -133,15 +122,12 @@ func (u UnmanagedListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error
 		return json.Marshal(u.String)
 	case "boolean":
 		return json.Marshal(u.Boolean)
-	case "stringOptional":
-		return json.Marshal(u.StringOptional)
 	}
 }
 
 type UnmanagedListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (u *UnmanagedListRequestCustomMetadataHasValue) Accept(visitor UnmanagedListRequestCustomMetadataHasValueVisitor) error {
@@ -152,18 +138,17 @@ func (u *UnmanagedListRequestCustomMetadataHasValue) Accept(visitor UnmanagedLis
 		return visitor.VisitString(u.String)
 	case "boolean":
 		return visitor.VisitBoolean(u.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(u.StringOptional)
 	}
 }
 
 type UnmanagedListRequestExcludeIfItem string
 
 const (
-	UnmanagedListRequestExcludeIfItemCanRemotelyUnlock           UnmanagedListRequestExcludeIfItem = "can_remotely_unlock"
-	UnmanagedListRequestExcludeIfItemCanRemotelyLock             UnmanagedListRequestExcludeIfItem = "can_remotely_lock"
-	UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes UnmanagedListRequestExcludeIfItem = "can_program_online_access_codes"
-	UnmanagedListRequestExcludeIfItemCanSimulateRemoval          UnmanagedListRequestExcludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestExcludeIfItemCanRemotelyUnlock            UnmanagedListRequestExcludeIfItem = "can_remotely_unlock"
+	UnmanagedListRequestExcludeIfItemCanRemotelyLock              UnmanagedListRequestExcludeIfItem = "can_remotely_lock"
+	UnmanagedListRequestExcludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestExcludeIfItem = "can_program_offline_access_codes"
+	UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestExcludeIfItem = "can_program_online_access_codes"
+	UnmanagedListRequestExcludeIfItemCanSimulateRemoval           UnmanagedListRequestExcludeIfItem = "can_simulate_removal"
 )
 
 func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequestExcludeIfItem, error) {
@@ -172,6 +157,8 @@ func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestExcludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return UnmanagedListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return UnmanagedListRequestExcludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
@@ -188,10 +175,11 @@ func (u UnmanagedListRequestExcludeIfItem) Ptr() *UnmanagedListRequestExcludeIfI
 type UnmanagedListRequestIncludeIfItem string
 
 const (
-	UnmanagedListRequestIncludeIfItemCanRemotelyUnlock           UnmanagedListRequestIncludeIfItem = "can_remotely_unlock"
-	UnmanagedListRequestIncludeIfItemCanRemotelyLock             UnmanagedListRequestIncludeIfItem = "can_remotely_lock"
-	UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes UnmanagedListRequestIncludeIfItem = "can_program_online_access_codes"
-	UnmanagedListRequestIncludeIfItemCanSimulateRemoval          UnmanagedListRequestIncludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestIncludeIfItemCanRemotelyUnlock            UnmanagedListRequestIncludeIfItem = "can_remotely_unlock"
+	UnmanagedListRequestIncludeIfItemCanRemotelyLock              UnmanagedListRequestIncludeIfItem = "can_remotely_lock"
+	UnmanagedListRequestIncludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestIncludeIfItem = "can_program_offline_access_codes"
+	UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestIncludeIfItem = "can_program_online_access_codes"
+	UnmanagedListRequestIncludeIfItemCanSimulateRemoval           UnmanagedListRequestIncludeIfItem = "can_simulate_removal"
 )
 
 func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequestIncludeIfItem, error) {
@@ -200,6 +188,8 @@ func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestIncludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return UnmanagedListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return UnmanagedListRequestIncludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":

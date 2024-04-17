@@ -39,7 +39,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *acs.SystemsGetRequest,
 	opts ...option.RequestOption,
-) (*acs.SystemsGetResponse, error) {
+) (*seamapigo.AcsSystem, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -95,14 +95,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsSystem, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *acs.SystemsListRequest,
 	opts ...option.RequestOption,
-) (*acs.SystemsListResponse, error) {
+) ([]*seamapigo.AcsSystem, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,5 +158,5 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsSystems, nil
 }

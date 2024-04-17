@@ -12,7 +12,6 @@ import (
 	core "github.com/seamapi/go/core"
 	devicesclient "github.com/seamapi/go/devices/client"
 	events "github.com/seamapi/go/events"
-	healthclient "github.com/seamapi/go/health/client"
 	locks "github.com/seamapi/go/locks"
 	networks "github.com/seamapi/go/networks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
@@ -33,11 +32,10 @@ type Client struct {
 	AccessCodes       *accesscodesclient.Client
 	ActionAttempts    *actionattempts.Client
 	ClientSessions    *clientsessions.Client
-	ConnectWebviews   *connectwebviews.Client
 	ConnectedAccounts *connectedaccounts.Client
 	Devices           *devicesclient.Client
 	Events            *events.Client
-	Health            *healthclient.Client
+	ConnectWebviews   *connectwebviews.Client
 	Locks             *locks.Client
 	Networks          *networks.Client
 	Phones            *phonesclient.Client
@@ -63,11 +61,10 @@ func NewClient(opts ...option.RequestOption) *Client {
 		AccessCodes:       accesscodesclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),
 		ClientSessions:    clientsessions.NewClient(opts...),
-		ConnectWebviews:   connectwebviews.NewClient(opts...),
 		ConnectedAccounts: connectedaccounts.NewClient(opts...),
 		Devices:           devicesclient.NewClient(opts...),
 		Events:            events.NewClient(opts...),
-		Health:            healthclient.NewClient(opts...),
+		ConnectWebviews:   connectwebviews.NewClient(opts...),
 		Locks:             locks.NewClient(opts...),
 		Networks:          networks.NewClient(opts...),
 		Phones:            phonesclient.NewClient(opts...),

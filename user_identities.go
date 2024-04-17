@@ -85,8 +85,8 @@ func (u *UserIdentitiesAddAcsUserResponse) String() string {
 }
 
 type UserIdentitiesCreateResponse struct {
-	UserIdentity *UserIdentitiesCreateResponseUserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
-	Ok           bool                                      `json:"ok" url:"ok"`
+	UserIdentity *UserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
+	Ok           bool          `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -201,8 +201,8 @@ func (u *UserIdentitiesGetRequest) Accept(visitor UserIdentitiesGetRequestVisito
 }
 
 type UserIdentitiesGetResponse struct {
-	UserIdentity *UserIdentitiesGetResponseUserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
-	Ok           bool                                   `json:"ok" url:"ok"`
+	UserIdentity *UserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
+	Ok           bool          `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -260,6 +260,10 @@ func (u *UserIdentitiesGrantAccessToDeviceResponse) String() string {
 }
 
 type UserIdentitiesListAccessibleDevicesResponse struct {
+	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
+	// ---
+	// deprecated: use devices.
+	// ---
 	AccessibleDevices []*Device `json:"accessible_devices,omitempty" url:"accessible_devices,omitempty"`
 	Ok                bool      `json:"ok" url:"ok"`
 
@@ -350,8 +354,8 @@ func (u *UserIdentitiesListAcsUsersResponse) String() string {
 }
 
 type UserIdentitiesListResponse struct {
-	UserIdentities []*UserIdentitiesListResponseUserIdentitiesItem `json:"user_identities,omitempty" url:"user_identities,omitempty"`
-	Ok             bool                                            `json:"ok" url:"ok"`
+	UserIdentities []*UserIdentity `json:"user_identities,omitempty" url:"user_identities,omitempty"`
+	Ok             bool            `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

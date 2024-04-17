@@ -5,6 +5,7 @@ package acs
 import (
 	json "encoding/json"
 	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 )
 
@@ -28,8 +29,8 @@ type EntrancesListCredentialsWithAccessRequest struct {
 }
 
 type EntrancesGetResponse struct {
-	AcsEntrance *EntrancesGetResponseAcsEntrance `json:"acs_entrance,omitempty" url:"acs_entrance,omitempty"`
-	Ok          bool                             `json:"ok" url:"ok"`
+	AcsEntrance *seamapigo.AcsEntrance `json:"acs_entrance,omitempty" url:"acs_entrance,omitempty"`
+	Ok          bool                   `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -87,8 +88,8 @@ func (e *EntrancesGrantAccessResponse) String() string {
 }
 
 type EntrancesListCredentialsWithAccessResponse struct {
-	AcsCredentials []*EntrancesListCredentialsWithAccessResponseAcsCredentialsItem `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
-	Ok             bool                                                            `json:"ok" url:"ok"`
+	AcsCredentials []*seamapigo.AcsCredential `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
+	Ok             bool                       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -117,8 +118,8 @@ func (e *EntrancesListCredentialsWithAccessResponse) String() string {
 }
 
 type EntrancesListResponse struct {
-	AcsEntrances []*EntrancesListResponseAcsEntrancesItem `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
-	Ok           bool                                     `json:"ok" url:"ok"`
+	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

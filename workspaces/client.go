@@ -38,7 +38,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *seamapigo.WorkspacesCreateRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.WorkspacesCreateResponse, error) {
+) (*seamapigo.Workspace, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -94,7 +94,7 @@ func (c *Client) Create(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Workspace, nil
 }
 
 func (c *Client) Get(

@@ -278,25 +278,571 @@ func (a AcsAccessGroupExternalType) Ptr() *AcsAccessGroupExternalType {
 	return &a
 }
 
+type AcsCredential struct {
+	AcsCredentialId            string                           `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                  *string                          `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId        *string                          `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                string                           `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId      *string                          `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                string                           `json:"display_name" url:"display_name"`
+	Code                       *string                          `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod               AcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType               *AcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName    *string                          `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                  time.Time                        `json:"created_at" url:"created_at"`
+	WorkspaceId                string                           `json:"workspace_id" url:"workspace_id"`
+	StartsAt                   *string                          `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                     *string                          `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                     []*AcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                   []*AcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential *bool                            `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	VisionlineMetadata         *AcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredential) UnmarshalJSON(data []byte) error {
+	type embed AcsCredential
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsCredential(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredential) MarshalJSON() ([]byte, error) {
+	type embed AcsCredential
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsCredential) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsCredentialAccessMethod string
+
+const (
+	AcsCredentialAccessMethodCode      AcsCredentialAccessMethod = "code"
+	AcsCredentialAccessMethodCard      AcsCredentialAccessMethod = "card"
+	AcsCredentialAccessMethodMobileKey AcsCredentialAccessMethod = "mobile_key"
+)
+
+func NewAcsCredentialAccessMethodFromString(s string) (AcsCredentialAccessMethod, error) {
+	switch s {
+	case "code":
+		return AcsCredentialAccessMethodCode, nil
+	case "card":
+		return AcsCredentialAccessMethodCard, nil
+	case "mobile_key":
+		return AcsCredentialAccessMethodMobileKey, nil
+	}
+	var t AcsCredentialAccessMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsCredentialAccessMethod) Ptr() *AcsCredentialAccessMethod {
+	return &a
+}
+
+type AcsCredentialErrorsItem struct {
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredentialErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsCredentialErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsCredentialErrorsItem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredentialErrorsItem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsCredentialExternalType string
+
+const (
+	AcsCredentialExternalTypePtiCard         AcsCredentialExternalType = "pti_card"
+	AcsCredentialExternalTypeBrivoCredential AcsCredentialExternalType = "brivo_credential"
+	AcsCredentialExternalTypeHidCredential   AcsCredentialExternalType = "hid_credential"
+	AcsCredentialExternalTypeVisionlineCard  AcsCredentialExternalType = "visionline_card"
+)
+
+func NewAcsCredentialExternalTypeFromString(s string) (AcsCredentialExternalType, error) {
+	switch s {
+	case "pti_card":
+		return AcsCredentialExternalTypePtiCard, nil
+	case "brivo_credential":
+		return AcsCredentialExternalTypeBrivoCredential, nil
+	case "hid_credential":
+		return AcsCredentialExternalTypeHidCredential, nil
+	case "visionline_card":
+		return AcsCredentialExternalTypeVisionlineCard, nil
+	}
+	var t AcsCredentialExternalType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsCredentialExternalType) Ptr() *AcsCredentialExternalType {
+	return &a
+}
+
+type AcsCredentialPool struct {
+	AcsCredentialPoolId     string    `json:"acs_credential_pool_id" url:"acs_credential_pool_id"`
+	AcsSystemId             string    `json:"acs_system_id" url:"acs_system_id"`
+	DisplayName             string    `json:"display_name" url:"display_name"`
+	ExternalTypeDisplayName string    `json:"external_type_display_name" url:"external_type_display_name"`
+	CreatedAt               time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId             string    `json:"workspace_id" url:"workspace_id"`
+	externalType            string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredentialPool) ExternalType() string {
+	return a.externalType
+}
+
+func (a *AcsCredentialPool) UnmarshalJSON(data []byte) error {
+	type embed AcsCredentialPool
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsCredentialPool(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a.externalType = "hid_part_number"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredentialPool) MarshalJSON() ([]byte, error) {
+	type embed AcsCredentialPool
+	var marshaler = struct {
+		embed
+		CreatedAt    *core.DateTime `json:"created_at"`
+		ExternalType string         `json:"external_type"`
+	}{
+		embed:        embed(*a),
+		CreatedAt:    core.NewDateTime(a.CreatedAt),
+		ExternalType: "hid_part_number",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsCredentialPool) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsCredentialProvisioningAutomation struct {
+	AcsCredentialProvisioningAutomationId string    `json:"acs_credential_provisioning_automation_id" url:"acs_credential_provisioning_automation_id"`
+	CredentialManagerAcsSystemId          string    `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	UserIdentityId                        string    `json:"user_identity_id" url:"user_identity_id"`
+	CreatedAt                             time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId                           string    `json:"workspace_id" url:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredentialProvisioningAutomation) UnmarshalJSON(data []byte) error {
+	type embed AcsCredentialProvisioningAutomation
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsCredentialProvisioningAutomation(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredentialProvisioningAutomation) MarshalJSON() ([]byte, error) {
+	type embed AcsCredentialProvisioningAutomation
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsCredentialProvisioningAutomation) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsCredentialVisionlineMetadata struct {
+	CardFunctionType       AcsCredentialVisionlineMetadataCardFunctionType `json:"card_function_type,omitempty" url:"card_function_type,omitempty"`
+	JoinerAcsCredentialIds []string                                        `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	GuestAcsEntranceIds    []string                                        `json:"guest_acs_entrance_ids,omitempty" url:"guest_acs_entrance_ids,omitempty"`
+	CommonAcsEntranceIds   []string                                        `json:"common_acs_entrance_ids,omitempty" url:"common_acs_entrance_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredentialVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsCredentialVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsCredentialVisionlineMetadata(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredentialVisionlineMetadata) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsCredentialVisionlineMetadataCardFunctionType string
+
+const (
+	AcsCredentialVisionlineMetadataCardFunctionTypeGuest AcsCredentialVisionlineMetadataCardFunctionType = "guest"
+	AcsCredentialVisionlineMetadataCardFunctionTypeStaff AcsCredentialVisionlineMetadataCardFunctionType = "staff"
+)
+
+func NewAcsCredentialVisionlineMetadataCardFunctionTypeFromString(s string) (AcsCredentialVisionlineMetadataCardFunctionType, error) {
+	switch s {
+	case "guest":
+		return AcsCredentialVisionlineMetadataCardFunctionTypeGuest, nil
+	case "staff":
+		return AcsCredentialVisionlineMetadataCardFunctionTypeStaff, nil
+	}
+	var t AcsCredentialVisionlineMetadataCardFunctionType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsCredentialVisionlineMetadataCardFunctionType) Ptr() *AcsCredentialVisionlineMetadataCardFunctionType {
+	return &a
+}
+
+type AcsCredentialWarningsItem struct {
+	WarningCode string `json:"warning_code" url:"warning_code"`
+	Message     string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsCredentialWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsCredentialWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsCredentialWarningsItem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsCredentialWarningsItem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntrance struct {
+	AcsEntranceId      string                         `json:"acs_entrance_id" url:"acs_entrance_id"`
+	DisplayName        string                         `json:"display_name" url:"display_name"`
+	AcsSystemId        string                         `json:"acs_system_id" url:"acs_system_id"`
+	CreatedAt          time.Time                      `json:"created_at" url:"created_at"`
+	LatchMetadata      *AcsEntranceLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
+	VisionlineMetadata *AcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsEntrance) UnmarshalJSON(data []byte) error {
+	type embed AcsEntrance
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsEntrance(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsEntrance) MarshalJSON() ([]byte, error) {
+	type embed AcsEntrance
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsEntrance) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntranceLatchMetadata struct {
+	AccessibilityType string `json:"accessibility_type" url:"accessibility_type"`
+	DoorName          string `json:"door_name" url:"door_name"`
+	DoorType          string `json:"door_type" url:"door_type"`
+	IsConnected       bool   `json:"is_connected" url:"is_connected"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsEntranceLatchMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsEntranceLatchMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsEntranceLatchMetadata(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsEntranceLatchMetadata) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntranceVisionlineMetadata struct {
+	DoorName     string                                       `json:"door_name" url:"door_name"`
+	DoorCategory AcsEntranceVisionlineMetadataDoorCategory    `json:"door_category,omitempty" url:"door_category,omitempty"`
+	Profiles     []*AcsEntranceVisionlineMetadataProfilesItem `json:"profiles,omitempty" url:"profiles,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsEntranceVisionlineMetadata) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsEntranceVisionlineMetadata
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsEntranceVisionlineMetadata(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsEntranceVisionlineMetadata) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntranceVisionlineMetadataDoorCategory string
+
+const (
+	AcsEntranceVisionlineMetadataDoorCategoryEntrance       AcsEntranceVisionlineMetadataDoorCategory = "entrance"
+	AcsEntranceVisionlineMetadataDoorCategoryGuest          AcsEntranceVisionlineMetadataDoorCategory = "guest"
+	AcsEntranceVisionlineMetadataDoorCategoryElevatorReader AcsEntranceVisionlineMetadataDoorCategory = "elevator reader"
+	AcsEntranceVisionlineMetadataDoorCategoryCommon         AcsEntranceVisionlineMetadataDoorCategory = "common"
+	AcsEntranceVisionlineMetadataDoorCategoryCommonPms      AcsEntranceVisionlineMetadataDoorCategory = "common (PMS)"
+)
+
+func NewAcsEntranceVisionlineMetadataDoorCategoryFromString(s string) (AcsEntranceVisionlineMetadataDoorCategory, error) {
+	switch s {
+	case "entrance":
+		return AcsEntranceVisionlineMetadataDoorCategoryEntrance, nil
+	case "guest":
+		return AcsEntranceVisionlineMetadataDoorCategoryGuest, nil
+	case "elevator reader":
+		return AcsEntranceVisionlineMetadataDoorCategoryElevatorReader, nil
+	case "common":
+		return AcsEntranceVisionlineMetadataDoorCategoryCommon, nil
+	case "common (PMS)":
+		return AcsEntranceVisionlineMetadataDoorCategoryCommonPms, nil
+	}
+	var t AcsEntranceVisionlineMetadataDoorCategory
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsEntranceVisionlineMetadataDoorCategory) Ptr() *AcsEntranceVisionlineMetadataDoorCategory {
+	return &a
+}
+
+type AcsEntranceVisionlineMetadataProfilesItem struct {
+	VisionlineDoorProfileId   string                                                             `json:"visionline_door_profile_id" url:"visionline_door_profile_id"`
+	VisionlineDoorProfileType AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType `json:"visionline_door_profile_type,omitempty" url:"visionline_door_profile_type,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsEntranceVisionlineMetadataProfilesItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsEntranceVisionlineMetadataProfilesItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsEntranceVisionlineMetadataProfilesItem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsEntranceVisionlineMetadataProfilesItem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType string
+
+const (
+	AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeBle        AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType = "BLE"
+	AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeCommonDoor AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType = "commonDoor"
+	AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeTouch      AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType = "touch"
+)
+
+func NewAcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeFromString(s string) (AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType, error) {
+	switch s {
+	case "BLE":
+		return AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeBle, nil
+	case "commonDoor":
+		return AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeCommonDoor, nil
+	case "touch":
+		return AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileTypeTouch, nil
+	}
+	var t AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType) Ptr() *AcsEntranceVisionlineMetadataProfilesItemVisionlineDoorProfileType {
+	return &a
+}
+
 type AcsSystem struct {
-	AcsSystemId             string                `json:"acs_system_id" url:"acs_system_id"`
-	ExternalType            AcsSystemExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
-	ExternalTypeDisplayName string                `json:"external_type_display_name" url:"external_type_display_name"`
+	AcsSystemId             string                 `json:"acs_system_id" url:"acs_system_id"`
+	ExternalType            *AcsSystemExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName *string                `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
 	// ---
 	// deprecated: use external_type
 	// ---
-	SystemType AcsSystemSystemType `json:"system_type,omitempty" url:"system_type,omitempty"`
+	SystemType *AcsSystemSystemType `json:"system_type,omitempty" url:"system_type,omitempty"`
 	// ---
 	// deprecated: use external_type_display_name
 	// ---
-	SystemTypeDisplayName string    `json:"system_type_display_name" url:"system_type_display_name"`
-	Name                  string    `json:"name" url:"name"`
-	CreatedAt             time.Time `json:"created_at" url:"created_at"`
-	WorkspaceId           string    `json:"workspace_id" url:"workspace_id"`
-	ConnectedAccountIds   []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ImageUrl              string    `json:"image_url" url:"image_url"`
-	ImageAltText          string    `json:"image_alt_text" url:"image_alt_text"`
-	CanAutomateEnrollment *bool     `json:"can_automate_enrollment,omitempty" url:"can_automate_enrollment,omitempty"`
+	SystemTypeDisplayName                *string   `json:"system_type_display_name,omitempty" url:"system_type_display_name,omitempty"`
+	Name                                 string    `json:"name" url:"name"`
+	CreatedAt                            time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId                          string    `json:"workspace_id" url:"workspace_id"`
+	ConnectedAccountIds                  []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ImageUrl                             string    `json:"image_url" url:"image_url"`
+	ImageAltText                         string    `json:"image_alt_text" url:"image_alt_text"`
+	CanAutomateEnrollment                *bool     `json:"can_automate_enrollment,omitempty" url:"can_automate_enrollment,omitempty"`
+	CanCreateAcsAccessGroups             *bool     `json:"can_create_acs_access_groups,omitempty" url:"can_create_acs_access_groups,omitempty"`
+	CanRemoveAcsUsersFromAcsAccessGroups *bool     `json:"can_remove_acs_users_from_acs_access_groups,omitempty" url:"can_remove_acs_users_from_acs_access_groups,omitempty"`
+	CanAddAcsUsersToAcsAccessGroups      *bool     `json:"can_add_acs_users_to_acs_access_groups,omitempty" url:"can_add_acs_users_to_acs_access_groups,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -437,6 +983,7 @@ type AcsUser struct {
 	IsSuspended              bool                   `json:"is_suspended" url:"is_suspended"`
 	AccessSchedule           *AcsUserAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
 	UserIdentityId           *string                `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	UserIdentityFullName     *string                `json:"user_identity_full_name,omitempty" url:"user_identity_full_name,omitempty"`
 	UserIdentityEmailAddress *string                `json:"user_identity_email_address,omitempty" url:"user_identity_email_address,omitempty"`
 	UserIdentityPhoneNumber  *string                `json:"user_identity_phone_number,omitempty" url:"user_identity_phone_number,omitempty"`
 	FullName                 *string                `json:"full_name,omitempty" url:"full_name,omitempty"`
@@ -550,6 +1097,7 @@ const (
 	AcsUserExternalTypeBrivoUser                AcsUserExternalType = "brivo_user"
 	AcsUserExternalTypeHidCredentialManagerUser AcsUserExternalType = "hid_credential_manager_user"
 	AcsUserExternalTypeSaltoSiteUser            AcsUserExternalType = "salto_site_user"
+	AcsUserExternalTypeLatchUser                AcsUserExternalType = "latch_user"
 )
 
 func NewAcsUserExternalTypeFromString(s string) (AcsUserExternalType, error) {
@@ -562,6 +1110,8 @@ func NewAcsUserExternalTypeFromString(s string) (AcsUserExternalType, error) {
 		return AcsUserExternalTypeHidCredentialManagerUser, nil
 	case "salto_site_user":
 		return AcsUserExternalTypeSaltoSiteUser, nil
+	case "latch_user":
+		return AcsUserExternalTypeLatchUser, nil
 	}
 	var t AcsUserExternalType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -953,16 +1503,22 @@ func (c ClimateSettingScheduleHvacModeSetting) Ptr() *ClimateSettingScheduleHvac
 }
 
 type ConnectWebview struct {
-	ConnectWebviewId              string                                        `json:"connect_webview_id" url:"connect_webview_id"`
-	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
-	Url                           string                                        `json:"url" url:"url"`
-	WorkspaceId                   string                                        `json:"workspace_id" url:"workspace_id"`
-	DeviceSelectionMode           SelectionMode                                 `json:"device_selection_mode,omitempty" url:"device_selection_mode,omitempty"`
-	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
-	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty" url:"accepted_devices,omitempty"`
-	AnyProviderAllowed            bool                                          `json:"any_provider_allowed" url:"any_provider_allowed"`
+	ConnectWebviewId    string        `json:"connect_webview_id" url:"connect_webview_id"`
+	WorkspaceId         string        `json:"workspace_id" url:"workspace_id"`
+	CreatedAt           time.Time     `json:"created_at" url:"created_at"`
+	ConnectedAccountId  *string       `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	Url                 string        `json:"url" url:"url"`
+	DeviceSelectionMode SelectionMode `json:"device_selection_mode,omitempty" url:"device_selection_mode,omitempty"`
+	AcceptedProviders   []string      `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
+	// ---
+	// deprecated: Unused. Will be removed.
+	// ---
+	AcceptedDevices []string `json:"accepted_devices,omitempty" url:"accepted_devices,omitempty"`
+	// ---
+	// deprecated: Unused. Will be removed.
+	// ---
 	AnyDeviceAllowed              bool                                          `json:"any_device_allowed" url:"any_device_allowed"`
-	CreatedAt                     time.Time                                     `json:"created_at" url:"created_at"`
+	AnyProviderAllowed            bool                                          `json:"any_provider_allowed" url:"any_provider_allowed"`
 	LoginSuccessful               bool                                          `json:"login_successful" url:"login_successful"`
 	Status                        ConnectWebviewStatus                          `json:"status,omitempty" url:"status,omitempty"`
 	CustomRedirectUrl             *string                                       `json:"custom_redirect_url,omitempty" url:"custom_redirect_url,omitempty"`
@@ -1022,10 +1578,9 @@ func (c *ConnectWebview) String() string {
 }
 
 type ConnectWebviewCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebviewCustomMetadataValue {
@@ -1034,10 +1589,6 @@ func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebvie
 
 func NewConnectWebviewCustomMetadataValueFromBoolean(value bool) *ConnectWebviewCustomMetadataValue {
 	return &ConnectWebviewCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectWebviewCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewCustomMetadataValue {
-	return &ConnectWebviewCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -1053,12 +1604,6 @@ func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -1070,15 +1615,12 @@ func (c ConnectWebviewCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectWebviewCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomMetadataValueVisitor) error {
@@ -1089,8 +1631,6 @@ func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomM
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -1175,10 +1715,9 @@ func (c *ConnectedAccount) String() string {
 }
 
 type ConnectedAccountCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAccountCustomMetadataValue {
@@ -1187,10 +1726,6 @@ func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAc
 
 func NewConnectedAccountCustomMetadataValueFromBoolean(value bool) *ConnectedAccountCustomMetadataValue {
 	return &ConnectedAccountCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectedAccountCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountCustomMetadataValue {
-	return &ConnectedAccountCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -1206,12 +1741,6 @@ func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -1223,15 +1752,12 @@ func (c ConnectedAccountCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCustomMetadataValueVisitor) error {
@@ -1242,8 +1768,6 @@ func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCus
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -1306,12 +1830,13 @@ type Device struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                   bool                                  `json:"is_managed" url:"is_managed"`
-	CustomMetadata              map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
-	CanRemotelyUnlock           *bool                                 `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
-	CanRemotelyLock             *bool                                 `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
-	CanProgramOnlineAccessCodes *bool                                 `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
-	CanSimulateRemoval          *bool                                 `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	IsManaged                    bool                                  `json:"is_managed" url:"is_managed"`
+	CustomMetadata               map[string]*DeviceCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	CanRemotelyUnlock            *bool                                 `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock              *bool                                 `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
+	CanProgramOfflineAccessCodes *bool                                 `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
+	CanProgramOnlineAccessCodes  *bool                                 `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval           *bool                                 `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1392,10 +1917,9 @@ func (d DeviceCapabilitiesSupportedItem) Ptr() *DeviceCapabilitiesSupportedItem 
 }
 
 type DeviceCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewDeviceCustomMetadataValueFromString(value string) *DeviceCustomMetadataValue {
@@ -1404,10 +1928,6 @@ func NewDeviceCustomMetadataValueFromString(value string) *DeviceCustomMetadataV
 
 func NewDeviceCustomMetadataValueFromBoolean(value bool) *DeviceCustomMetadataValue {
 	return &DeviceCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewDeviceCustomMetadataValueFromStringOptional(value *string) *DeviceCustomMetadataValue {
-	return &DeviceCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (d *DeviceCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -1423,12 +1943,6 @@ func (d *DeviceCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		d.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		d.typeName = "stringOptional"
-		d.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
@@ -1440,15 +1954,12 @@ func (d DeviceCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(d.String)
 	case "boolean":
 		return json.Marshal(d.Boolean)
-	case "stringOptional":
-		return json.Marshal(d.StringOptional)
 	}
 }
 
 type DeviceCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (d *DeviceCustomMetadataValue) Accept(visitor DeviceCustomMetadataValueVisitor) error {
@@ -1459,8 +1970,6 @@ func (d *DeviceCustomMetadataValue) Accept(visitor DeviceCustomMetadataValueVisi
 		return visitor.VisitString(d.String)
 	case "boolean":
 		return visitor.VisitBoolean(d.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(d.StringOptional)
 	}
 }
 
@@ -1633,6 +2142,8 @@ func (d *DeviceProperties) String() string {
 type DevicePropertiesAccessoryKeypad struct {
 	// Indicates if the accessory_keypad is connected to the device.
 	IsConnected bool `json:"is_connected" url:"is_connected"`
+	// Indicates if the keypad battery properties.
+	Battery *DevicePropertiesAccessoryKeypadBattery `json:"battery,omitempty" url:"battery,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -1649,6 +2160,36 @@ func (d *DevicePropertiesAccessoryKeypad) UnmarshalJSON(data []byte) error {
 }
 
 func (d *DevicePropertiesAccessoryKeypad) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Indicates if the keypad battery properties.
+type DevicePropertiesAccessoryKeypadBattery struct {
+	Level float64 `json:"level" url:"level"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DevicePropertiesAccessoryKeypadBattery) UnmarshalJSON(data []byte) error {
+	type unmarshaler DevicePropertiesAccessoryKeypadBattery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DevicePropertiesAccessoryKeypadBattery(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DevicePropertiesAccessoryKeypadBattery) String() string {
 	if len(d._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
 			return value
@@ -1786,12 +2327,13 @@ func (d *DevicePropertiesAugustMetadata) String() string {
 }
 
 type DevicePropertiesAvigilonAltaMetadata struct {
-	EntryName string  `json:"entry_name" url:"entry_name"`
-	OrgName   string  `json:"org_name" url:"org_name"`
-	ZoneId    float64 `json:"zone_id" url:"zone_id"`
-	ZoneName  string  `json:"zone_name" url:"zone_name"`
-	SiteId    float64 `json:"site_id" url:"site_id"`
-	SiteName  string  `json:"site_name" url:"site_name"`
+	EntryName             string  `json:"entry_name" url:"entry_name"`
+	OrgName               string  `json:"org_name" url:"org_name"`
+	ZoneId                float64 `json:"zone_id" url:"zone_id"`
+	ZoneName              string  `json:"zone_name" url:"zone_name"`
+	SiteId                float64 `json:"site_id" url:"site_id"`
+	SiteName              string  `json:"site_name" url:"site_name"`
+	EntryRelaysTotalCount float64 `json:"entry_relays_total_count" url:"entry_relays_total_count"`
 
 	_rawJSON json.RawMessage
 }
@@ -2056,6 +2598,7 @@ const (
 	DevicePropertiesCodeConstraintsItemZeroConstraintTypeStartDateInFuture               DevicePropertiesCodeConstraintsItemZeroConstraintType = "start_date_in_future"
 	DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoAscendingOrDescendingSequence DevicePropertiesCodeConstraintsItemZeroConstraintType = "no_ascending_or_descending_sequence"
 	DevicePropertiesCodeConstraintsItemZeroConstraintTypeAtLeastThreeUniqueDigits        DevicePropertiesCodeConstraintsItemZeroConstraintType = "at_least_three_unique_digits"
+	DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotContain089                DevicePropertiesCodeConstraintsItemZeroConstraintType = "cannot_contain_089"
 )
 
 func NewDevicePropertiesCodeConstraintsItemZeroConstraintTypeFromString(s string) (DevicePropertiesCodeConstraintsItemZeroConstraintType, error) {
@@ -2076,6 +2619,8 @@ func NewDevicePropertiesCodeConstraintsItemZeroConstraintTypeFromString(s string
 		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeNoAscendingOrDescendingSequence, nil
 	case "at_least_three_unique_digits":
 		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeAtLeastThreeUniqueDigits, nil
+	case "cannot_contain_089":
+		return DevicePropertiesCodeConstraintsItemZeroConstraintTypeCannotContain089, nil
 	}
 	var t DevicePropertiesCodeConstraintsItemZeroConstraintType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -2120,6 +2665,7 @@ type DevicePropertiesDormakabaOracodeMetadata struct {
 	DoorId              float64                                                            `json:"door_id" url:"door_id"`
 	DoorName            string                                                             `json:"door_name" url:"door_name"`
 	DeviceId            *float64                                                           `json:"device_id,omitempty" url:"device_id,omitempty"`
+	DoorIsWireless      bool                                                               `json:"door_is_wireless" url:"door_is_wireless"`
 	SiteId              float64                                                            `json:"site_id" url:"site_id"`
 	SiteName            string                                                             `json:"site_name" url:"site_name"`
 	IanaTimezone        *string                                                            `json:"iana_timezone,omitempty" url:"iana_timezone,omitempty"`
@@ -2377,6 +2923,7 @@ type DevicePropertiesIgloohomeMetadata struct {
 	DeviceName string  `json:"device_name" url:"device_name"`
 	BridgeId   *string `json:"bridge_id,omitempty" url:"bridge_id,omitempty"`
 	BridgeName *string `json:"bridge_name,omitempty" url:"bridge_name,omitempty"`
+	KeypadId   *string `json:"keypad_id,omitempty" url:"keypad_id,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2841,6 +3388,8 @@ type DevicePropertiesNukiMetadata struct {
 	DeviceId              string `json:"device_id" url:"device_id"`
 	DeviceName            string `json:"device_name" url:"device_name"`
 	KeypadBatteryCritical *bool  `json:"keypad_battery_critical,omitempty" url:"keypad_battery_critical,omitempty"`
+	KeypadPaired          *bool  `json:"keypad_paired,omitempty" url:"keypad_paired,omitempty"`
+	Keypad2Paired         *bool  `json:"keypad_2_paired,omitempty" url:"keypad_2_paired,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3115,12 +3664,14 @@ func (d *DevicePropertiesTwoNMetadata) String() string {
 }
 
 type DevicePropertiesWyzeMetadata struct {
-	DeviceId        string `json:"device_id" url:"device_id"`
-	DeviceName      string `json:"device_name" url:"device_name"`
-	ProductName     string `json:"product_name" url:"product_name"`
-	ProductType     string `json:"product_type" url:"product_type"`
-	ProductModel    string `json:"product_model" url:"product_model"`
-	DeviceInfoModel string `json:"device_info_model" url:"device_info_model"`
+	DeviceId             string   `json:"device_id" url:"device_id"`
+	DeviceName           string   `json:"device_name" url:"device_name"`
+	ProductName          string   `json:"product_name" url:"product_name"`
+	ProductType          string   `json:"product_type" url:"product_type"`
+	ProductModel         string   `json:"product_model" url:"product_model"`
+	DeviceInfoModel      string   `json:"device_info_model" url:"device_info_model"`
+	KeypadUuid           *string  `json:"keypad_uuid,omitempty" url:"keypad_uuid,omitempty"`
+	LockerStatusHardlock *float64 `json:"locker_status_hardlock,omitempty" url:"locker_status_hardlock,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -3529,12 +4080,18 @@ func (e *EnrollmentAutomation) String() string {
 }
 
 type Event struct {
-	EventId     string    `json:"event_id" url:"event_id"`
-	DeviceId    *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
-	EventType   string    `json:"event_type" url:"event_type"`
-	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
-	CreatedAt   time.Time `json:"created_at" url:"created_at"`
-	OccurredAt  time.Time `json:"occurred_at" url:"occurred_at"`
+	EventId                string    `json:"event_id" url:"event_id"`
+	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	ActionAttemptId        *string   `json:"action_attempt_id,omitempty" url:"action_attempt_id,omitempty"`
+	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
+	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsSystemId            *string   `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	ClientSessionId        *string   `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
+	EventType              string    `json:"event_type" url:"event_type"`
+	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt              time.Time `json:"created_at" url:"created_at"`
+	OccurredAt             time.Time `json:"occurred_at" url:"occurred_at"`
 
 	_rawJSON json.RawMessage
 }
@@ -3959,6 +4516,56 @@ func (m MaxTimeRounding) Ptr() *MaxTimeRounding {
 	return &m
 }
 
+type Network struct {
+	NetworkId   string    `json:"network_id" url:"network_id"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	DisplayName string    `json:"display_name" url:"display_name"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *Network) UnmarshalJSON(data []byte) error {
+	type embed Network
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*n),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*n = Network(unmarshaler.embed)
+	n.CreatedAt = unmarshaler.CreatedAt.Time()
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *Network) MarshalJSON() ([]byte, error) {
+	type embed Network
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*n),
+		CreatedAt: core.NewDateTime(n.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (n *Network) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
 type NoiseThreshold struct {
 	NoiseThresholdId       string   `json:"noise_threshold_id" url:"noise_threshold_id"`
 	DeviceId               string   `json:"device_id" url:"device_id"`
@@ -4016,12 +4623,13 @@ type Phone struct {
 	// Date and time at which the device object was created.
 	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// Indicates whether Seam manages the device.
-	IsManaged                   bool                                 `json:"is_managed" url:"is_managed"`
-	CustomMetadata              map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
-	CanRemotelyUnlock           *bool                                `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
-	CanRemotelyLock             *bool                                `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
-	CanProgramOnlineAccessCodes *bool                                `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
-	CanSimulateRemoval          *bool                                `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	IsManaged                    bool                                 `json:"is_managed" url:"is_managed"`
+	CustomMetadata               map[string]*PhoneCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	CanRemotelyUnlock            *bool                                `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock              *bool                                `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
+	CanProgramOfflineAccessCodes *bool                                `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
+	CanProgramOnlineAccessCodes  *bool                                `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval           *bool                                `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4102,10 +4710,9 @@ func (p PhoneCapabilitiesSupportedItem) Ptr() *PhoneCapabilitiesSupportedItem {
 }
 
 type PhoneCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewPhoneCustomMetadataValueFromString(value string) *PhoneCustomMetadataValue {
@@ -4114,10 +4721,6 @@ func NewPhoneCustomMetadataValueFromString(value string) *PhoneCustomMetadataVal
 
 func NewPhoneCustomMetadataValueFromBoolean(value bool) *PhoneCustomMetadataValue {
 	return &PhoneCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewPhoneCustomMetadataValueFromStringOptional(value *string) *PhoneCustomMetadataValue {
-	return &PhoneCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (p *PhoneCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -4133,12 +4736,6 @@ func (p *PhoneCustomMetadataValue) UnmarshalJSON(data []byte) error {
 		p.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		p.typeName = "stringOptional"
-		p.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
 }
 
@@ -4150,15 +4747,12 @@ func (p PhoneCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(p.String)
 	case "boolean":
 		return json.Marshal(p.Boolean)
-	case "stringOptional":
-		return json.Marshal(p.StringOptional)
 	}
 }
 
 type PhoneCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (p *PhoneCustomMetadataValue) Accept(visitor PhoneCustomMetadataValueVisitor) error {
@@ -4169,8 +4763,6 @@ func (p *PhoneCustomMetadataValue) Accept(visitor PhoneCustomMetadataValueVisito
 		return visitor.VisitString(p.String)
 	case "boolean":
 		return visitor.VisitBoolean(p.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(p.StringOptional)
 	}
 }
 
@@ -4623,14 +5215,15 @@ type UnmanagedDevice struct {
 	// Array of warnings associated with the device. Each warning object within the array contains two fields: "warning_code" and "message." "warning_code" is a string that uniquely identifies the type of warning, enabling quick recognition and categorization of the issue. "message" provides a more detailed description of the warning, offering insights into the issue and potentially how to rectify it.
 	Warnings []*UnmanagedDeviceWarningsItem `json:"warnings,omitempty" url:"warnings,omitempty"`
 	// Date and time at which the device object was created.
-	CreatedAt                   time.Time                      `json:"created_at" url:"created_at"`
-	IsManaged                   bool                           `json:"is_managed" url:"is_managed"`
-	Properties                  *UnmanagedDeviceProperties     `json:"properties,omitempty" url:"properties,omitempty"`
-	CanRemotelyUnlock           *bool                          `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
-	CanRemotelyLock             *bool                          `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
-	CanProgramOnlineAccessCodes *bool                          `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
-	CanSimulateRemoval          *bool                          `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
-	DeviceProvider              *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty" url:"device_provider,omitempty"`
+	CreatedAt                    time.Time                      `json:"created_at" url:"created_at"`
+	IsManaged                    bool                           `json:"is_managed" url:"is_managed"`
+	Properties                   *UnmanagedDeviceProperties     `json:"properties,omitempty" url:"properties,omitempty"`
+	CanRemotelyUnlock            *bool                          `json:"can_remotely_unlock,omitempty" url:"can_remotely_unlock,omitempty"`
+	CanRemotelyLock              *bool                          `json:"can_remotely_lock,omitempty" url:"can_remotely_lock,omitempty"`
+	CanProgramOfflineAccessCodes *bool                          `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
+	CanProgramOnlineAccessCodes  *bool                          `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
+	CanSimulateRemoval           *bool                          `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	DeviceProvider               *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty" url:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -4770,6 +5363,8 @@ func (u *UnmanagedDeviceErrorsItem) String() string {
 }
 
 type UnmanagedDeviceProperties struct {
+	// Represents the accessory keypad state.
+	AccessoryKeypad *UnmanagedDevicePropertiesAccessoryKeypad `json:"accessory_keypad,omitempty" url:"accessory_keypad,omitempty"`
 	// ---
 	// deprecated: use device.display_name instead
 	// ---
@@ -4808,6 +5403,69 @@ func (u *UnmanagedDeviceProperties) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UnmanagedDeviceProperties) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+// Represents the accessory keypad state.
+type UnmanagedDevicePropertiesAccessoryKeypad struct {
+	// Indicates if the accessory_keypad is connected to the device.
+	IsConnected bool `json:"is_connected" url:"is_connected"`
+	// Indicates if the keypad battery properties.
+	Battery *UnmanagedDevicePropertiesAccessoryKeypadBattery `json:"battery,omitempty" url:"battery,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDevicePropertiesAccessoryKeypad) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDevicePropertiesAccessoryKeypad
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDevicePropertiesAccessoryKeypad(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDevicePropertiesAccessoryKeypad) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+// Indicates if the keypad battery properties.
+type UnmanagedDevicePropertiesAccessoryKeypadBattery struct {
+	Level float64 `json:"level" url:"level"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UnmanagedDevicePropertiesAccessoryKeypadBattery) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnmanagedDevicePropertiesAccessoryKeypadBattery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnmanagedDevicePropertiesAccessoryKeypadBattery(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnmanagedDevicePropertiesAccessoryKeypadBattery) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
@@ -4950,6 +5608,60 @@ func (u *UnmanagedDeviceWarningsItem) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+type UserIdentity struct {
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentity) UnmarshalJSON(data []byte) error {
+	type embed UserIdentity
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*u = UserIdentity(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentity) MarshalJSON() ([]byte, error) {
+	type embed UserIdentity
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (u *UserIdentity) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
 type Webhook struct {
 	WebhookId  string   `json:"webhook_id" url:"webhook_id"`
 	Url        string   `json:"url" url:"url"`
@@ -5072,106 +5784,6 @@ func (c *ConnectedAccountsGetRequestEmail) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type NetworksGetResponseNetwork struct {
-	NetworkId   string    `json:"network_id" url:"network_id"`
-	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
-	DisplayName string    `json:"display_name" url:"display_name"`
-	CreatedAt   time.Time `json:"created_at" url:"created_at"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *NetworksGetResponseNetwork) UnmarshalJSON(data []byte) error {
-	type embed NetworksGetResponseNetwork
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed: embed(*n),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*n = NetworksGetResponseNetwork(unmarshaler.embed)
-	n.CreatedAt = unmarshaler.CreatedAt.Time()
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *NetworksGetResponseNetwork) MarshalJSON() ([]byte, error) {
-	type embed NetworksGetResponseNetwork
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed:     embed(*n),
-		CreatedAt: core.NewDateTime(n.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (n *NetworksGetResponseNetwork) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
-type NetworksListResponseNetworksItem struct {
-	NetworkId   string    `json:"network_id" url:"network_id"`
-	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
-	DisplayName string    `json:"display_name" url:"display_name"`
-	CreatedAt   time.Time `json:"created_at" url:"created_at"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *NetworksListResponseNetworksItem) UnmarshalJSON(data []byte) error {
-	type embed NetworksListResponseNetworksItem
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed: embed(*n),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*n = NetworksListResponseNetworksItem(unmarshaler.embed)
-	n.CreatedAt = unmarshaler.CreatedAt.Time()
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *NetworksListResponseNetworksItem) MarshalJSON() ([]byte, error) {
-	type embed NetworksListResponseNetworksItem
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed:     embed(*n),
-		CreatedAt: core.NewDateTime(n.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (n *NetworksListResponseNetworksItem) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
 type ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting string
 
 const (
@@ -5198,60 +5810,6 @@ func NewThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingFromString(s
 
 func (t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting) Ptr() *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting {
 	return &t
-}
-
-type UserIdentitiesCreateResponseUserIdentity struct {
-	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name" url:"display_name"`
-	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at" url:"created_at"`
-	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UserIdentitiesCreateResponseUserIdentity) UnmarshalJSON(data []byte) error {
-	type embed UserIdentitiesCreateResponseUserIdentity
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed: embed(*u),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*u = UserIdentitiesCreateResponseUserIdentity(unmarshaler.embed)
-	u.CreatedAt = unmarshaler.CreatedAt.Time()
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UserIdentitiesCreateResponseUserIdentity) MarshalJSON() ([]byte, error) {
-	type embed UserIdentitiesCreateResponseUserIdentity
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed:     embed(*u),
-		CreatedAt: core.NewDateTime(u.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (u *UserIdentitiesCreateResponseUserIdentity) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesGetRequestUserIdentityId struct {
@@ -5301,114 +5859,6 @@ func (u *UserIdentitiesGetRequestUserIdentityKey) UnmarshalJSON(data []byte) err
 }
 
 func (u *UserIdentitiesGetRequestUserIdentityKey) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UserIdentitiesGetResponseUserIdentity struct {
-	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name" url:"display_name"`
-	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at" url:"created_at"`
-	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UserIdentitiesGetResponseUserIdentity) UnmarshalJSON(data []byte) error {
-	type embed UserIdentitiesGetResponseUserIdentity
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed: embed(*u),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*u = UserIdentitiesGetResponseUserIdentity(unmarshaler.embed)
-	u.CreatedAt = unmarshaler.CreatedAt.Time()
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UserIdentitiesGetResponseUserIdentity) MarshalJSON() ([]byte, error) {
-	type embed UserIdentitiesGetResponseUserIdentity
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed:     embed(*u),
-		CreatedAt: core.NewDateTime(u.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (u *UserIdentitiesGetResponseUserIdentity) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UserIdentitiesListResponseUserIdentitiesItem struct {
-	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
-	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
-	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
-	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	DisplayName     string    `json:"display_name" url:"display_name"`
-	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
-	CreatedAt       time.Time `json:"created_at" url:"created_at"`
-	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UserIdentitiesListResponseUserIdentitiesItem) UnmarshalJSON(data []byte) error {
-	type embed UserIdentitiesListResponseUserIdentitiesItem
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed: embed(*u),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*u = UserIdentitiesListResponseUserIdentitiesItem(unmarshaler.embed)
-	u.CreatedAt = unmarshaler.CreatedAt.Time()
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UserIdentitiesListResponseUserIdentitiesItem) MarshalJSON() ([]byte, error) {
-	type embed UserIdentitiesListResponseUserIdentitiesItem
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at"`
-	}{
-		embed:     embed(*u),
-		CreatedAt: core.NewDateTime(u.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (u *UserIdentitiesListResponseUserIdentitiesItem) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value
