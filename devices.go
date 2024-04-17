@@ -151,10 +151,9 @@ func (d *DevicesListDeviceProvidersResponse) String() string {
 }
 
 type DevicesListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewDevicesListRequestCustomMetadataHasValueFromString(value string) *DevicesListRequestCustomMetadataHasValue {
@@ -163,10 +162,6 @@ func NewDevicesListRequestCustomMetadataHasValueFromString(value string) *Device
 
 func NewDevicesListRequestCustomMetadataHasValueFromBoolean(value bool) *DevicesListRequestCustomMetadataHasValue {
 	return &DevicesListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewDevicesListRequestCustomMetadataHasValueFromStringOptional(value *string) *DevicesListRequestCustomMetadataHasValue {
-	return &DevicesListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (d *DevicesListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -182,12 +177,6 @@ func (d *DevicesListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) er
 		d.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		d.typeName = "stringOptional"
-		d.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
@@ -199,15 +188,12 @@ func (d DevicesListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) 
 		return json.Marshal(d.String)
 	case "boolean":
 		return json.Marshal(d.Boolean)
-	case "stringOptional":
-		return json.Marshal(d.StringOptional)
 	}
 }
 
 type DevicesListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (d *DevicesListRequestCustomMetadataHasValue) Accept(visitor DevicesListRequestCustomMetadataHasValueVisitor) error {
@@ -218,18 +204,17 @@ func (d *DevicesListRequestCustomMetadataHasValue) Accept(visitor DevicesListReq
 		return visitor.VisitString(d.String)
 	case "boolean":
 		return visitor.VisitBoolean(d.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(d.StringOptional)
 	}
 }
 
 type DevicesListRequestExcludeIfItem string
 
 const (
-	DevicesListRequestExcludeIfItemCanRemotelyUnlock           DevicesListRequestExcludeIfItem = "can_remotely_unlock"
-	DevicesListRequestExcludeIfItemCanRemotelyLock             DevicesListRequestExcludeIfItem = "can_remotely_lock"
-	DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes DevicesListRequestExcludeIfItem = "can_program_online_access_codes"
-	DevicesListRequestExcludeIfItemCanSimulateRemoval          DevicesListRequestExcludeIfItem = "can_simulate_removal"
+	DevicesListRequestExcludeIfItemCanRemotelyUnlock            DevicesListRequestExcludeIfItem = "can_remotely_unlock"
+	DevicesListRequestExcludeIfItemCanRemotelyLock              DevicesListRequestExcludeIfItem = "can_remotely_lock"
+	DevicesListRequestExcludeIfItemCanProgramOfflineAccessCodes DevicesListRequestExcludeIfItem = "can_program_offline_access_codes"
+	DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestExcludeIfItem = "can_program_online_access_codes"
+	DevicesListRequestExcludeIfItemCanSimulateRemoval           DevicesListRequestExcludeIfItem = "can_simulate_removal"
 )
 
 func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestExcludeIfItem, error) {
@@ -238,6 +223,8 @@ func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestE
 		return DevicesListRequestExcludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return DevicesListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return DevicesListRequestExcludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
@@ -254,10 +241,11 @@ func (d DevicesListRequestExcludeIfItem) Ptr() *DevicesListRequestExcludeIfItem 
 type DevicesListRequestIncludeIfItem string
 
 const (
-	DevicesListRequestIncludeIfItemCanRemotelyUnlock           DevicesListRequestIncludeIfItem = "can_remotely_unlock"
-	DevicesListRequestIncludeIfItemCanRemotelyLock             DevicesListRequestIncludeIfItem = "can_remotely_lock"
-	DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes DevicesListRequestIncludeIfItem = "can_program_online_access_codes"
-	DevicesListRequestIncludeIfItemCanSimulateRemoval          DevicesListRequestIncludeIfItem = "can_simulate_removal"
+	DevicesListRequestIncludeIfItemCanRemotelyUnlock            DevicesListRequestIncludeIfItem = "can_remotely_unlock"
+	DevicesListRequestIncludeIfItemCanRemotelyLock              DevicesListRequestIncludeIfItem = "can_remotely_lock"
+	DevicesListRequestIncludeIfItemCanProgramOfflineAccessCodes DevicesListRequestIncludeIfItem = "can_program_offline_access_codes"
+	DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestIncludeIfItem = "can_program_online_access_codes"
+	DevicesListRequestIncludeIfItemCanSimulateRemoval           DevicesListRequestIncludeIfItem = "can_simulate_removal"
 )
 
 func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestIncludeIfItem, error) {
@@ -266,6 +254,8 @@ func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestI
 		return DevicesListRequestIncludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return DevicesListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return DevicesListRequestIncludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":

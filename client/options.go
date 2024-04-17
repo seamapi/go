@@ -29,14 +29,9 @@ func WithMaxAttempts(attempts uint) *core.MaxAttemptsOption {
 	return option.WithMaxAttempts(attempts)
 }
 
-// WithApiKey sets the 'Authorization: Bearer <apiKey>' request header.
+// WithApiKey sets the apiKey auth request header.
 func WithApiKey(apiKey string) *core.ApiKeyOption {
 	return option.WithApiKey(apiKey)
-}
-
-// WithSeamWorkspace sets the seamWorkspace request header.
-func WithSeamWorkspace(seamWorkspace string) *core.SeamWorkspaceOption {
-	return option.WithSeamWorkspace(seamWorkspace)
 }
 
 // WithSeamClientSessionToken sets the seamClientSessionToken request header.

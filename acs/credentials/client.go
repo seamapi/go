@@ -102,7 +102,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *acs.CredentialsCreateRequest,
 	opts ...option.RequestOption,
-) (*acs.CredentialsCreateResponse, error) {
+) (*seamapigo.AcsCredential, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,7 +158,7 @@ func (c *Client) Create(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredential, nil
 }
 
 func (c *Client) Delete(
@@ -228,7 +228,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *acs.CredentialsGetRequest,
 	opts ...option.RequestOption,
-) (*acs.CredentialsGetResponse, error) {
+) (*seamapigo.AcsCredential, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -284,14 +284,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredential, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *acs.CredentialsListRequest,
 	opts ...option.RequestOption,
-) (*acs.CredentialsListResponse, error) {
+) ([]*seamapigo.AcsCredential, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -347,7 +347,7 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredentials, nil
 }
 
 func (c *Client) Unassign(

@@ -332,10 +332,9 @@ func (c *ConnectWebviewsGetResponse) String() string {
 }
 
 type ConnectWebviewsListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectWebviewsListRequestCustomMetadataHasValueFromString(value string) *ConnectWebviewsListRequestCustomMetadataHasValue {
@@ -344,10 +343,6 @@ func NewConnectWebviewsListRequestCustomMetadataHasValueFromString(value string)
 
 func NewConnectWebviewsListRequestCustomMetadataHasValueFromBoolean(value bool) *ConnectWebviewsListRequestCustomMetadataHasValue {
 	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectWebviewsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ConnectWebviewsListRequestCustomMetadataHasValue {
-	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectWebviewsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -363,12 +358,6 @@ func (c *ConnectWebviewsListRequestCustomMetadataHasValue) UnmarshalJSON(data []
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -380,15 +369,12 @@ func (c ConnectWebviewsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte,
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectWebviewsListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewsListRequestCustomMetadataHasValue) Accept(visitor ConnectWebviewsListRequestCustomMetadataHasValueVisitor) error {
@@ -399,8 +385,6 @@ func (c *ConnectWebviewsListRequestCustomMetadataHasValue) Accept(visitor Connec
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
@@ -432,9 +416,4 @@ func (c *ConnectWebviewsListResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
-}
-
-type ConnectWebviewsViewRequest struct {
-	ConnectWebviewId string `json:"-" url:"connect_webview_id"`
-	AuthToken        string `json:"-" url:"auth_token"`
 }

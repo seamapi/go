@@ -38,7 +38,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *seamapigo.NetworksGetRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.NetworksGetResponse, error) {
+) (*seamapigo.Network, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -94,14 +94,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Network, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *seamapigo.NetworksListRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.NetworksListResponse, error) {
+) ([]*seamapigo.Network, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -157,5 +157,5 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.Networks, nil
 }

@@ -102,7 +102,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *acs.UsersCreateRequest,
 	opts ...option.RequestOption,
-) (*acs.UsersCreateResponse, error) {
+) (*seamapigo.AcsUser, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,7 +158,7 @@ func (c *Client) Create(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsUser, nil
 }
 
 func (c *Client) Delete(
@@ -228,7 +228,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *acs.UsersGetRequest,
 	opts ...option.RequestOption,
-) (*acs.UsersGetResponse, error) {
+) (*seamapigo.AcsUser, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -284,14 +284,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsUser, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *acs.UsersListRequest,
 	opts ...option.RequestOption,
-) (*acs.UsersListResponse, error) {
+) ([]*seamapigo.AcsUser, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -347,14 +347,14 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsUsers, nil
 }
 
 func (c *Client) ListAccessibleEntrances(
 	ctx context.Context,
 	request *acs.UsersListAccessibleEntrancesRequest,
 	opts ...option.RequestOption,
-) (*acs.UsersListAccessibleEntrancesResponse, error) {
+) ([]*seamapigo.AcsEntrance, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -410,7 +410,7 @@ func (c *Client) ListAccessibleEntrances(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsEntrances, nil
 }
 
 func (c *Client) RemoveFromAccessGroup(

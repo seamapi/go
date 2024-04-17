@@ -90,10 +90,9 @@ func (l *LocksGetResponse) String() string {
 }
 
 type LocksListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewLocksListRequestCustomMetadataHasValueFromString(value string) *LocksListRequestCustomMetadataHasValue {
@@ -102,10 +101,6 @@ func NewLocksListRequestCustomMetadataHasValueFromString(value string) *LocksLis
 
 func NewLocksListRequestCustomMetadataHasValueFromBoolean(value bool) *LocksListRequestCustomMetadataHasValue {
 	return &LocksListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewLocksListRequestCustomMetadataHasValueFromStringOptional(value *string) *LocksListRequestCustomMetadataHasValue {
-	return &LocksListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (l *LocksListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -121,12 +116,6 @@ func (l *LocksListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) erro
 		l.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		l.typeName = "stringOptional"
-		l.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
 }
 
@@ -138,15 +127,12 @@ func (l LocksListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(l.String)
 	case "boolean":
 		return json.Marshal(l.Boolean)
-	case "stringOptional":
-		return json.Marshal(l.StringOptional)
 	}
 }
 
 type LocksListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequestCustomMetadataHasValueVisitor) error {
@@ -157,18 +143,17 @@ func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequest
 		return visitor.VisitString(l.String)
 	case "boolean":
 		return visitor.VisitBoolean(l.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(l.StringOptional)
 	}
 }
 
 type LocksListRequestExcludeIfItem string
 
 const (
-	LocksListRequestExcludeIfItemCanRemotelyUnlock           LocksListRequestExcludeIfItem = "can_remotely_unlock"
-	LocksListRequestExcludeIfItemCanRemotelyLock             LocksListRequestExcludeIfItem = "can_remotely_lock"
-	LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes LocksListRequestExcludeIfItem = "can_program_online_access_codes"
-	LocksListRequestExcludeIfItemCanSimulateRemoval          LocksListRequestExcludeIfItem = "can_simulate_removal"
+	LocksListRequestExcludeIfItemCanRemotelyUnlock            LocksListRequestExcludeIfItem = "can_remotely_unlock"
+	LocksListRequestExcludeIfItemCanRemotelyLock              LocksListRequestExcludeIfItem = "can_remotely_lock"
+	LocksListRequestExcludeIfItemCanProgramOfflineAccessCodes LocksListRequestExcludeIfItem = "can_program_offline_access_codes"
+	LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes  LocksListRequestExcludeIfItem = "can_program_online_access_codes"
+	LocksListRequestExcludeIfItemCanSimulateRemoval           LocksListRequestExcludeIfItem = "can_simulate_removal"
 )
 
 func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExcludeIfItem, error) {
@@ -177,6 +162,8 @@ func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExclu
 		return LocksListRequestExcludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return LocksListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return LocksListRequestExcludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
@@ -193,10 +180,11 @@ func (l LocksListRequestExcludeIfItem) Ptr() *LocksListRequestExcludeIfItem {
 type LocksListRequestIncludeIfItem string
 
 const (
-	LocksListRequestIncludeIfItemCanRemotelyUnlock           LocksListRequestIncludeIfItem = "can_remotely_unlock"
-	LocksListRequestIncludeIfItemCanRemotelyLock             LocksListRequestIncludeIfItem = "can_remotely_lock"
-	LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes LocksListRequestIncludeIfItem = "can_program_online_access_codes"
-	LocksListRequestIncludeIfItemCanSimulateRemoval          LocksListRequestIncludeIfItem = "can_simulate_removal"
+	LocksListRequestIncludeIfItemCanRemotelyUnlock            LocksListRequestIncludeIfItem = "can_remotely_unlock"
+	LocksListRequestIncludeIfItemCanRemotelyLock              LocksListRequestIncludeIfItem = "can_remotely_lock"
+	LocksListRequestIncludeIfItemCanProgramOfflineAccessCodes LocksListRequestIncludeIfItem = "can_program_offline_access_codes"
+	LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes  LocksListRequestIncludeIfItem = "can_program_online_access_codes"
+	LocksListRequestIncludeIfItemCanSimulateRemoval           LocksListRequestIncludeIfItem = "can_simulate_removal"
 )
 
 func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestIncludeIfItem, error) {
@@ -205,6 +193,8 @@ func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestInclu
 		return LocksListRequestIncludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return LocksListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return LocksListRequestIncludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":

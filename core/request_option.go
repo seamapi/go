@@ -22,7 +22,6 @@ type RequestOptions struct {
 	HTTPHeader             http.Header
 	MaxAttempts            uint
 	ApiKey                 string
-	SeamWorkspace          string
 	SeamClientSessionToken string
 	ClientSessionToken     string
 }
@@ -45,10 +44,7 @@ func NewRequestOptions(opts ...RequestOption) *RequestOptions {
 // for the request(s).
 func (r *RequestOptions) ToHeader() http.Header {
 	header := r.cloneHeader()
-	if r.ApiKey != "" {
-		header.Set("Authorization", "Bearer "+r.ApiKey)
-	}
-	header.Set("seam-workspace", fmt.Sprintf("%v", r.SeamWorkspace))
+	header.Set("seam-workspace", fmt.Sprintf("%v", r.ApiKey))
 	header.Set("seam-client-session-token", fmt.Sprintf("%v", r.SeamClientSessionToken))
 	header.Set("client-session-token", fmt.Sprintf("%v", r.ClientSessionToken))
 	return header
@@ -58,7 +54,7 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/seamapi/go")
-	headers.Set("X-Fern-SDK-Version", "v0.3.0")
+	headers.Set("X-Fern-SDK-Version", "v0.3.1")
 	return headers
 }
 
@@ -105,15 +101,6 @@ type ApiKeyOption struct {
 
 func (a *ApiKeyOption) applyRequestOptions(opts *RequestOptions) {
 	opts.ApiKey = a.ApiKey
-}
-
-// SeamWorkspaceOption implements the RequestOption interface.
-type SeamWorkspaceOption struct {
-	SeamWorkspace string
-}
-
-func (s *SeamWorkspaceOption) applyRequestOptions(opts *RequestOptions) {
-	opts.SeamWorkspace = s.SeamWorkspace
 }
 
 // SeamClientSessionTokenOption implements the RequestOption interface.
