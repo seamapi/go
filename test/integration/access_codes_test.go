@@ -130,14 +130,14 @@ func TestAccessCodes(t *testing.T) {
 	// require.NoError(t, err)
 	// assert.Equal(t, seamgo.AccessCodeTypeTimeBound, accessCode.Type)
 
-	deleteAcitonAttempt, err := seam.AccessCodes.Delete(
+	deleteResponse, err := seam.AccessCodes.Delete(
 		ctx,
 		&seamgo.AccessCodesDeleteRequest{
 			AccessCodeId: createdAccessCode.AccessCodeId,
 		},
 	)
 	require.NoError(t, err)
-	assert.NotNil(t, deleteAcitonAttempt.Success)
+	assert.NotNil(t, deleteResponse.ActionAttempt.Success)
 
 	deviceIds := make([]string, 0, len(accessCodes))
 	for _, accessCode := range accessCodes {
