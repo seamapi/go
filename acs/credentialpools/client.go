@@ -39,7 +39,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *acs.CredentialPoolsListRequest,
 	opts ...option.RequestOption,
-) (*acs.CredentialPoolsListResponse, error) {
+) ([]*seamapigo.AcsCredentialPool, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -95,5 +95,5 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredentialPools, nil
 }

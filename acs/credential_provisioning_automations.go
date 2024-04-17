@@ -5,6 +5,7 @@ package acs
 import (
 	json "encoding/json"
 	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 )
 
@@ -17,8 +18,8 @@ type CredentialProvisioningAutomationsLaunchRequest struct {
 }
 
 type CredentialProvisioningAutomationsLaunchResponse struct {
-	AcsCredentialProvisioningAutomation *CredentialProvisioningAutomationsLaunchResponseAcsCredentialProvisioningAutomation `json:"acs_credential_provisioning_automation,omitempty" url:"acs_credential_provisioning_automation,omitempty"`
-	Ok                                  bool                                                                                `json:"ok" url:"ok"`
+	AcsCredentialProvisioningAutomation *seamapigo.AcsCredentialProvisioningAutomation `json:"acs_credential_provisioning_automation,omitempty" url:"acs_credential_provisioning_automation,omitempty"`
+	Ok                                  bool                                           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

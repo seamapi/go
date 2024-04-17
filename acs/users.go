@@ -232,8 +232,8 @@ func (u *UsersGetResponse) String() string {
 }
 
 type UsersListAccessibleEntrancesResponse struct {
-	AcsEntrances []*UsersListAccessibleEntrancesResponseAcsEntrancesItem `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
-	Ok           bool                                                    `json:"ok" url:"ok"`
+	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

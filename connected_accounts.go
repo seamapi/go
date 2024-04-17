@@ -135,10 +135,9 @@ func (c *ConnectedAccountsGetResponse) String() string {
 }
 
 type ConnectedAccountsListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectedAccountsListRequestCustomMetadataHasValueFromString(value string) *ConnectedAccountsListRequestCustomMetadataHasValue {
@@ -147,10 +146,6 @@ func NewConnectedAccountsListRequestCustomMetadataHasValueFromString(value strin
 
 func NewConnectedAccountsListRequestCustomMetadataHasValueFromBoolean(value bool) *ConnectedAccountsListRequestCustomMetadataHasValue {
 	return &ConnectedAccountsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectedAccountsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ConnectedAccountsListRequestCustomMetadataHasValue {
-	return &ConnectedAccountsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -166,12 +161,6 @@ func (c *ConnectedAccountsListRequestCustomMetadataHasValue) UnmarshalJSON(data 
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -183,15 +172,12 @@ func (c ConnectedAccountsListRequestCustomMetadataHasValue) MarshalJSON() ([]byt
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountsListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountsListRequestCustomMetadataHasValue) Accept(visitor ConnectedAccountsListRequestCustomMetadataHasValueVisitor) error {
@@ -202,8 +188,6 @@ func (c *ConnectedAccountsListRequestCustomMetadataHasValue) Accept(visitor Conn
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 

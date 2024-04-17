@@ -5,6 +5,7 @@ package acs
 import (
 	json "encoding/json"
 	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 )
 
@@ -13,8 +14,8 @@ type CredentialPoolsListRequest struct {
 }
 
 type CredentialPoolsListResponse struct {
-	AcsCredentialPools []*CredentialPoolsListResponseAcsCredentialPoolsItem `json:"acs_credential_pools,omitempty" url:"acs_credential_pools,omitempty"`
-	Ok                 bool                                                 `json:"ok" url:"ok"`
+	AcsCredentialPools []*seamapigo.AcsCredentialPool `json:"acs_credential_pools,omitempty" url:"acs_credential_pools,omitempty"`
+	Ok                 bool                           `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

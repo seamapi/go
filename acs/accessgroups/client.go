@@ -102,7 +102,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *acs.AccessGroupsGetRequest,
 	opts ...option.RequestOption,
-) (*acs.AccessGroupsGetResponse, error) {
+) (*seamapigo.AcsAccessGroup, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,14 +158,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsAccessGroup, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *acs.AccessGroupsListRequest,
 	opts ...option.RequestOption,
-) (*acs.AccessGroupsListResponse, error) {
+) ([]*seamapigo.AcsAccessGroup, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -221,14 +221,14 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsAccessGroups, nil
 }
 
 func (c *Client) ListUsers(
 	ctx context.Context,
 	request *acs.AccessGroupsListUsersRequest,
 	opts ...option.RequestOption,
-) (*acs.AccessGroupsListUsersResponse, error) {
+) ([]*seamapigo.AcsUser, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -284,7 +284,7 @@ func (c *Client) ListUsers(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsUsers, nil
 }
 
 func (c *Client) RemoveUser(

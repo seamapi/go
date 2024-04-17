@@ -102,7 +102,7 @@ func (c *Client) Delete(
 	ctx context.Context,
 	request *noisesensors.NoiseThresholdsDeleteRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ActionAttempt, error) {
+) (*noisesensors.NoiseThresholdsDeleteResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,7 +158,7 @@ func (c *Client) Delete(
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response, nil
 }
 
 func (c *Client) Get(
@@ -291,7 +291,7 @@ func (c *Client) Update(
 	ctx context.Context,
 	request *noisesensors.NoiseThresholdsUpdateRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ActionAttempt, error) {
+) (*noisesensors.NoiseThresholdsUpdateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -347,5 +347,5 @@ func (c *Client) Update(
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response, nil
 }
