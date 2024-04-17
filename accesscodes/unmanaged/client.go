@@ -102,7 +102,7 @@ func (c *Client) Delete(
 	ctx context.Context,
 	request *accesscodes.UnmanagedDeleteRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ActionAttempt, error) {
+) (*accesscodes.UnmanagedDeleteResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,7 +158,7 @@ func (c *Client) Delete(
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response, nil
 }
 
 func (c *Client) Get(

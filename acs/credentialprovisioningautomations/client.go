@@ -39,7 +39,7 @@ func (c *Client) Launch(
 	ctx context.Context,
 	request *acs.CredentialProvisioningAutomationsLaunchRequest,
 	opts ...option.RequestOption,
-) (*acs.CredentialProvisioningAutomationsLaunchResponse, error) {
+) (*seamapigo.AcsCredentialProvisioningAutomation, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -95,5 +95,5 @@ func (c *Client) Launch(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.AcsCredentialProvisioningAutomation, nil
 }

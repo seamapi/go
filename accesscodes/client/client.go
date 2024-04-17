@@ -171,7 +171,7 @@ func (c *Client) Delete(
 	ctx context.Context,
 	request *seamapigo.AccessCodesDeleteRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ActionAttempt, error) {
+) (*seamapigo.AccessCodesDeleteResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -227,7 +227,7 @@ func (c *Client) Delete(
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response, nil
 }
 
 func (c *Client) GenerateCode(
@@ -486,7 +486,7 @@ func (c *Client) Update(
 	ctx context.Context,
 	request *seamapigo.AccessCodesUpdateRequest,
 	opts ...option.RequestOption,
-) (*seamapigo.ActionAttempt, error) {
+) (*seamapigo.AccessCodesUpdateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -542,5 +542,5 @@ func (c *Client) Update(
 	); err != nil {
 		return nil, err
 	}
-	return response.ActionAttempt, nil
+	return response, nil
 }

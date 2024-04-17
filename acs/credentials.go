@@ -5,6 +5,7 @@ package acs
 import (
 	json "encoding/json"
 	fmt "fmt"
+	seamapigo "github.com/seamapi/go"
 	core "github.com/seamapi/go/core"
 	time "time"
 )
@@ -66,8 +67,8 @@ type CredentialsListRequest struct {
 }
 
 type CredentialsAssignResponse struct {
-	AcsCredential *CredentialsAssignResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok" url:"ok"`
+	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -121,10 +122,15 @@ func (c CredentialsCreateRequestAccessMethod) Ptr() *CredentialsCreateRequestAcc
 }
 
 type CredentialsCreateRequestVisionlineMetadata struct {
-	AssaAbloyCredentialServiceMobileEndpointId *string                                               `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty" url:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
-	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat `json:"card_format,omitempty" url:"card_format,omitempty"`
-	IsOverrideKey                              *bool                                                 `json:"is_override_key,omitempty" url:"is_override_key,omitempty"`
-	JoinerAcsCredentialIds                     []string                                              `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	AssaAbloyCredentialServiceMobileEndpointId *string                                                     `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty" url:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
+	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat       `json:"card_format,omitempty" url:"card_format,omitempty"`
+	CardFunctionType                           *CredentialsCreateRequestVisionlineMetadataCardFunctionType `json:"card_function_type,omitempty" url:"card_function_type,omitempty"`
+	// ---
+	// deprecated: use override.
+	// ---
+	IsOverrideKey          *bool    `json:"is_override_key,omitempty" url:"is_override_key,omitempty"`
+	Override               *bool    `json:"override,omitempty" url:"override,omitempty"`
+	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -153,8 +159,8 @@ func (c *CredentialsCreateRequestVisionlineMetadata) String() string {
 }
 
 type CredentialsCreateResponse struct {
-	AcsCredential *CredentialsCreateResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok" url:"ok"`
+	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -212,8 +218,8 @@ func (c *CredentialsDeleteResponse) String() string {
 }
 
 type CredentialsGetResponse struct {
-	AcsCredential *CredentialsGetResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
-	Ok            bool                                 `json:"ok" url:"ok"`
+	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -242,8 +248,8 @@ func (c *CredentialsGetResponse) String() string {
 }
 
 type CredentialsListResponse struct {
-	AcsCredentials []*CredentialsListResponseAcsCredentialsItem `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
-	Ok             bool                                         `json:"ok" url:"ok"`
+	AcsCredentials []*seamapigo.AcsCredential `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
+	Ok             bool                       `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -272,8 +278,8 @@ func (c *CredentialsListResponse) String() string {
 }
 
 type CredentialsUnassignResponse struct {
-	AcsCredential *CredentialsUnassignResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
-	Ok            bool                                      `json:"ok" url:"ok"`
+	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }
@@ -302,8 +308,8 @@ func (c *CredentialsUnassignResponse) String() string {
 }
 
 type CredentialsUpdateResponse struct {
-	AcsCredential *CredentialsUpdateResponseAcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
-	Ok            bool                                    `json:"ok" url:"ok"`
+	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
+	Ok            bool                     `json:"ok" url:"ok"`
 
 	_rawJSON json.RawMessage
 }

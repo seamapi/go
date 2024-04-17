@@ -209,10 +209,9 @@ func (t *ThermostatsHeatResponse) String() string {
 }
 
 type ThermostatsListRequestCustomMetadataHasValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewThermostatsListRequestCustomMetadataHasValueFromString(value string) *ThermostatsListRequestCustomMetadataHasValue {
@@ -221,10 +220,6 @@ func NewThermostatsListRequestCustomMetadataHasValueFromString(value string) *Th
 
 func NewThermostatsListRequestCustomMetadataHasValueFromBoolean(value bool) *ThermostatsListRequestCustomMetadataHasValue {
 	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
-}
-
-func NewThermostatsListRequestCustomMetadataHasValueFromStringOptional(value *string) *ThermostatsListRequestCustomMetadataHasValue {
-	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (t *ThermostatsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
@@ -240,12 +235,6 @@ func (t *ThermostatsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte
 		t.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		t.typeName = "stringOptional"
-		t.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
@@ -257,15 +246,12 @@ func (t ThermostatsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, err
 		return json.Marshal(t.String)
 	case "boolean":
 		return json.Marshal(t.Boolean)
-	case "stringOptional":
-		return json.Marshal(t.StringOptional)
 	}
 }
 
 type ThermostatsListRequestCustomMetadataHasValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (t *ThermostatsListRequestCustomMetadataHasValue) Accept(visitor ThermostatsListRequestCustomMetadataHasValueVisitor) error {
@@ -276,18 +262,17 @@ func (t *ThermostatsListRequestCustomMetadataHasValue) Accept(visitor Thermostat
 		return visitor.VisitString(t.String)
 	case "boolean":
 		return visitor.VisitBoolean(t.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(t.StringOptional)
 	}
 }
 
 type ThermostatsListRequestExcludeIfItem string
 
 const (
-	ThermostatsListRequestExcludeIfItemCanRemotelyUnlock           ThermostatsListRequestExcludeIfItem = "can_remotely_unlock"
-	ThermostatsListRequestExcludeIfItemCanRemotelyLock             ThermostatsListRequestExcludeIfItem = "can_remotely_lock"
-	ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes ThermostatsListRequestExcludeIfItem = "can_program_online_access_codes"
-	ThermostatsListRequestExcludeIfItemCanSimulateRemoval          ThermostatsListRequestExcludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestExcludeIfItemCanRemotelyUnlock            ThermostatsListRequestExcludeIfItem = "can_remotely_unlock"
+	ThermostatsListRequestExcludeIfItemCanRemotelyLock              ThermostatsListRequestExcludeIfItem = "can_remotely_lock"
+	ThermostatsListRequestExcludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestExcludeIfItem = "can_program_offline_access_codes"
+	ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestExcludeIfItem = "can_program_online_access_codes"
+	ThermostatsListRequestExcludeIfItemCanSimulateRemoval           ThermostatsListRequestExcludeIfItem = "can_simulate_removal"
 )
 
 func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsListRequestExcludeIfItem, error) {
@@ -296,6 +281,8 @@ func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestExcludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return ThermostatsListRequestExcludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return ThermostatsListRequestExcludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
@@ -312,10 +299,11 @@ func (t ThermostatsListRequestExcludeIfItem) Ptr() *ThermostatsListRequestExclud
 type ThermostatsListRequestIncludeIfItem string
 
 const (
-	ThermostatsListRequestIncludeIfItemCanRemotelyUnlock           ThermostatsListRequestIncludeIfItem = "can_remotely_unlock"
-	ThermostatsListRequestIncludeIfItemCanRemotelyLock             ThermostatsListRequestIncludeIfItem = "can_remotely_lock"
-	ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes ThermostatsListRequestIncludeIfItem = "can_program_online_access_codes"
-	ThermostatsListRequestIncludeIfItemCanSimulateRemoval          ThermostatsListRequestIncludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestIncludeIfItemCanRemotelyUnlock            ThermostatsListRequestIncludeIfItem = "can_remotely_unlock"
+	ThermostatsListRequestIncludeIfItemCanRemotelyLock              ThermostatsListRequestIncludeIfItem = "can_remotely_lock"
+	ThermostatsListRequestIncludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestIncludeIfItem = "can_program_offline_access_codes"
+	ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestIncludeIfItem = "can_program_online_access_codes"
+	ThermostatsListRequestIncludeIfItemCanSimulateRemoval           ThermostatsListRequestIncludeIfItem = "can_simulate_removal"
 )
 
 func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsListRequestIncludeIfItem, error) {
@@ -324,6 +312,8 @@ func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestIncludeIfItemCanRemotelyUnlock, nil
 	case "can_remotely_lock":
 		return ThermostatsListRequestIncludeIfItemCanRemotelyLock, nil
+	case "can_program_offline_access_codes":
+		return ThermostatsListRequestIncludeIfItemCanProgramOfflineAccessCodes, nil
 	case "can_program_online_access_codes":
 		return ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":

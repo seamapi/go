@@ -102,7 +102,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	request *useridentities.EnrollmentAutomationsGetRequest,
 	opts ...option.RequestOption,
-) (*useridentities.EnrollmentAutomationsGetResponse, error) {
+) (*seamapigo.EnrollmentAutomation, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -158,14 +158,14 @@ func (c *Client) Get(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.EnrollmentAutomation, nil
 }
 
 func (c *Client) Launch(
 	ctx context.Context,
 	request *useridentities.EnrollmentAutomationsLaunchRequest,
 	opts ...option.RequestOption,
-) (*useridentities.EnrollmentAutomationsLaunchResponse, error) {
+) (*useridentities.EnrollmentAutomationsLaunchResponseEnrollmentAutomation, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -221,14 +221,14 @@ func (c *Client) Launch(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.EnrollmentAutomation, nil
 }
 
 func (c *Client) List(
 	ctx context.Context,
 	request *useridentities.EnrollmentAutomationsListRequest,
 	opts ...option.RequestOption,
-) (*useridentities.EnrollmentAutomationsListResponse, error) {
+) ([]*seamapigo.EnrollmentAutomation, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://connect.getseam.com"
@@ -284,5 +284,5 @@ func (c *Client) List(
 	); err != nil {
 		return nil, err
 	}
-	return response, nil
+	return response.EnrollmentAutomations, nil
 }
