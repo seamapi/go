@@ -626,6 +626,7 @@ type AcsEntrance struct {
 	AcsSystemId        string                         `json:"acs_system_id" url:"acs_system_id"`
 	CreatedAt          time.Time                      `json:"created_at" url:"created_at"`
 	LatchMetadata      *AcsEntranceLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
+	Errors             []*AcsEntranceErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
 	VisionlineMetadata *AcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -661,6 +662,36 @@ func (a *AcsEntrance) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AcsEntrance) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsEntranceErrorsItem struct {
+	ErrorCode string `json:"error_code" url:"error_code"`
+	Message   string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsEntranceErrorsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsEntranceErrorsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsEntranceErrorsItem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsEntranceErrorsItem) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -2507,43 +2538,22 @@ func (d *DevicePropertiesCodeConstraintsItem) Accept(visitor DevicePropertiesCod
 }
 
 type DevicePropertiesCodeConstraintsItemMaxLength struct {
-	MinLength      *float64 `json:"min_length,omitempty" url:"min_length,omitempty"`
-	MaxLength      *float64 `json:"max_length,omitempty" url:"max_length,omitempty"`
-	constraintType string
+	ConstraintType DevicePropertiesCodeConstraintsItemMaxLengthConstraintType `json:"constraint_type,omitempty" url:"constraint_type,omitempty"`
+	MinLength      *float64                                                   `json:"min_length,omitempty" url:"min_length,omitempty"`
+	MaxLength      *float64                                                   `json:"max_length,omitempty" url:"max_length,omitempty"`
 
 	_rawJSON json.RawMessage
 }
 
-func (d *DevicePropertiesCodeConstraintsItemMaxLength) ConstraintType() string {
-	return d.constraintType
-}
-
 func (d *DevicePropertiesCodeConstraintsItemMaxLength) UnmarshalJSON(data []byte) error {
-	type embed DevicePropertiesCodeConstraintsItemMaxLength
-	var unmarshaler = struct {
-		embed
-	}{
-		embed: embed(*d),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+	type unmarshaler DevicePropertiesCodeConstraintsItemMaxLength
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*d = DevicePropertiesCodeConstraintsItemMaxLength(unmarshaler.embed)
-	d.constraintType = "name_length"
+	*d = DevicePropertiesCodeConstraintsItemMaxLength(value)
 	d._rawJSON = json.RawMessage(data)
 	return nil
-}
-
-func (d *DevicePropertiesCodeConstraintsItemMaxLength) MarshalJSON() ([]byte, error) {
-	type embed DevicePropertiesCodeConstraintsItemMaxLength
-	var marshaler = struct {
-		embed
-		ConstraintType string `json:"constraint_type"`
-	}{
-		embed:          embed(*d),
-		ConstraintType: "name_length",
-	}
-	return json.Marshal(marshaler)
 }
 
 func (d *DevicePropertiesCodeConstraintsItemMaxLength) String() string {
@@ -2556,6 +2566,28 @@ func (d *DevicePropertiesCodeConstraintsItemMaxLength) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", d)
+}
+
+type DevicePropertiesCodeConstraintsItemMaxLengthConstraintType string
+
+const (
+	DevicePropertiesCodeConstraintsItemMaxLengthConstraintTypeNameLength       DevicePropertiesCodeConstraintsItemMaxLengthConstraintType = "name_length"
+	DevicePropertiesCodeConstraintsItemMaxLengthConstraintTypeNameMustBeUnique DevicePropertiesCodeConstraintsItemMaxLengthConstraintType = "name_must_be_unique"
+)
+
+func NewDevicePropertiesCodeConstraintsItemMaxLengthConstraintTypeFromString(s string) (DevicePropertiesCodeConstraintsItemMaxLengthConstraintType, error) {
+	switch s {
+	case "name_length":
+		return DevicePropertiesCodeConstraintsItemMaxLengthConstraintTypeNameLength, nil
+	case "name_must_be_unique":
+		return DevicePropertiesCodeConstraintsItemMaxLengthConstraintTypeNameMustBeUnique, nil
+	}
+	var t DevicePropertiesCodeConstraintsItemMaxLengthConstraintType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DevicePropertiesCodeConstraintsItemMaxLengthConstraintType) Ptr() *DevicePropertiesCodeConstraintsItemMaxLengthConstraintType {
+	return &d
 }
 
 type DevicePropertiesCodeConstraintsItemZero struct {
