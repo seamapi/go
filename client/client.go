@@ -32,10 +32,10 @@ type Client struct {
 	AccessCodes       *accesscodesclient.Client
 	ActionAttempts    *actionattempts.Client
 	ClientSessions    *clientsessions.Client
+	ConnectWebviews   *connectwebviews.Client
 	ConnectedAccounts *connectedaccounts.Client
 	Devices           *devicesclient.Client
 	Events            *events.Client
-	ConnectWebviews   *connectwebviews.Client
 	Locks             *locks.Client
 	Networks          *networks.Client
 	Phones            *phonesclient.Client
@@ -61,10 +61,10 @@ func NewClient(opts ...option.RequestOption) *Client {
 		AccessCodes:       accesscodesclient.NewClient(opts...),
 		ActionAttempts:    actionattempts.NewClient(opts...),
 		ClientSessions:    clientsessions.NewClient(opts...),
+		ConnectWebviews:   connectwebviews.NewClient(opts...),
 		ConnectedAccounts: connectedaccounts.NewClient(opts...),
 		Devices:           devicesclient.NewClient(opts...),
 		Events:            events.NewClient(opts...),
-		ConnectWebviews:   connectwebviews.NewClient(opts...),
 		Locks:             locks.NewClient(opts...),
 		Networks:          networks.NewClient(opts...),
 		Phones:            phonesclient.NewClient(opts...),
