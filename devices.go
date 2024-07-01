@@ -215,6 +215,8 @@ const (
 	DevicesListRequestExcludeIfItemCanProgramOfflineAccessCodes DevicesListRequestExcludeIfItem = "can_program_offline_access_codes"
 	DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestExcludeIfItem = "can_program_online_access_codes"
 	DevicesListRequestExcludeIfItemCanSimulateRemoval           DevicesListRequestExcludeIfItem = "can_simulate_removal"
+	DevicesListRequestExcludeIfItemCanSimulateConnection        DevicesListRequestExcludeIfItem = "can_simulate_connection"
+	DevicesListRequestExcludeIfItemCanSimulateDisconnection     DevicesListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestExcludeIfItem, error) {
@@ -229,6 +231,10 @@ func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestE
 		return DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return DevicesListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return DevicesListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return DevicesListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t DevicesListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -246,6 +252,8 @@ const (
 	DevicesListRequestIncludeIfItemCanProgramOfflineAccessCodes DevicesListRequestIncludeIfItem = "can_program_offline_access_codes"
 	DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestIncludeIfItem = "can_program_online_access_codes"
 	DevicesListRequestIncludeIfItemCanSimulateRemoval           DevicesListRequestIncludeIfItem = "can_simulate_removal"
+	DevicesListRequestIncludeIfItemCanSimulateConnection        DevicesListRequestIncludeIfItem = "can_simulate_connection"
+	DevicesListRequestIncludeIfItemCanSimulateDisconnection     DevicesListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestIncludeIfItem, error) {
@@ -260,6 +268,10 @@ func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestI
 		return DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return DevicesListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return DevicesListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return DevicesListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t DevicesListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

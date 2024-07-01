@@ -149,6 +149,8 @@ const (
 	UnmanagedListRequestExcludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestExcludeIfItem = "can_program_offline_access_codes"
 	UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestExcludeIfItem = "can_program_online_access_codes"
 	UnmanagedListRequestExcludeIfItemCanSimulateRemoval           UnmanagedListRequestExcludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestExcludeIfItemCanSimulateConnection        UnmanagedListRequestExcludeIfItem = "can_simulate_connection"
+	UnmanagedListRequestExcludeIfItemCanSimulateDisconnection     UnmanagedListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequestExcludeIfItem, error) {
@@ -163,6 +165,10 @@ func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return UnmanagedListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return UnmanagedListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return UnmanagedListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t UnmanagedListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -180,6 +186,8 @@ const (
 	UnmanagedListRequestIncludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestIncludeIfItem = "can_program_offline_access_codes"
 	UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestIncludeIfItem = "can_program_online_access_codes"
 	UnmanagedListRequestIncludeIfItemCanSimulateRemoval           UnmanagedListRequestIncludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestIncludeIfItemCanSimulateConnection        UnmanagedListRequestIncludeIfItem = "can_simulate_connection"
+	UnmanagedListRequestIncludeIfItemCanSimulateDisconnection     UnmanagedListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequestIncludeIfItem, error) {
@@ -194,6 +202,10 @@ func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return UnmanagedListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return UnmanagedListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return UnmanagedListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t UnmanagedListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

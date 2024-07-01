@@ -31,6 +31,7 @@ type ConnectWebviewsListRequest struct {
 	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	// Returns devices where the webview's custom_metadata contains all of the provided key/value pairs.
 	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	Limit             *float64                                                     `json:"limit,omitempty" url:"limit,omitempty"`
 }
 
 type AcceptedProvider string

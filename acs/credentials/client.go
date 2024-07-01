@@ -350,6 +350,69 @@ func (c *Client) List(
 	return response.AcsCredentials, nil
 }
 
+func (c *Client) ListAccessibleEntrances(
+	ctx context.Context,
+	request *acs.CredentialsListAccessibleEntrancesRequest,
+	opts ...option.RequestOption,
+) ([]*seamapigo.AcsEntrance, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://connect.getseam.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/" + "acs/credentials/list_accessible_entrances"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(seamapigo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(seamapigo.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *acs.CredentialsListAccessibleEntrancesResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:          endpointURL,
+			Method:       http.MethodPost,
+			MaxAttempts:  options.MaxAttempts,
+			Headers:      headers,
+			Client:       options.HTTPClient,
+			Request:      request,
+			Response:     &response,
+			ErrorDecoder: errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response.AcsEntrances, nil
+}
+
 func (c *Client) Unassign(
 	ctx context.Context,
 	request *acs.CredentialsUnassignRequest,

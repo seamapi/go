@@ -8,8 +8,74 @@ import (
 	core "github.com/seamapi/go/core"
 )
 
+type SimulateConnectRequest struct {
+	DeviceId string `json:"device_id" url:"device_id"`
+}
+
+type SimulateDisconnectRequest struct {
+	DeviceId string `json:"device_id" url:"device_id"`
+}
+
 type SimulateRemoveRequest struct {
 	DeviceId string `json:"device_id" url:"device_id"`
+}
+
+type SimulateConnectResponse struct {
+	Ok bool `json:"ok" url:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SimulateConnectResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateConnectResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateConnectResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateConnectResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type SimulateDisconnectResponse struct {
+	Ok bool `json:"ok" url:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SimulateDisconnectResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateDisconnectResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateDisconnectResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateDisconnectResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SimulateRemoveResponse struct {

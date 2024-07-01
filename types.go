@@ -171,6 +171,7 @@ type AcsAccessGroup struct {
 	// deprecated: use external_type_display_name
 	// ---
 	AccessGroupTypeDisplayName string                     `json:"access_group_type_display_name" url:"access_group_type_display_name"`
+	DisplayName                string                     `json:"display_name" url:"display_name"`
 	ExternalType               AcsAccessGroupExternalType `json:"external_type,omitempty" url:"external_type,omitempty"`
 	ExternalTypeDisplayName    string                     `json:"external_type_display_name" url:"external_type_display_name"`
 	CreatedAt                  time.Time                  `json:"created_at" url:"created_at"`
@@ -279,24 +280,26 @@ func (a AcsAccessGroupExternalType) Ptr() *AcsAccessGroupExternalType {
 }
 
 type AcsCredential struct {
-	AcsCredentialId            string                           `json:"acs_credential_id" url:"acs_credential_id"`
-	AcsUserId                  *string                          `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
-	AcsCredentialPoolId        *string                          `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
-	AcsSystemId                string                           `json:"acs_system_id" url:"acs_system_id"`
-	ParentAcsCredentialId      *string                          `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
-	DisplayName                string                           `json:"display_name" url:"display_name"`
-	Code                       *string                          `json:"code,omitempty" url:"code,omitempty"`
-	AccessMethod               AcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
-	ExternalType               *AcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
-	ExternalTypeDisplayName    *string                          `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
-	CreatedAt                  time.Time                        `json:"created_at" url:"created_at"`
-	WorkspaceId                string                           `json:"workspace_id" url:"workspace_id"`
-	StartsAt                   *string                          `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                     *string                          `json:"ends_at,omitempty" url:"ends_at,omitempty"`
-	Errors                     []*AcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
-	Warnings                   []*AcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
-	IsMultiPhoneSyncCredential *bool                            `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
-	VisionlineMetadata         *AcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
+	AcsCredentialId                        string                           `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId                              *string                          `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsCredentialPoolId                    *string                          `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
+	AcsSystemId                            string                           `json:"acs_system_id" url:"acs_system_id"`
+	ParentAcsCredentialId                  *string                          `json:"parent_acs_credential_id,omitempty" url:"parent_acs_credential_id,omitempty"`
+	DisplayName                            string                           `json:"display_name" url:"display_name"`
+	Code                                   *string                          `json:"code,omitempty" url:"code,omitempty"`
+	AccessMethod                           AcsCredentialAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
+	ExternalType                           *AcsCredentialExternalType       `json:"external_type,omitempty" url:"external_type,omitempty"`
+	ExternalTypeDisplayName                *string                          `json:"external_type_display_name,omitempty" url:"external_type_display_name,omitempty"`
+	CreatedAt                              time.Time                        `json:"created_at" url:"created_at"`
+	WorkspaceId                            string                           `json:"workspace_id" url:"workspace_id"`
+	StartsAt                               *string                          `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	EndsAt                                 *string                          `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	Errors                                 []*AcsCredentialErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                               []*AcsCredentialWarningsItem     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	IsMultiPhoneSyncCredential             *bool                            `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	IsLatestDesiredStateSyncedWithProvider *bool                            `json:"is_latest_desired_state_synced_with_provider,omitempty" url:"is_latest_desired_state_synced_with_provider,omitempty"`
+	LatestDesiredStateSyncedWithProviderAt *time.Time                       `json:"latest_desired_state_synced_with_provider_at,omitempty" url:"latest_desired_state_synced_with_provider_at,omitempty"`
+	VisionlineMetadata                     *AcsCredentialVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -305,7 +308,8 @@ func (a *AcsCredential) UnmarshalJSON(data []byte) error {
 	type embed AcsCredential
 	var unmarshaler = struct {
 		embed
-		CreatedAt *core.DateTime `json:"created_at"`
+		CreatedAt                              *core.DateTime `json:"created_at"`
+		LatestDesiredStateSyncedWithProviderAt *core.DateTime `json:"latest_desired_state_synced_with_provider_at,omitempty"`
 	}{
 		embed: embed(*a),
 	}
@@ -314,6 +318,7 @@ func (a *AcsCredential) UnmarshalJSON(data []byte) error {
 	}
 	*a = AcsCredential(unmarshaler.embed)
 	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a.LatestDesiredStateSyncedWithProviderAt = unmarshaler.LatestDesiredStateSyncedWithProviderAt.TimePtr()
 	a._rawJSON = json.RawMessage(data)
 	return nil
 }
@@ -322,10 +327,12 @@ func (a *AcsCredential) MarshalJSON() ([]byte, error) {
 	type embed AcsCredential
 	var marshaler = struct {
 		embed
-		CreatedAt *core.DateTime `json:"created_at"`
+		CreatedAt                              *core.DateTime `json:"created_at"`
+		LatestDesiredStateSyncedWithProviderAt *core.DateTime `json:"latest_desired_state_synced_with_provider_at,omitempty"`
 	}{
-		embed:     embed(*a),
-		CreatedAt: core.NewDateTime(a.CreatedAt),
+		embed:                                  embed(*a),
+		CreatedAt:                              core.NewDateTime(a.CreatedAt),
+		LatestDesiredStateSyncedWithProviderAt: core.NewOptionalDateTime(a.LatestDesiredStateSyncedWithProviderAt),
 	}
 	return json.Marshal(marshaler)
 }
@@ -621,12 +628,12 @@ func (a *AcsCredentialWarningsItem) String() string {
 }
 
 type AcsEntrance struct {
-	AcsEntranceId      string                         `json:"acs_entrance_id" url:"acs_entrance_id"`
-	DisplayName        string                         `json:"display_name" url:"display_name"`
 	AcsSystemId        string                         `json:"acs_system_id" url:"acs_system_id"`
+	AcsEntranceId      string                         `json:"acs_entrance_id" url:"acs_entrance_id"`
 	CreatedAt          time.Time                      `json:"created_at" url:"created_at"`
-	LatchMetadata      *AcsEntranceLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
+	DisplayName        string                         `json:"display_name" url:"display_name"`
 	Errors             []*AcsEntranceErrorsItem       `json:"errors,omitempty" url:"errors,omitempty"`
+	LatchMetadata      *AcsEntranceLatchMetadata      `json:"latch_metadata,omitempty" url:"latch_metadata,omitempty"`
 	VisionlineMetadata *AcsEntranceVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -863,17 +870,19 @@ type AcsSystem struct {
 	// ---
 	// deprecated: use external_type_display_name
 	// ---
-	SystemTypeDisplayName                *string   `json:"system_type_display_name,omitempty" url:"system_type_display_name,omitempty"`
-	Name                                 string    `json:"name" url:"name"`
-	CreatedAt                            time.Time `json:"created_at" url:"created_at"`
-	WorkspaceId                          string    `json:"workspace_id" url:"workspace_id"`
-	ConnectedAccountIds                  []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ImageUrl                             string    `json:"image_url" url:"image_url"`
-	ImageAltText                         string    `json:"image_alt_text" url:"image_alt_text"`
-	CanAutomateEnrollment                *bool     `json:"can_automate_enrollment,omitempty" url:"can_automate_enrollment,omitempty"`
-	CanCreateAcsAccessGroups             *bool     `json:"can_create_acs_access_groups,omitempty" url:"can_create_acs_access_groups,omitempty"`
-	CanRemoveAcsUsersFromAcsAccessGroups *bool     `json:"can_remove_acs_users_from_acs_access_groups,omitempty" url:"can_remove_acs_users_from_acs_access_groups,omitempty"`
-	CanAddAcsUsersToAcsAccessGroups      *bool     `json:"can_add_acs_users_to_acs_access_groups,omitempty" url:"can_add_acs_users_to_acs_access_groups,omitempty"`
+	SystemTypeDisplayName                *string                  `json:"system_type_display_name,omitempty" url:"system_type_display_name,omitempty"`
+	Name                                 string                   `json:"name" url:"name"`
+	CreatedAt                            time.Time                `json:"created_at" url:"created_at"`
+	WorkspaceId                          string                   `json:"workspace_id" url:"workspace_id"`
+	ConnectedAccountIds                  []string                 `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ImageUrl                             string                   `json:"image_url" url:"image_url"`
+	ImageAltText                         string                   `json:"image_alt_text" url:"image_alt_text"`
+	Errors                               []*AcsSystemErrorsItem   `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                             []*AcsSystemWarningsItem `json:"warnings,omitempty" url:"warnings,omitempty"`
+	CanAutomateEnrollment                *bool                    `json:"can_automate_enrollment,omitempty" url:"can_automate_enrollment,omitempty"`
+	CanCreateAcsAccessGroups             *bool                    `json:"can_create_acs_access_groups,omitempty" url:"can_create_acs_access_groups,omitempty"`
+	CanRemoveAcsUsersFromAcsAccessGroups *bool                    `json:"can_remove_acs_users_from_acs_access_groups,omitempty" url:"can_remove_acs_users_from_acs_access_groups,omitempty"`
+	CanAddAcsUsersToAcsAccessGroups      *bool                    `json:"can_add_acs_users_to_acs_access_groups,omitempty" url:"can_add_acs_users_to_acs_access_groups,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -908,6 +917,182 @@ func (a *AcsSystem) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AcsSystem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsSystemErrorsItem struct {
+	ErrorCode                     string
+	SeamBridgeDisconnected        *AcsSystemErrorsItemSeamBridgeDisconnected
+	VisionlineInstanceUnreachable *AcsSystemErrorsItemVisionlineInstanceUnreachable
+}
+
+func NewAcsSystemErrorsItemFromSeamBridgeDisconnected(value *AcsSystemErrorsItemSeamBridgeDisconnected) *AcsSystemErrorsItem {
+	return &AcsSystemErrorsItem{ErrorCode: "seam_bridge_disconnected", SeamBridgeDisconnected: value}
+}
+
+func NewAcsSystemErrorsItemFromVisionlineInstanceUnreachable(value *AcsSystemErrorsItemVisionlineInstanceUnreachable) *AcsSystemErrorsItem {
+	return &AcsSystemErrorsItem{ErrorCode: "visionline_instance_unreachable", VisionlineInstanceUnreachable: value}
+}
+
+func (a *AcsSystemErrorsItem) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		ErrorCode string `json:"error_code"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	a.ErrorCode = unmarshaler.ErrorCode
+	switch unmarshaler.ErrorCode {
+	case "seam_bridge_disconnected":
+		value := new(AcsSystemErrorsItemSeamBridgeDisconnected)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.SeamBridgeDisconnected = value
+	case "visionline_instance_unreachable":
+		value := new(AcsSystemErrorsItemVisionlineInstanceUnreachable)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.VisionlineInstanceUnreachable = value
+	}
+	return nil
+}
+
+func (a AcsSystemErrorsItem) MarshalJSON() ([]byte, error) {
+	switch a.ErrorCode {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", a.ErrorCode, a)
+	case "seam_bridge_disconnected":
+		var marshaler = struct {
+			ErrorCode string `json:"error_code"`
+			*AcsSystemErrorsItemSeamBridgeDisconnected
+		}{
+			ErrorCode: a.ErrorCode,
+			AcsSystemErrorsItemSeamBridgeDisconnected: a.SeamBridgeDisconnected,
+		}
+		return json.Marshal(marshaler)
+	case "visionline_instance_unreachable":
+		var marshaler = struct {
+			ErrorCode string `json:"error_code"`
+			*AcsSystemErrorsItemVisionlineInstanceUnreachable
+		}{
+			ErrorCode: a.ErrorCode,
+			AcsSystemErrorsItemVisionlineInstanceUnreachable: a.VisionlineInstanceUnreachable,
+		}
+		return json.Marshal(marshaler)
+	}
+}
+
+type AcsSystemErrorsItemVisitor interface {
+	VisitSeamBridgeDisconnected(*AcsSystemErrorsItemSeamBridgeDisconnected) error
+	VisitVisionlineInstanceUnreachable(*AcsSystemErrorsItemVisionlineInstanceUnreachable) error
+}
+
+func (a *AcsSystemErrorsItem) Accept(visitor AcsSystemErrorsItemVisitor) error {
+	switch a.ErrorCode {
+	default:
+		return fmt.Errorf("invalid type %s in %T", a.ErrorCode, a)
+	case "seam_bridge_disconnected":
+		return visitor.VisitSeamBridgeDisconnected(a.SeamBridgeDisconnected)
+	case "visionline_instance_unreachable":
+		return visitor.VisitVisionlineInstanceUnreachable(a.VisionlineInstanceUnreachable)
+	}
+}
+
+type AcsSystemErrorsItemSeamBridgeDisconnected struct {
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+	Message   string    `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsSystemErrorsItemSeamBridgeDisconnected) UnmarshalJSON(data []byte) error {
+	type embed AcsSystemErrorsItemSeamBridgeDisconnected
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsSystemErrorsItemSeamBridgeDisconnected(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsSystemErrorsItemSeamBridgeDisconnected) MarshalJSON() ([]byte, error) {
+	type embed AcsSystemErrorsItemSeamBridgeDisconnected
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsSystemErrorsItemSeamBridgeDisconnected) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AcsSystemErrorsItemVisionlineInstanceUnreachable struct {
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+	Message   string    `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsSystemErrorsItemVisionlineInstanceUnreachable) UnmarshalJSON(data []byte) error {
+	type embed AcsSystemErrorsItemVisionlineInstanceUnreachable
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AcsSystemErrorsItemVisionlineInstanceUnreachable(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsSystemErrorsItemVisionlineInstanceUnreachable) MarshalJSON() ([]byte, error) {
+	type embed AcsSystemErrorsItemVisionlineInstanceUnreachable
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AcsSystemErrorsItemVisionlineInstanceUnreachable) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -1000,6 +1185,33 @@ func NewAcsSystemSystemTypeFromString(s string) (AcsSystemSystemType, error) {
 
 func (a AcsSystemSystemType) Ptr() *AcsSystemSystemType {
 	return &a
+}
+
+type AcsSystemWarningsItem struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *AcsSystemWarningsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AcsSystemWarningsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AcsSystemWarningsItem(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AcsSystemWarningsItem) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AcsUser struct {
@@ -1153,129 +1365,828 @@ func (a AcsUserExternalType) Ptr() *AcsUserExternalType {
 }
 
 type ActionAttempt struct {
-	Status  string
-	Success *ActionAttemptSuccess
-	Pending *ActionAttemptPending
-	Error   *ActionAttemptError
+	typeName string
+	// Locking door.
+	ActionAttemptZero *ActionAttemptZero
+	// Locking door succeeded.
+	ActionAttemptOne *ActionAttemptOne
+	// Locking door failed.
+	ActionAttemptTwo *ActionAttemptTwo
+	// Unlocking door.
+	ActionAttemptThree *ActionAttemptThree
+	// Unlocking door succeeded.
+	ActionAttemptFour *ActionAttemptFour
+	// Unlocking door failed.
+	ActionAttemptFive *ActionAttemptFive
+	// Resetting sandbox workspace.
+	ActionAttemptSix *ActionAttemptSix
+	// Resetting sandbox workspace succeeded.
+	ActionAttemptSeven *ActionAttemptSeven
+	// Resetting sandbox workspace failed.
+	ActionAttemptEight *ActionAttemptEight
+	// Setting HVAC to cool.
+	ActionAttemptNine *ActionAttemptNine
+	// Setting HVAC to cool succeeded.
+	ActionAttemptTen *ActionAttemptTen
+	// Setting HVAC to cool failed.
+	ActionAttemptEleven *ActionAttemptEleven
+	// Setting HVAC to heat mode.
+	ActionAttemptTwelve *ActionAttemptTwelve
+	// Setting HVAC to heat mode succeeded.
+	ActionAttemptThirteen *ActionAttemptThirteen
+	// Setting HVAC to heat mode failed.
+	ActionAttemptFourteen *ActionAttemptFourteen
+	// Setting HVAC to heat-cool mode.
+	ActionAttemptFifteen *ActionAttemptFifteen
+	// Setting HVAC to heat-cool mode succeeded.
+	ActionAttemptSixteen *ActionAttemptSixteen
+	// Setting heat-cool mode failed.
+	ActionAttemptSeventeen *ActionAttemptSeventeen
+	// Setting fan mode.
+	ActionAttemptEighteen *ActionAttemptEighteen
+	// Setting fan mode succeeded.
+	ActionAttemptNineteen *ActionAttemptNineteen
+	// Setting fan mode failed.
+	ActionAttemptTwenty *ActionAttemptTwenty
+	// Turning HVAC off.
+	ActionAttemptTwentyOne *ActionAttemptTwentyOne
+	// Turning HVAC off succeeded.
+	ActionAttemptTwentyTwo *ActionAttemptTwentyTwo
+	// Turning HVAC off failed.
+	ActionAttemptTwentyThree     *ActionAttemptTwentyThree
+	ActionAttemptTwentyFour      *ActionAttemptTwentyFour
+	ActionAttemptTwentyFive      *ActionAttemptTwentyFive
+	ActionAttemptTwentySix       *ActionAttemptTwentySix
+	ActionAttemptTwentySeven     *ActionAttemptTwentySeven
+	ActionAttemptTwentyEight     *ActionAttemptTwentyEight
+	ActionAttemptTwentyNine      *ActionAttemptTwentyNine
+	ActionAttemptThirty          *ActionAttemptThirty
+	ActionAttemptThirtyOne       *ActionAttemptThirtyOne
+	ActionAttemptThirtyTwo       *ActionAttemptThirtyTwo
+	ActionAttemptThirtyThree     *ActionAttemptThirtyThree
+	ActionAttemptThirtyFour      *ActionAttemptThirtyFour
+	ActionAttemptThirtyFive      *ActionAttemptThirtyFive
+	ActionAttemptThirtySix       *ActionAttemptThirtySix
+	ActionAttemptThirtySeven     *ActionAttemptThirtySeven
+	ActionAttemptThirtyEight     *ActionAttemptThirtyEight
+	ActionAttemptThirtyNine      *ActionAttemptThirtyNine
+	ActionAttemptForty           *ActionAttemptForty
+	ActionAttemptFortyOne        *ActionAttemptFortyOne
+	ActionAttemptFortyTwo        *ActionAttemptFortyTwo
+	ActionAttemptFortyThree      *ActionAttemptFortyThree
+	ActionAttemptActionAttemptId *ActionAttemptActionAttemptId
 }
 
-func NewActionAttemptFromSuccess(value *ActionAttemptSuccess) *ActionAttempt {
-	return &ActionAttempt{Status: "success", Success: value}
+func NewActionAttemptFromActionAttemptZero(value *ActionAttemptZero) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptZero", ActionAttemptZero: value}
 }
 
-func NewActionAttemptFromPending(value *ActionAttemptPending) *ActionAttempt {
-	return &ActionAttempt{Status: "pending", Pending: value}
+func NewActionAttemptFromActionAttemptOne(value *ActionAttemptOne) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptOne", ActionAttemptOne: value}
 }
 
-func NewActionAttemptFromError(value *ActionAttemptError) *ActionAttempt {
-	return &ActionAttempt{Status: "error", Error: value}
+func NewActionAttemptFromActionAttemptTwo(value *ActionAttemptTwo) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwo", ActionAttemptTwo: value}
+}
+
+func NewActionAttemptFromActionAttemptThree(value *ActionAttemptThree) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThree", ActionAttemptThree: value}
+}
+
+func NewActionAttemptFromActionAttemptFour(value *ActionAttemptFour) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFour", ActionAttemptFour: value}
+}
+
+func NewActionAttemptFromActionAttemptFive(value *ActionAttemptFive) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFive", ActionAttemptFive: value}
+}
+
+func NewActionAttemptFromActionAttemptSix(value *ActionAttemptSix) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptSix", ActionAttemptSix: value}
+}
+
+func NewActionAttemptFromActionAttemptSeven(value *ActionAttemptSeven) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptSeven", ActionAttemptSeven: value}
+}
+
+func NewActionAttemptFromActionAttemptEight(value *ActionAttemptEight) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptEight", ActionAttemptEight: value}
+}
+
+func NewActionAttemptFromActionAttemptNine(value *ActionAttemptNine) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptNine", ActionAttemptNine: value}
+}
+
+func NewActionAttemptFromActionAttemptTen(value *ActionAttemptTen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTen", ActionAttemptTen: value}
+}
+
+func NewActionAttemptFromActionAttemptEleven(value *ActionAttemptEleven) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptEleven", ActionAttemptEleven: value}
+}
+
+func NewActionAttemptFromActionAttemptTwelve(value *ActionAttemptTwelve) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwelve", ActionAttemptTwelve: value}
+}
+
+func NewActionAttemptFromActionAttemptThirteen(value *ActionAttemptThirteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirteen", ActionAttemptThirteen: value}
+}
+
+func NewActionAttemptFromActionAttemptFourteen(value *ActionAttemptFourteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFourteen", ActionAttemptFourteen: value}
+}
+
+func NewActionAttemptFromActionAttemptFifteen(value *ActionAttemptFifteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFifteen", ActionAttemptFifteen: value}
+}
+
+func NewActionAttemptFromActionAttemptSixteen(value *ActionAttemptSixteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptSixteen", ActionAttemptSixteen: value}
+}
+
+func NewActionAttemptFromActionAttemptSeventeen(value *ActionAttemptSeventeen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptSeventeen", ActionAttemptSeventeen: value}
+}
+
+func NewActionAttemptFromActionAttemptEighteen(value *ActionAttemptEighteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptEighteen", ActionAttemptEighteen: value}
+}
+
+func NewActionAttemptFromActionAttemptNineteen(value *ActionAttemptNineteen) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptNineteen", ActionAttemptNineteen: value}
+}
+
+func NewActionAttemptFromActionAttemptTwenty(value *ActionAttemptTwenty) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwenty", ActionAttemptTwenty: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyOne(value *ActionAttemptTwentyOne) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyOne", ActionAttemptTwentyOne: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyTwo(value *ActionAttemptTwentyTwo) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyTwo", ActionAttemptTwentyTwo: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyThree(value *ActionAttemptTwentyThree) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyThree", ActionAttemptTwentyThree: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyFour(value *ActionAttemptTwentyFour) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyFour", ActionAttemptTwentyFour: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyFive(value *ActionAttemptTwentyFive) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyFive", ActionAttemptTwentyFive: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentySix(value *ActionAttemptTwentySix) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentySix", ActionAttemptTwentySix: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentySeven(value *ActionAttemptTwentySeven) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentySeven", ActionAttemptTwentySeven: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyEight(value *ActionAttemptTwentyEight) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyEight", ActionAttemptTwentyEight: value}
+}
+
+func NewActionAttemptFromActionAttemptTwentyNine(value *ActionAttemptTwentyNine) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptTwentyNine", ActionAttemptTwentyNine: value}
+}
+
+func NewActionAttemptFromActionAttemptThirty(value *ActionAttemptThirty) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirty", ActionAttemptThirty: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyOne(value *ActionAttemptThirtyOne) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyOne", ActionAttemptThirtyOne: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyTwo(value *ActionAttemptThirtyTwo) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyTwo", ActionAttemptThirtyTwo: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyThree(value *ActionAttemptThirtyThree) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyThree", ActionAttemptThirtyThree: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyFour(value *ActionAttemptThirtyFour) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyFour", ActionAttemptThirtyFour: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyFive(value *ActionAttemptThirtyFive) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyFive", ActionAttemptThirtyFive: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtySix(value *ActionAttemptThirtySix) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtySix", ActionAttemptThirtySix: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtySeven(value *ActionAttemptThirtySeven) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtySeven", ActionAttemptThirtySeven: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyEight(value *ActionAttemptThirtyEight) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyEight", ActionAttemptThirtyEight: value}
+}
+
+func NewActionAttemptFromActionAttemptThirtyNine(value *ActionAttemptThirtyNine) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptThirtyNine", ActionAttemptThirtyNine: value}
+}
+
+func NewActionAttemptFromActionAttemptForty(value *ActionAttemptForty) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptForty", ActionAttemptForty: value}
+}
+
+func NewActionAttemptFromActionAttemptFortyOne(value *ActionAttemptFortyOne) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFortyOne", ActionAttemptFortyOne: value}
+}
+
+func NewActionAttemptFromActionAttemptFortyTwo(value *ActionAttemptFortyTwo) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFortyTwo", ActionAttemptFortyTwo: value}
+}
+
+func NewActionAttemptFromActionAttemptFortyThree(value *ActionAttemptFortyThree) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptFortyThree", ActionAttemptFortyThree: value}
+}
+
+func NewActionAttemptFromActionAttemptActionAttemptId(value *ActionAttemptActionAttemptId) *ActionAttempt {
+	return &ActionAttempt{typeName: "actionAttemptActionAttemptId", ActionAttemptActionAttemptId: value}
 }
 
 func (a *ActionAttempt) UnmarshalJSON(data []byte) error {
-	var unmarshaler struct {
-		Status string `json:"status"`
+	valueActionAttemptZero := new(ActionAttemptZero)
+	if err := json.Unmarshal(data, &valueActionAttemptZero); err == nil {
+		a.typeName = "actionAttemptZero"
+		a.ActionAttemptZero = valueActionAttemptZero
+		return nil
 	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
+	valueActionAttemptOne := new(ActionAttemptOne)
+	if err := json.Unmarshal(data, &valueActionAttemptOne); err == nil {
+		a.typeName = "actionAttemptOne"
+		a.ActionAttemptOne = valueActionAttemptOne
+		return nil
 	}
-	a.Status = unmarshaler.Status
-	switch unmarshaler.Status {
-	case "success":
-		value := new(ActionAttemptSuccess)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		a.Success = value
-	case "pending":
-		value := new(ActionAttemptPending)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		a.Pending = value
-	case "error":
-		value := new(ActionAttemptError)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		a.Error = value
+	valueActionAttemptTwo := new(ActionAttemptTwo)
+	if err := json.Unmarshal(data, &valueActionAttemptTwo); err == nil {
+		a.typeName = "actionAttemptTwo"
+		a.ActionAttemptTwo = valueActionAttemptTwo
+		return nil
 	}
-	return nil
+	valueActionAttemptThree := new(ActionAttemptThree)
+	if err := json.Unmarshal(data, &valueActionAttemptThree); err == nil {
+		a.typeName = "actionAttemptThree"
+		a.ActionAttemptThree = valueActionAttemptThree
+		return nil
+	}
+	valueActionAttemptFour := new(ActionAttemptFour)
+	if err := json.Unmarshal(data, &valueActionAttemptFour); err == nil {
+		a.typeName = "actionAttemptFour"
+		a.ActionAttemptFour = valueActionAttemptFour
+		return nil
+	}
+	valueActionAttemptFive := new(ActionAttemptFive)
+	if err := json.Unmarshal(data, &valueActionAttemptFive); err == nil {
+		a.typeName = "actionAttemptFive"
+		a.ActionAttemptFive = valueActionAttemptFive
+		return nil
+	}
+	valueActionAttemptSix := new(ActionAttemptSix)
+	if err := json.Unmarshal(data, &valueActionAttemptSix); err == nil {
+		a.typeName = "actionAttemptSix"
+		a.ActionAttemptSix = valueActionAttemptSix
+		return nil
+	}
+	valueActionAttemptSeven := new(ActionAttemptSeven)
+	if err := json.Unmarshal(data, &valueActionAttemptSeven); err == nil {
+		a.typeName = "actionAttemptSeven"
+		a.ActionAttemptSeven = valueActionAttemptSeven
+		return nil
+	}
+	valueActionAttemptEight := new(ActionAttemptEight)
+	if err := json.Unmarshal(data, &valueActionAttemptEight); err == nil {
+		a.typeName = "actionAttemptEight"
+		a.ActionAttemptEight = valueActionAttemptEight
+		return nil
+	}
+	valueActionAttemptNine := new(ActionAttemptNine)
+	if err := json.Unmarshal(data, &valueActionAttemptNine); err == nil {
+		a.typeName = "actionAttemptNine"
+		a.ActionAttemptNine = valueActionAttemptNine
+		return nil
+	}
+	valueActionAttemptTen := new(ActionAttemptTen)
+	if err := json.Unmarshal(data, &valueActionAttemptTen); err == nil {
+		a.typeName = "actionAttemptTen"
+		a.ActionAttemptTen = valueActionAttemptTen
+		return nil
+	}
+	valueActionAttemptEleven := new(ActionAttemptEleven)
+	if err := json.Unmarshal(data, &valueActionAttemptEleven); err == nil {
+		a.typeName = "actionAttemptEleven"
+		a.ActionAttemptEleven = valueActionAttemptEleven
+		return nil
+	}
+	valueActionAttemptTwelve := new(ActionAttemptTwelve)
+	if err := json.Unmarshal(data, &valueActionAttemptTwelve); err == nil {
+		a.typeName = "actionAttemptTwelve"
+		a.ActionAttemptTwelve = valueActionAttemptTwelve
+		return nil
+	}
+	valueActionAttemptThirteen := new(ActionAttemptThirteen)
+	if err := json.Unmarshal(data, &valueActionAttemptThirteen); err == nil {
+		a.typeName = "actionAttemptThirteen"
+		a.ActionAttemptThirteen = valueActionAttemptThirteen
+		return nil
+	}
+	valueActionAttemptFourteen := new(ActionAttemptFourteen)
+	if err := json.Unmarshal(data, &valueActionAttemptFourteen); err == nil {
+		a.typeName = "actionAttemptFourteen"
+		a.ActionAttemptFourteen = valueActionAttemptFourteen
+		return nil
+	}
+	valueActionAttemptFifteen := new(ActionAttemptFifteen)
+	if err := json.Unmarshal(data, &valueActionAttemptFifteen); err == nil {
+		a.typeName = "actionAttemptFifteen"
+		a.ActionAttemptFifteen = valueActionAttemptFifteen
+		return nil
+	}
+	valueActionAttemptSixteen := new(ActionAttemptSixteen)
+	if err := json.Unmarshal(data, &valueActionAttemptSixteen); err == nil {
+		a.typeName = "actionAttemptSixteen"
+		a.ActionAttemptSixteen = valueActionAttemptSixteen
+		return nil
+	}
+	valueActionAttemptSeventeen := new(ActionAttemptSeventeen)
+	if err := json.Unmarshal(data, &valueActionAttemptSeventeen); err == nil {
+		a.typeName = "actionAttemptSeventeen"
+		a.ActionAttemptSeventeen = valueActionAttemptSeventeen
+		return nil
+	}
+	valueActionAttemptEighteen := new(ActionAttemptEighteen)
+	if err := json.Unmarshal(data, &valueActionAttemptEighteen); err == nil {
+		a.typeName = "actionAttemptEighteen"
+		a.ActionAttemptEighteen = valueActionAttemptEighteen
+		return nil
+	}
+	valueActionAttemptNineteen := new(ActionAttemptNineteen)
+	if err := json.Unmarshal(data, &valueActionAttemptNineteen); err == nil {
+		a.typeName = "actionAttemptNineteen"
+		a.ActionAttemptNineteen = valueActionAttemptNineteen
+		return nil
+	}
+	valueActionAttemptTwenty := new(ActionAttemptTwenty)
+	if err := json.Unmarshal(data, &valueActionAttemptTwenty); err == nil {
+		a.typeName = "actionAttemptTwenty"
+		a.ActionAttemptTwenty = valueActionAttemptTwenty
+		return nil
+	}
+	valueActionAttemptTwentyOne := new(ActionAttemptTwentyOne)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyOne); err == nil {
+		a.typeName = "actionAttemptTwentyOne"
+		a.ActionAttemptTwentyOne = valueActionAttemptTwentyOne
+		return nil
+	}
+	valueActionAttemptTwentyTwo := new(ActionAttemptTwentyTwo)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyTwo); err == nil {
+		a.typeName = "actionAttemptTwentyTwo"
+		a.ActionAttemptTwentyTwo = valueActionAttemptTwentyTwo
+		return nil
+	}
+	valueActionAttemptTwentyThree := new(ActionAttemptTwentyThree)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyThree); err == nil {
+		a.typeName = "actionAttemptTwentyThree"
+		a.ActionAttemptTwentyThree = valueActionAttemptTwentyThree
+		return nil
+	}
+	valueActionAttemptTwentyFour := new(ActionAttemptTwentyFour)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyFour); err == nil {
+		a.typeName = "actionAttemptTwentyFour"
+		a.ActionAttemptTwentyFour = valueActionAttemptTwentyFour
+		return nil
+	}
+	valueActionAttemptTwentyFive := new(ActionAttemptTwentyFive)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyFive); err == nil {
+		a.typeName = "actionAttemptTwentyFive"
+		a.ActionAttemptTwentyFive = valueActionAttemptTwentyFive
+		return nil
+	}
+	valueActionAttemptTwentySix := new(ActionAttemptTwentySix)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentySix); err == nil {
+		a.typeName = "actionAttemptTwentySix"
+		a.ActionAttemptTwentySix = valueActionAttemptTwentySix
+		return nil
+	}
+	valueActionAttemptTwentySeven := new(ActionAttemptTwentySeven)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentySeven); err == nil {
+		a.typeName = "actionAttemptTwentySeven"
+		a.ActionAttemptTwentySeven = valueActionAttemptTwentySeven
+		return nil
+	}
+	valueActionAttemptTwentyEight := new(ActionAttemptTwentyEight)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyEight); err == nil {
+		a.typeName = "actionAttemptTwentyEight"
+		a.ActionAttemptTwentyEight = valueActionAttemptTwentyEight
+		return nil
+	}
+	valueActionAttemptTwentyNine := new(ActionAttemptTwentyNine)
+	if err := json.Unmarshal(data, &valueActionAttemptTwentyNine); err == nil {
+		a.typeName = "actionAttemptTwentyNine"
+		a.ActionAttemptTwentyNine = valueActionAttemptTwentyNine
+		return nil
+	}
+	valueActionAttemptThirty := new(ActionAttemptThirty)
+	if err := json.Unmarshal(data, &valueActionAttemptThirty); err == nil {
+		a.typeName = "actionAttemptThirty"
+		a.ActionAttemptThirty = valueActionAttemptThirty
+		return nil
+	}
+	valueActionAttemptThirtyOne := new(ActionAttemptThirtyOne)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyOne); err == nil {
+		a.typeName = "actionAttemptThirtyOne"
+		a.ActionAttemptThirtyOne = valueActionAttemptThirtyOne
+		return nil
+	}
+	valueActionAttemptThirtyTwo := new(ActionAttemptThirtyTwo)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyTwo); err == nil {
+		a.typeName = "actionAttemptThirtyTwo"
+		a.ActionAttemptThirtyTwo = valueActionAttemptThirtyTwo
+		return nil
+	}
+	valueActionAttemptThirtyThree := new(ActionAttemptThirtyThree)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyThree); err == nil {
+		a.typeName = "actionAttemptThirtyThree"
+		a.ActionAttemptThirtyThree = valueActionAttemptThirtyThree
+		return nil
+	}
+	valueActionAttemptThirtyFour := new(ActionAttemptThirtyFour)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyFour); err == nil {
+		a.typeName = "actionAttemptThirtyFour"
+		a.ActionAttemptThirtyFour = valueActionAttemptThirtyFour
+		return nil
+	}
+	valueActionAttemptThirtyFive := new(ActionAttemptThirtyFive)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyFive); err == nil {
+		a.typeName = "actionAttemptThirtyFive"
+		a.ActionAttemptThirtyFive = valueActionAttemptThirtyFive
+		return nil
+	}
+	valueActionAttemptThirtySix := new(ActionAttemptThirtySix)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtySix); err == nil {
+		a.typeName = "actionAttemptThirtySix"
+		a.ActionAttemptThirtySix = valueActionAttemptThirtySix
+		return nil
+	}
+	valueActionAttemptThirtySeven := new(ActionAttemptThirtySeven)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtySeven); err == nil {
+		a.typeName = "actionAttemptThirtySeven"
+		a.ActionAttemptThirtySeven = valueActionAttemptThirtySeven
+		return nil
+	}
+	valueActionAttemptThirtyEight := new(ActionAttemptThirtyEight)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyEight); err == nil {
+		a.typeName = "actionAttemptThirtyEight"
+		a.ActionAttemptThirtyEight = valueActionAttemptThirtyEight
+		return nil
+	}
+	valueActionAttemptThirtyNine := new(ActionAttemptThirtyNine)
+	if err := json.Unmarshal(data, &valueActionAttemptThirtyNine); err == nil {
+		a.typeName = "actionAttemptThirtyNine"
+		a.ActionAttemptThirtyNine = valueActionAttemptThirtyNine
+		return nil
+	}
+	valueActionAttemptForty := new(ActionAttemptForty)
+	if err := json.Unmarshal(data, &valueActionAttemptForty); err == nil {
+		a.typeName = "actionAttemptForty"
+		a.ActionAttemptForty = valueActionAttemptForty
+		return nil
+	}
+	valueActionAttemptFortyOne := new(ActionAttemptFortyOne)
+	if err := json.Unmarshal(data, &valueActionAttemptFortyOne); err == nil {
+		a.typeName = "actionAttemptFortyOne"
+		a.ActionAttemptFortyOne = valueActionAttemptFortyOne
+		return nil
+	}
+	valueActionAttemptFortyTwo := new(ActionAttemptFortyTwo)
+	if err := json.Unmarshal(data, &valueActionAttemptFortyTwo); err == nil {
+		a.typeName = "actionAttemptFortyTwo"
+		a.ActionAttemptFortyTwo = valueActionAttemptFortyTwo
+		return nil
+	}
+	valueActionAttemptFortyThree := new(ActionAttemptFortyThree)
+	if err := json.Unmarshal(data, &valueActionAttemptFortyThree); err == nil {
+		a.typeName = "actionAttemptFortyThree"
+		a.ActionAttemptFortyThree = valueActionAttemptFortyThree
+		return nil
+	}
+	valueActionAttemptActionAttemptId := new(ActionAttemptActionAttemptId)
+	if err := json.Unmarshal(data, &valueActionAttemptActionAttemptId); err == nil {
+		a.typeName = "actionAttemptActionAttemptId"
+		a.ActionAttemptActionAttemptId = valueActionAttemptActionAttemptId
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
 }
 
 func (a ActionAttempt) MarshalJSON() ([]byte, error) {
-	switch a.Status {
+	switch a.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", a.Status, a)
-	case "success":
-		var marshaler = struct {
-			Status string `json:"status"`
-			*ActionAttemptSuccess
-		}{
-			Status:               a.Status,
-			ActionAttemptSuccess: a.Success,
-		}
-		return json.Marshal(marshaler)
-	case "pending":
-		var marshaler = struct {
-			Status string `json:"status"`
-			*ActionAttemptPending
-		}{
-			Status:               a.Status,
-			ActionAttemptPending: a.Pending,
-		}
-		return json.Marshal(marshaler)
-	case "error":
-		var marshaler = struct {
-			Status string `json:"status"`
-			*ActionAttemptError
-		}{
-			Status:             a.Status,
-			ActionAttemptError: a.Error,
-		}
-		return json.Marshal(marshaler)
+		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
+	case "actionAttemptZero":
+		return json.Marshal(a.ActionAttemptZero)
+	case "actionAttemptOne":
+		return json.Marshal(a.ActionAttemptOne)
+	case "actionAttemptTwo":
+		return json.Marshal(a.ActionAttemptTwo)
+	case "actionAttemptThree":
+		return json.Marshal(a.ActionAttemptThree)
+	case "actionAttemptFour":
+		return json.Marshal(a.ActionAttemptFour)
+	case "actionAttemptFive":
+		return json.Marshal(a.ActionAttemptFive)
+	case "actionAttemptSix":
+		return json.Marshal(a.ActionAttemptSix)
+	case "actionAttemptSeven":
+		return json.Marshal(a.ActionAttemptSeven)
+	case "actionAttemptEight":
+		return json.Marshal(a.ActionAttemptEight)
+	case "actionAttemptNine":
+		return json.Marshal(a.ActionAttemptNine)
+	case "actionAttemptTen":
+		return json.Marshal(a.ActionAttemptTen)
+	case "actionAttemptEleven":
+		return json.Marshal(a.ActionAttemptEleven)
+	case "actionAttemptTwelve":
+		return json.Marshal(a.ActionAttemptTwelve)
+	case "actionAttemptThirteen":
+		return json.Marshal(a.ActionAttemptThirteen)
+	case "actionAttemptFourteen":
+		return json.Marshal(a.ActionAttemptFourteen)
+	case "actionAttemptFifteen":
+		return json.Marshal(a.ActionAttemptFifteen)
+	case "actionAttemptSixteen":
+		return json.Marshal(a.ActionAttemptSixteen)
+	case "actionAttemptSeventeen":
+		return json.Marshal(a.ActionAttemptSeventeen)
+	case "actionAttemptEighteen":
+		return json.Marshal(a.ActionAttemptEighteen)
+	case "actionAttemptNineteen":
+		return json.Marshal(a.ActionAttemptNineteen)
+	case "actionAttemptTwenty":
+		return json.Marshal(a.ActionAttemptTwenty)
+	case "actionAttemptTwentyOne":
+		return json.Marshal(a.ActionAttemptTwentyOne)
+	case "actionAttemptTwentyTwo":
+		return json.Marshal(a.ActionAttemptTwentyTwo)
+	case "actionAttemptTwentyThree":
+		return json.Marshal(a.ActionAttemptTwentyThree)
+	case "actionAttemptTwentyFour":
+		return json.Marshal(a.ActionAttemptTwentyFour)
+	case "actionAttemptTwentyFive":
+		return json.Marshal(a.ActionAttemptTwentyFive)
+	case "actionAttemptTwentySix":
+		return json.Marshal(a.ActionAttemptTwentySix)
+	case "actionAttemptTwentySeven":
+		return json.Marshal(a.ActionAttemptTwentySeven)
+	case "actionAttemptTwentyEight":
+		return json.Marshal(a.ActionAttemptTwentyEight)
+	case "actionAttemptTwentyNine":
+		return json.Marshal(a.ActionAttemptTwentyNine)
+	case "actionAttemptThirty":
+		return json.Marshal(a.ActionAttemptThirty)
+	case "actionAttemptThirtyOne":
+		return json.Marshal(a.ActionAttemptThirtyOne)
+	case "actionAttemptThirtyTwo":
+		return json.Marshal(a.ActionAttemptThirtyTwo)
+	case "actionAttemptThirtyThree":
+		return json.Marshal(a.ActionAttemptThirtyThree)
+	case "actionAttemptThirtyFour":
+		return json.Marshal(a.ActionAttemptThirtyFour)
+	case "actionAttemptThirtyFive":
+		return json.Marshal(a.ActionAttemptThirtyFive)
+	case "actionAttemptThirtySix":
+		return json.Marshal(a.ActionAttemptThirtySix)
+	case "actionAttemptThirtySeven":
+		return json.Marshal(a.ActionAttemptThirtySeven)
+	case "actionAttemptThirtyEight":
+		return json.Marshal(a.ActionAttemptThirtyEight)
+	case "actionAttemptThirtyNine":
+		return json.Marshal(a.ActionAttemptThirtyNine)
+	case "actionAttemptForty":
+		return json.Marshal(a.ActionAttemptForty)
+	case "actionAttemptFortyOne":
+		return json.Marshal(a.ActionAttemptFortyOne)
+	case "actionAttemptFortyTwo":
+		return json.Marshal(a.ActionAttemptFortyTwo)
+	case "actionAttemptFortyThree":
+		return json.Marshal(a.ActionAttemptFortyThree)
+	case "actionAttemptActionAttemptId":
+		return json.Marshal(a.ActionAttemptActionAttemptId)
 	}
 }
 
 type ActionAttemptVisitor interface {
-	VisitSuccess(*ActionAttemptSuccess) error
-	VisitPending(*ActionAttemptPending) error
-	VisitError(*ActionAttemptError) error
+	VisitActionAttemptZero(*ActionAttemptZero) error
+	VisitActionAttemptOne(*ActionAttemptOne) error
+	VisitActionAttemptTwo(*ActionAttemptTwo) error
+	VisitActionAttemptThree(*ActionAttemptThree) error
+	VisitActionAttemptFour(*ActionAttemptFour) error
+	VisitActionAttemptFive(*ActionAttemptFive) error
+	VisitActionAttemptSix(*ActionAttemptSix) error
+	VisitActionAttemptSeven(*ActionAttemptSeven) error
+	VisitActionAttemptEight(*ActionAttemptEight) error
+	VisitActionAttemptNine(*ActionAttemptNine) error
+	VisitActionAttemptTen(*ActionAttemptTen) error
+	VisitActionAttemptEleven(*ActionAttemptEleven) error
+	VisitActionAttemptTwelve(*ActionAttemptTwelve) error
+	VisitActionAttemptThirteen(*ActionAttemptThirteen) error
+	VisitActionAttemptFourteen(*ActionAttemptFourteen) error
+	VisitActionAttemptFifteen(*ActionAttemptFifteen) error
+	VisitActionAttemptSixteen(*ActionAttemptSixteen) error
+	VisitActionAttemptSeventeen(*ActionAttemptSeventeen) error
+	VisitActionAttemptEighteen(*ActionAttemptEighteen) error
+	VisitActionAttemptNineteen(*ActionAttemptNineteen) error
+	VisitActionAttemptTwenty(*ActionAttemptTwenty) error
+	VisitActionAttemptTwentyOne(*ActionAttemptTwentyOne) error
+	VisitActionAttemptTwentyTwo(*ActionAttemptTwentyTwo) error
+	VisitActionAttemptTwentyThree(*ActionAttemptTwentyThree) error
+	VisitActionAttemptTwentyFour(*ActionAttemptTwentyFour) error
+	VisitActionAttemptTwentyFive(*ActionAttemptTwentyFive) error
+	VisitActionAttemptTwentySix(*ActionAttemptTwentySix) error
+	VisitActionAttemptTwentySeven(*ActionAttemptTwentySeven) error
+	VisitActionAttemptTwentyEight(*ActionAttemptTwentyEight) error
+	VisitActionAttemptTwentyNine(*ActionAttemptTwentyNine) error
+	VisitActionAttemptThirty(*ActionAttemptThirty) error
+	VisitActionAttemptThirtyOne(*ActionAttemptThirtyOne) error
+	VisitActionAttemptThirtyTwo(*ActionAttemptThirtyTwo) error
+	VisitActionAttemptThirtyThree(*ActionAttemptThirtyThree) error
+	VisitActionAttemptThirtyFour(*ActionAttemptThirtyFour) error
+	VisitActionAttemptThirtyFive(*ActionAttemptThirtyFive) error
+	VisitActionAttemptThirtySix(*ActionAttemptThirtySix) error
+	VisitActionAttemptThirtySeven(*ActionAttemptThirtySeven) error
+	VisitActionAttemptThirtyEight(*ActionAttemptThirtyEight) error
+	VisitActionAttemptThirtyNine(*ActionAttemptThirtyNine) error
+	VisitActionAttemptForty(*ActionAttemptForty) error
+	VisitActionAttemptFortyOne(*ActionAttemptFortyOne) error
+	VisitActionAttemptFortyTwo(*ActionAttemptFortyTwo) error
+	VisitActionAttemptFortyThree(*ActionAttemptFortyThree) error
+	VisitActionAttemptActionAttemptId(*ActionAttemptActionAttemptId) error
 }
 
 func (a *ActionAttempt) Accept(visitor ActionAttemptVisitor) error {
-	switch a.Status {
+	switch a.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", a.Status, a)
-	case "success":
-		return visitor.VisitSuccess(a.Success)
-	case "pending":
-		return visitor.VisitPending(a.Pending)
-	case "error":
-		return visitor.VisitError(a.Error)
+		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
+	case "actionAttemptZero":
+		return visitor.VisitActionAttemptZero(a.ActionAttemptZero)
+	case "actionAttemptOne":
+		return visitor.VisitActionAttemptOne(a.ActionAttemptOne)
+	case "actionAttemptTwo":
+		return visitor.VisitActionAttemptTwo(a.ActionAttemptTwo)
+	case "actionAttemptThree":
+		return visitor.VisitActionAttemptThree(a.ActionAttemptThree)
+	case "actionAttemptFour":
+		return visitor.VisitActionAttemptFour(a.ActionAttemptFour)
+	case "actionAttemptFive":
+		return visitor.VisitActionAttemptFive(a.ActionAttemptFive)
+	case "actionAttemptSix":
+		return visitor.VisitActionAttemptSix(a.ActionAttemptSix)
+	case "actionAttemptSeven":
+		return visitor.VisitActionAttemptSeven(a.ActionAttemptSeven)
+	case "actionAttemptEight":
+		return visitor.VisitActionAttemptEight(a.ActionAttemptEight)
+	case "actionAttemptNine":
+		return visitor.VisitActionAttemptNine(a.ActionAttemptNine)
+	case "actionAttemptTen":
+		return visitor.VisitActionAttemptTen(a.ActionAttemptTen)
+	case "actionAttemptEleven":
+		return visitor.VisitActionAttemptEleven(a.ActionAttemptEleven)
+	case "actionAttemptTwelve":
+		return visitor.VisitActionAttemptTwelve(a.ActionAttemptTwelve)
+	case "actionAttemptThirteen":
+		return visitor.VisitActionAttemptThirteen(a.ActionAttemptThirteen)
+	case "actionAttemptFourteen":
+		return visitor.VisitActionAttemptFourteen(a.ActionAttemptFourteen)
+	case "actionAttemptFifteen":
+		return visitor.VisitActionAttemptFifteen(a.ActionAttemptFifteen)
+	case "actionAttemptSixteen":
+		return visitor.VisitActionAttemptSixteen(a.ActionAttemptSixteen)
+	case "actionAttemptSeventeen":
+		return visitor.VisitActionAttemptSeventeen(a.ActionAttemptSeventeen)
+	case "actionAttemptEighteen":
+		return visitor.VisitActionAttemptEighteen(a.ActionAttemptEighteen)
+	case "actionAttemptNineteen":
+		return visitor.VisitActionAttemptNineteen(a.ActionAttemptNineteen)
+	case "actionAttemptTwenty":
+		return visitor.VisitActionAttemptTwenty(a.ActionAttemptTwenty)
+	case "actionAttemptTwentyOne":
+		return visitor.VisitActionAttemptTwentyOne(a.ActionAttemptTwentyOne)
+	case "actionAttemptTwentyTwo":
+		return visitor.VisitActionAttemptTwentyTwo(a.ActionAttemptTwentyTwo)
+	case "actionAttemptTwentyThree":
+		return visitor.VisitActionAttemptTwentyThree(a.ActionAttemptTwentyThree)
+	case "actionAttemptTwentyFour":
+		return visitor.VisitActionAttemptTwentyFour(a.ActionAttemptTwentyFour)
+	case "actionAttemptTwentyFive":
+		return visitor.VisitActionAttemptTwentyFive(a.ActionAttemptTwentyFive)
+	case "actionAttemptTwentySix":
+		return visitor.VisitActionAttemptTwentySix(a.ActionAttemptTwentySix)
+	case "actionAttemptTwentySeven":
+		return visitor.VisitActionAttemptTwentySeven(a.ActionAttemptTwentySeven)
+	case "actionAttemptTwentyEight":
+		return visitor.VisitActionAttemptTwentyEight(a.ActionAttemptTwentyEight)
+	case "actionAttemptTwentyNine":
+		return visitor.VisitActionAttemptTwentyNine(a.ActionAttemptTwentyNine)
+	case "actionAttemptThirty":
+		return visitor.VisitActionAttemptThirty(a.ActionAttemptThirty)
+	case "actionAttemptThirtyOne":
+		return visitor.VisitActionAttemptThirtyOne(a.ActionAttemptThirtyOne)
+	case "actionAttemptThirtyTwo":
+		return visitor.VisitActionAttemptThirtyTwo(a.ActionAttemptThirtyTwo)
+	case "actionAttemptThirtyThree":
+		return visitor.VisitActionAttemptThirtyThree(a.ActionAttemptThirtyThree)
+	case "actionAttemptThirtyFour":
+		return visitor.VisitActionAttemptThirtyFour(a.ActionAttemptThirtyFour)
+	case "actionAttemptThirtyFive":
+		return visitor.VisitActionAttemptThirtyFive(a.ActionAttemptThirtyFive)
+	case "actionAttemptThirtySix":
+		return visitor.VisitActionAttemptThirtySix(a.ActionAttemptThirtySix)
+	case "actionAttemptThirtySeven":
+		return visitor.VisitActionAttemptThirtySeven(a.ActionAttemptThirtySeven)
+	case "actionAttemptThirtyEight":
+		return visitor.VisitActionAttemptThirtyEight(a.ActionAttemptThirtyEight)
+	case "actionAttemptThirtyNine":
+		return visitor.VisitActionAttemptThirtyNine(a.ActionAttemptThirtyNine)
+	case "actionAttemptForty":
+		return visitor.VisitActionAttemptForty(a.ActionAttemptForty)
+	case "actionAttemptFortyOne":
+		return visitor.VisitActionAttemptFortyOne(a.ActionAttemptFortyOne)
+	case "actionAttemptFortyTwo":
+		return visitor.VisitActionAttemptFortyTwo(a.ActionAttemptFortyTwo)
+	case "actionAttemptFortyThree":
+		return visitor.VisitActionAttemptFortyThree(a.ActionAttemptFortyThree)
+	case "actionAttemptActionAttemptId":
+		return visitor.VisitActionAttemptActionAttemptId(a.ActionAttemptActionAttemptId)
 	}
 }
 
-type ActionAttemptError struct {
-	ActionType      string                   `json:"action_type" url:"action_type"`
-	ActionAttemptId string                   `json:"action_attempt_id" url:"action_attempt_id"`
-	Result          *string                  `json:"result,omitempty" url:"result,omitempty"`
-	Error           *ActionAttemptErrorError `json:"error,omitempty" url:"error,omitempty"`
+type ActionAttemptActionAttemptId struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                             `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                            `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptActionAttemptIdError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
 
 	_rawJSON json.RawMessage
 }
 
-func (a *ActionAttemptError) UnmarshalJSON(data []byte) error {
-	type unmarshaler ActionAttemptError
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+func (a *ActionAttemptActionAttemptId) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptActionAttemptId) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptActionAttemptId) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptActionAttemptId
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = ActionAttemptError(value)
+	*a = ActionAttemptActionAttemptId(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "UPDATE_NOISE_THRESHOLD"
 	a._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (a *ActionAttemptError) String() string {
+func (a *ActionAttemptActionAttemptId) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptActionAttemptId
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "UPDATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptActionAttemptId) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -1287,25 +2198,25 @@ func (a *ActionAttemptError) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ActionAttemptErrorError struct {
+type ActionAttemptActionAttemptIdError struct {
 	Type    string `json:"type" url:"type"`
 	Message string `json:"message" url:"message"`
 
 	_rawJSON json.RawMessage
 }
 
-func (a *ActionAttemptErrorError) UnmarshalJSON(data []byte) error {
-	type unmarshaler ActionAttemptErrorError
+func (a *ActionAttemptActionAttemptIdError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptActionAttemptIdError
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*a = ActionAttemptErrorError(value)
+	*a = ActionAttemptActionAttemptIdError(value)
 	a._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (a *ActionAttemptErrorError) String() string {
+func (a *ActionAttemptActionAttemptIdError) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -1317,27 +2228,157 @@ func (a *ActionAttemptErrorError) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ActionAttemptPending struct {
-	ActionType      string  `json:"action_type" url:"action_type"`
+// Resetting sandbox workspace failed.
+type ActionAttemptEight struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                   `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                  `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptEightError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptEight) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptEight) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptEight) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptEight
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptEight(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "RESET_SANDBOX_WORKSPACE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptEight) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptEight
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "RESET_SANDBOX_WORKSPACE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptEight) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptEightError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptEightError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptEightError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptEightError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptEightError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting fan mode.
+type ActionAttemptEighteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
 	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
 	Result          *string `json:"result,omitempty" url:"result,omitempty"`
 	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
 
 	_rawJSON json.RawMessage
 }
 
-func (a *ActionAttemptPending) UnmarshalJSON(data []byte) error {
-	type unmarshaler ActionAttemptPending
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+func (a *ActionAttemptEighteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptEighteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptEighteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptEighteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = ActionAttemptPending(value)
+	*a = ActionAttemptEighteen(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SET_FAN_MODE"
 	a._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (a *ActionAttemptPending) String() string {
+func (a *ActionAttemptEighteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptEighteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SET_FAN_MODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptEighteen) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -1349,27 +2390,3353 @@ func (a *ActionAttemptPending) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ActionAttemptSuccess struct {
-	ActionType      string      `json:"action_type" url:"action_type"`
-	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
-	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
-	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+// Setting HVAC to cool failed.
+type ActionAttemptEleven struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                    `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                   `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptElevenError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
 
 	_rawJSON json.RawMessage
 }
 
-func (a *ActionAttemptSuccess) UnmarshalJSON(data []byte) error {
-	type unmarshaler ActionAttemptSuccess
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+func (a *ActionAttemptEleven) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptEleven) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptEleven) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptEleven
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = ActionAttemptSuccess(value)
+	*a = ActionAttemptEleven(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SET_COOL"
 	a._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (a *ActionAttemptSuccess) String() string {
+func (a *ActionAttemptEleven) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptEleven
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SET_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptEleven) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptElevenError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptElevenError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptElevenError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptElevenError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptElevenError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to heat-cool mode.
+type ActionAttemptFifteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFifteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFifteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFifteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFifteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFifteen(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SET_HEAT_COOL"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFifteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFifteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SET_HEAT_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFifteen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Unlocking door failed.
+type ActionAttemptFive struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                 `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptFiveError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFive) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFive) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFive) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFive
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFive(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "UNLOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFive) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFive
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "UNLOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFive) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFiveError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFiveError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptFiveError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptFiveError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFiveError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptForty struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptForty) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptForty) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptForty) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptForty
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptForty(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "DELETE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptForty) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptForty
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "DELETE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptForty) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFortyOne struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                      `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                     `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptFortyOneError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFortyOne) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFortyOne) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFortyOne) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFortyOne
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFortyOne(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "DELETE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFortyOne) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFortyOne
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "DELETE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFortyOne) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFortyOneError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFortyOneError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptFortyOneError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptFortyOneError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFortyOneError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFortyThree struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFortyThree) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFortyThree) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFortyThree) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFortyThree
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFortyThree(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "UPDATE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFortyThree) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFortyThree
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "UPDATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFortyThree) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFortyTwo struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFortyTwo) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFortyTwo) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFortyTwo) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFortyTwo
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFortyTwo(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "UPDATE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFortyTwo) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFortyTwo
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "UPDATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFortyTwo) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Unlocking door succeeded.
+type ActionAttemptFour struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                   `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                  `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptFourResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFour) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFour) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFour) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFour
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFour(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "UNLOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFour) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFour
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "UNLOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFour) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFourResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFourResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptFourResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptFourResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFourResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to heat mode failed.
+type ActionAttemptFourteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                      `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                     `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptFourteenError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFourteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptFourteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptFourteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptFourteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptFourteen(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SET_HEAT"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFourteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptFourteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SET_HEAT",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptFourteen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptFourteenError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptFourteenError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptFourteenError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptFourteenError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptFourteenError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to cool.
+type ActionAttemptNine struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptNine) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptNine) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptNine) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptNine
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptNine(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SET_COOL"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptNine) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptNine
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SET_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptNine) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting fan mode succeeded.
+type ActionAttemptNineteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                       `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                      `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptNineteenResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptNineteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptNineteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptNineteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptNineteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptNineteen(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SET_FAN_MODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptNineteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptNineteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SET_FAN_MODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptNineteen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptNineteenResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptNineteenResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptNineteenResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptNineteenResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptNineteenResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Locking door succeeded.
+type ActionAttemptOne struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                  `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                 `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptOneResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptOne) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptOne) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptOne) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptOne
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptOne(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "LOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptOne) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptOne
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "LOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptOne) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptOneResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptOneResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptOneResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptOneResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptOneResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Resetting sandbox workspace succeeded.
+type ActionAttemptSeven struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                    `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                   `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptSevenResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSeven) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptSeven) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptSeven) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptSeven
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptSeven(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "RESET_SANDBOX_WORKSPACE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSeven) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptSeven
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "RESET_SANDBOX_WORKSPACE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptSeven) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptSevenResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSevenResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptSevenResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptSevenResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSevenResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting heat-cool mode failed.
+type ActionAttemptSeventeen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                       `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                      `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptSeventeenError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSeventeen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptSeventeen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptSeventeen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptSeventeen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptSeventeen(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SET_HEAT_COOL"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSeventeen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptSeventeen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SET_HEAT_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptSeventeen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptSeventeenError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSeventeenError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptSeventeenError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptSeventeenError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSeventeenError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Resetting sandbox workspace.
+type ActionAttemptSix struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSix) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptSix) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptSix) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptSix
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptSix(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "RESET_SANDBOX_WORKSPACE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSix) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptSix
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "RESET_SANDBOX_WORKSPACE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptSix) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to heat-cool mode succeeded.
+type ActionAttemptSixteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                     `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptSixteenResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSixteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptSixteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptSixteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptSixteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptSixteen(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SET_HEAT_COOL"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSixteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptSixteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SET_HEAT_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptSixteen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptSixteenResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptSixteenResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptSixteenResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptSixteenResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptSixteenResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to cool succeeded.
+type ActionAttemptTen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                  `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                 `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptTenResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTen(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SET_COOL"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SET_COOL",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTenResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTenResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTenResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTenResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTenResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to heat mode succeeded.
+type ActionAttemptThirteen struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                       `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                      `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptThirteenResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirteen) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirteen) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirteen) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirteen
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirteen(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SET_HEAT"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirteen) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirteen
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SET_HEAT",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirteen) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirteenResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirteenResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptThirteenResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirteenResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirteenResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirty struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirty) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirty) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirty) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirty
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirty(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "DELETE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirty) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirty
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "DELETE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirty) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyEight struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                         `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                        `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptThirtyEightError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyEight) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyEight) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyEight) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyEight
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyEight(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "CREATE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyEight) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyEight
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "CREATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyEight) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyEightError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyEightError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptThirtyEightError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyEightError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyEightError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyFive struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                        `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                       `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptThirtyFiveError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyFive) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyFive) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyFive) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyFive
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyFive(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "UPDATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyFive) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyFive
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "UPDATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyFive) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyFiveError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyFiveError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptThirtyFiveError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyFiveError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyFiveError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyFour struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyFour) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyFour) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyFour) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyFour
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyFour(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "UPDATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyFour) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyFour
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "UPDATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyFour) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyNine struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyNine) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyNine) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyNine) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyNine
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyNine(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "DELETE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyNine) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyNine
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "DELETE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyNine) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyOne struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyOne) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyOne) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyOne) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyOne
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyOne(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "DELETE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyOne) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyOne
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "DELETE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyOne) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtySeven struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtySeven) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtySeven) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtySeven) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtySeven
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtySeven(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "CREATE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtySeven) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtySeven
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "CREATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtySeven) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtySix struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtySix) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtySix) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtySix) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtySix
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtySix(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "CREATE_NOISE_THRESHOLD"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtySix) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtySix
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "CREATE_NOISE_THRESHOLD",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtySix) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyThree struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyThree) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyThree) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyThree) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyThree
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyThree(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "UPDATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyThree) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyThree
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "UPDATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyThree) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyTwo struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                       `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                      `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptThirtyTwoError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyTwo) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThirtyTwo) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThirtyTwo) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThirtyTwo
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyTwo(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "DELETE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyTwo) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThirtyTwo
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "DELETE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThirtyTwo) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptThirtyTwoError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThirtyTwoError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptThirtyTwoError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptThirtyTwoError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThirtyTwoError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Unlocking door.
+type ActionAttemptThree struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptThree) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptThree) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptThree) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptThree
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptThree(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "UNLOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptThree) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptThree
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "UNLOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptThree) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting HVAC to heat mode.
+type ActionAttemptTwelve struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwelve) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwelve) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwelve) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwelve
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwelve(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SET_HEAT"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwelve) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwelve
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SET_HEAT",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwelve) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Setting fan mode failed.
+type ActionAttemptTwenty struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                    `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                   `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptTwentyError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwenty) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwenty) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwenty) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwenty
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwenty(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SET_FAN_MODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwenty) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwenty
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SET_FAN_MODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwenty) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyEight struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyEight) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyEight) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyEight) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyEight
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyEight(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "CREATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyEight) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyEight
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "CREATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyEight) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwentyError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyFive struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string      `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string     `json:"error,omitempty" url:"error,omitempty"`
+	Result          interface{} `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyFive) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyFive) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyFive) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyFive
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyFive(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SYNC_ACCESS_CODES"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyFive) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyFive
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SYNC_ACCESS_CODES",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyFive) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyFour struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyFour) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyFour) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyFour) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyFour
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyFour(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SYNC_ACCESS_CODES"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyFour) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyFour
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SYNC_ACCESS_CODES",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyFour) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyNine struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                        `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                       `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptTwentyNineError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyNine) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyNine) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyNine) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyNine
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyNine(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "CREATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyNine) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyNine
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "CREATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyNine) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyNineError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyNineError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwentyNineError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyNineError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyNineError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Turning HVAC off.
+type ActionAttemptTwentyOne struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyOne) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyOne) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyOne) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyOne
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyOne(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "SET_THERMOSTAT_OFF"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyOne) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyOne
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "SET_THERMOSTAT_OFF",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyOne) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentySeven struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentySeven) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentySeven) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentySeven) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentySeven
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentySeven(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "CREATE_ACCESS_CODE"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentySeven) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentySeven
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "CREATE_ACCESS_CODE",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentySeven) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentySix struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                       `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                      `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptTwentySixError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentySix) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentySix) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentySix) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentySix
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentySix(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SYNC_ACCESS_CODES"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentySix) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentySix
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SYNC_ACCESS_CODES",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentySix) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentySixError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentySixError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwentySixError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentySixError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentySixError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Turning HVAC off failed.
+type ActionAttemptTwentyThree struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                         `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                        `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptTwentyThreeError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyThree) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyThree) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyThree) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyThree
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyThree(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "SET_THERMOSTAT_OFF"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyThree) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyThree
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "SET_THERMOSTAT_OFF",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyThree) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyThreeError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyThreeError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwentyThreeError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyThreeError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyThreeError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Turning HVAC off succeeded.
+type ActionAttemptTwentyTwo struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                        `json:"action_attempt_id" url:"action_attempt_id"`
+	Error           *string                       `json:"error,omitempty" url:"error,omitempty"`
+	Result          *ActionAttemptTwentyTwoResult `json:"result,omitempty" url:"result,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyTwo) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwentyTwo) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwentyTwo) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwentyTwo
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyTwo(unmarshaler.embed)
+	a.status = "success"
+	a.actionType = "SET_THERMOSTAT_OFF"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyTwo) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwentyTwo
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "success",
+		ActionType: "SET_THERMOSTAT_OFF",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwentyTwo) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwentyTwoResult struct {
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwentyTwoResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwentyTwoResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwentyTwoResult(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwentyTwoResult) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Locking door failed.
+type ActionAttemptTwo struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string                 `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string                `json:"result,omitempty" url:"result,omitempty"`
+	Error           *ActionAttemptTwoError `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwo) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptTwo) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptTwo) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptTwo
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwo(unmarshaler.embed)
+	a.status = "error"
+	a.actionType = "LOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwo) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptTwo
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "error",
+		ActionType: "LOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptTwo) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ActionAttemptTwoError struct {
+	Type    string `json:"type" url:"type"`
+	Message string `json:"message" url:"message"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptTwoError) UnmarshalJSON(data []byte) error {
+	type unmarshaler ActionAttemptTwoError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ActionAttemptTwoError(value)
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptTwoError) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Locking door.
+type ActionAttemptZero struct {
+	// ---
+	// title: Action Attempt ID
+	// ---
+	// The ID of the action attempt.
+	ActionAttemptId string  `json:"action_attempt_id" url:"action_attempt_id"`
+	Result          *string `json:"result,omitempty" url:"result,omitempty"`
+	Error           *string `json:"error,omitempty" url:"error,omitempty"`
+	status          string
+	actionType      string
+
+	_rawJSON json.RawMessage
+}
+
+func (a *ActionAttemptZero) Status() string {
+	return a.status
+}
+
+func (a *ActionAttemptZero) ActionType() string {
+	return a.actionType
+}
+
+func (a *ActionAttemptZero) UnmarshalJSON(data []byte) error {
+	type embed ActionAttemptZero
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ActionAttemptZero(unmarshaler.embed)
+	a.status = "pending"
+	a.actionType = "LOCK_DOOR"
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ActionAttemptZero) MarshalJSON() ([]byte, error) {
+	type embed ActionAttemptZero
+	var marshaler = struct {
+		embed
+		Status     string `json:"status"`
+		ActionType string `json:"action_type"`
+	}{
+		embed:      embed(*a),
+		Status:     "pending",
+		ActionType: "LOCK_DOOR",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *ActionAttemptZero) String() string {
 	if len(a._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
 			return value
@@ -1383,14 +5750,14 @@ func (a *ActionAttemptSuccess) String() string {
 
 type ClientSession struct {
 	ClientSessionId     string    `json:"client_session_id" url:"client_session_id"`
-	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	WorkspaceId         string    `json:"workspace_id" url:"workspace_id"`
 	CreatedAt           time.Time `json:"created_at" url:"created_at"`
 	Token               string    `json:"token" url:"token"`
+	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	DeviceCount         float64   `json:"device_count" url:"device_count"`
 	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
 	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
 	UserIdentityIds     []string  `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
-	WorkspaceId         string    `json:"workspace_id" url:"workspace_id"`
 
 	_rawJSON json.RawMessage
 }
@@ -1868,6 +6235,8 @@ type Device struct {
 	CanProgramOfflineAccessCodes *bool                                 `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
 	CanProgramOnlineAccessCodes  *bool                                 `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
 	CanSimulateRemoval           *bool                                 `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	CanSimulateConnection        *bool                                 `json:"can_simulate_connection,omitempty" url:"can_simulate_connection,omitempty"`
+	CanSimulateDisconnection     *bool                                 `json:"can_simulate_disconnection,omitempty" url:"can_simulate_disconnection,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -2099,13 +6468,17 @@ type DeviceProperties struct {
 	// Indicates whether it is currently possible to use offline access codes for the device.
 	OfflineAccessCodesEnabled *bool `json:"offline_access_codes_enabled,omitempty" url:"offline_access_codes_enabled,omitempty"`
 	// ---
-	// deprecated: use model.accessory_keypad_supported
+	// deprecated: use device.properties.model.can_connect_accessory_keypad
 	// ---
 	SupportsAccessoryKeypad *bool `json:"supports_accessory_keypad,omitempty" url:"supports_accessory_keypad,omitempty"`
 	// ---
 	// deprecated: use offline_access_codes_enabled
 	// ---
-	SupportsOfflineAccessCodes                      *bool                                               `json:"supports_offline_access_codes,omitempty" url:"supports_offline_access_codes,omitempty"`
+	SupportsOfflineAccessCodes *bool `json:"supports_offline_access_codes,omitempty" url:"supports_offline_access_codes,omitempty"`
+	// Indicates current noise level in decibels, if the device supports noise detection.
+	NoiseLevelDecibels *float64 `json:"noise_level_decibels,omitempty" url:"noise_level_decibels,omitempty"`
+	// Array of noise threshold IDs that are currently triggering.
+	CurrentlyTriggeringNoiseThresholdIds            []string                                            `json:"currently_triggering_noise_threshold_ids,omitempty" url:"currently_triggering_noise_threshold_ids,omitempty"`
 	AssaAbloyCredentialServiceMetadata              *DevicePropertiesAssaAbloyCredentialServiceMetadata `json:"assa_abloy_credential_service_metadata,omitempty" url:"assa_abloy_credential_service_metadata,omitempty"`
 	AugustMetadata                                  *DevicePropertiesAugustMetadata                     `json:"august_metadata,omitempty" url:"august_metadata,omitempty"`
 	AvigilonAltaMetadata                            *DevicePropertiesAvigilonAltaMetadata               `json:"avigilon_alta_metadata,omitempty" url:"avigilon_alta_metadata,omitempty"`
@@ -3301,7 +7674,9 @@ type DevicePropertiesModel struct {
 	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.
 	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty" url:"online_access_codes_supported,omitempty"`
-	// Indicates whether the device supports an accessory keypad.
+	// ---
+	// deprecated: use device.properties.model.can_connect_accessory_keypad
+	// ---
 	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty" url:"accessory_keypad_supported,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -3636,8 +8011,9 @@ func (d *DevicePropertiesTedeeMetadata) String() string {
 }
 
 type DevicePropertiesTtlockMetadata struct {
-	LockId    float64 `json:"lock_id" url:"lock_id"`
-	LockAlias string  `json:"lock_alias" url:"lock_alias"`
+	LockId       float64 `json:"lock_id" url:"lock_id"`
+	LockAlias    string  `json:"lock_alias" url:"lock_alias"`
+	FeatureValue string  `json:"feature_value" url:"feature_value"`
 
 	_rawJSON json.RawMessage
 }
@@ -4662,6 +9038,8 @@ type Phone struct {
 	CanProgramOfflineAccessCodes *bool                                `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
 	CanProgramOnlineAccessCodes  *bool                                `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
 	CanSimulateRemoval           *bool                                `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	CanSimulateConnection        *bool                                `json:"can_simulate_connection,omitempty" url:"can_simulate_connection,omitempty"`
+	CanSimulateDisconnection     *bool                                `json:"can_simulate_disconnection,omitempty" url:"can_simulate_disconnection,omitempty"`
 
 	_rawJSON json.RawMessage
 }
@@ -5255,6 +9633,8 @@ type UnmanagedDevice struct {
 	CanProgramOfflineAccessCodes *bool                          `json:"can_program_offline_access_codes,omitempty" url:"can_program_offline_access_codes,omitempty"`
 	CanProgramOnlineAccessCodes  *bool                          `json:"can_program_online_access_codes,omitempty" url:"can_program_online_access_codes,omitempty"`
 	CanSimulateRemoval           *bool                          `json:"can_simulate_removal,omitempty" url:"can_simulate_removal,omitempty"`
+	CanSimulateConnection        *bool                          `json:"can_simulate_connection,omitempty" url:"can_simulate_connection,omitempty"`
+	CanSimulateDisconnection     *bool                          `json:"can_simulate_disconnection,omitempty" url:"can_simulate_disconnection,omitempty"`
 	DeviceProvider               *UnmanagedDeviceDeviceProvider `json:"device_provider,omitempty" url:"device_provider,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -5581,7 +9961,9 @@ type UnmanagedDevicePropertiesModel struct {
 	OfflineAccessCodesSupported *bool `json:"offline_access_codes_supported,omitempty" url:"offline_access_codes_supported,omitempty"`
 	// Indicates whether the device supports online access codes.
 	OnlineAccessCodesSupported *bool `json:"online_access_codes_supported,omitempty" url:"online_access_codes_supported,omitempty"`
-	// Indicates whether the device supports an accessory keypad.
+	// ---
+	// deprecated: use device.properties.model.can_connect_accessory_keypad
+	// ---
 	AccessoryKeypadSupported *bool `json:"accessory_keypad_supported,omitempty" url:"accessory_keypad_supported,omitempty"`
 
 	_rawJSON json.RawMessage
@@ -5727,9 +10109,13 @@ func (w *Webhook) String() string {
 }
 
 type Workspace struct {
-	WorkspaceId        string  `json:"workspace_id" url:"workspace_id"`
-	Name               string  `json:"name" url:"name"`
-	IsSandbox          bool    `json:"is_sandbox" url:"is_sandbox"`
+	WorkspaceId string `json:"workspace_id" url:"workspace_id"`
+	Name        string `json:"name" url:"name"`
+	CompanyName string `json:"company_name" url:"company_name"`
+	IsSandbox   bool   `json:"is_sandbox" url:"is_sandbox"`
+	// ---
+	// deprecated: use company_name
+	// ---
 	ConnectPartnerName *string `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
 
 	_rawJSON json.RawMessage

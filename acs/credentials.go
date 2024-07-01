@@ -66,6 +66,10 @@ type CredentialsListRequest struct {
 	IsMultiPhoneSyncCredential *bool   `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
 }
 
+type CredentialsListAccessibleEntrancesRequest struct {
+	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+}
+
 type CredentialsAssignResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
@@ -247,6 +251,36 @@ func (c *CredentialsGetResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CredentialsListAccessibleEntrancesResponse struct {
+	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                     `json:"ok" url:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListAccessibleEntrancesResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListAccessibleEntrancesResponse(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CredentialsListResponse struct {
 	AcsCredentials []*seamapigo.AcsCredential `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
 	Ok             bool                       `json:"ok" url:"ok"`
@@ -343,6 +377,29 @@ type CredentialsUnassignRequest struct {
 }
 
 type CredentialsUpdateRequest struct {
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
-	Code            string `json:"code" url:"code"`
+	AcsCredentialId string     `json:"acs_credential_id" url:"acs_credential_id"`
+	Code            *string    `json:"code,omitempty" url:"code,omitempty"`
+	EndsAt          *time.Time `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+}
+
+func (c *CredentialsUpdateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUpdateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CredentialsUpdateRequest(body)
+	return nil
+}
+
+func (c *CredentialsUpdateRequest) MarshalJSON() ([]byte, error) {
+	type embed CredentialsUpdateRequest
+	var marshaler = struct {
+		embed
+		EndsAt *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:  embed(*c),
+		EndsAt: core.NewOptionalDateTime(c.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }
