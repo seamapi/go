@@ -9,9 +9,12 @@ import (
 )
 
 type WorkspacesCreateRequest struct {
-	Name string `json:"name" url:"name"`
-	// The name shown inside the connect webview
-	ConnectPartnerName        string            `json:"connect_partner_name" url:"connect_partner_name"`
+	Name        string  `json:"name" url:"name"`
+	CompanyName *string `json:"company_name,omitempty" url:"company_name,omitempty"`
+	//	---
+	//	deprecated: use company_name
+	//	---
+	ConnectPartnerName        *string           `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
 	IsSandbox                 *bool             `json:"is_sandbox,omitempty" url:"is_sandbox,omitempty"`
 	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty" url:"webview_primary_button_color,omitempty"`
 	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty" url:"webview_logo_shape,omitempty"`
