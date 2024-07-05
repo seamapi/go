@@ -128,6 +128,7 @@ func TestAccessCodes(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.NotNil(t, createdAccessCodes, "Created access codes should not be nil")
+	assert.Len(t, createdAccessCodes, 1)
 	assert.NotEmpty(t, createdAccessCodes, "Created access codes should not be empty")
 	assert.Equal(t, len(deviceIds), len(createdAccessCodes))
 

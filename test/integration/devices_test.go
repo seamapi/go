@@ -58,6 +58,7 @@ func TestDevices(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, devices, 2)
 
+	// query device with id
 	devices, err = seam.Devices.List(
 		ctx,
 		&seamgo.DevicesListRequest{
@@ -75,6 +76,32 @@ func TestDevices(t *testing.T) {
 	)
 	require.NoError(t, err)
 	assert.Equal(t, device.DisplayName, deviceWithId.DisplayName)
+
+	// query device with name
+	device = getTestDevice(t, seam)
+	require.NotNil(t, device, "Test device should not be nil")
+	
+	deviceByName, err := seam.Devices.Get(
+			ctx,
+			&seamgo.DevicesGetRequest{
+					Name: &device.DisplayName,
+			},
+	)
+	require.NoError(t, err)
+	assert.NotNil(t, deviceByName, "Device queried by name should not be nil")
+	assert.Equal(t, device.DisplayName, deviceByName.DisplayName)
+	
+	deviceByNameAndId, err := seam.Devices.Get(
+			ctx,
+			&seamgo.DevicesGetRequest{
+					Name:     &device.DisplayName,
+					DeviceId: &device.DeviceId,
+			},
+	)
+	require.NoError(t, err)
+	assert.NotNil(t, deviceByNameAndId, "Device queried by name and ID should not be nil")
+	assert.Equal(t, device.DisplayName, deviceByNameAndId.DisplayName)
+	assert.Equal(t, device.DeviceId, deviceByNameAndId.DeviceId)
 
 	locks, err := seam.Locks.List(
 		ctx,
