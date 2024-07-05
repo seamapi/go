@@ -19,8 +19,6 @@ func TestDevices(t *testing.T) {
 	ctx := context.Background()
 	device := getTestDevice(t, seam)
 	assert.NotNil(t, device.Properties)
-	// AugustMetadata is no longer available for some reason
-	// assert.Nil(t, device.Properties.AugustMetadata)
 
 	devices, err := seam.Devices.List(
 		ctx,
@@ -69,15 +67,14 @@ func TestDevices(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, devices, 1)
 
-	deviceWithName, err := seam.Devices.Get(
+	deviceWithId, err := seam.Devices.Get(
 		ctx,
 		&seamgo.DevicesGetRequest{
-			Name:     &device.DisplayName, 
 			DeviceId: &device.DeviceId,
 		},
 	)
 	require.NoError(t, err)
-	assert.Equal(t, device.DisplayName, deviceWithName.DisplayName) 
+	assert.Equal(t, device.DisplayName, deviceWithId.DisplayName)
 
 	locks, err := seam.Locks.List(
 		ctx,
