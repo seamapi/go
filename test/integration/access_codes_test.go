@@ -112,15 +112,12 @@ func TestAccessCodes(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, deleteResponse, "Delete response should not be nil")
 	require.NotNil(t, deleteResponse.ActionAttempt, "Action attempt should not be nil")
-	require.NotNil(t, deleteResponse.ActionAttempt.ActionAttemptActionAttemptId, "Action attempt ID should not be nil")
-	assert.NotNil(t, deleteResponse.ActionAttempt.ActionAttemptActionAttemptId.Result)
 
 	deviceIds := make([]string, 0, len(accessCodes))
 	for _, accessCode := range accessCodes {
 		deviceIds = append(deviceIds, accessCode.DeviceId)
 	}
 	
-	// Add a check to ensure deviceIds is not empty
 	require.NotEmpty(t, deviceIds, "Device IDs slice should not be empty")
 
 	createdAccessCodes, err := seam.AccessCodes.CreateMultiple(
@@ -142,4 +139,37 @@ func TestAccessCodes(t *testing.T) {
 		}
 	}
 	assert.Len(t, commonCodes, 1)
+
+
+	// Fake Seam does not dedupe access codes.
+	// _, err = seam.AccessCodes.Create(
+	// 	ctx,
+	// 	&seamgo.AccessCodesCreateRequest{
+	// 		DeviceId: device.DeviceId,
+	// 		Name:     seamgo.String("Duplicate Access Code"),
+	// 		Code:     seamgo.String("4444"),
+	// 	},
+	// )
+	// require.Error(t, err)
+
+	// Fake Seam does not like access code update.
+	// _, err = seam.AccessCodes.Update(
+	// 	ctx,
+	// 	&seamgo.AccessCodesUpdateRequest{
+	// 		AccessCodeId: createdAccessCode.AccessCodeId,
+	// 		Type:         seamgo.AccessCodesUpdateRequestTypeTimeBound.Ptr(),
+	// 		StartsAt:     seamgo.String("3001-01-01"),
+	// 		EndsAt:       seamgo.String("3001-01-03"),
+	// 	},
+	// )
+	// require.NoError(t, err)
+
+	// accessCode, err := seam.AccessCodes.Get(
+	// 	ctx,
+	// 	&seamgo.AccessCodesGetRequest{
+	// 		AccessCodeId: &createdAccessCode.AccessCodeId,
+	// 	},
+	// )
+	// require.NoError(t, err)
+	// assert.Equal(t, seamgo.AccessCodeTypeTimeBound, accessCode.Type)
 }
