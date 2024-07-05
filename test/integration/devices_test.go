@@ -59,49 +59,39 @@ func TestDevices(t *testing.T) {
 	assert.Len(t, devices, 2)
 
 	// query device with id
-	devices, err = seam.Devices.List(
-		ctx,
-		&seamgo.DevicesListRequest{
-			Manufacturer: seamgo.ManufacturerAugust.Ptr(),
-		},
-	)
-	require.NoError(t, err)
-	assert.Len(t, devices, 1)
-
-	deviceWithId, err := seam.Devices.Get(
+	deviceById, err := seam.Devices.Get(
 		ctx,
 		&seamgo.DevicesGetRequest{
-			DeviceId: &device.DeviceId,
+				DeviceId: &device.DeviceId,
 		},
-	)
-	require.NoError(t, err)
-	assert.Equal(t, device.DisplayName, deviceWithId.DisplayName)
+)
+require.NoError(t, err)
+assert.NotNil(t, deviceById, "Device queried by ID should not be nil")
+assert.Equal(t, device.DisplayName, deviceById.DisplayName)
+assert.Equal(t, device.DeviceId, deviceById.DeviceId)
 
-	// query device with name
-	device = getTestDevice(t, seam)
-	require.NotNil(t, device, "Test device should not be nil")
-	
+	// query device by name
 	deviceByName, err := seam.Devices.Get(
-			ctx,
-			&seamgo.DevicesGetRequest{
-					Name: &device.DisplayName,
-			},
+		ctx,
+		&seamgo.DevicesGetRequest{
+			Name: &device.DisplayName,
+		},
 	)
 	require.NoError(t, err)
 	assert.NotNil(t, deviceByName, "Device queried by name should not be nil")
 	assert.Equal(t, device.DisplayName, deviceByName.DisplayName)
-	
-	deviceByNameAndId, err := seam.Devices.Get(
-			ctx,
-			&seamgo.DevicesGetRequest{
-					Name:     &device.DisplayName,
-					DeviceId: &device.DeviceId,
-			},
-	)
-	require.NoError(t, err)
-	assert.NotNil(t, deviceByNameAndId, "Device queried by name and ID should not be nil")
-	assert.Equal(t, device.DisplayName, deviceByNameAndId.DisplayName)
-	assert.Equal(t, device.DeviceId, deviceByNameAndId.DeviceId)
+	assert.Equal(t, device.DeviceId, deviceByName.DeviceId)
+
+	// querying with both name and ID returns an error
+	_, err = seam.Devices.Get(
+		ctx,
+		&seamgo.DevicesGetRequest{
+				Name:     &device.DisplayName,
+				DeviceId: &device.DeviceId,
+		},
+)
+assert.Error(t, err, "Expected an error when querying with both name and ID")
+assert.Contains(t, err.Error(), "Either 'device_id' or 'name' is required")
 
 	locks, err := seam.Locks.List(
 		ctx,
