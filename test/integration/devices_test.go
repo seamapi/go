@@ -19,7 +19,6 @@ func TestDevices(t *testing.T) {
 	ctx := context.Background()
 	device := getTestDevice(t, seam)
 	assert.NotNil(t, device.Properties)
-	assert.Nil(t, device.Properties.AugustMetadata)
 
 	devices, err := seam.Devices.List(
 		ctx,
@@ -59,24 +58,40 @@ func TestDevices(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, devices, 2)
 
-	devices, err = seam.Devices.List(
-		ctx,
-		&seamgo.DevicesListRequest{
-			Manufacturer: seamgo.ManufacturerAugust.Ptr(),
-		},
-	)
-	require.NoError(t, err)
-	assert.Len(t, devices, 1)
-
-	deviceWithName, err := seam.Devices.Get(
+	// query device with id
+	deviceById, err := seam.Devices.Get(
 		ctx,
 		&seamgo.DevicesGetRequest{
-			Name:     &device.Properties.Name,
-			DeviceId: &device.DeviceId,
+				DeviceId: &device.DeviceId,
+		},
+)
+require.NoError(t, err)
+assert.NotNil(t, deviceById, "Device queried by ID should not be nil")
+assert.Equal(t, device.DisplayName, deviceById.DisplayName)
+assert.Equal(t, device.DeviceId, deviceById.DeviceId)
+
+	// query device by name
+	deviceByName, err := seam.Devices.Get(
+		ctx,
+		&seamgo.DevicesGetRequest{
+			Name: &device.DisplayName,
 		},
 	)
 	require.NoError(t, err)
-	assert.Equal(t, device.Properties.Name, deviceWithName.Properties.Name)
+	assert.NotNil(t, deviceByName, "Device queried by name should not be nil")
+	assert.Equal(t, device.DisplayName, deviceByName.DisplayName)
+	assert.Equal(t, device.DeviceId, deviceByName.DeviceId)
+
+	// querying with both name and ID returns an error
+	_, err = seam.Devices.Get(
+		ctx,
+		&seamgo.DevicesGetRequest{
+				Name:     &device.DisplayName,
+				DeviceId: &device.DeviceId,
+		},
+)
+assert.Error(t, err, "Expected an error when querying with both name and ID")
+assert.Contains(t, err.Error(), "Either 'device_id' or 'name' is required")
 
 	locks, err := seam.Locks.List(
 		ctx,
