@@ -273,6 +273,8 @@ const (
 	ThermostatsListRequestExcludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestExcludeIfItem = "can_program_offline_access_codes"
 	ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestExcludeIfItem = "can_program_online_access_codes"
 	ThermostatsListRequestExcludeIfItemCanSimulateRemoval           ThermostatsListRequestExcludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestExcludeIfItemCanSimulateConnection        ThermostatsListRequestExcludeIfItem = "can_simulate_connection"
+	ThermostatsListRequestExcludeIfItemCanSimulateDisconnection     ThermostatsListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsListRequestExcludeIfItem, error) {
@@ -287,6 +289,10 @@ func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return ThermostatsListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return ThermostatsListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return ThermostatsListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t ThermostatsListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -304,6 +310,8 @@ const (
 	ThermostatsListRequestIncludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestIncludeIfItem = "can_program_offline_access_codes"
 	ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestIncludeIfItem = "can_program_online_access_codes"
 	ThermostatsListRequestIncludeIfItemCanSimulateRemoval           ThermostatsListRequestIncludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestIncludeIfItemCanSimulateConnection        ThermostatsListRequestIncludeIfItem = "can_simulate_connection"
+	ThermostatsListRequestIncludeIfItemCanSimulateDisconnection     ThermostatsListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsListRequestIncludeIfItem, error) {
@@ -318,6 +326,10 @@ func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return ThermostatsListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return ThermostatsListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return ThermostatsListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t ThermostatsListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
