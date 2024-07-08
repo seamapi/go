@@ -139,6 +139,7 @@ func TestAccessCodes(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, deleteResponse)
 	require.NotNil(t, deleteResponse.ActionAttempt)
+	assert.Equal(t, deleteResponse.ActionAttempt.ActionAttemptActionAttemptId.Status(), "success")
 
 	deviceIds := make([]string, 0, len(accessCodes))
 	for _, accessCode := range accessCodes {
