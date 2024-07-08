@@ -137,7 +137,9 @@ func TestAccessCodes(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.NotNil(t, deleteResponse.ActionAttempt.Success)
+	require.NotNil(t, deleteResponse)
+	require.NotNil(t, deleteResponse.ActionAttempt)
+	assert.Equal(t, deleteResponse.ActionAttempt.ActionAttemptActionAttemptId.Status(), "success")
 
 	deviceIds := make([]string, 0, len(accessCodes))
 	for _, accessCode := range accessCodes {
@@ -161,3 +163,4 @@ func TestAccessCodes(t *testing.T) {
 	}
 	assert.Len(t, commonCodes, 1)
 }
+
