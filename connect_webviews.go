@@ -31,6 +31,7 @@ type ConnectWebviewsListRequest struct {
 	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
 	// Returns devices where the webview's custom_metadata contains all of the provided key/value pairs.
 	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	Limit             *float64                                                     `json:"limit,omitempty" url:"limit,omitempty"`
 }
 
 type AcceptedProvider string
@@ -170,10 +171,9 @@ func (a AcceptedProvider) Ptr() *AcceptedProvider {
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) *ConnectWebviewsCreateRequestCustomMetadataValue {
@@ -182,10 +182,6 @@ func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) 
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromBoolean(value bool) *ConnectWebviewsCreateRequestCustomMetadataValue {
 	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -201,12 +197,6 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []b
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -218,15 +208,12 @@ func (c ConnectWebviewsCreateRequestCustomMetadataValue) MarshalJSON() ([]byte, 
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor ConnectWebviewsCreateRequestCustomMetadataValueVisitor) error {
@@ -237,8 +224,6 @@ func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor Connect
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 

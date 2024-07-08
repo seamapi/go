@@ -7,6 +7,7 @@ import (
 	core "github.com/seamapi/go/core"
 )
 
+// Bad Request
 type BadRequestError struct {
 	*core.APIError
 	Body interface{}
@@ -30,6 +31,7 @@ func (b *BadRequestError) Unwrap() error {
 	return b.APIError
 }
 
+// Unauthorized
 type UnauthorizedError struct {
 	*core.APIError
 	Body interface{}

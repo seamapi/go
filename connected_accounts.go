@@ -222,10 +222,9 @@ func (c *ConnectedAccountsListResponse) String() string {
 }
 
 type ConnectedAccountsUpdateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectedAccountsUpdateRequestCustomMetadataValueFromString(value string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
@@ -234,10 +233,6 @@ func NewConnectedAccountsUpdateRequestCustomMetadataValueFromString(value string
 
 func NewConnectedAccountsUpdateRequestCustomMetadataValueFromBoolean(value bool) *ConnectedAccountsUpdateRequestCustomMetadataValue {
 	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectedAccountsUpdateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
-	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -253,12 +248,6 @@ func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) UnmarshalJSON(data [
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -270,15 +259,12 @@ func (c ConnectedAccountsUpdateRequestCustomMetadataValue) MarshalJSON() ([]byte
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountsUpdateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor ConnectedAccountsUpdateRequestCustomMetadataValueVisitor) error {
@@ -289,8 +275,6 @@ func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor Conne
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
