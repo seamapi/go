@@ -28,6 +28,231 @@ type EventsListRequest struct {
 	Limit              *float64                        `json:"limit,omitempty" url:"limit,omitempty"`
 }
 
+type Event struct {
+	EventId                string    `json:"event_id" url:"event_id"`
+	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	ActionAttemptId        *string   `json:"action_attempt_id,omitempty" url:"action_attempt_id,omitempty"`
+	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
+	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsSystemId            *string   `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	ClientSessionId        *string   `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
+	EventType              string    `json:"event_type" url:"event_type"`
+	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt              time.Time `json:"created_at" url:"created_at"`
+	OccurredAt             time.Time `json:"occurred_at" url:"occurred_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (e *Event) UnmarshalJSON(data []byte) error {
+	type embed Event
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		OccurredAt *core.DateTime `json:"occurred_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = Event(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+	e.OccurredAt = unmarshaler.OccurredAt.Time()
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *Event) MarshalJSON() ([]byte, error) {
+	type embed Event
+	var marshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		OccurredAt *core.DateTime `json:"occurred_at"`
+	}{
+		embed:      embed(*e),
+		CreatedAt:  core.NewDateTime(e.CreatedAt),
+		OccurredAt: core.NewDateTime(e.OccurredAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *Event) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EventType string
+
+const (
+	EventTypeDeviceConnected                             EventType = "device.connected"
+	EventTypeDeviceUnmanagedConnected                    EventType = "device.unmanaged.connected"
+	EventTypeDeviceDisconnected                          EventType = "device.disconnected"
+	EventTypeDeviceUnmanagedDisconnected                 EventType = "device.unmanaged.disconnected"
+	EventTypeDeviceConvertedToUnmanaged                  EventType = "device.converted_to_unmanaged"
+	EventTypeDeviceUnmanagedConvertedToManaged           EventType = "device.unmanaged.converted_to_managed"
+	EventTypeDeviceRemoved                               EventType = "device.removed"
+	EventTypeDeviceTampered                              EventType = "device.tampered"
+	EventTypeDeviceLowBattery                            EventType = "device.low_battery"
+	EventTypeDeviceBatteryStatusChanged                  EventType = "device.battery_status_changed"
+	EventTypeDeviceThirdPartyIntegrationDetected         EventType = "device.third_party_integration_detected"
+	EventTypeDeviceThirdPartyIntegrationNoLongerDetected EventType = "device.third_party_integration_no_longer_detected"
+	EventTypeDeviceSaltoPrivacyModeActivated             EventType = "device.salto.privacy_mode_activated"
+	EventTypeDeviceSaltoPrivacyModeDeactivated           EventType = "device.salto.privacy_mode_deactivated"
+	EventTypeDeviceConnectionBecameFlaky                 EventType = "device.connection_became_flaky"
+	EventTypeDeviceConnectionStabilized                  EventType = "device.connection_stabilized"
+	EventTypeDeviceErrorSubscriptionRequired             EventType = "device.error.subscription_required"
+	EventTypeDeviceErrorSubscriptionRequiredResolved     EventType = "device.error.subscription_required.resolved"
+	EventTypeAccessCodeCreated                           EventType = "access_code.created"
+	EventTypeAccessCodeChanged                           EventType = "access_code.changed"
+	EventTypeAccessCodeScheduledOnDevice                 EventType = "access_code.scheduled_on_device"
+	EventTypeAccessCodeSetOnDevice                       EventType = "access_code.set_on_device"
+	EventTypeAccessCodeDeleted                           EventType = "access_code.deleted"
+	EventTypeAccessCodeRemovedFromDevice                 EventType = "access_code.removed_from_device"
+	EventTypeAccessCodeFailedToSetOnDevice               EventType = "access_code.failed_to_set_on_device"
+	EventTypeAccessCodeDelayInSettingOnDevice            EventType = "access_code.delay_in_setting_on_device"
+	EventTypeAccessCodeFailedToRemoveFromDevice          EventType = "access_code.failed_to_remove_from_device"
+	EventTypeAccessCodeDelayInRemovingFromDevice         EventType = "access_code.delay_in_removing_from_device"
+	EventTypeAccessCodeDeletedExternalToSeam             EventType = "access_code.deleted_external_to_seam"
+	EventTypeAccessCodeModifiedExternalToSeam            EventType = "access_code.modified_external_to_seam"
+	EventTypeAccessCodeUnmanagedConvertedToManaged       EventType = "access_code.unmanaged.converted_to_managed"
+	EventTypeAccessCodeUnmanagedFailedToConvertToManaged EventType = "access_code.unmanaged.failed_to_convert_to_managed"
+	EventTypeAccessCodeUnmanagedCreated                  EventType = "access_code.unmanaged.created"
+	EventTypeAccessCodeUnmanagedRemoved                  EventType = "access_code.unmanaged.removed"
+	EventTypeLockLocked                                  EventType = "lock.locked"
+	EventTypeLockUnlocked                                EventType = "lock.unlocked"
+	EventTypeConnectedAccountConnected                   EventType = "connected_account.connected"
+	EventTypeConnectedAccountSuccessfulLogin             EventType = "connected_account.successful_login"
+	EventTypeConnectedAccountCreated                     EventType = "connected_account.created"
+	EventTypeConnectedAccountDeleted                     EventType = "connected_account.deleted"
+	EventTypeConnectedAccountDisconnected                EventType = "connected_account.disconnected"
+	EventTypeConnectedAccountCompletedFirstSync          EventType = "connected_account.completed_first_sync"
+	EventTypeNoiseSensorNoiseThresholdTriggered          EventType = "noise_sensor.noise_threshold_triggered"
+	EventTypeAccessCodeBackupAccessCodePulled            EventType = "access_code.backup_access_code_pulled"
+	EventTypeEnrollmentAutomationDeleted                 EventType = "enrollment_automation.deleted"
+	EventTypeAcsUserDeleted                              EventType = "acs_user.deleted"
+	EventTypeAcsCredentialDeleted                        EventType = "acs_credential.deleted"
+	EventTypePhoneDeactivated                            EventType = "phone.deactivated"
+	EventTypeClientSessionDeleted                        EventType = "client_session.deleted"
+)
+
+func NewEventTypeFromString(s string) (EventType, error) {
+	switch s {
+	case "device.connected":
+		return EventTypeDeviceConnected, nil
+	case "device.unmanaged.connected":
+		return EventTypeDeviceUnmanagedConnected, nil
+	case "device.disconnected":
+		return EventTypeDeviceDisconnected, nil
+	case "device.unmanaged.disconnected":
+		return EventTypeDeviceUnmanagedDisconnected, nil
+	case "device.converted_to_unmanaged":
+		return EventTypeDeviceConvertedToUnmanaged, nil
+	case "device.unmanaged.converted_to_managed":
+		return EventTypeDeviceUnmanagedConvertedToManaged, nil
+	case "device.removed":
+		return EventTypeDeviceRemoved, nil
+	case "device.tampered":
+		return EventTypeDeviceTampered, nil
+	case "device.low_battery":
+		return EventTypeDeviceLowBattery, nil
+	case "device.battery_status_changed":
+		return EventTypeDeviceBatteryStatusChanged, nil
+	case "device.third_party_integration_detected":
+		return EventTypeDeviceThirdPartyIntegrationDetected, nil
+	case "device.third_party_integration_no_longer_detected":
+		return EventTypeDeviceThirdPartyIntegrationNoLongerDetected, nil
+	case "device.salto.privacy_mode_activated":
+		return EventTypeDeviceSaltoPrivacyModeActivated, nil
+	case "device.salto.privacy_mode_deactivated":
+		return EventTypeDeviceSaltoPrivacyModeDeactivated, nil
+	case "device.connection_became_flaky":
+		return EventTypeDeviceConnectionBecameFlaky, nil
+	case "device.connection_stabilized":
+		return EventTypeDeviceConnectionStabilized, nil
+	case "device.error.subscription_required":
+		return EventTypeDeviceErrorSubscriptionRequired, nil
+	case "device.error.subscription_required.resolved":
+		return EventTypeDeviceErrorSubscriptionRequiredResolved, nil
+	case "access_code.created":
+		return EventTypeAccessCodeCreated, nil
+	case "access_code.changed":
+		return EventTypeAccessCodeChanged, nil
+	case "access_code.scheduled_on_device":
+		return EventTypeAccessCodeScheduledOnDevice, nil
+	case "access_code.set_on_device":
+		return EventTypeAccessCodeSetOnDevice, nil
+	case "access_code.deleted":
+		return EventTypeAccessCodeDeleted, nil
+	case "access_code.removed_from_device":
+		return EventTypeAccessCodeRemovedFromDevice, nil
+	case "access_code.failed_to_set_on_device":
+		return EventTypeAccessCodeFailedToSetOnDevice, nil
+	case "access_code.delay_in_setting_on_device":
+		return EventTypeAccessCodeDelayInSettingOnDevice, nil
+	case "access_code.failed_to_remove_from_device":
+		return EventTypeAccessCodeFailedToRemoveFromDevice, nil
+	case "access_code.delay_in_removing_from_device":
+		return EventTypeAccessCodeDelayInRemovingFromDevice, nil
+	case "access_code.deleted_external_to_seam":
+		return EventTypeAccessCodeDeletedExternalToSeam, nil
+	case "access_code.modified_external_to_seam":
+		return EventTypeAccessCodeModifiedExternalToSeam, nil
+	case "access_code.unmanaged.converted_to_managed":
+		return EventTypeAccessCodeUnmanagedConvertedToManaged, nil
+	case "access_code.unmanaged.failed_to_convert_to_managed":
+		return EventTypeAccessCodeUnmanagedFailedToConvertToManaged, nil
+	case "access_code.unmanaged.created":
+		return EventTypeAccessCodeUnmanagedCreated, nil
+	case "access_code.unmanaged.removed":
+		return EventTypeAccessCodeUnmanagedRemoved, nil
+	case "lock.locked":
+		return EventTypeLockLocked, nil
+	case "lock.unlocked":
+		return EventTypeLockUnlocked, nil
+	case "connected_account.connected":
+		return EventTypeConnectedAccountConnected, nil
+	case "connected_account.successful_login":
+		return EventTypeConnectedAccountSuccessfulLogin, nil
+	case "connected_account.created":
+		return EventTypeConnectedAccountCreated, nil
+	case "connected_account.deleted":
+		return EventTypeConnectedAccountDeleted, nil
+	case "connected_account.disconnected":
+		return EventTypeConnectedAccountDisconnected, nil
+	case "connected_account.completed_first_sync":
+		return EventTypeConnectedAccountCompletedFirstSync, nil
+	case "noise_sensor.noise_threshold_triggered":
+		return EventTypeNoiseSensorNoiseThresholdTriggered, nil
+	case "access_code.backup_access_code_pulled":
+		return EventTypeAccessCodeBackupAccessCodePulled, nil
+	case "enrollment_automation.deleted":
+		return EventTypeEnrollmentAutomationDeleted, nil
+	case "acs_user.deleted":
+		return EventTypeAcsUserDeleted, nil
+	case "acs_credential.deleted":
+		return EventTypeAcsCredentialDeleted, nil
+	case "phone.deactivated":
+		return EventTypePhoneDeactivated, nil
+	case "client_session.deleted":
+		return EventTypeClientSessionDeleted, nil
+	}
+	var t EventType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventType) Ptr() *EventType {
+	return &e
+}
+
 type EventsGetResponse struct {
 	Event   *Event  `json:"event,omitempty" url:"event,omitempty"`
 	Message *string `json:"message,omitempty" url:"message,omitempty"`

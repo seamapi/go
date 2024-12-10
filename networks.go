@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type NetworksGetRequest struct {
@@ -13,6 +14,56 @@ type NetworksGetRequest struct {
 }
 
 type NetworksListRequest struct {
+}
+
+type Network struct {
+	NetworkId   string    `json:"network_id" url:"network_id"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	DisplayName string    `json:"display_name" url:"display_name"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
+
+	_rawJSON json.RawMessage
+}
+
+func (n *Network) UnmarshalJSON(data []byte) error {
+	type embed Network
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*n),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*n = Network(unmarshaler.embed)
+	n.CreatedAt = unmarshaler.CreatedAt.Time()
+	n._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *Network) MarshalJSON() ([]byte, error) {
+	type embed Network
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*n),
+		CreatedAt: core.NewDateTime(n.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (n *Network) String() string {
+	if len(n._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NetworksGetResponse struct {

@@ -9,12 +9,45 @@ import (
 )
 
 type WorkspacesCreateRequest struct {
-	Name string `json:"name" url:"name"`
-	// The name shown inside the connect webview
-	ConnectPartnerName        string            `json:"connect_partner_name" url:"connect_partner_name"`
+	Name                      string            `json:"name" url:"name"`
+	CompanyName               *string           `json:"company_name,omitempty" url:"company_name,omitempty"`
+	ConnectPartnerName        *string           `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
 	IsSandbox                 *bool             `json:"is_sandbox,omitempty" url:"is_sandbox,omitempty"`
 	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty" url:"webview_primary_button_color,omitempty"`
 	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty" url:"webview_logo_shape,omitempty"`
+}
+
+type Workspace struct {
+	WorkspaceId        string  `json:"workspace_id" url:"workspace_id"`
+	Name               string  `json:"name" url:"name"`
+	CompanyName        string  `json:"company_name" url:"company_name"`
+	IsSandbox          bool    `json:"is_sandbox" url:"is_sandbox"`
+	ConnectPartnerName *string `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *Workspace) UnmarshalJSON(data []byte) error {
+	type unmarshaler Workspace
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = Workspace(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Workspace) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WorkspacesCreateResponse struct {
