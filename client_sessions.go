@@ -98,6 +98,61 @@ type ClientSessionsRevokeRequest struct {
 	ClientSessionId string `json:"client_session_id" url:"client_session_id"`
 }
 
+type ClientSession struct {
+	ClientSessionId     string    `json:"client_session_id" url:"client_session_id"`
+	WorkspaceId         string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt           time.Time `json:"created_at" url:"created_at"`
+	Token               string    `json:"token" url:"token"`
+	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	DeviceCount         float64   `json:"device_count" url:"device_count"`
+	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	UserIdentityIds     []string  `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ClientSession) UnmarshalJSON(data []byte) error {
+	type embed ClientSession
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ClientSession(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSession) MarshalJSON() ([]byte, error) {
+	type embed ClientSession
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *ClientSession) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type ClientSessionsCreateResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`

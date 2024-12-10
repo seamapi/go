@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type UserIdentitiesAddAcsUserRequest struct {
@@ -53,6 +54,60 @@ type UserIdentitiesRemoveAcsUserRequest struct {
 type UserIdentitiesRevokeAccessToDeviceRequest struct {
 	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
 	DeviceId       string `json:"device_id" url:"device_id"`
+}
+
+type UserIdentity struct {
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentity) UnmarshalJSON(data []byte) error {
+	type embed UserIdentity
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*u = UserIdentity(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentity) MarshalJSON() ([]byte, error) {
+	type embed UserIdentity
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: core.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (u *UserIdentity) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesAddAcsUserResponse struct {
@@ -200,6 +255,64 @@ func (u *UserIdentitiesGetRequest) Accept(visitor UserIdentitiesGetRequestVisito
 	}
 }
 
+type UserIdentitiesGetRequestUserIdentityId struct {
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityId(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesGetRequestUserIdentityKey struct {
+	UserIdentityKey string `json:"user_identity_key" url:"user_identity_key"`
+
+	_rawJSON json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityKey(value)
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
 type UserIdentitiesGetResponse struct {
 	UserIdentity *UserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
 	Ok           bool          `json:"ok" url:"ok"`
@@ -260,10 +373,7 @@ func (u *UserIdentitiesGrantAccessToDeviceResponse) String() string {
 }
 
 type UserIdentitiesListAccessibleDevicesResponse struct {
-	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
-	// ---
-	// deprecated: use devices.
-	// ---
+	Devices           []*Device `json:"devices,omitempty" url:"devices,omitempty"`
 	AccessibleDevices []*Device `json:"accessible_devices,omitempty" url:"accessible_devices,omitempty"`
 	Ok                bool      `json:"ok" url:"ok"`
 

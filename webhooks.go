@@ -21,6 +21,38 @@ type WebhooksGetRequest struct {
 	WebhookId string `json:"webhook_id" url:"webhook_id"`
 }
 
+type Webhook struct {
+	WebhookId  string   `json:"webhook_id" url:"webhook_id"`
+	Url        string   `json:"url" url:"url"`
+	EventTypes []string `json:"event_types,omitempty" url:"event_types,omitempty"`
+	Secret     *string  `json:"secret,omitempty" url:"secret,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (w *Webhook) UnmarshalJSON(data []byte) error {
+	type unmarshaler Webhook
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = Webhook(value)
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Webhook) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
 type WebhooksCreateResponse struct {
 	Webhook *Webhook `json:"webhook,omitempty" url:"webhook,omitempty"`
 	Ok      bool     `json:"ok" url:"ok"`

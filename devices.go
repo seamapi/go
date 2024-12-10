@@ -61,6 +61,196 @@ type DevicesListDeviceProvidersRequest struct {
 	ProviderCategory *ProviderCategory `json:"provider_category,omitempty" url:"provider_category,omitempty"`
 }
 
+type DeviceProvider struct {
+	DeviceProviderName DeviceProviderDeviceProviderName       `json:"device_provider_name,omitempty" url:"device_provider_name,omitempty"`
+	DisplayName        string                                 `json:"display_name" url:"display_name"`
+	ImageUrl           string                                 `json:"image_url" url:"image_url"`
+	ProviderCategories []DeviceProviderProviderCategoriesItem `json:"provider_categories,omitempty" url:"provider_categories,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (d *DeviceProvider) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceProvider
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceProvider(value)
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceProvider) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DeviceProviderDeviceProviderName string
+
+const (
+	DeviceProviderDeviceProviderNameAkuvox                     DeviceProviderDeviceProviderName = "akuvox"
+	DeviceProviderDeviceProviderNameAugust                     DeviceProviderDeviceProviderName = "august"
+	DeviceProviderDeviceProviderNameAvigilonAlta               DeviceProviderDeviceProviderName = "avigilon_alta"
+	DeviceProviderDeviceProviderNameBrivo                      DeviceProviderDeviceProviderName = "brivo"
+	DeviceProviderDeviceProviderNameButterflymx                DeviceProviderDeviceProviderName = "butterflymx"
+	DeviceProviderDeviceProviderNameSchlage                    DeviceProviderDeviceProviderName = "schlage"
+	DeviceProviderDeviceProviderNameSmartthings                DeviceProviderDeviceProviderName = "smartthings"
+	DeviceProviderDeviceProviderNameYale                       DeviceProviderDeviceProviderName = "yale"
+	DeviceProviderDeviceProviderNameGenie                      DeviceProviderDeviceProviderName = "genie"
+	DeviceProviderDeviceProviderNameDoorking                   DeviceProviderDeviceProviderName = "doorking"
+	DeviceProviderDeviceProviderNameSalto                      DeviceProviderDeviceProviderName = "salto"
+	DeviceProviderDeviceProviderNameLockly                     DeviceProviderDeviceProviderName = "lockly"
+	DeviceProviderDeviceProviderNameTtlock                     DeviceProviderDeviceProviderName = "ttlock"
+	DeviceProviderDeviceProviderNameLinear                     DeviceProviderDeviceProviderName = "linear"
+	DeviceProviderDeviceProviderNameNoiseaware                 DeviceProviderDeviceProviderName = "noiseaware"
+	DeviceProviderDeviceProviderNameNuki                       DeviceProviderDeviceProviderName = "nuki"
+	DeviceProviderDeviceProviderNameSeamRelayAdmin             DeviceProviderDeviceProviderName = "seam_relay_admin"
+	DeviceProviderDeviceProviderNameIgloo                      DeviceProviderDeviceProviderName = "igloo"
+	DeviceProviderDeviceProviderNameKwikset                    DeviceProviderDeviceProviderName = "kwikset"
+	DeviceProviderDeviceProviderNameMinut                      DeviceProviderDeviceProviderName = "minut"
+	DeviceProviderDeviceProviderNameMy2N                       DeviceProviderDeviceProviderName = "my_2n"
+	DeviceProviderDeviceProviderNameControlbyweb               DeviceProviderDeviceProviderName = "controlbyweb"
+	DeviceProviderDeviceProviderNameNest                       DeviceProviderDeviceProviderName = "nest"
+	DeviceProviderDeviceProviderNameIgloohome                  DeviceProviderDeviceProviderName = "igloohome"
+	DeviceProviderDeviceProviderNameEcobee                     DeviceProviderDeviceProviderName = "ecobee"
+	DeviceProviderDeviceProviderNameHubitat                    DeviceProviderDeviceProviderName = "hubitat"
+	DeviceProviderDeviceProviderNameFourSuites                 DeviceProviderDeviceProviderName = "four_suites"
+	DeviceProviderDeviceProviderNameDormakabaOracode           DeviceProviderDeviceProviderName = "dormakaba_oracode"
+	DeviceProviderDeviceProviderNamePti                        DeviceProviderDeviceProviderName = "pti"
+	DeviceProviderDeviceProviderNameWyze                       DeviceProviderDeviceProviderName = "wyze"
+	DeviceProviderDeviceProviderNameSeamPassport               DeviceProviderDeviceProviderName = "seam_passport"
+	DeviceProviderDeviceProviderNameVisionline                 DeviceProviderDeviceProviderName = "visionline"
+	DeviceProviderDeviceProviderNameAssaAbloyCredentialService DeviceProviderDeviceProviderName = "assa_abloy_credential_service"
+	DeviceProviderDeviceProviderNameSeamBridge                 DeviceProviderDeviceProviderName = "seam_bridge"
+	DeviceProviderDeviceProviderNameTedee                      DeviceProviderDeviceProviderName = "tedee"
+	DeviceProviderDeviceProviderNameHoneywellResideo           DeviceProviderDeviceProviderName = "honeywell_resideo"
+	DeviceProviderDeviceProviderNameLatch                      DeviceProviderDeviceProviderName = "latch"
+)
+
+func NewDeviceProviderDeviceProviderNameFromString(s string) (DeviceProviderDeviceProviderName, error) {
+	switch s {
+	case "akuvox":
+		return DeviceProviderDeviceProviderNameAkuvox, nil
+	case "august":
+		return DeviceProviderDeviceProviderNameAugust, nil
+	case "avigilon_alta":
+		return DeviceProviderDeviceProviderNameAvigilonAlta, nil
+	case "brivo":
+		return DeviceProviderDeviceProviderNameBrivo, nil
+	case "butterflymx":
+		return DeviceProviderDeviceProviderNameButterflymx, nil
+	case "schlage":
+		return DeviceProviderDeviceProviderNameSchlage, nil
+	case "smartthings":
+		return DeviceProviderDeviceProviderNameSmartthings, nil
+	case "yale":
+		return DeviceProviderDeviceProviderNameYale, nil
+	case "genie":
+		return DeviceProviderDeviceProviderNameGenie, nil
+	case "doorking":
+		return DeviceProviderDeviceProviderNameDoorking, nil
+	case "salto":
+		return DeviceProviderDeviceProviderNameSalto, nil
+	case "lockly":
+		return DeviceProviderDeviceProviderNameLockly, nil
+	case "ttlock":
+		return DeviceProviderDeviceProviderNameTtlock, nil
+	case "linear":
+		return DeviceProviderDeviceProviderNameLinear, nil
+	case "noiseaware":
+		return DeviceProviderDeviceProviderNameNoiseaware, nil
+	case "nuki":
+		return DeviceProviderDeviceProviderNameNuki, nil
+	case "seam_relay_admin":
+		return DeviceProviderDeviceProviderNameSeamRelayAdmin, nil
+	case "igloo":
+		return DeviceProviderDeviceProviderNameIgloo, nil
+	case "kwikset":
+		return DeviceProviderDeviceProviderNameKwikset, nil
+	case "minut":
+		return DeviceProviderDeviceProviderNameMinut, nil
+	case "my_2n":
+		return DeviceProviderDeviceProviderNameMy2N, nil
+	case "controlbyweb":
+		return DeviceProviderDeviceProviderNameControlbyweb, nil
+	case "nest":
+		return DeviceProviderDeviceProviderNameNest, nil
+	case "igloohome":
+		return DeviceProviderDeviceProviderNameIgloohome, nil
+	case "ecobee":
+		return DeviceProviderDeviceProviderNameEcobee, nil
+	case "hubitat":
+		return DeviceProviderDeviceProviderNameHubitat, nil
+	case "four_suites":
+		return DeviceProviderDeviceProviderNameFourSuites, nil
+	case "dormakaba_oracode":
+		return DeviceProviderDeviceProviderNameDormakabaOracode, nil
+	case "pti":
+		return DeviceProviderDeviceProviderNamePti, nil
+	case "wyze":
+		return DeviceProviderDeviceProviderNameWyze, nil
+	case "seam_passport":
+		return DeviceProviderDeviceProviderNameSeamPassport, nil
+	case "visionline":
+		return DeviceProviderDeviceProviderNameVisionline, nil
+	case "assa_abloy_credential_service":
+		return DeviceProviderDeviceProviderNameAssaAbloyCredentialService, nil
+	case "seam_bridge":
+		return DeviceProviderDeviceProviderNameSeamBridge, nil
+	case "tedee":
+		return DeviceProviderDeviceProviderNameTedee, nil
+	case "honeywell_resideo":
+		return DeviceProviderDeviceProviderNameHoneywellResideo, nil
+	case "latch":
+		return DeviceProviderDeviceProviderNameLatch, nil
+	}
+	var t DeviceProviderDeviceProviderName
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceProviderDeviceProviderName) Ptr() *DeviceProviderDeviceProviderName {
+	return &d
+}
+
+type DeviceProviderProviderCategoriesItem string
+
+const (
+	DeviceProviderProviderCategoriesItemStable               DeviceProviderProviderCategoriesItem = "stable"
+	DeviceProviderProviderCategoriesItemConsumerSmartlocks   DeviceProviderProviderCategoriesItem = "consumer_smartlocks"
+	DeviceProviderProviderCategoriesItemThermostats          DeviceProviderProviderCategoriesItem = "thermostats"
+	DeviceProviderProviderCategoriesItemNoiseSensors         DeviceProviderProviderCategoriesItem = "noise_sensors"
+	DeviceProviderProviderCategoriesItemAccessControlSystems DeviceProviderProviderCategoriesItem = "access_control_systems"
+)
+
+func NewDeviceProviderProviderCategoriesItemFromString(s string) (DeviceProviderProviderCategoriesItem, error) {
+	switch s {
+	case "stable":
+		return DeviceProviderProviderCategoriesItemStable, nil
+	case "consumer_smartlocks":
+		return DeviceProviderProviderCategoriesItemConsumerSmartlocks, nil
+	case "thermostats":
+		return DeviceProviderProviderCategoriesItemThermostats, nil
+	case "noise_sensors":
+		return DeviceProviderProviderCategoriesItemNoiseSensors, nil
+	case "access_control_systems":
+		return DeviceProviderProviderCategoriesItemAccessControlSystems, nil
+	}
+	var t DeviceProviderProviderCategoriesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceProviderProviderCategoriesItem) Ptr() *DeviceProviderProviderCategoriesItem {
+	return &d
+}
+
 type DevicesDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
@@ -215,6 +405,8 @@ const (
 	DevicesListRequestExcludeIfItemCanProgramOfflineAccessCodes DevicesListRequestExcludeIfItem = "can_program_offline_access_codes"
 	DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestExcludeIfItem = "can_program_online_access_codes"
 	DevicesListRequestExcludeIfItemCanSimulateRemoval           DevicesListRequestExcludeIfItem = "can_simulate_removal"
+	DevicesListRequestExcludeIfItemCanSimulateConnection        DevicesListRequestExcludeIfItem = "can_simulate_connection"
+	DevicesListRequestExcludeIfItemCanSimulateDisconnection     DevicesListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestExcludeIfItem, error) {
@@ -229,6 +421,10 @@ func NewDevicesListRequestExcludeIfItemFromString(s string) (DevicesListRequestE
 		return DevicesListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return DevicesListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return DevicesListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return DevicesListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t DevicesListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -246,6 +442,8 @@ const (
 	DevicesListRequestIncludeIfItemCanProgramOfflineAccessCodes DevicesListRequestIncludeIfItem = "can_program_offline_access_codes"
 	DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes  DevicesListRequestIncludeIfItem = "can_program_online_access_codes"
 	DevicesListRequestIncludeIfItemCanSimulateRemoval           DevicesListRequestIncludeIfItem = "can_simulate_removal"
+	DevicesListRequestIncludeIfItemCanSimulateConnection        DevicesListRequestIncludeIfItem = "can_simulate_connection"
+	DevicesListRequestIncludeIfItemCanSimulateDisconnection     DevicesListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestIncludeIfItem, error) {
@@ -260,6 +458,10 @@ func NewDevicesListRequestIncludeIfItemFromString(s string) (DevicesListRequestI
 		return DevicesListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return DevicesListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return DevicesListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return DevicesListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t DevicesListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -300,10 +502,9 @@ func (d *DevicesListResponse) String() string {
 }
 
 type DevicesUpdateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewDevicesUpdateRequestCustomMetadataValueFromString(value string) *DevicesUpdateRequestCustomMetadataValue {
@@ -312,10 +513,6 @@ func NewDevicesUpdateRequestCustomMetadataValueFromString(value string) *Devices
 
 func NewDevicesUpdateRequestCustomMetadataValueFromBoolean(value bool) *DevicesUpdateRequestCustomMetadataValue {
 	return &DevicesUpdateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewDevicesUpdateRequestCustomMetadataValueFromStringOptional(value *string) *DevicesUpdateRequestCustomMetadataValue {
-	return &DevicesUpdateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (d *DevicesUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -331,12 +528,6 @@ func (d *DevicesUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) err
 		d.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		d.typeName = "stringOptional"
-		d.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
 }
 
@@ -348,15 +539,12 @@ func (d DevicesUpdateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
 		return json.Marshal(d.String)
 	case "boolean":
 		return json.Marshal(d.Boolean)
-	case "stringOptional":
-		return json.Marshal(d.StringOptional)
 	}
 }
 
 type DevicesUpdateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (d *DevicesUpdateRequestCustomMetadataValue) Accept(visitor DevicesUpdateRequestCustomMetadataValueVisitor) error {
@@ -367,8 +555,6 @@ func (d *DevicesUpdateRequestCustomMetadataValue) Accept(visitor DevicesUpdateRe
 		return visitor.VisitString(d.String)
 	case "boolean":
 		return visitor.VisitBoolean(d.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(d.StringOptional)
 	}
 }
 

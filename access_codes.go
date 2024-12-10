@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type AccessCodesCreateRequest struct {
@@ -70,6 +71,183 @@ type AccessCodesListRequest struct {
 
 type AccessCodesPullBackupAccessCodeRequest struct {
 	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
+}
+
+type AccessCode struct {
+	// Unique identifier for a group of access codes that share the same code.
+	CommonCodeKey *string `json:"common_code_key,omitempty" url:"common_code_key,omitempty"`
+	// Indicates whether the code is set on the device according to a preconfigured schedule.
+	IsScheduledOnDevice *bool `json:"is_scheduled_on_device,omitempty" url:"is_scheduled_on_device,omitempty"`
+	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+	Type AccessCodeType `json:"type,omitempty" url:"type,omitempty"`
+	// Indicates whether the access code is waiting for a code assignment.
+	IsWaitingForCodeAssignment *bool `json:"is_waiting_for_code_assignment,omitempty" url:"is_waiting_for_code_assignment,omitempty"`
+	// Unique identifier for the access code.
+	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
+	// Unique identifier for the device associated with the access code.
+	DeviceId string `json:"device_id" url:"device_id"`
+	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Code used for access. Typically, a numeric or alphanumeric string.
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
+	// Date and time at which the access code was created.
+	CreatedAt time.Time   `json:"created_at" url:"created_at"`
+	Errors    interface{} `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty" url:"warnings,omitempty"`
+	// Indicates whether Seam manages the access code.
+	IsManaged bool `json:"is_managed" url:"is_managed"`
+	// Date and time at which the time-bound access code becomes active.
+	StartsAt *time.Time `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	// Date and time after which the time-bound access code becomes inactive.
+	EndsAt *time.Time `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
+	Status AccessCodeStatus `json:"status,omitempty" url:"status,omitempty"`
+	// Indicates whether a backup access code is available for use if the primary access code is lost or compromised.
+	IsBackupAccessCodeAvailable bool `json:"is_backup_access_code_available" url:"is_backup_access_code_available"`
+	// Indicates whether the access code is a backup code.
+	IsBackup *bool `json:"is_backup,omitempty" url:"is_backup,omitempty"`
+	// Identifier of the pulled backup access code. Used to associate the pulled backup access code with the original access code.
+	PulledBackupAccessCodeId *string `json:"pulled_backup_access_code_id,omitempty" url:"pulled_backup_access_code_id,omitempty"`
+	// Indicates whether changes to the access code from external sources are permitted.
+	IsExternalModificationAllowed bool `json:"is_external_modification_allowed" url:"is_external_modification_allowed"`
+	// Indicates whether the access code can only be used once. If "true," the code becomes invalid after the first use.
+	IsOneTimeUse bool `json:"is_one_time_use" url:"is_one_time_use"`
+	// Indicates whether the access code is intended for use in offline scenarios. If "true," this code can be created on a device without a network connection.
+	IsOfflineAccessCode bool `json:"is_offline_access_code" url:"is_offline_access_code"`
+
+	_rawJSON json.RawMessage
+}
+
+func (a *AccessCode) UnmarshalJSON(data []byte) error {
+	type embed AccessCode
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AccessCode(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a.StartsAt = unmarshaler.StartsAt.TimePtr()
+	a.EndsAt = unmarshaler.EndsAt.TimePtr()
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCode) MarshalJSON() ([]byte, error) {
+	type embed AccessCode
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+		StartsAt  *core.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *core.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: core.NewDateTime(a.CreatedAt),
+		StartsAt:  core.NewOptionalDateTime(a.StartsAt),
+		EndsAt:    core.NewOptionalDateTime(a.EndsAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AccessCode) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
+type AccessCodeStatus string
+
+const (
+	AccessCodeStatusSetting  AccessCodeStatus = "setting"
+	AccessCodeStatusSet      AccessCodeStatus = "set"
+	AccessCodeStatusUnset    AccessCodeStatus = "unset"
+	AccessCodeStatusRemoving AccessCodeStatus = "removing"
+	AccessCodeStatusUnknown  AccessCodeStatus = "unknown"
+)
+
+func NewAccessCodeStatusFromString(s string) (AccessCodeStatus, error) {
+	switch s {
+	case "setting":
+		return AccessCodeStatusSetting, nil
+	case "set":
+		return AccessCodeStatusSet, nil
+	case "unset":
+		return AccessCodeStatusUnset, nil
+	case "removing":
+		return AccessCodeStatusRemoving, nil
+	case "unknown":
+		return AccessCodeStatusUnknown, nil
+	}
+	var t AccessCodeStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodeStatus) Ptr() *AccessCodeStatus {
+	return &a
+}
+
+// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+type AccessCodeType string
+
+const (
+	AccessCodeTypeTimeBound AccessCodeType = "time_bound"
+	AccessCodeTypeOngoing   AccessCodeType = "ongoing"
+)
+
+func NewAccessCodeTypeFromString(s string) (AccessCodeType, error) {
+	switch s {
+	case "time_bound":
+		return AccessCodeTypeTimeBound, nil
+	case "ongoing":
+		return AccessCodeTypeOngoing, nil
+	}
+	var t AccessCodeType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodeType) Ptr() *AccessCodeType {
+	return &a
+}
+
+type MaxTimeRounding string
+
+const (
+	MaxTimeRoundingOneHour MaxTimeRounding = "1hour"
+	MaxTimeRoundingOneDay  MaxTimeRounding = "1day"
+	MaxTimeRoundingOneH    MaxTimeRounding = "1h"
+	MaxTimeRoundingOneD    MaxTimeRounding = "1d"
+)
+
+func NewMaxTimeRoundingFromString(s string) (MaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return MaxTimeRoundingOneHour, nil
+	case "1day":
+		return MaxTimeRoundingOneDay, nil
+	case "1h":
+		return MaxTimeRoundingOneH, nil
+	case "1d":
+		return MaxTimeRoundingOneD, nil
+	}
+	var t MaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (m MaxTimeRounding) Ptr() *MaxTimeRounding {
+	return &m
 }
 
 type AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared string

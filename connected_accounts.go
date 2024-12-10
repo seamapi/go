@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	core "github.com/seamapi/go/core"
+	time "time"
 )
 
 type ConnectedAccountsDeleteRequest struct {
@@ -16,6 +17,151 @@ type ConnectedAccountsDeleteRequest struct {
 type ConnectedAccountsListRequest struct {
 	// Returns devices where the account's custom_metadata contains all of the provided key/value pairs.
 	CustomMetadataHas map[string]*ConnectedAccountsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+}
+
+type ConnectedAccount struct {
+	ConnectedAccountId            *string                                         `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	CreatedAt                     *time.Time                                      `json:"created_at,omitempty" url:"created_at,omitempty"`
+	UserIdentifier                *ConnectedAccountUserIdentifier                 `json:"user_identifier,omitempty" url:"user_identifier,omitempty"`
+	AccountType                   *string                                         `json:"account_type,omitempty" url:"account_type,omitempty"`
+	AccountTypeDisplayName        string                                          `json:"account_type_display_name" url:"account_type_display_name"`
+	Errors                        interface{}                                     `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings                      interface{}                                     `json:"warnings,omitempty" url:"warnings,omitempty"`
+	CustomMetadata                map[string]*ConnectedAccountCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                            `json:"automatically_manage_new_devices" url:"automatically_manage_new_devices"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccount) UnmarshalJSON(data []byte) error {
+	type embed ConnectedAccount
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ConnectedAccount(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccount) MarshalJSON() ([]byte, error) {
+	type embed ConnectedAccount
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewOptionalDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *ConnectedAccount) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountCustomMetadataValue struct {
+	typeName string
+	String   string
+	Boolean  bool
+}
+
+func NewConnectedAccountCustomMetadataValueFromString(value string) *ConnectedAccountCustomMetadataValue {
+	return &ConnectedAccountCustomMetadataValue{typeName: "string", String: value}
+}
+
+func NewConnectedAccountCustomMetadataValueFromBoolean(value bool) *ConnectedAccountCustomMetadataValue {
+	return &ConnectedAccountCustomMetadataValue{typeName: "boolean", Boolean: value}
+}
+
+func (c *ConnectedAccountCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typeName = "string"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typeName = "boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectedAccountCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	switch c.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return json.Marshal(c.String)
+	case "boolean":
+		return json.Marshal(c.Boolean)
+	}
+}
+
+type ConnectedAccountCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+}
+
+func (c *ConnectedAccountCustomMetadataValue) Accept(visitor ConnectedAccountCustomMetadataValueVisitor) error {
+	switch c.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
+	case "string":
+		return visitor.VisitString(c.String)
+	case "boolean":
+		return visitor.VisitBoolean(c.Boolean)
+	}
+}
+
+type ConnectedAccountUserIdentifier struct {
+	Username  *string `json:"username,omitempty" url:"username,omitempty"`
+	ApiUrl    *string `json:"api_url,omitempty" url:"api_url,omitempty"`
+	Email     *string `json:"email,omitempty" url:"email,omitempty"`
+	Phone     *string `json:"phone,omitempty" url:"phone,omitempty"`
+	Exclusive *bool   `json:"exclusive,omitempty" url:"exclusive,omitempty"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountUserIdentifier) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountUserIdentifier
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountUserIdentifier(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountUserIdentifier) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsDeleteResponse struct {
@@ -102,6 +248,64 @@ func (c *ConnectedAccountsGetRequest) Accept(visitor ConnectedAccountsGetRequest
 	case "connectedAccountsGetRequestEmail":
 		return visitor.VisitConnectedAccountsGetRequestEmail(c.ConnectedAccountsGetRequestEmail)
 	}
+}
+
+type ConnectedAccountsGetRequestConnectedAccountId struct {
+	ConnectedAccountId string `json:"connected_account_id" url:"connected_account_id"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestConnectedAccountId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestConnectedAccountId(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestConnectedAccountId) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectedAccountsGetRequestEmail struct {
+	Email string `json:"email" url:"email"`
+
+	_rawJSON json.RawMessage
+}
+
+func (c *ConnectedAccountsGetRequestEmail) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectedAccountsGetRequestEmail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectedAccountsGetRequestEmail(value)
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectedAccountsGetRequestEmail) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectedAccountsGetResponse struct {
@@ -222,10 +426,9 @@ func (c *ConnectedAccountsListResponse) String() string {
 }
 
 type ConnectedAccountsUpdateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	typeName string
+	String   string
+	Boolean  bool
 }
 
 func NewConnectedAccountsUpdateRequestCustomMetadataValueFromString(value string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
@@ -234,10 +437,6 @@ func NewConnectedAccountsUpdateRequestCustomMetadataValueFromString(value string
 
 func NewConnectedAccountsUpdateRequestCustomMetadataValueFromBoolean(value bool) *ConnectedAccountsUpdateRequestCustomMetadataValue {
 	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectedAccountsUpdateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectedAccountsUpdateRequestCustomMetadataValue {
-	return &ConnectedAccountsUpdateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
 }
 
 func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
@@ -253,12 +452,6 @@ func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) UnmarshalJSON(data [
 		c.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
-	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
@@ -270,15 +463,12 @@ func (c ConnectedAccountsUpdateRequestCustomMetadataValue) MarshalJSON() ([]byte
 		return json.Marshal(c.String)
 	case "boolean":
 		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
 }
 
 type ConnectedAccountsUpdateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor ConnectedAccountsUpdateRequestCustomMetadataValueVisitor) error {
@@ -289,8 +479,6 @@ func (c *ConnectedAccountsUpdateRequestCustomMetadataValue) Accept(visitor Conne
 		return visitor.VisitString(c.String)
 	case "boolean":
 		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
 }
 
