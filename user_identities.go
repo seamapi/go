@@ -260,10 +260,7 @@ func (u *UserIdentitiesGrantAccessToDeviceResponse) String() string {
 }
 
 type UserIdentitiesListAccessibleDevicesResponse struct {
-	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
-	// ---
-	// deprecated: use devices.
-	// ---
+	Devices           []*Device `json:"devices,omitempty" url:"devices,omitempty"`
 	AccessibleDevices []*Device `json:"accessible_devices,omitempty" url:"accessible_devices,omitempty"`
 	Ok                bool      `json:"ok" url:"ok"`
 
