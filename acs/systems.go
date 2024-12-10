@@ -17,6 +17,10 @@ type SystemsListRequest struct {
 	ConnectedAccountId *string `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
 }
 
+type SystemsListCompatibleCredentialManagerAcsSystemsRequest struct {
+	AcsSystemId string `json:"acs_system_id" url:"acs_system_id"`
+}
+
 type SystemsGetResponse struct {
 	AcsSystem *seamapigo.AcsSystem `json:"acs_system,omitempty" url:"acs_system,omitempty"`
 	Ok        bool                 `json:"ok" url:"ok"`
@@ -36,6 +40,36 @@ func (s *SystemsGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (s *SystemsGetResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type SystemsListCompatibleCredentialManagerAcsSystemsResponse struct {
+	AcsSystems []*seamapigo.AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
+	Ok         bool                   `json:"ok" url:"ok"`
+
+	_rawJSON json.RawMessage
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SystemsListCompatibleCredentialManagerAcsSystemsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SystemsListCompatibleCredentialManagerAcsSystemsResponse(value)
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) String() string {
 	if len(s._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
 			return value
