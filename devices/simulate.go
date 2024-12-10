@@ -5,17 +5,129 @@ package devices
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
+type SimulateConnectRequest struct {
+	DeviceId string `json:"device_id" url:"-"`
+}
+
+type SimulateDisconnectRequest struct {
+	DeviceId string `json:"device_id" url:"-"`
+}
+
 type SimulateRemoveRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
+	DeviceId string `json:"device_id" url:"-"`
+}
+
+type SimulateConnectResponse struct {
+	Ok bool `json:"ok" url:"ok"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateConnectResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateConnectResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SimulateConnectResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateConnectResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateConnectResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateConnectResponse) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type SimulateDisconnectResponse struct {
+	Ok bool `json:"ok" url:"ok"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateDisconnectResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateDisconnectResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SimulateDisconnectResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimulateDisconnectResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimulateDisconnectResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimulateDisconnectResponse) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SimulateRemoveResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateRemoveResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateRemoveResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateRemoveResponse) UnmarshalJSON(data []byte) error {
@@ -25,17 +137,22 @@ func (s *SimulateRemoveResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*s = SimulateRemoveResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateRemoveResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)

@@ -6,18 +6,37 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type CredentialPoolsListRequest struct {
-	AcsSystemId string `json:"acs_system_id" url:"acs_system_id"`
+	AcsSystemId string `json:"acs_system_id" url:"-"`
 }
 
 type CredentialPoolsListResponse struct {
 	AcsCredentialPools []*seamapigo.AcsCredentialPool `json:"acs_credential_pools,omitempty" url:"acs_credential_pools,omitempty"`
 	Ok                 bool                           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialPoolsListResponse) GetAcsCredentialPools() []*seamapigo.AcsCredentialPool {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredentialPools
+}
+
+func (c *CredentialPoolsListResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialPoolsListResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialPoolsListResponse) UnmarshalJSON(data []byte) error {
@@ -27,17 +46,22 @@ func (c *CredentialPoolsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialPoolsListResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialPoolsListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)

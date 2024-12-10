@@ -5,27 +5,346 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type EventsGetRequest struct {
-	EventId   *string `json:"event_id,omitempty" url:"event_id,omitempty"`
-	EventType *string `json:"event_type,omitempty" url:"event_type,omitempty"`
-	DeviceId  *string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	EventId   *string `json:"event_id,omitempty" url:"-"`
+	EventType *string `json:"event_type,omitempty" url:"-"`
+	DeviceId  *string `json:"device_id,omitempty" url:"-"`
 }
 
 type EventsListRequest struct {
-	Since              *string                         `json:"since,omitempty" url:"since,omitempty"`
-	Between            []*EventsListRequestBetweenItem `json:"between,omitempty" url:"between,omitempty"`
-	DeviceId           *string                         `json:"device_id,omitempty" url:"device_id,omitempty"`
-	DeviceIds          []string                        `json:"device_ids,omitempty" url:"device_ids,omitempty"`
-	AccessCodeId       *string                         `json:"access_code_id,omitempty" url:"access_code_id,omitempty"`
-	AccessCodeIds      []string                        `json:"access_code_ids,omitempty" url:"access_code_ids,omitempty"`
-	EventType          *EventType                      `json:"event_type,omitempty" url:"event_type,omitempty"`
-	EventTypes         []EventType                     `json:"event_types,omitempty" url:"event_types,omitempty"`
-	ConnectedAccountId *string                         `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
-	Limit              *float64                        `json:"limit,omitempty" url:"limit,omitempty"`
+	Since              *string                         `json:"since,omitempty" url:"-"`
+	Between            []*EventsListRequestBetweenItem `json:"between,omitempty" url:"-"`
+	DeviceId           *string                         `json:"device_id,omitempty" url:"-"`
+	DeviceIds          []string                        `json:"device_ids,omitempty" url:"-"`
+	AccessCodeId       *string                         `json:"access_code_id,omitempty" url:"-"`
+	AccessCodeIds      []string                        `json:"access_code_ids,omitempty" url:"-"`
+	EventType          *EventType                      `json:"event_type,omitempty" url:"-"`
+	EventTypes         []EventType                     `json:"event_types,omitempty" url:"-"`
+	ConnectedAccountId *string                         `json:"connected_account_id,omitempty" url:"-"`
+	Limit              *float64                        `json:"limit,omitempty" url:"-"`
+}
+
+type Event struct {
+	EventId                string    `json:"event_id" url:"event_id"`
+	DeviceId               *string   `json:"device_id,omitempty" url:"device_id,omitempty"`
+	ActionAttemptId        *string   `json:"action_attempt_id,omitempty" url:"action_attempt_id,omitempty"`
+	AcsCredentialId        *string   `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
+	AcsUserId              *string   `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsSystemId            *string   `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	ClientSessionId        *string   `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
+	EnrollmentAutomationId *string   `json:"enrollment_automation_id,omitempty" url:"enrollment_automation_id,omitempty"`
+	EventType              string    `json:"event_type" url:"event_type"`
+	WorkspaceId            string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt              time.Time `json:"created_at" url:"created_at"`
+	OccurredAt             time.Time `json:"occurred_at" url:"occurred_at"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *Event) GetEventId() string {
+	if e == nil {
+		return ""
+	}
+	return e.EventId
+}
+
+func (e *Event) GetDeviceId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.DeviceId
+}
+
+func (e *Event) GetActionAttemptId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.ActionAttemptId
+}
+
+func (e *Event) GetAcsCredentialId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.AcsCredentialId
+}
+
+func (e *Event) GetAcsUserId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.AcsUserId
+}
+
+func (e *Event) GetAcsSystemId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.AcsSystemId
+}
+
+func (e *Event) GetClientSessionId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.ClientSessionId
+}
+
+func (e *Event) GetEnrollmentAutomationId() *string {
+	if e == nil {
+		return nil
+	}
+	return e.EnrollmentAutomationId
+}
+
+func (e *Event) GetEventType() string {
+	if e == nil {
+		return ""
+	}
+	return e.EventType
+}
+
+func (e *Event) GetWorkspaceId() string {
+	if e == nil {
+		return ""
+	}
+	return e.WorkspaceId
+}
+
+func (e *Event) GetCreatedAt() time.Time {
+	if e == nil {
+		return time.Time{}
+	}
+	return e.CreatedAt
+}
+
+func (e *Event) GetOccurredAt() time.Time {
+	if e == nil {
+		return time.Time{}
+	}
+	return e.OccurredAt
+}
+
+func (e *Event) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *Event) UnmarshalJSON(data []byte) error {
+	type embed Event
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at"`
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = Event(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+	e.OccurredAt = unmarshaler.OccurredAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *Event) MarshalJSON() ([]byte, error) {
+	type embed Event
+	var marshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at"`
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed:      embed(*e),
+		CreatedAt:  internal.NewDateTime(e.CreatedAt),
+		OccurredAt: internal.NewDateTime(e.OccurredAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *Event) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EventType string
+
+const (
+	EventTypeDeviceConnected                             EventType = "device.connected"
+	EventTypeDeviceUnmanagedConnected                    EventType = "device.unmanaged.connected"
+	EventTypeDeviceDisconnected                          EventType = "device.disconnected"
+	EventTypeDeviceUnmanagedDisconnected                 EventType = "device.unmanaged.disconnected"
+	EventTypeDeviceConvertedToUnmanaged                  EventType = "device.converted_to_unmanaged"
+	EventTypeDeviceUnmanagedConvertedToManaged           EventType = "device.unmanaged.converted_to_managed"
+	EventTypeDeviceRemoved                               EventType = "device.removed"
+	EventTypeDeviceTampered                              EventType = "device.tampered"
+	EventTypeDeviceLowBattery                            EventType = "device.low_battery"
+	EventTypeDeviceBatteryStatusChanged                  EventType = "device.battery_status_changed"
+	EventTypeDeviceThirdPartyIntegrationDetected         EventType = "device.third_party_integration_detected"
+	EventTypeDeviceThirdPartyIntegrationNoLongerDetected EventType = "device.third_party_integration_no_longer_detected"
+	EventTypeDeviceSaltoPrivacyModeActivated             EventType = "device.salto.privacy_mode_activated"
+	EventTypeDeviceSaltoPrivacyModeDeactivated           EventType = "device.salto.privacy_mode_deactivated"
+	EventTypeDeviceConnectionBecameFlaky                 EventType = "device.connection_became_flaky"
+	EventTypeDeviceConnectionStabilized                  EventType = "device.connection_stabilized"
+	EventTypeDeviceErrorSubscriptionRequired             EventType = "device.error.subscription_required"
+	EventTypeDeviceErrorSubscriptionRequiredResolved     EventType = "device.error.subscription_required.resolved"
+	EventTypeAccessCodeCreated                           EventType = "access_code.created"
+	EventTypeAccessCodeChanged                           EventType = "access_code.changed"
+	EventTypeAccessCodeScheduledOnDevice                 EventType = "access_code.scheduled_on_device"
+	EventTypeAccessCodeSetOnDevice                       EventType = "access_code.set_on_device"
+	EventTypeAccessCodeDeleted                           EventType = "access_code.deleted"
+	EventTypeAccessCodeRemovedFromDevice                 EventType = "access_code.removed_from_device"
+	EventTypeAccessCodeFailedToSetOnDevice               EventType = "access_code.failed_to_set_on_device"
+	EventTypeAccessCodeDelayInSettingOnDevice            EventType = "access_code.delay_in_setting_on_device"
+	EventTypeAccessCodeFailedToRemoveFromDevice          EventType = "access_code.failed_to_remove_from_device"
+	EventTypeAccessCodeDelayInRemovingFromDevice         EventType = "access_code.delay_in_removing_from_device"
+	EventTypeAccessCodeDeletedExternalToSeam             EventType = "access_code.deleted_external_to_seam"
+	EventTypeAccessCodeModifiedExternalToSeam            EventType = "access_code.modified_external_to_seam"
+	EventTypeAccessCodeUnmanagedConvertedToManaged       EventType = "access_code.unmanaged.converted_to_managed"
+	EventTypeAccessCodeUnmanagedFailedToConvertToManaged EventType = "access_code.unmanaged.failed_to_convert_to_managed"
+	EventTypeAccessCodeUnmanagedCreated                  EventType = "access_code.unmanaged.created"
+	EventTypeAccessCodeUnmanagedRemoved                  EventType = "access_code.unmanaged.removed"
+	EventTypeLockLocked                                  EventType = "lock.locked"
+	EventTypeLockUnlocked                                EventType = "lock.unlocked"
+	EventTypeConnectedAccountConnected                   EventType = "connected_account.connected"
+	EventTypeConnectedAccountSuccessfulLogin             EventType = "connected_account.successful_login"
+	EventTypeConnectedAccountCreated                     EventType = "connected_account.created"
+	EventTypeConnectedAccountDeleted                     EventType = "connected_account.deleted"
+	EventTypeConnectedAccountDisconnected                EventType = "connected_account.disconnected"
+	EventTypeConnectedAccountCompletedFirstSync          EventType = "connected_account.completed_first_sync"
+	EventTypeNoiseSensorNoiseThresholdTriggered          EventType = "noise_sensor.noise_threshold_triggered"
+	EventTypeAccessCodeBackupAccessCodePulled            EventType = "access_code.backup_access_code_pulled"
+	EventTypeEnrollmentAutomationDeleted                 EventType = "enrollment_automation.deleted"
+	EventTypeAcsUserDeleted                              EventType = "acs_user.deleted"
+	EventTypeAcsCredentialDeleted                        EventType = "acs_credential.deleted"
+	EventTypePhoneDeactivated                            EventType = "phone.deactivated"
+	EventTypeClientSessionDeleted                        EventType = "client_session.deleted"
+)
+
+func NewEventTypeFromString(s string) (EventType, error) {
+	switch s {
+	case "device.connected":
+		return EventTypeDeviceConnected, nil
+	case "device.unmanaged.connected":
+		return EventTypeDeviceUnmanagedConnected, nil
+	case "device.disconnected":
+		return EventTypeDeviceDisconnected, nil
+	case "device.unmanaged.disconnected":
+		return EventTypeDeviceUnmanagedDisconnected, nil
+	case "device.converted_to_unmanaged":
+		return EventTypeDeviceConvertedToUnmanaged, nil
+	case "device.unmanaged.converted_to_managed":
+		return EventTypeDeviceUnmanagedConvertedToManaged, nil
+	case "device.removed":
+		return EventTypeDeviceRemoved, nil
+	case "device.tampered":
+		return EventTypeDeviceTampered, nil
+	case "device.low_battery":
+		return EventTypeDeviceLowBattery, nil
+	case "device.battery_status_changed":
+		return EventTypeDeviceBatteryStatusChanged, nil
+	case "device.third_party_integration_detected":
+		return EventTypeDeviceThirdPartyIntegrationDetected, nil
+	case "device.third_party_integration_no_longer_detected":
+		return EventTypeDeviceThirdPartyIntegrationNoLongerDetected, nil
+	case "device.salto.privacy_mode_activated":
+		return EventTypeDeviceSaltoPrivacyModeActivated, nil
+	case "device.salto.privacy_mode_deactivated":
+		return EventTypeDeviceSaltoPrivacyModeDeactivated, nil
+	case "device.connection_became_flaky":
+		return EventTypeDeviceConnectionBecameFlaky, nil
+	case "device.connection_stabilized":
+		return EventTypeDeviceConnectionStabilized, nil
+	case "device.error.subscription_required":
+		return EventTypeDeviceErrorSubscriptionRequired, nil
+	case "device.error.subscription_required.resolved":
+		return EventTypeDeviceErrorSubscriptionRequiredResolved, nil
+	case "access_code.created":
+		return EventTypeAccessCodeCreated, nil
+	case "access_code.changed":
+		return EventTypeAccessCodeChanged, nil
+	case "access_code.scheduled_on_device":
+		return EventTypeAccessCodeScheduledOnDevice, nil
+	case "access_code.set_on_device":
+		return EventTypeAccessCodeSetOnDevice, nil
+	case "access_code.deleted":
+		return EventTypeAccessCodeDeleted, nil
+	case "access_code.removed_from_device":
+		return EventTypeAccessCodeRemovedFromDevice, nil
+	case "access_code.failed_to_set_on_device":
+		return EventTypeAccessCodeFailedToSetOnDevice, nil
+	case "access_code.delay_in_setting_on_device":
+		return EventTypeAccessCodeDelayInSettingOnDevice, nil
+	case "access_code.failed_to_remove_from_device":
+		return EventTypeAccessCodeFailedToRemoveFromDevice, nil
+	case "access_code.delay_in_removing_from_device":
+		return EventTypeAccessCodeDelayInRemovingFromDevice, nil
+	case "access_code.deleted_external_to_seam":
+		return EventTypeAccessCodeDeletedExternalToSeam, nil
+	case "access_code.modified_external_to_seam":
+		return EventTypeAccessCodeModifiedExternalToSeam, nil
+	case "access_code.unmanaged.converted_to_managed":
+		return EventTypeAccessCodeUnmanagedConvertedToManaged, nil
+	case "access_code.unmanaged.failed_to_convert_to_managed":
+		return EventTypeAccessCodeUnmanagedFailedToConvertToManaged, nil
+	case "access_code.unmanaged.created":
+		return EventTypeAccessCodeUnmanagedCreated, nil
+	case "access_code.unmanaged.removed":
+		return EventTypeAccessCodeUnmanagedRemoved, nil
+	case "lock.locked":
+		return EventTypeLockLocked, nil
+	case "lock.unlocked":
+		return EventTypeLockUnlocked, nil
+	case "connected_account.connected":
+		return EventTypeConnectedAccountConnected, nil
+	case "connected_account.successful_login":
+		return EventTypeConnectedAccountSuccessfulLogin, nil
+	case "connected_account.created":
+		return EventTypeConnectedAccountCreated, nil
+	case "connected_account.deleted":
+		return EventTypeConnectedAccountDeleted, nil
+	case "connected_account.disconnected":
+		return EventTypeConnectedAccountDisconnected, nil
+	case "connected_account.completed_first_sync":
+		return EventTypeConnectedAccountCompletedFirstSync, nil
+	case "noise_sensor.noise_threshold_triggered":
+		return EventTypeNoiseSensorNoiseThresholdTriggered, nil
+	case "access_code.backup_access_code_pulled":
+		return EventTypeAccessCodeBackupAccessCodePulled, nil
+	case "enrollment_automation.deleted":
+		return EventTypeEnrollmentAutomationDeleted, nil
+	case "acs_user.deleted":
+		return EventTypeAcsUserDeleted, nil
+	case "acs_credential.deleted":
+		return EventTypeAcsCredentialDeleted, nil
+	case "phone.deactivated":
+		return EventTypePhoneDeactivated, nil
+	case "client_session.deleted":
+		return EventTypeClientSessionDeleted, nil
+	}
+	var t EventType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventType) Ptr() *EventType {
+	return &e
 }
 
 type EventsGetResponse struct {
@@ -33,7 +352,33 @@ type EventsGetResponse struct {
 	Message *string `json:"message,omitempty" url:"message,omitempty"`
 	Ok      bool    `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EventsGetResponse) GetEvent() *Event {
+	if e == nil {
+		return nil
+	}
+	return e.Event
+}
+
+func (e *EventsGetResponse) GetMessage() *string {
+	if e == nil {
+		return nil
+	}
+	return e.Message
+}
+
+func (e *EventsGetResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EventsGetResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EventsGetResponse) UnmarshalJSON(data []byte) error {
@@ -43,46 +388,66 @@ func (e *EventsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EventsGetResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EventsGetResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
 }
 
 type EventsListRequestBetweenItem struct {
-	typeName string
 	String   string
 	DateTime time.Time
+
+	typ string
 }
 
 func NewEventsListRequestBetweenItemFromString(value string) *EventsListRequestBetweenItem {
-	return &EventsListRequestBetweenItem{typeName: "string", String: value}
+	return &EventsListRequestBetweenItem{typ: "String", String: value}
 }
 
 func NewEventsListRequestBetweenItemFromDateTime(value time.Time) *EventsListRequestBetweenItem {
-	return &EventsListRequestBetweenItem{typeName: "dateTime", DateTime: value}
+	return &EventsListRequestBetweenItem{typ: "DateTime", DateTime: value}
+}
+
+func (e *EventsListRequestBetweenItem) GetString() string {
+	if e == nil {
+		return ""
+	}
+	return e.String
+}
+
+func (e *EventsListRequestBetweenItem) GetDateTime() time.Time {
+	if e == nil {
+		return time.Time{}
+	}
+	return e.DateTime
 }
 
 func (e *EventsListRequestBetweenItem) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
+		e.typ = "String"
 		e.String = valueString
 		return nil
 	}
-	var valueDateTime *core.DateTime
+	var valueDateTime *internal.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		e.typeName = "dateTime"
+		e.typ = "DateTime"
 		e.DateTime = valueDateTime.Time()
 		return nil
 	}
@@ -90,14 +455,13 @@ func (e *EventsListRequestBetweenItem) UnmarshalJSON(data []byte) error {
 }
 
 func (e EventsListRequestBetweenItem) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.typ == "String" || e.String != "" {
 		return json.Marshal(e.String)
-	case "dateTime":
-		return json.Marshal(core.NewDateTime(e.DateTime))
 	}
+	if e.typ == "DateTime" || !e.DateTime.IsZero() {
+		return json.Marshal(internal.NewDateTime(e.DateTime))
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventsListRequestBetweenItemVisitor interface {
@@ -106,21 +470,39 @@ type EventsListRequestBetweenItemVisitor interface {
 }
 
 func (e *EventsListRequestBetweenItem) Accept(visitor EventsListRequestBetweenItemVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.typ == "String" || e.String != "" {
 		return visitor.VisitString(e.String)
-	case "dateTime":
+	}
+	if e.typ == "DateTime" || !e.DateTime.IsZero() {
 		return visitor.VisitDateTime(e.DateTime)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventsListResponse struct {
 	Events []*Event `json:"events,omitempty" url:"events,omitempty"`
 	Ok     bool     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EventsListResponse) GetEvents() []*Event {
+	if e == nil {
+		return nil
+	}
+	return e.Events
+}
+
+func (e *EventsListResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EventsListResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EventsListResponse) UnmarshalJSON(data []byte) error {
@@ -130,17 +512,22 @@ func (e *EventsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EventsListResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EventsListResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)

@@ -5,60 +5,193 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
+	time "time"
 )
 
 type UserIdentitiesAddAcsUserRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
-	AcsUserId      string `json:"acs_user_id" url:"acs_user_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
+	AcsUserId      string `json:"acs_user_id" url:"-"`
 }
 
 type UserIdentitiesCreateRequest struct {
-	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
-	EmailAddress    *string `json:"email_address,omitempty" url:"email_address,omitempty"`
-	PhoneNumber     *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	FullName        *string `json:"full_name,omitempty" url:"full_name,omitempty"`
+	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"-"`
+	EmailAddress    *string `json:"email_address,omitempty" url:"-"`
+	PhoneNumber     *string `json:"phone_number,omitempty" url:"-"`
+	FullName        *string `json:"full_name,omitempty" url:"-"`
 }
 
 type UserIdentitiesDeleteRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
 }
 
 type UserIdentitiesGrantAccessToDeviceRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
-	DeviceId       string `json:"device_id" url:"device_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
+	DeviceId       string `json:"device_id" url:"-"`
 }
 
 type UserIdentitiesListRequest struct {
-	CredentialManagerAcsSystemId *string `json:"credential_manager_acs_system_id,omitempty" url:"credential_manager_acs_system_id,omitempty"`
+	CredentialManagerAcsSystemId *string `json:"credential_manager_acs_system_id,omitempty" url:"-"`
 }
 
 type UserIdentitiesListAccessibleDevicesRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
 }
 
 type UserIdentitiesListAcsSystemsRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
 }
 
 type UserIdentitiesListAcsUsersRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
 }
 
 type UserIdentitiesRemoveAcsUserRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
-	AcsUserId      string `json:"acs_user_id" url:"acs_user_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
+	AcsUserId      string `json:"acs_user_id" url:"-"`
 }
 
 type UserIdentitiesRevokeAccessToDeviceRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
-	DeviceId       string `json:"device_id" url:"device_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
+	DeviceId       string `json:"device_id" url:"-"`
+}
+
+type UserIdentity struct {
+	UserIdentityId  string    `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityKey *string   `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
+	EmailAddress    *string   `json:"email_address,omitempty" url:"email_address,omitempty"`
+	PhoneNumber     *string   `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	DisplayName     string    `json:"display_name" url:"display_name"`
+	FullName        *string   `json:"full_name,omitempty" url:"full_name,omitempty"`
+	CreatedAt       time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId     string    `json:"workspace_id" url:"workspace_id"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentity) GetUserIdentityId() string {
+	if u == nil {
+		return ""
+	}
+	return u.UserIdentityId
+}
+
+func (u *UserIdentity) GetUserIdentityKey() *string {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentityKey
+}
+
+func (u *UserIdentity) GetEmailAddress() *string {
+	if u == nil {
+		return nil
+	}
+	return u.EmailAddress
+}
+
+func (u *UserIdentity) GetPhoneNumber() *string {
+	if u == nil {
+		return nil
+	}
+	return u.PhoneNumber
+}
+
+func (u *UserIdentity) GetDisplayName() string {
+	if u == nil {
+		return ""
+	}
+	return u.DisplayName
+}
+
+func (u *UserIdentity) GetFullName() *string {
+	if u == nil {
+		return nil
+	}
+	return u.FullName
+}
+
+func (u *UserIdentity) GetCreatedAt() time.Time {
+	if u == nil {
+		return time.Time{}
+	}
+	return u.CreatedAt
+}
+
+func (u *UserIdentity) GetWorkspaceId() string {
+	if u == nil {
+		return ""
+	}
+	return u.WorkspaceId
+}
+
+func (u *UserIdentity) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
+}
+
+func (u *UserIdentity) UnmarshalJSON(data []byte) error {
+	type embed UserIdentity
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed: embed(*u),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*u = UserIdentity(unmarshaler.embed)
+	u.CreatedAt = unmarshaler.CreatedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentity) MarshalJSON() ([]byte, error) {
+	type embed UserIdentity
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*u),
+		CreatedAt: internal.NewDateTime(u.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (u *UserIdentity) String() string {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesAddAcsUserResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesAddAcsUserResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesAddAcsUserResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesAddAcsUserResponse) UnmarshalJSON(data []byte) error {
@@ -68,17 +201,22 @@ func (u *UserIdentitiesAddAcsUserResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesAddAcsUserResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesAddAcsUserResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -88,7 +226,26 @@ type UserIdentitiesCreateResponse struct {
 	UserIdentity *UserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
 	Ok           bool          `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesCreateResponse) GetUserIdentity() *UserIdentity {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentity
+}
+
+func (u *UserIdentitiesCreateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesCreateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesCreateResponse) UnmarshalJSON(data []byte) error {
@@ -98,17 +255,22 @@ func (u *UserIdentitiesCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesCreateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesCreateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -117,7 +279,19 @@ func (u *UserIdentitiesCreateResponse) String() string {
 type UserIdentitiesDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesDeleteResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -127,46 +301,66 @@ func (u *UserIdentitiesDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesDeleteResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesDeleteResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesGetRequest struct {
-	typeName                                string
 	UserIdentitiesGetRequestUserIdentityId  *UserIdentitiesGetRequestUserIdentityId
 	UserIdentitiesGetRequestUserIdentityKey *UserIdentitiesGetRequestUserIdentityKey
+
+	typ string
 }
 
 func NewUserIdentitiesGetRequestFromUserIdentitiesGetRequestUserIdentityId(value *UserIdentitiesGetRequestUserIdentityId) *UserIdentitiesGetRequest {
-	return &UserIdentitiesGetRequest{typeName: "userIdentitiesGetRequestUserIdentityId", UserIdentitiesGetRequestUserIdentityId: value}
+	return &UserIdentitiesGetRequest{typ: "UserIdentitiesGetRequestUserIdentityId", UserIdentitiesGetRequestUserIdentityId: value}
 }
 
 func NewUserIdentitiesGetRequestFromUserIdentitiesGetRequestUserIdentityKey(value *UserIdentitiesGetRequestUserIdentityKey) *UserIdentitiesGetRequest {
-	return &UserIdentitiesGetRequest{typeName: "userIdentitiesGetRequestUserIdentityKey", UserIdentitiesGetRequestUserIdentityKey: value}
+	return &UserIdentitiesGetRequest{typ: "UserIdentitiesGetRequestUserIdentityKey", UserIdentitiesGetRequestUserIdentityKey: value}
+}
+
+func (u *UserIdentitiesGetRequest) GetUserIdentitiesGetRequestUserIdentityId() *UserIdentitiesGetRequestUserIdentityId {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentitiesGetRequestUserIdentityId
+}
+
+func (u *UserIdentitiesGetRequest) GetUserIdentitiesGetRequestUserIdentityKey() *UserIdentitiesGetRequestUserIdentityKey {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentitiesGetRequestUserIdentityKey
 }
 
 func (u *UserIdentitiesGetRequest) UnmarshalJSON(data []byte) error {
 	valueUserIdentitiesGetRequestUserIdentityId := new(UserIdentitiesGetRequestUserIdentityId)
 	if err := json.Unmarshal(data, &valueUserIdentitiesGetRequestUserIdentityId); err == nil {
-		u.typeName = "userIdentitiesGetRequestUserIdentityId"
+		u.typ = "UserIdentitiesGetRequestUserIdentityId"
 		u.UserIdentitiesGetRequestUserIdentityId = valueUserIdentitiesGetRequestUserIdentityId
 		return nil
 	}
 	valueUserIdentitiesGetRequestUserIdentityKey := new(UserIdentitiesGetRequestUserIdentityKey)
 	if err := json.Unmarshal(data, &valueUserIdentitiesGetRequestUserIdentityKey); err == nil {
-		u.typeName = "userIdentitiesGetRequestUserIdentityKey"
+		u.typ = "UserIdentitiesGetRequestUserIdentityKey"
 		u.UserIdentitiesGetRequestUserIdentityKey = valueUserIdentitiesGetRequestUserIdentityKey
 		return nil
 	}
@@ -174,14 +368,13 @@ func (u *UserIdentitiesGetRequest) UnmarshalJSON(data []byte) error {
 }
 
 func (u UserIdentitiesGetRequest) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "userIdentitiesGetRequestUserIdentityId":
+	if u.typ == "UserIdentitiesGetRequestUserIdentityId" || u.UserIdentitiesGetRequestUserIdentityId != nil {
 		return json.Marshal(u.UserIdentitiesGetRequestUserIdentityId)
-	case "userIdentitiesGetRequestUserIdentityKey":
+	}
+	if u.typ == "UserIdentitiesGetRequestUserIdentityKey" || u.UserIdentitiesGetRequestUserIdentityKey != nil {
 		return json.Marshal(u.UserIdentitiesGetRequestUserIdentityKey)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", u)
 }
 
 type UserIdentitiesGetRequestVisitor interface {
@@ -190,21 +383,131 @@ type UserIdentitiesGetRequestVisitor interface {
 }
 
 func (u *UserIdentitiesGetRequest) Accept(visitor UserIdentitiesGetRequestVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "userIdentitiesGetRequestUserIdentityId":
+	if u.typ == "UserIdentitiesGetRequestUserIdentityId" || u.UserIdentitiesGetRequestUserIdentityId != nil {
 		return visitor.VisitUserIdentitiesGetRequestUserIdentityId(u.UserIdentitiesGetRequestUserIdentityId)
-	case "userIdentitiesGetRequestUserIdentityKey":
+	}
+	if u.typ == "UserIdentitiesGetRequestUserIdentityKey" || u.UserIdentitiesGetRequestUserIdentityKey != nil {
 		return visitor.VisitUserIdentitiesGetRequestUserIdentityKey(u.UserIdentitiesGetRequestUserIdentityKey)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", u)
+}
+
+type UserIdentitiesGetRequestUserIdentityId struct {
+	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) GetUserIdentityId() string {
+	if u == nil {
+		return ""
+	}
+	return u.UserIdentityId
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityId
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityId(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityId) String() string {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserIdentitiesGetRequestUserIdentityKey struct {
+	UserIdentityKey string `json:"user_identity_key" url:"user_identity_key"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) GetUserIdentityKey() string {
+	if u == nil {
+		return ""
+	}
+	return u.UserIdentityKey
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserIdentitiesGetRequestUserIdentityKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserIdentitiesGetRequestUserIdentityKey(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserIdentitiesGetRequestUserIdentityKey) String() string {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesGetResponse struct {
 	UserIdentity *UserIdentity `json:"user_identity,omitempty" url:"user_identity,omitempty"`
 	Ok           bool          `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesGetResponse) GetUserIdentity() *UserIdentity {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentity
+}
+
+func (u *UserIdentitiesGetResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesGetResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesGetResponse) UnmarshalJSON(data []byte) error {
@@ -214,17 +517,22 @@ func (u *UserIdentitiesGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesGetResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesGetResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -233,7 +541,19 @@ func (u *UserIdentitiesGetResponse) String() string {
 type UserIdentitiesGrantAccessToDeviceResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesGrantAccessToDeviceResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesGrantAccessToDeviceResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesGrantAccessToDeviceResponse) UnmarshalJSON(data []byte) error {
@@ -243,31 +563,59 @@ func (u *UserIdentitiesGrantAccessToDeviceResponse) UnmarshalJSON(data []byte) e
 		return err
 	}
 	*u = UserIdentitiesGrantAccessToDeviceResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesGrantAccessToDeviceResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesListAccessibleDevicesResponse struct {
-	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
-	// ---
-	// deprecated: use devices.
-	// ---
+	Devices           []*Device `json:"devices,omitempty" url:"devices,omitempty"`
 	AccessibleDevices []*Device `json:"accessible_devices,omitempty" url:"accessible_devices,omitempty"`
 	Ok                bool      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesListAccessibleDevicesResponse) GetDevices() []*Device {
+	if u == nil {
+		return nil
+	}
+	return u.Devices
+}
+
+func (u *UserIdentitiesListAccessibleDevicesResponse) GetAccessibleDevices() []*Device {
+	if u == nil {
+		return nil
+	}
+	return u.AccessibleDevices
+}
+
+func (u *UserIdentitiesListAccessibleDevicesResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesListAccessibleDevicesResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesListAccessibleDevicesResponse) UnmarshalJSON(data []byte) error {
@@ -277,17 +625,22 @@ func (u *UserIdentitiesListAccessibleDevicesResponse) UnmarshalJSON(data []byte)
 		return err
 	}
 	*u = UserIdentitiesListAccessibleDevicesResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesListAccessibleDevicesResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -297,7 +650,26 @@ type UserIdentitiesListAcsSystemsResponse struct {
 	AcsSystems []*AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
 	Ok         bool         `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesListAcsSystemsResponse) GetAcsSystems() []*AcsSystem {
+	if u == nil {
+		return nil
+	}
+	return u.AcsSystems
+}
+
+func (u *UserIdentitiesListAcsSystemsResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesListAcsSystemsResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesListAcsSystemsResponse) UnmarshalJSON(data []byte) error {
@@ -307,17 +679,22 @@ func (u *UserIdentitiesListAcsSystemsResponse) UnmarshalJSON(data []byte) error 
 		return err
 	}
 	*u = UserIdentitiesListAcsSystemsResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesListAcsSystemsResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -327,7 +704,26 @@ type UserIdentitiesListAcsUsersResponse struct {
 	AcsUsers []*AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
 	Ok       bool       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesListAcsUsersResponse) GetAcsUsers() []*AcsUser {
+	if u == nil {
+		return nil
+	}
+	return u.AcsUsers
+}
+
+func (u *UserIdentitiesListAcsUsersResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesListAcsUsersResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesListAcsUsersResponse) UnmarshalJSON(data []byte) error {
@@ -337,17 +733,22 @@ func (u *UserIdentitiesListAcsUsersResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesListAcsUsersResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesListAcsUsersResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -357,7 +758,26 @@ type UserIdentitiesListResponse struct {
 	UserIdentities []*UserIdentity `json:"user_identities,omitempty" url:"user_identities,omitempty"`
 	Ok             bool            `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesListResponse) GetUserIdentities() []*UserIdentity {
+	if u == nil {
+		return nil
+	}
+	return u.UserIdentities
+}
+
+func (u *UserIdentitiesListResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesListResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesListResponse) UnmarshalJSON(data []byte) error {
@@ -367,17 +787,22 @@ func (u *UserIdentitiesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesListResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesListResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -386,7 +811,19 @@ func (u *UserIdentitiesListResponse) String() string {
 type UserIdentitiesRemoveAcsUserResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesRemoveAcsUserResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesRemoveAcsUserResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesRemoveAcsUserResponse) UnmarshalJSON(data []byte) error {
@@ -396,17 +833,22 @@ func (u *UserIdentitiesRemoveAcsUserResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesRemoveAcsUserResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesRemoveAcsUserResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -415,7 +857,19 @@ func (u *UserIdentitiesRemoveAcsUserResponse) String() string {
 type UserIdentitiesRevokeAccessToDeviceResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesRevokeAccessToDeviceResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesRevokeAccessToDeviceResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesRevokeAccessToDeviceResponse) UnmarshalJSON(data []byte) error {
@@ -425,17 +879,22 @@ func (u *UserIdentitiesRevokeAccessToDeviceResponse) UnmarshalJSON(data []byte) 
 		return err
 	}
 	*u = UserIdentitiesRevokeAccessToDeviceResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesRevokeAccessToDeviceResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -444,7 +903,19 @@ func (u *UserIdentitiesRevokeAccessToDeviceResponse) String() string {
 type UserIdentitiesUpdateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserIdentitiesUpdateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UserIdentitiesUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UserIdentitiesUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -454,26 +925,31 @@ func (u *UserIdentitiesUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UserIdentitiesUpdateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UserIdentitiesUpdateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UserIdentitiesUpdateRequest struct {
-	UserIdentityId  string  `json:"user_identity_id" url:"user_identity_id"`
-	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"user_identity_key,omitempty"`
-	EmailAddress    *string `json:"email_address,omitempty" url:"email_address,omitempty"`
-	PhoneNumber     *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	FullName        *string `json:"full_name,omitempty" url:"full_name,omitempty"`
+	UserIdentityId  string  `json:"user_identity_id" url:"-"`
+	UserIdentityKey *string `json:"user_identity_key,omitempty" url:"-"`
+	EmailAddress    *string `json:"email_address,omitempty" url:"-"`
+	PhoneNumber     *string `json:"phone_number,omitempty" url:"-"`
+	FullName        *string `json:"full_name,omitempty" url:"-"`
 }

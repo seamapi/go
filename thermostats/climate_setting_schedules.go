@@ -6,37 +6,37 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type ClimateSettingSchedulesCreateRequest struct {
-	ScheduleType              *string                                              `json:"schedule_type,omitempty" url:"schedule_type,omitempty"`
-	DeviceId                  string                                               `json:"device_id" url:"device_id"`
-	Name                      *string                                              `json:"name,omitempty" url:"name,omitempty"`
-	ScheduleStartsAt          string                                               `json:"schedule_starts_at" url:"schedule_starts_at"`
-	ScheduleEndsAt            string                                               `json:"schedule_ends_at" url:"schedule_ends_at"`
-	AutomaticHeatingEnabled   *bool                                                `json:"automatic_heating_enabled,omitempty" url:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool                                                `json:"automatic_cooling_enabled,omitempty" url:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *ClimateSettingSchedulesCreateRequestHvacModeSetting `json:"hvac_mode_setting,omitempty" url:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64                                             `json:"cooling_set_point_celsius,omitempty" url:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64                                             `json:"heating_set_point_celsius,omitempty" url:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64                                             `json:"cooling_set_point_fahrenheit,omitempty" url:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64                                             `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool                                                `json:"manual_override_allowed,omitempty" url:"manual_override_allowed,omitempty"`
+	ScheduleType              *string                                              `json:"schedule_type,omitempty" url:"-"`
+	DeviceId                  string                                               `json:"device_id" url:"-"`
+	Name                      *string                                              `json:"name,omitempty" url:"-"`
+	ScheduleStartsAt          string                                               `json:"schedule_starts_at" url:"-"`
+	ScheduleEndsAt            string                                               `json:"schedule_ends_at" url:"-"`
+	AutomaticHeatingEnabled   *bool                                                `json:"automatic_heating_enabled,omitempty" url:"-"`
+	AutomaticCoolingEnabled   *bool                                                `json:"automatic_cooling_enabled,omitempty" url:"-"`
+	HvacModeSetting           *ClimateSettingSchedulesCreateRequestHvacModeSetting `json:"hvac_mode_setting,omitempty" url:"-"`
+	CoolingSetPointCelsius    *float64                                             `json:"cooling_set_point_celsius,omitempty" url:"-"`
+	HeatingSetPointCelsius    *float64                                             `json:"heating_set_point_celsius,omitempty" url:"-"`
+	CoolingSetPointFahrenheit *float64                                             `json:"cooling_set_point_fahrenheit,omitempty" url:"-"`
+	HeatingSetPointFahrenheit *float64                                             `json:"heating_set_point_fahrenheit,omitempty" url:"-"`
+	ManualOverrideAllowed     *bool                                                `json:"manual_override_allowed,omitempty" url:"-"`
 }
 
 type ClimateSettingSchedulesDeleteRequest struct {
-	ClimateSettingScheduleId string `json:"climate_setting_schedule_id" url:"climate_setting_schedule_id"`
+	ClimateSettingScheduleId string `json:"climate_setting_schedule_id" url:"-"`
 }
 
 type ClimateSettingSchedulesGetRequest struct {
-	ClimateSettingScheduleId *string `json:"climate_setting_schedule_id,omitempty" url:"climate_setting_schedule_id,omitempty"`
-	DeviceId                 *string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	ClimateSettingScheduleId *string `json:"climate_setting_schedule_id,omitempty" url:"-"`
+	DeviceId                 *string `json:"device_id,omitempty" url:"-"`
 }
 
 type ClimateSettingSchedulesListRequest struct {
-	DeviceId          string  `json:"device_id" url:"device_id"`
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	DeviceId          string  `json:"device_id" url:"-"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"-"`
 }
 
 type ClimateSettingSchedulesCreateRequestHvacModeSetting string
@@ -71,7 +71,26 @@ type ClimateSettingSchedulesCreateResponse struct {
 	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty" url:"climate_setting_schedule,omitempty"`
 	Ok                     bool                              `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) GetClimateSettingSchedule() *seamapigo.ClimateSettingSchedule {
+	if c == nil {
+		return nil
+	}
+	return c.ClimateSettingSchedule
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClimateSettingSchedulesCreateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClimateSettingSchedulesCreateResponse) UnmarshalJSON(data []byte) error {
@@ -81,17 +100,22 @@ func (c *ClimateSettingSchedulesCreateResponse) UnmarshalJSON(data []byte) error
 		return err
 	}
 	*c = ClimateSettingSchedulesCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClimateSettingSchedulesCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -100,7 +124,19 @@ func (c *ClimateSettingSchedulesCreateResponse) String() string {
 type ClimateSettingSchedulesDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClimateSettingSchedulesDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClimateSettingSchedulesDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -110,17 +146,22 @@ func (c *ClimateSettingSchedulesDeleteResponse) UnmarshalJSON(data []byte) error
 		return err
 	}
 	*c = ClimateSettingSchedulesDeleteResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClimateSettingSchedulesDeleteResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -130,7 +171,26 @@ type ClimateSettingSchedulesGetResponse struct {
 	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty" url:"climate_setting_schedule,omitempty"`
 	Ok                     bool                              `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesGetResponse) GetClimateSettingSchedule() *seamapigo.ClimateSettingSchedule {
+	if c == nil {
+		return nil
+	}
+	return c.ClimateSettingSchedule
+}
+
+func (c *ClimateSettingSchedulesGetResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClimateSettingSchedulesGetResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClimateSettingSchedulesGetResponse) UnmarshalJSON(data []byte) error {
@@ -140,17 +200,22 @@ func (c *ClimateSettingSchedulesGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClimateSettingSchedulesGetResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClimateSettingSchedulesGetResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -160,7 +225,26 @@ type ClimateSettingSchedulesListResponse struct {
 	ClimateSettingSchedules []*seamapigo.ClimateSettingSchedule `json:"climate_setting_schedules,omitempty" url:"climate_setting_schedules,omitempty"`
 	Ok                      bool                                `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesListResponse) GetClimateSettingSchedules() []*seamapigo.ClimateSettingSchedule {
+	if c == nil {
+		return nil
+	}
+	return c.ClimateSettingSchedules
+}
+
+func (c *ClimateSettingSchedulesListResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClimateSettingSchedulesListResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClimateSettingSchedulesListResponse) UnmarshalJSON(data []byte) error {
@@ -170,17 +254,22 @@ func (c *ClimateSettingSchedulesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClimateSettingSchedulesListResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClimateSettingSchedulesListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -218,7 +307,26 @@ type ClimateSettingSchedulesUpdateResponse struct {
 	ClimateSettingSchedule *seamapigo.ClimateSettingSchedule `json:"climate_setting_schedule,omitempty" url:"climate_setting_schedule,omitempty"`
 	Ok                     bool                              `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) GetClimateSettingSchedule() *seamapigo.ClimateSettingSchedule {
+	if c == nil {
+		return nil
+	}
+	return c.ClimateSettingSchedule
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClimateSettingSchedulesUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClimateSettingSchedulesUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -228,34 +336,39 @@ func (c *ClimateSettingSchedulesUpdateResponse) UnmarshalJSON(data []byte) error
 		return err
 	}
 	*c = ClimateSettingSchedulesUpdateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClimateSettingSchedulesUpdateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
 }
 
 type ClimateSettingSchedulesUpdateRequest struct {
-	ClimateSettingScheduleId  string                                               `json:"climate_setting_schedule_id" url:"climate_setting_schedule_id"`
-	ScheduleType              *string                                              `json:"schedule_type,omitempty" url:"schedule_type,omitempty"`
-	Name                      *string                                              `json:"name,omitempty" url:"name,omitempty"`
-	ScheduleStartsAt          *string                                              `json:"schedule_starts_at,omitempty" url:"schedule_starts_at,omitempty"`
-	ScheduleEndsAt            *string                                              `json:"schedule_ends_at,omitempty" url:"schedule_ends_at,omitempty"`
-	AutomaticHeatingEnabled   *bool                                                `json:"automatic_heating_enabled,omitempty" url:"automatic_heating_enabled,omitempty"`
-	AutomaticCoolingEnabled   *bool                                                `json:"automatic_cooling_enabled,omitempty" url:"automatic_cooling_enabled,omitempty"`
-	HvacModeSetting           *ClimateSettingSchedulesUpdateRequestHvacModeSetting `json:"hvac_mode_setting,omitempty" url:"hvac_mode_setting,omitempty"`
-	CoolingSetPointCelsius    *float64                                             `json:"cooling_set_point_celsius,omitempty" url:"cooling_set_point_celsius,omitempty"`
-	HeatingSetPointCelsius    *float64                                             `json:"heating_set_point_celsius,omitempty" url:"heating_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64                                             `json:"cooling_set_point_fahrenheit,omitempty" url:"cooling_set_point_fahrenheit,omitempty"`
-	HeatingSetPointFahrenheit *float64                                             `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
-	ManualOverrideAllowed     *bool                                                `json:"manual_override_allowed,omitempty" url:"manual_override_allowed,omitempty"`
+	ClimateSettingScheduleId  string                                               `json:"climate_setting_schedule_id" url:"-"`
+	ScheduleType              *string                                              `json:"schedule_type,omitempty" url:"-"`
+	Name                      *string                                              `json:"name,omitempty" url:"-"`
+	ScheduleStartsAt          *string                                              `json:"schedule_starts_at,omitempty" url:"-"`
+	ScheduleEndsAt            *string                                              `json:"schedule_ends_at,omitempty" url:"-"`
+	AutomaticHeatingEnabled   *bool                                                `json:"automatic_heating_enabled,omitempty" url:"-"`
+	AutomaticCoolingEnabled   *bool                                                `json:"automatic_cooling_enabled,omitempty" url:"-"`
+	HvacModeSetting           *ClimateSettingSchedulesUpdateRequestHvacModeSetting `json:"hvac_mode_setting,omitempty" url:"-"`
+	CoolingSetPointCelsius    *float64                                             `json:"cooling_set_point_celsius,omitempty" url:"-"`
+	HeatingSetPointCelsius    *float64                                             `json:"heating_set_point_celsius,omitempty" url:"-"`
+	CoolingSetPointFahrenheit *float64                                             `json:"cooling_set_point_fahrenheit,omitempty" url:"-"`
+	HeatingSetPointFahrenheit *float64                                             `json:"heating_set_point_fahrenheit,omitempty" url:"-"`
+	ManualOverrideAllowed     *bool                                                `json:"manual_override_allowed,omitempty" url:"-"`
 }

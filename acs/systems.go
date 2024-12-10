@@ -6,22 +6,45 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type SystemsGetRequest struct {
-	AcsSystemId string `json:"acs_system_id" url:"acs_system_id"`
+	AcsSystemId string `json:"acs_system_id" url:"-"`
 }
 
 type SystemsListRequest struct {
-	ConnectedAccountId *string `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	ConnectedAccountId *string `json:"connected_account_id,omitempty" url:"-"`
+}
+
+type SystemsListCompatibleCredentialManagerAcsSystemsRequest struct {
+	AcsSystemId string `json:"acs_system_id" url:"-"`
 }
 
 type SystemsGetResponse struct {
 	AcsSystem *seamapigo.AcsSystem `json:"acs_system,omitempty" url:"acs_system,omitempty"`
 	Ok        bool                 `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SystemsGetResponse) GetAcsSystem() *seamapigo.AcsSystem {
+	if s == nil {
+		return nil
+	}
+	return s.AcsSystem
+}
+
+func (s *SystemsGetResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SystemsGetResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SystemsGetResponse) UnmarshalJSON(data []byte) error {
@@ -31,17 +54,76 @@ func (s *SystemsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*s = SystemsGetResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SystemsGetResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type SystemsListCompatibleCredentialManagerAcsSystemsResponse struct {
+	AcsSystems []*seamapigo.AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
+	Ok         bool                   `json:"ok" url:"ok"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) GetAcsSystems() []*seamapigo.AcsSystem {
+	if s == nil {
+		return nil
+	}
+	return s.AcsSystems
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SystemsListCompatibleCredentialManagerAcsSystemsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SystemsListCompatibleCredentialManagerAcsSystemsResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SystemsListCompatibleCredentialManagerAcsSystemsResponse) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)
@@ -51,7 +133,26 @@ type SystemsListResponse struct {
 	AcsSystems []*seamapigo.AcsSystem `json:"acs_systems,omitempty" url:"acs_systems,omitempty"`
 	Ok         bool                   `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SystemsListResponse) GetAcsSystems() []*seamapigo.AcsSystem {
+	if s == nil {
+		return nil
+	}
+	return s.AcsSystems
+}
+
+func (s *SystemsListResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SystemsListResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SystemsListResponse) UnmarshalJSON(data []byte) error {
@@ -61,17 +162,22 @@ func (s *SystemsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*s = SystemsListResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SystemsListResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)

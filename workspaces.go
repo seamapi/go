@@ -5,23 +5,120 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type WorkspacesCreateRequest struct {
-	Name string `json:"name" url:"name"`
-	// The name shown inside the connect webview
-	ConnectPartnerName        string            `json:"connect_partner_name" url:"connect_partner_name"`
-	IsSandbox                 *bool             `json:"is_sandbox,omitempty" url:"is_sandbox,omitempty"`
-	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty" url:"webview_primary_button_color,omitempty"`
-	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty" url:"webview_logo_shape,omitempty"`
+	Name                      string            `json:"name" url:"-"`
+	CompanyName               *string           `json:"company_name,omitempty" url:"-"`
+	ConnectPartnerName        *string           `json:"connect_partner_name,omitempty" url:"-"`
+	IsSandbox                 *bool             `json:"is_sandbox,omitempty" url:"-"`
+	WebviewPrimaryButtonColor *string           `json:"webview_primary_button_color,omitempty" url:"-"`
+	WebviewLogoShape          *WebviewLogoShape `json:"webview_logo_shape,omitempty" url:"-"`
+}
+
+type Workspace struct {
+	WorkspaceId        string  `json:"workspace_id" url:"workspace_id"`
+	Name               string  `json:"name" url:"name"`
+	CompanyName        string  `json:"company_name" url:"company_name"`
+	IsSandbox          bool    `json:"is_sandbox" url:"is_sandbox"`
+	ConnectPartnerName *string `json:"connect_partner_name,omitempty" url:"connect_partner_name,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *Workspace) GetWorkspaceId() string {
+	if w == nil {
+		return ""
+	}
+	return w.WorkspaceId
+}
+
+func (w *Workspace) GetName() string {
+	if w == nil {
+		return ""
+	}
+	return w.Name
+}
+
+func (w *Workspace) GetCompanyName() string {
+	if w == nil {
+		return ""
+	}
+	return w.CompanyName
+}
+
+func (w *Workspace) GetIsSandbox() bool {
+	if w == nil {
+		return false
+	}
+	return w.IsSandbox
+}
+
+func (w *Workspace) GetConnectPartnerName() *string {
+	if w == nil {
+		return nil
+	}
+	return w.ConnectPartnerName
+}
+
+func (w *Workspace) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
+}
+
+func (w *Workspace) UnmarshalJSON(data []byte) error {
+	type unmarshaler Workspace
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = Workspace(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Workspace) String() string {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
 }
 
 type WorkspacesCreateResponse struct {
 	Workspace *Workspace `json:"workspace,omitempty" url:"workspace,omitempty"`
 	Ok        bool       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *WorkspacesCreateResponse) GetWorkspace() *Workspace {
+	if w == nil {
+		return nil
+	}
+	return w.Workspace
+}
+
+func (w *WorkspacesCreateResponse) GetOk() bool {
+	if w == nil {
+		return false
+	}
+	return w.Ok
+}
+
+func (w *WorkspacesCreateResponse) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
 }
 
 func (w *WorkspacesCreateResponse) UnmarshalJSON(data []byte) error {
@@ -31,17 +128,22 @@ func (w *WorkspacesCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WorkspacesCreateResponse(value)
-	w._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WorkspacesCreateResponse) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
@@ -51,7 +153,26 @@ type WorkspacesGetResponse struct {
 	Workspace *Workspace `json:"workspace,omitempty" url:"workspace,omitempty"`
 	Ok        bool       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *WorkspacesGetResponse) GetWorkspace() *Workspace {
+	if w == nil {
+		return nil
+	}
+	return w.Workspace
+}
+
+func (w *WorkspacesGetResponse) GetOk() bool {
+	if w == nil {
+		return false
+	}
+	return w.Ok
+}
+
+func (w *WorkspacesGetResponse) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
 }
 
 func (w *WorkspacesGetResponse) UnmarshalJSON(data []byte) error {
@@ -61,17 +182,22 @@ func (w *WorkspacesGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WorkspacesGetResponse(value)
-	w._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WorkspacesGetResponse) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
@@ -81,7 +207,26 @@ type WorkspacesListResponse struct {
 	Workspaces []*Workspace `json:"workspaces,omitempty" url:"workspaces,omitempty"`
 	Ok         bool         `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *WorkspacesListResponse) GetWorkspaces() []*Workspace {
+	if w == nil {
+		return nil
+	}
+	return w.Workspaces
+}
+
+func (w *WorkspacesListResponse) GetOk() bool {
+	if w == nil {
+		return false
+	}
+	return w.Ok
+}
+
+func (w *WorkspacesListResponse) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
 }
 
 func (w *WorkspacesListResponse) UnmarshalJSON(data []byte) error {
@@ -91,17 +236,22 @@ func (w *WorkspacesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WorkspacesListResponse(value)
-	w._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WorkspacesListResponse) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
@@ -111,7 +261,26 @@ type WorkspacesResetSandboxResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *WorkspacesResetSandboxResponse) GetActionAttempt() *ActionAttempt {
+	if w == nil {
+		return nil
+	}
+	return w.ActionAttempt
+}
+
+func (w *WorkspacesResetSandboxResponse) GetOk() bool {
+	if w == nil {
+		return false
+	}
+	return w.Ok
+}
+
+func (w *WorkspacesResetSandboxResponse) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
 }
 
 func (w *WorkspacesResetSandboxResponse) UnmarshalJSON(data []byte) error {
@@ -121,17 +290,22 @@ func (w *WorkspacesResetSandboxResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WorkspacesResetSandboxResponse(value)
-	w._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WorkspacesResetSandboxResponse) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)

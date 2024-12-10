@@ -12,6 +12,7 @@ import (
 	core "github.com/seamapi/go/core"
 	devicesclient "github.com/seamapi/go/devices/client"
 	events "github.com/seamapi/go/events"
+	internal "github.com/seamapi/go/internal"
 	locks "github.com/seamapi/go/locks"
 	networks "github.com/seamapi/go/networks"
 	noisesensorsclient "github.com/seamapi/go/noisesensors/client"
@@ -26,7 +27,7 @@ import (
 
 type Client struct {
 	baseURL string
-	caller  *core.Caller
+	caller  *internal.Caller
 	header  http.Header
 
 	AccessCodes       *accesscodesclient.Client
@@ -51,8 +52,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller: core.NewCaller(
-			&core.CallerParams{
+		caller: internal.NewCaller(
+			&internal.CallerParams{
 				Client:      options.HTTPClient,
 				MaxAttempts: options.MaxAttempts,
 			},

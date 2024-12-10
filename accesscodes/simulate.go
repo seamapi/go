@@ -6,20 +6,39 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type SimulateCreateUnmanagedAccessCodeRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
-	Name     string `json:"name" url:"name"`
-	Code     string `json:"code" url:"code"`
+	DeviceId string `json:"device_id" url:"-"`
+	Name     string `json:"name" url:"-"`
+	Code     string `json:"code" url:"-"`
 }
 
 type SimulateCreateUnmanagedAccessCodeResponse struct {
 	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty" url:"access_code,omitempty"`
 	Ok         bool                           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) GetAccessCode() *seamapigo.UnmanagedAccessCode {
+	if s == nil {
+		return nil
+	}
+	return s.AccessCode
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateCreateUnmanagedAccessCodeResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateCreateUnmanagedAccessCodeResponse) UnmarshalJSON(data []byte) error {
@@ -29,17 +48,22 @@ func (s *SimulateCreateUnmanagedAccessCodeResponse) UnmarshalJSON(data []byte) e
 		return err
 	}
 	*s = SimulateCreateUnmanagedAccessCodeResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateCreateUnmanagedAccessCodeResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)

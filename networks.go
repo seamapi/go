@@ -5,21 +5,129 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
+	time "time"
 )
 
 type NetworksGetRequest struct {
-	NetworkId string `json:"network_id" url:"network_id"`
+	NetworkId string `json:"network_id" url:"-"`
 }
 
 type NetworksListRequest struct {
+}
+
+type Network struct {
+	NetworkId   string    `json:"network_id" url:"network_id"`
+	WorkspaceId string    `json:"workspace_id" url:"workspace_id"`
+	DisplayName string    `json:"display_name" url:"display_name"`
+	CreatedAt   time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *Network) GetNetworkId() string {
+	if n == nil {
+		return ""
+	}
+	return n.NetworkId
+}
+
+func (n *Network) GetWorkspaceId() string {
+	if n == nil {
+		return ""
+	}
+	return n.WorkspaceId
+}
+
+func (n *Network) GetDisplayName() string {
+	if n == nil {
+		return ""
+	}
+	return n.DisplayName
+}
+
+func (n *Network) GetCreatedAt() time.Time {
+	if n == nil {
+		return time.Time{}
+	}
+	return n.CreatedAt
+}
+
+func (n *Network) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *Network) UnmarshalJSON(data []byte) error {
+	type embed Network
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed: embed(*n),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*n = Network(unmarshaler.embed)
+	n.CreatedAt = unmarshaler.CreatedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *Network) MarshalJSON() ([]byte, error) {
+	type embed Network
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*n),
+		CreatedAt: internal.NewDateTime(n.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (n *Network) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type NetworksGetResponse struct {
 	Network *Network `json:"network,omitempty" url:"network,omitempty"`
 	Ok      bool     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NetworksGetResponse) GetNetwork() *Network {
+	if n == nil {
+		return nil
+	}
+	return n.Network
+}
+
+func (n *NetworksGetResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NetworksGetResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NetworksGetResponse) UnmarshalJSON(data []byte) error {
@@ -29,17 +137,22 @@ func (n *NetworksGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NetworksGetResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NetworksGetResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
@@ -49,7 +162,26 @@ type NetworksListResponse struct {
 	Networks []*Network `json:"networks,omitempty" url:"networks,omitempty"`
 	Ok       bool       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NetworksListResponse) GetNetworks() []*Network {
+	if n == nil {
+		return nil
+	}
+	return n.Networks
+}
+
+func (n *NetworksListResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NetworksListResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NetworksListResponse) UnmarshalJSON(data []byte) error {
@@ -59,17 +191,22 @@ func (n *NetworksListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NetworksListResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NetworksListResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)

@@ -6,32 +6,32 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type NoiseThresholdsCreateRequest struct {
-	DeviceId               string   `json:"device_id" url:"device_id"`
-	Sync                   *bool    `json:"sync,omitempty" url:"sync,omitempty"`
-	Name                   *string  `json:"name,omitempty" url:"name,omitempty"`
-	StartsDailyAt          string   `json:"starts_daily_at" url:"starts_daily_at"`
-	EndsDailyAt            string   `json:"ends_daily_at" url:"ends_daily_at"`
-	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"noise_threshold_decibels,omitempty"`
-	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"noise_threshold_nrs,omitempty"`
+	DeviceId               string   `json:"device_id" url:"-"`
+	Sync                   *bool    `json:"sync,omitempty" url:"-"`
+	Name                   *string  `json:"name,omitempty" url:"-"`
+	StartsDailyAt          string   `json:"starts_daily_at" url:"-"`
+	EndsDailyAt            string   `json:"ends_daily_at" url:"-"`
+	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"-"`
+	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"-"`
 }
 
 type NoiseThresholdsDeleteRequest struct {
-	NoiseThresholdId string `json:"noise_threshold_id" url:"noise_threshold_id"`
-	DeviceId         string `json:"device_id" url:"device_id"`
-	Sync             *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	NoiseThresholdId string `json:"noise_threshold_id" url:"-"`
+	DeviceId         string `json:"device_id" url:"-"`
+	Sync             *bool  `json:"sync,omitempty" url:"-"`
 }
 
 type NoiseThresholdsGetRequest struct {
-	NoiseThresholdId string `json:"noise_threshold_id" url:"noise_threshold_id"`
+	NoiseThresholdId string `json:"noise_threshold_id" url:"-"`
 }
 
 type NoiseThresholdsListRequest struct {
-	DeviceId     string `json:"device_id" url:"device_id"`
-	IsProgrammed *bool  `json:"is_programmed,omitempty" url:"is_programmed,omitempty"`
+	DeviceId     string `json:"device_id" url:"-"`
+	IsProgrammed *bool  `json:"is_programmed,omitempty" url:"-"`
 }
 
 type NoiseThresholdsCreateResponse struct {
@@ -39,7 +39,33 @@ type NoiseThresholdsCreateResponse struct {
 	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty" url:"noise_threshold,omitempty"`
 	Ok             bool                      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NoiseThresholdsCreateResponse) GetActionAttempt() *seamapigo.ActionAttempt {
+	if n == nil {
+		return nil
+	}
+	return n.ActionAttempt
+}
+
+func (n *NoiseThresholdsCreateResponse) GetNoiseThreshold() *seamapigo.NoiseThreshold {
+	if n == nil {
+		return nil
+	}
+	return n.NoiseThreshold
+}
+
+func (n *NoiseThresholdsCreateResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NoiseThresholdsCreateResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NoiseThresholdsCreateResponse) UnmarshalJSON(data []byte) error {
@@ -49,17 +75,22 @@ func (n *NoiseThresholdsCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NoiseThresholdsCreateResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NoiseThresholdsCreateResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
@@ -69,7 +100,26 @@ type NoiseThresholdsDeleteResponse struct {
 	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NoiseThresholdsDeleteResponse) GetActionAttempt() *seamapigo.ActionAttempt {
+	if n == nil {
+		return nil
+	}
+	return n.ActionAttempt
+}
+
+func (n *NoiseThresholdsDeleteResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NoiseThresholdsDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NoiseThresholdsDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -79,17 +129,22 @@ func (n *NoiseThresholdsDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NoiseThresholdsDeleteResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NoiseThresholdsDeleteResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
@@ -99,7 +154,26 @@ type NoiseThresholdsGetResponse struct {
 	NoiseThreshold *seamapigo.NoiseThreshold `json:"noise_threshold,omitempty" url:"noise_threshold,omitempty"`
 	Ok             bool                      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NoiseThresholdsGetResponse) GetNoiseThreshold() *seamapigo.NoiseThreshold {
+	if n == nil {
+		return nil
+	}
+	return n.NoiseThreshold
+}
+
+func (n *NoiseThresholdsGetResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NoiseThresholdsGetResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NoiseThresholdsGetResponse) UnmarshalJSON(data []byte) error {
@@ -109,17 +183,22 @@ func (n *NoiseThresholdsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NoiseThresholdsGetResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NoiseThresholdsGetResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
@@ -129,7 +208,26 @@ type NoiseThresholdsListResponse struct {
 	NoiseThresholds []*seamapigo.NoiseThreshold `json:"noise_thresholds,omitempty" url:"noise_thresholds,omitempty"`
 	Ok              bool                        `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NoiseThresholdsListResponse) GetNoiseThresholds() []*seamapigo.NoiseThreshold {
+	if n == nil {
+		return nil
+	}
+	return n.NoiseThresholds
+}
+
+func (n *NoiseThresholdsListResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NoiseThresholdsListResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NoiseThresholdsListResponse) UnmarshalJSON(data []byte) error {
@@ -139,17 +237,22 @@ func (n *NoiseThresholdsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NoiseThresholdsListResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NoiseThresholdsListResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
@@ -159,7 +262,26 @@ type NoiseThresholdsUpdateResponse struct {
 	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NoiseThresholdsUpdateResponse) GetActionAttempt() *seamapigo.ActionAttempt {
+	if n == nil {
+		return nil
+	}
+	return n.ActionAttempt
+}
+
+func (n *NoiseThresholdsUpdateResponse) GetOk() bool {
+	if n == nil {
+		return false
+	}
+	return n.Ok
+}
+
+func (n *NoiseThresholdsUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
 }
 
 func (n *NoiseThresholdsUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -169,29 +291,34 @@ func (n *NoiseThresholdsUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*n = NoiseThresholdsUpdateResponse(value)
-	n._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (n *NoiseThresholdsUpdateResponse) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(n); err == nil {
+	if value, err := internal.StringifyJSON(n); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", n)
 }
 
 type NoiseThresholdsUpdateRequest struct {
-	NoiseThresholdId       string   `json:"noise_threshold_id" url:"noise_threshold_id"`
-	DeviceId               string   `json:"device_id" url:"device_id"`
-	Sync                   *bool    `json:"sync,omitempty" url:"sync,omitempty"`
-	Name                   *string  `json:"name,omitempty" url:"name,omitempty"`
-	StartsDailyAt          *string  `json:"starts_daily_at,omitempty" url:"starts_daily_at,omitempty"`
-	EndsDailyAt            *string  `json:"ends_daily_at,omitempty" url:"ends_daily_at,omitempty"`
-	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"noise_threshold_decibels,omitempty"`
-	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"noise_threshold_nrs,omitempty"`
+	NoiseThresholdId       string   `json:"noise_threshold_id" url:"-"`
+	DeviceId               string   `json:"device_id" url:"-"`
+	Sync                   *bool    `json:"sync,omitempty" url:"-"`
+	Name                   *string  `json:"name,omitempty" url:"-"`
+	StartsDailyAt          *string  `json:"starts_daily_at,omitempty" url:"-"`
+	EndsDailyAt            *string  `json:"ends_daily_at,omitempty" url:"-"`
+	NoiseThresholdDecibels *float64 `json:"noise_threshold_decibels,omitempty" url:"-"`
+	NoiseThresholdNrs      *float64 `json:"noise_threshold_nrs,omitempty" url:"-"`
 }

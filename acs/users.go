@@ -6,65 +6,74 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type UsersAddToAccessGroupRequest struct {
-	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"-"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
 }
 
 type UsersCreateRequest struct {
-	AcsSystemId       string                            `json:"acs_system_id" url:"acs_system_id"`
-	AcsAccessGroupIds []string                          `json:"acs_access_group_ids,omitempty" url:"acs_access_group_ids,omitempty"`
-	UserIdentityId    *string                           `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
-	AccessSchedule    *UsersCreateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
-	FullName          *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
-	// ---
-	// deprecated: use email_address.
-	// ---
-	Email        *string `json:"email,omitempty" url:"email,omitempty"`
-	PhoneNumber  *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	EmailAddress *string `json:"email_address,omitempty" url:"email_address,omitempty"`
+	AcsSystemId       string                            `json:"acs_system_id" url:"-"`
+	AcsAccessGroupIds []string                          `json:"acs_access_group_ids,omitempty" url:"-"`
+	UserIdentityId    *string                           `json:"user_identity_id,omitempty" url:"-"`
+	AccessSchedule    *UsersCreateRequestAccessSchedule `json:"access_schedule,omitempty" url:"-"`
+	FullName          *string                           `json:"full_name,omitempty" url:"-"`
+	Email             *string                           `json:"email,omitempty" url:"-"`
+	PhoneNumber       *string                           `json:"phone_number,omitempty" url:"-"`
+	EmailAddress      *string                           `json:"email_address,omitempty" url:"-"`
 }
 
 type UsersDeleteRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersGetRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersListRequest struct {
-	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
-	UserIdentityPhoneNumber  *string `json:"user_identity_phone_number,omitempty" url:"user_identity_phone_number,omitempty"`
-	UserIdentityEmailAddress *string `json:"user_identity_email_address,omitempty" url:"user_identity_email_address,omitempty"`
-	AcsSystemId              *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"-"`
+	UserIdentityPhoneNumber  *string `json:"user_identity_phone_number,omitempty" url:"-"`
+	UserIdentityEmailAddress *string `json:"user_identity_email_address,omitempty" url:"-"`
+	AcsSystemId              *string `json:"acs_system_id,omitempty" url:"-"`
 }
 
 type UsersListAccessibleEntrancesRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersRemoveFromAccessGroupRequest struct {
-	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsUserId        string `json:"acs_user_id" url:"-"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
 }
 
 type UsersRevokeAccessToAllEntrancesRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersSuspendRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersAddToAccessGroupResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersAddToAccessGroupResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersAddToAccessGroupResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersAddToAccessGroupResponse) UnmarshalJSON(data []byte) error {
@@ -74,17 +83,22 @@ func (u *UsersAddToAccessGroupResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersAddToAccessGroupResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersAddToAccessGroupResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -94,15 +108,34 @@ type UsersCreateRequestAccessSchedule struct {
 	StartsAt time.Time `json:"starts_at" url:"starts_at"`
 	EndsAt   time.Time `json:"ends_at" url:"ends_at"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersCreateRequestAccessSchedule) GetStartsAt() time.Time {
+	if u == nil {
+		return time.Time{}
+	}
+	return u.StartsAt
+}
+
+func (u *UsersCreateRequestAccessSchedule) GetEndsAt() time.Time {
+	if u == nil {
+		return time.Time{}
+	}
+	return u.EndsAt
+}
+
+func (u *UsersCreateRequestAccessSchedule) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersCreateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
 	type embed UsersCreateRequestAccessSchedule
 	var unmarshaler = struct {
 		embed
-		StartsAt *core.DateTime `json:"starts_at"`
-		EndsAt   *core.DateTime `json:"ends_at"`
+		StartsAt *internal.DateTime `json:"starts_at"`
+		EndsAt   *internal.DateTime `json:"ends_at"`
 	}{
 		embed: embed(*u),
 	}
@@ -112,7 +145,12 @@ func (u *UsersCreateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
 	*u = UsersCreateRequestAccessSchedule(unmarshaler.embed)
 	u.StartsAt = unmarshaler.StartsAt.Time()
 	u.EndsAt = unmarshaler.EndsAt.Time()
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -120,23 +158,23 @@ func (u *UsersCreateRequestAccessSchedule) MarshalJSON() ([]byte, error) {
 	type embed UsersCreateRequestAccessSchedule
 	var marshaler = struct {
 		embed
-		StartsAt *core.DateTime `json:"starts_at"`
-		EndsAt   *core.DateTime `json:"ends_at"`
+		StartsAt *internal.DateTime `json:"starts_at"`
+		EndsAt   *internal.DateTime `json:"ends_at"`
 	}{
 		embed:    embed(*u),
-		StartsAt: core.NewDateTime(u.StartsAt),
-		EndsAt:   core.NewDateTime(u.EndsAt),
+		StartsAt: internal.NewDateTime(u.StartsAt),
+		EndsAt:   internal.NewDateTime(u.EndsAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (u *UsersCreateRequestAccessSchedule) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -146,7 +184,26 @@ type UsersCreateResponse struct {
 	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty" url:"acs_user,omitempty"`
 	Ok      bool               `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersCreateResponse) GetAcsUser() *seamapigo.AcsUser {
+	if u == nil {
+		return nil
+	}
+	return u.AcsUser
+}
+
+func (u *UsersCreateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersCreateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersCreateResponse) UnmarshalJSON(data []byte) error {
@@ -156,17 +213,22 @@ func (u *UsersCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersCreateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersCreateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -175,7 +237,19 @@ func (u *UsersCreateResponse) String() string {
 type UsersDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersDeleteResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -185,17 +259,22 @@ func (u *UsersDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersDeleteResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersDeleteResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -205,7 +284,26 @@ type UsersGetResponse struct {
 	AcsUser *seamapigo.AcsUser `json:"acs_user,omitempty" url:"acs_user,omitempty"`
 	Ok      bool               `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersGetResponse) GetAcsUser() *seamapigo.AcsUser {
+	if u == nil {
+		return nil
+	}
+	return u.AcsUser
+}
+
+func (u *UsersGetResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersGetResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersGetResponse) UnmarshalJSON(data []byte) error {
@@ -215,17 +313,22 @@ func (u *UsersGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersGetResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersGetResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -235,7 +338,26 @@ type UsersListAccessibleEntrancesResponse struct {
 	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
 	Ok           bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersListAccessibleEntrancesResponse) GetAcsEntrances() []*seamapigo.AcsEntrance {
+	if u == nil {
+		return nil
+	}
+	return u.AcsEntrances
+}
+
+func (u *UsersListAccessibleEntrancesResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersListAccessibleEntrancesResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersListAccessibleEntrancesResponse) UnmarshalJSON(data []byte) error {
@@ -245,17 +367,22 @@ func (u *UsersListAccessibleEntrancesResponse) UnmarshalJSON(data []byte) error 
 		return err
 	}
 	*u = UsersListAccessibleEntrancesResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersListAccessibleEntrancesResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -265,7 +392,26 @@ type UsersListResponse struct {
 	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
 	Ok       bool                 `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersListResponse) GetAcsUsers() []*seamapigo.AcsUser {
+	if u == nil {
+		return nil
+	}
+	return u.AcsUsers
+}
+
+func (u *UsersListResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersListResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersListResponse) UnmarshalJSON(data []byte) error {
@@ -275,17 +421,22 @@ func (u *UsersListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersListResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersListResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -294,7 +445,19 @@ func (u *UsersListResponse) String() string {
 type UsersRemoveFromAccessGroupResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersRemoveFromAccessGroupResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersRemoveFromAccessGroupResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersRemoveFromAccessGroupResponse) UnmarshalJSON(data []byte) error {
@@ -304,17 +467,22 @@ func (u *UsersRemoveFromAccessGroupResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersRemoveFromAccessGroupResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersRemoveFromAccessGroupResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -323,7 +491,19 @@ func (u *UsersRemoveFromAccessGroupResponse) String() string {
 type UsersRevokeAccessToAllEntrancesResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersRevokeAccessToAllEntrancesResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersRevokeAccessToAllEntrancesResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersRevokeAccessToAllEntrancesResponse) UnmarshalJSON(data []byte) error {
@@ -333,17 +513,22 @@ func (u *UsersRevokeAccessToAllEntrancesResponse) UnmarshalJSON(data []byte) err
 		return err
 	}
 	*u = UsersRevokeAccessToAllEntrancesResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersRevokeAccessToAllEntrancesResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -352,7 +537,19 @@ func (u *UsersRevokeAccessToAllEntrancesResponse) String() string {
 type UsersSuspendResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersSuspendResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersSuspendResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersSuspendResponse) UnmarshalJSON(data []byte) error {
@@ -362,17 +559,22 @@ func (u *UsersSuspendResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersSuspendResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersSuspendResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -381,7 +583,19 @@ func (u *UsersSuspendResponse) String() string {
 type UsersUnsuspendResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersUnsuspendResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersUnsuspendResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersUnsuspendResponse) UnmarshalJSON(data []byte) error {
@@ -391,17 +605,22 @@ func (u *UsersUnsuspendResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersUnsuspendResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersUnsuspendResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -411,15 +630,34 @@ type UsersUpdateRequestAccessSchedule struct {
 	StartsAt time.Time `json:"starts_at" url:"starts_at"`
 	EndsAt   time.Time `json:"ends_at" url:"ends_at"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersUpdateRequestAccessSchedule) GetStartsAt() time.Time {
+	if u == nil {
+		return time.Time{}
+	}
+	return u.StartsAt
+}
+
+func (u *UsersUpdateRequestAccessSchedule) GetEndsAt() time.Time {
+	if u == nil {
+		return time.Time{}
+	}
+	return u.EndsAt
+}
+
+func (u *UsersUpdateRequestAccessSchedule) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersUpdateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
 	type embed UsersUpdateRequestAccessSchedule
 	var unmarshaler = struct {
 		embed
-		StartsAt *core.DateTime `json:"starts_at"`
-		EndsAt   *core.DateTime `json:"ends_at"`
+		StartsAt *internal.DateTime `json:"starts_at"`
+		EndsAt   *internal.DateTime `json:"ends_at"`
 	}{
 		embed: embed(*u),
 	}
@@ -429,7 +667,12 @@ func (u *UsersUpdateRequestAccessSchedule) UnmarshalJSON(data []byte) error {
 	*u = UsersUpdateRequestAccessSchedule(unmarshaler.embed)
 	u.StartsAt = unmarshaler.StartsAt.Time()
 	u.EndsAt = unmarshaler.EndsAt.Time()
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -437,23 +680,23 @@ func (u *UsersUpdateRequestAccessSchedule) MarshalJSON() ([]byte, error) {
 	type embed UsersUpdateRequestAccessSchedule
 	var marshaler = struct {
 		embed
-		StartsAt *core.DateTime `json:"starts_at"`
-		EndsAt   *core.DateTime `json:"ends_at"`
+		StartsAt *internal.DateTime `json:"starts_at"`
+		EndsAt   *internal.DateTime `json:"ends_at"`
 	}{
 		embed:    embed(*u),
-		StartsAt: core.NewDateTime(u.StartsAt),
-		EndsAt:   core.NewDateTime(u.EndsAt),
+		StartsAt: internal.NewDateTime(u.StartsAt),
+		EndsAt:   internal.NewDateTime(u.EndsAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (u *UsersUpdateRequestAccessSchedule) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -462,7 +705,19 @@ func (u *UsersUpdateRequestAccessSchedule) String() string {
 type UsersUpdateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UsersUpdateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UsersUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UsersUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -472,35 +727,37 @@ func (u *UsersUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UsersUpdateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UsersUpdateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UsersUnsuspendRequest struct {
-	AcsUserId string `json:"acs_user_id" url:"acs_user_id"`
+	AcsUserId string `json:"acs_user_id" url:"-"`
 }
 
 type UsersUpdateRequest struct {
-	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty" url:"access_schedule,omitempty"`
-	AcsUserId      string                            `json:"acs_user_id" url:"acs_user_id"`
-	FullName       *string                           `json:"full_name,omitempty" url:"full_name,omitempty"`
-	// ---
-	// deprecated: use email_address.
-	// ---
-	Email          *string `json:"email,omitempty" url:"email,omitempty"`
-	PhoneNumber    *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
-	EmailAddress   *string `json:"email_address,omitempty" url:"email_address,omitempty"`
-	HidAcsSystemId *string `json:"hid_acs_system_id,omitempty" url:"hid_acs_system_id,omitempty"`
+	AccessSchedule *UsersUpdateRequestAccessSchedule `json:"access_schedule,omitempty" url:"-"`
+	AcsUserId      string                            `json:"acs_user_id" url:"-"`
+	FullName       *string                           `json:"full_name,omitempty" url:"-"`
+	Email          *string                           `json:"email,omitempty" url:"-"`
+	PhoneNumber    *string                           `json:"phone_number,omitempty" url:"-"`
+	EmailAddress   *string                           `json:"email_address,omitempty" url:"-"`
+	HidAcsSystemId *string                           `json:"hid_acs_system_id,omitempty" url:"-"`
 }

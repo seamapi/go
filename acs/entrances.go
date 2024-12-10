@@ -6,33 +6,52 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type EntrancesGetRequest struct {
-	AcsEntranceId string `json:"acs_entrance_id" url:"acs_entrance_id"`
+	AcsEntranceId string `json:"acs_entrance_id" url:"-"`
 }
 
 type EntrancesGrantAccessRequest struct {
-	AcsEntranceId string `json:"acs_entrance_id" url:"acs_entrance_id"`
-	AcsUserId     string `json:"acs_user_id" url:"acs_user_id"`
+	AcsEntranceId string `json:"acs_entrance_id" url:"-"`
+	AcsUserId     string `json:"acs_user_id" url:"-"`
 }
 
 type EntrancesListRequest struct {
-	AcsSystemId     *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
-	AcsCredentialId *string `json:"acs_credential_id,omitempty" url:"acs_credential_id,omitempty"`
+	AcsSystemId     *string `json:"acs_system_id,omitempty" url:"-"`
+	AcsCredentialId *string `json:"acs_credential_id,omitempty" url:"-"`
 }
 
 type EntrancesListCredentialsWithAccessRequest struct {
-	AcsEntranceId string   `json:"acs_entrance_id" url:"acs_entrance_id"`
-	IncludeIf     []string `json:"include_if,omitempty" url:"include_if,omitempty"`
+	AcsEntranceId string   `json:"acs_entrance_id" url:"-"`
+	IncludeIf     []string `json:"include_if,omitempty" url:"-"`
 }
 
 type EntrancesGetResponse struct {
 	AcsEntrance *seamapigo.AcsEntrance `json:"acs_entrance,omitempty" url:"acs_entrance,omitempty"`
 	Ok          bool                   `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntrancesGetResponse) GetAcsEntrance() *seamapigo.AcsEntrance {
+	if e == nil {
+		return nil
+	}
+	return e.AcsEntrance
+}
+
+func (e *EntrancesGetResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EntrancesGetResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EntrancesGetResponse) UnmarshalJSON(data []byte) error {
@@ -42,17 +61,22 @@ func (e *EntrancesGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EntrancesGetResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EntrancesGetResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -61,7 +85,19 @@ func (e *EntrancesGetResponse) String() string {
 type EntrancesGrantAccessResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntrancesGrantAccessResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EntrancesGrantAccessResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EntrancesGrantAccessResponse) UnmarshalJSON(data []byte) error {
@@ -71,17 +107,22 @@ func (e *EntrancesGrantAccessResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EntrancesGrantAccessResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EntrancesGrantAccessResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -91,7 +132,26 @@ type EntrancesListCredentialsWithAccessResponse struct {
 	AcsCredentials []*seamapigo.AcsCredential `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
 	Ok             bool                       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntrancesListCredentialsWithAccessResponse) GetAcsCredentials() []*seamapigo.AcsCredential {
+	if e == nil {
+		return nil
+	}
+	return e.AcsCredentials
+}
+
+func (e *EntrancesListCredentialsWithAccessResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EntrancesListCredentialsWithAccessResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EntrancesListCredentialsWithAccessResponse) UnmarshalJSON(data []byte) error {
@@ -101,17 +161,22 @@ func (e *EntrancesListCredentialsWithAccessResponse) UnmarshalJSON(data []byte) 
 		return err
 	}
 	*e = EntrancesListCredentialsWithAccessResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EntrancesListCredentialsWithAccessResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -121,7 +186,26 @@ type EntrancesListResponse struct {
 	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
 	Ok           bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntrancesListResponse) GetAcsEntrances() []*seamapigo.AcsEntrance {
+	if e == nil {
+		return nil
+	}
+	return e.AcsEntrances
+}
+
+func (e *EntrancesListResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EntrancesListResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EntrancesListResponse) UnmarshalJSON(data []byte) error {
@@ -131,17 +215,22 @@ func (e *EntrancesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EntrancesListResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EntrancesListResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)

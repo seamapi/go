@@ -5,32 +5,366 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
+	time "time"
 )
 
 type ConnectWebviewsCreateRequest struct {
-	DeviceSelectionMode           *SelectionMode                                              `json:"device_selection_mode,omitempty" url:"device_selection_mode,omitempty"`
-	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty" url:"custom_redirect_url,omitempty"`
-	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty" url:"custom_redirect_failure_url,omitempty"`
-	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
-	ProviderCategory              *ProviderCategory                                           `json:"provider_category,omitempty" url:"provider_category,omitempty"`
-	CustomMetadata                map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
-	AutomaticallyManageNewDevices *bool                                                       `json:"automatically_manage_new_devices,omitempty" url:"automatically_manage_new_devices,omitempty"`
-	WaitForDeviceCreation         *bool                                                       `json:"wait_for_device_creation,omitempty" url:"wait_for_device_creation,omitempty"`
+	DeviceSelectionMode           *SelectionMode                                              `json:"device_selection_mode,omitempty" url:"-"`
+	CustomRedirectUrl             *string                                                     `json:"custom_redirect_url,omitempty" url:"-"`
+	CustomRedirectFailureUrl      *string                                                     `json:"custom_redirect_failure_url,omitempty" url:"-"`
+	AcceptedProviders             []AcceptedProvider                                          `json:"accepted_providers,omitempty" url:"-"`
+	ProviderCategory              *ProviderCategory                                           `json:"provider_category,omitempty" url:"-"`
+	CustomMetadata                map[string]*ConnectWebviewsCreateRequestCustomMetadataValue `json:"custom_metadata,omitempty" url:"-"`
+	AutomaticallyManageNewDevices *bool                                                       `json:"automatically_manage_new_devices,omitempty" url:"-"`
+	WaitForDeviceCreation         *bool                                                       `json:"wait_for_device_creation,omitempty" url:"-"`
 }
 
 type ConnectWebviewsDeleteRequest struct {
-	ConnectWebviewId string `json:"connect_webview_id" url:"connect_webview_id"`
+	ConnectWebviewId string `json:"connect_webview_id" url:"-"`
 }
 
 type ConnectWebviewsGetRequest struct {
-	ConnectWebviewId string `json:"connect_webview_id" url:"connect_webview_id"`
+	ConnectWebviewId string `json:"connect_webview_id" url:"-"`
 }
 
 type ConnectWebviewsListRequest struct {
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"-"`
 	// Returns devices where the webview's custom_metadata contains all of the provided key/value pairs.
-	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
+	CustomMetadataHas map[string]*ConnectWebviewsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"-"`
+	Limit             *float64                                                     `json:"limit,omitempty" url:"-"`
+}
+
+type ConnectWebview struct {
+	ConnectWebviewId              string                                        `json:"connect_webview_id" url:"connect_webview_id"`
+	WorkspaceId                   string                                        `json:"workspace_id" url:"workspace_id"`
+	CreatedAt                     time.Time                                     `json:"created_at" url:"created_at"`
+	ConnectedAccountId            *string                                       `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
+	Url                           string                                        `json:"url" url:"url"`
+	DeviceSelectionMode           SelectionMode                                 `json:"device_selection_mode" url:"device_selection_mode"`
+	AcceptedProviders             []string                                      `json:"accepted_providers,omitempty" url:"accepted_providers,omitempty"`
+	AcceptedDevices               []string                                      `json:"accepted_devices,omitempty" url:"accepted_devices,omitempty"`
+	AnyDeviceAllowed              bool                                          `json:"any_device_allowed" url:"any_device_allowed"`
+	AnyProviderAllowed            bool                                          `json:"any_provider_allowed" url:"any_provider_allowed"`
+	LoginSuccessful               bool                                          `json:"login_successful" url:"login_successful"`
+	Status                        ConnectWebviewStatus                          `json:"status" url:"status"`
+	CustomRedirectUrl             *string                                       `json:"custom_redirect_url,omitempty" url:"custom_redirect_url,omitempty"`
+	CustomRedirectFailureUrl      *string                                       `json:"custom_redirect_failure_url,omitempty" url:"custom_redirect_failure_url,omitempty"`
+	CustomMetadata                map[string]*ConnectWebviewCustomMetadataValue `json:"custom_metadata,omitempty" url:"custom_metadata,omitempty"`
+	AutomaticallyManageNewDevices bool                                          `json:"automatically_manage_new_devices" url:"automatically_manage_new_devices"`
+	WaitForDeviceCreation         bool                                          `json:"wait_for_device_creation" url:"wait_for_device_creation"`
+	AuthorizedAt                  *time.Time                                    `json:"authorized_at,omitempty" url:"authorized_at,omitempty"`
+	SelectedProvider              *string                                       `json:"selected_provider,omitempty" url:"selected_provider,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectWebview) GetConnectWebviewId() string {
+	if c == nil {
+		return ""
+	}
+	return c.ConnectWebviewId
+}
+
+func (c *ConnectWebview) GetWorkspaceId() string {
+	if c == nil {
+		return ""
+	}
+	return c.WorkspaceId
+}
+
+func (c *ConnectWebview) GetCreatedAt() time.Time {
+	if c == nil {
+		return time.Time{}
+	}
+	return c.CreatedAt
+}
+
+func (c *ConnectWebview) GetConnectedAccountId() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectedAccountId
+}
+
+func (c *ConnectWebview) GetUrl() string {
+	if c == nil {
+		return ""
+	}
+	return c.Url
+}
+
+func (c *ConnectWebview) GetDeviceSelectionMode() SelectionMode {
+	if c == nil {
+		return ""
+	}
+	return c.DeviceSelectionMode
+}
+
+func (c *ConnectWebview) GetAcceptedProviders() []string {
+	if c == nil {
+		return nil
+	}
+	return c.AcceptedProviders
+}
+
+func (c *ConnectWebview) GetAcceptedDevices() []string {
+	if c == nil {
+		return nil
+	}
+	return c.AcceptedDevices
+}
+
+func (c *ConnectWebview) GetAnyDeviceAllowed() bool {
+	if c == nil {
+		return false
+	}
+	return c.AnyDeviceAllowed
+}
+
+func (c *ConnectWebview) GetAnyProviderAllowed() bool {
+	if c == nil {
+		return false
+	}
+	return c.AnyProviderAllowed
+}
+
+func (c *ConnectWebview) GetLoginSuccessful() bool {
+	if c == nil {
+		return false
+	}
+	return c.LoginSuccessful
+}
+
+func (c *ConnectWebview) GetStatus() ConnectWebviewStatus {
+	if c == nil {
+		return ""
+	}
+	return c.Status
+}
+
+func (c *ConnectWebview) GetCustomRedirectUrl() *string {
+	if c == nil {
+		return nil
+	}
+	return c.CustomRedirectUrl
+}
+
+func (c *ConnectWebview) GetCustomRedirectFailureUrl() *string {
+	if c == nil {
+		return nil
+	}
+	return c.CustomRedirectFailureUrl
+}
+
+func (c *ConnectWebview) GetCustomMetadata() map[string]*ConnectWebviewCustomMetadataValue {
+	if c == nil {
+		return nil
+	}
+	return c.CustomMetadata
+}
+
+func (c *ConnectWebview) GetAutomaticallyManageNewDevices() bool {
+	if c == nil {
+		return false
+	}
+	return c.AutomaticallyManageNewDevices
+}
+
+func (c *ConnectWebview) GetWaitForDeviceCreation() bool {
+	if c == nil {
+		return false
+	}
+	return c.WaitForDeviceCreation
+}
+
+func (c *ConnectWebview) GetAuthorizedAt() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.AuthorizedAt
+}
+
+func (c *ConnectWebview) GetSelectedProvider() *string {
+	if c == nil {
+		return nil
+	}
+	return c.SelectedProvider
+}
+
+func (c *ConnectWebview) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectWebview) UnmarshalJSON(data []byte) error {
+	type embed ConnectWebview
+	var unmarshaler = struct {
+		embed
+		CreatedAt    *internal.DateTime `json:"created_at"`
+		AuthorizedAt *internal.DateTime `json:"authorized_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ConnectWebview(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+	c.AuthorizedAt = unmarshaler.AuthorizedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectWebview) MarshalJSON() ([]byte, error) {
+	type embed ConnectWebview
+	var marshaler = struct {
+		embed
+		CreatedAt    *internal.DateTime `json:"created_at"`
+		AuthorizedAt *internal.DateTime `json:"authorized_at,omitempty"`
+	}{
+		embed:        embed(*c),
+		CreatedAt:    internal.NewDateTime(c.CreatedAt),
+		AuthorizedAt: internal.NewOptionalDateTime(c.AuthorizedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *ConnectWebview) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectWebviewCustomMetadataValue struct {
+	String  string
+	Boolean bool
+
+	typ string
+}
+
+func NewConnectWebviewCustomMetadataValueFromString(value string) *ConnectWebviewCustomMetadataValue {
+	return &ConnectWebviewCustomMetadataValue{typ: "String", String: value}
+}
+
+func NewConnectWebviewCustomMetadataValueFromBoolean(value bool) *ConnectWebviewCustomMetadataValue {
+	return &ConnectWebviewCustomMetadataValue{typ: "Boolean", Boolean: value}
+}
+
+func (c *ConnectWebviewCustomMetadataValue) GetString() string {
+	if c == nil {
+		return ""
+	}
+	return c.String
+}
+
+func (c *ConnectWebviewCustomMetadataValue) GetBoolean() bool {
+	if c == nil {
+		return false
+	}
+	return c.Boolean
+}
+
+func (c *ConnectWebviewCustomMetadataValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typ = "String"
+		c.String = valueString
+		return nil
+	}
+	var valueBoolean bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		c.typ = "Boolean"
+		c.Boolean = valueBoolean
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c ConnectWebviewCustomMetadataValue) MarshalJSON() ([]byte, error) {
+	if c.typ == "String" || c.String != "" {
+		return json.Marshal(c.String)
+	}
+	if c.typ == "Boolean" || c.Boolean != false {
+		return json.Marshal(c.Boolean)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+type ConnectWebviewCustomMetadataValueVisitor interface {
+	VisitString(string) error
+	VisitBoolean(bool) error
+}
+
+func (c *ConnectWebviewCustomMetadataValue) Accept(visitor ConnectWebviewCustomMetadataValueVisitor) error {
+	if c.typ == "String" || c.String != "" {
+		return visitor.VisitString(c.String)
+	}
+	if c.typ == "Boolean" || c.Boolean != false {
+		return visitor.VisitBoolean(c.Boolean)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+type ConnectWebviewStatus string
+
+const (
+	ConnectWebviewStatusPending    ConnectWebviewStatus = "pending"
+	ConnectWebviewStatusFailed     ConnectWebviewStatus = "failed"
+	ConnectWebviewStatusAuthorized ConnectWebviewStatus = "authorized"
+)
+
+func NewConnectWebviewStatusFromString(s string) (ConnectWebviewStatus, error) {
+	switch s {
+	case "pending":
+		return ConnectWebviewStatusPending, nil
+	case "failed":
+		return ConnectWebviewStatusFailed, nil
+	case "authorized":
+		return ConnectWebviewStatusAuthorized, nil
+	}
+	var t ConnectWebviewStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectWebviewStatus) Ptr() *ConnectWebviewStatus {
+	return &c
+}
+
+type SelectionMode string
+
+const (
+	SelectionModeNone     SelectionMode = "none"
+	SelectionModeSingle   SelectionMode = "single"
+	SelectionModeMultiple SelectionMode = "multiple"
+)
+
+func NewSelectionModeFromString(s string) (SelectionMode, error) {
+	switch s {
+	case "none":
+		return SelectionModeNone, nil
+	case "single":
+		return SelectionModeSingle, nil
+	case "multiple":
+		return SelectionModeMultiple, nil
+	}
+	var t SelectionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SelectionMode) Ptr() *SelectionMode {
+	return &s
 }
 
 type AcceptedProvider string
@@ -170,83 +504,99 @@ func (a AcceptedProvider) Ptr() *AcceptedProvider {
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValue struct {
-	typeName       string
-	String         string
-	Boolean        bool
-	StringOptional *string
+	String  string
+	Boolean bool
+
+	typ string
 }
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromString(value string) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "string", String: value}
+	return &ConnectWebviewsCreateRequestCustomMetadataValue{typ: "String", String: value}
 }
 
 func NewConnectWebviewsCreateRequestCustomMetadataValueFromBoolean(value bool) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "boolean", Boolean: value}
+	return &ConnectWebviewsCreateRequestCustomMetadataValue{typ: "Boolean", Boolean: value}
 }
 
-func NewConnectWebviewsCreateRequestCustomMetadataValueFromStringOptional(value *string) *ConnectWebviewsCreateRequestCustomMetadataValue {
-	return &ConnectWebviewsCreateRequestCustomMetadataValue{typeName: "stringOptional", StringOptional: value}
+func (c *ConnectWebviewsCreateRequestCustomMetadataValue) GetString() string {
+	if c == nil {
+		return ""
+	}
+	return c.String
+}
+
+func (c *ConnectWebviewsCreateRequestCustomMetadataValue) GetBoolean() bool {
+	if c == nil {
+		return false
+	}
+	return c.Boolean
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
+		c.typ = "String"
 		c.String = valueString
 		return nil
 	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		c.typeName = "boolean"
+		c.typ = "Boolean"
 		c.Boolean = valueBoolean
-		return nil
-	}
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
 }
 
 func (c ConnectWebviewsCreateRequestCustomMetadataValue) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
+	if c.typ == "String" || c.String != "" {
 		return json.Marshal(c.String)
-	case "boolean":
-		return json.Marshal(c.Boolean)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
 	}
+	if c.typ == "Boolean" || c.Boolean != false {
+		return json.Marshal(c.Boolean)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
 }
 
 type ConnectWebviewsCreateRequestCustomMetadataValueVisitor interface {
 	VisitString(string) error
 	VisitBoolean(bool) error
-	VisitStringOptional(*string) error
 }
 
 func (c *ConnectWebviewsCreateRequestCustomMetadataValue) Accept(visitor ConnectWebviewsCreateRequestCustomMetadataValueVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
+	if c.typ == "String" || c.String != "" {
 		return visitor.VisitString(c.String)
-	case "boolean":
-		return visitor.VisitBoolean(c.Boolean)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
 	}
+	if c.typ == "Boolean" || c.Boolean != false {
+		return visitor.VisitBoolean(c.Boolean)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", c)
 }
 
 type ConnectWebviewsCreateResponse struct {
 	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty" url:"connect_webview,omitempty"`
 	Ok             bool            `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectWebviewsCreateResponse) GetConnectWebview() *ConnectWebview {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectWebview
+}
+
+func (c *ConnectWebviewsCreateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ConnectWebviewsCreateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ConnectWebviewsCreateResponse) UnmarshalJSON(data []byte) error {
@@ -256,17 +606,22 @@ func (c *ConnectWebviewsCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ConnectWebviewsCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ConnectWebviewsCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -275,7 +630,19 @@ func (c *ConnectWebviewsCreateResponse) String() string {
 type ConnectWebviewsDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectWebviewsDeleteResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ConnectWebviewsDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ConnectWebviewsDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -285,17 +652,22 @@ func (c *ConnectWebviewsDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ConnectWebviewsDeleteResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ConnectWebviewsDeleteResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -305,7 +677,26 @@ type ConnectWebviewsGetResponse struct {
 	ConnectWebview *ConnectWebview `json:"connect_webview,omitempty" url:"connect_webview,omitempty"`
 	Ok             bool            `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectWebviewsGetResponse) GetConnectWebview() *ConnectWebview {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectWebview
+}
+
+func (c *ConnectWebviewsGetResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ConnectWebviewsGetResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ConnectWebviewsGetResponse) UnmarshalJSON(data []byte) error {
@@ -315,46 +706,66 @@ func (c *ConnectWebviewsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ConnectWebviewsGetResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ConnectWebviewsGetResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectWebviewsListRequestCustomMetadataHasValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	String  string
+	Boolean bool
+
+	typ string
 }
 
 func NewConnectWebviewsListRequestCustomMetadataHasValueFromString(value string) *ConnectWebviewsListRequestCustomMetadataHasValue {
-	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "string", String: value}
+	return &ConnectWebviewsListRequestCustomMetadataHasValue{typ: "String", String: value}
 }
 
 func NewConnectWebviewsListRequestCustomMetadataHasValueFromBoolean(value bool) *ConnectWebviewsListRequestCustomMetadataHasValue {
-	return &ConnectWebviewsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+	return &ConnectWebviewsListRequestCustomMetadataHasValue{typ: "Boolean", Boolean: value}
+}
+
+func (c *ConnectWebviewsListRequestCustomMetadataHasValue) GetString() string {
+	if c == nil {
+		return ""
+	}
+	return c.String
+}
+
+func (c *ConnectWebviewsListRequestCustomMetadataHasValue) GetBoolean() bool {
+	if c == nil {
+		return false
+	}
+	return c.Boolean
 }
 
 func (c *ConnectWebviewsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
+		c.typ = "String"
 		c.String = valueString
 		return nil
 	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		c.typeName = "boolean"
+		c.typ = "Boolean"
 		c.Boolean = valueBoolean
 		return nil
 	}
@@ -362,14 +773,13 @@ func (c *ConnectWebviewsListRequestCustomMetadataHasValue) UnmarshalJSON(data []
 }
 
 func (c ConnectWebviewsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
+	if c.typ == "String" || c.String != "" {
 		return json.Marshal(c.String)
-	case "boolean":
+	}
+	if c.typ == "Boolean" || c.Boolean != false {
 		return json.Marshal(c.Boolean)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
 }
 
 type ConnectWebviewsListRequestCustomMetadataHasValueVisitor interface {
@@ -378,21 +788,39 @@ type ConnectWebviewsListRequestCustomMetadataHasValueVisitor interface {
 }
 
 func (c *ConnectWebviewsListRequestCustomMetadataHasValue) Accept(visitor ConnectWebviewsListRequestCustomMetadataHasValueVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
+	if c.typ == "String" || c.String != "" {
 		return visitor.VisitString(c.String)
-	case "boolean":
+	}
+	if c.typ == "Boolean" || c.Boolean != false {
 		return visitor.VisitBoolean(c.Boolean)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", c)
 }
 
 type ConnectWebviewsListResponse struct {
 	ConnectWebviews []*ConnectWebview `json:"connect_webviews,omitempty" url:"connect_webviews,omitempty"`
 	Ok              bool              `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectWebviewsListResponse) GetConnectWebviews() []*ConnectWebview {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectWebviews
+}
+
+func (c *ConnectWebviewsListResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ConnectWebviewsListResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ConnectWebviewsListResponse) UnmarshalJSON(data []byte) error {
@@ -402,17 +830,22 @@ func (c *ConnectWebviewsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ConnectWebviewsListResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ConnectWebviewsListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
