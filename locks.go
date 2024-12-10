@@ -154,6 +154,8 @@ const (
 	LocksListRequestExcludeIfItemCanProgramOfflineAccessCodes LocksListRequestExcludeIfItem = "can_program_offline_access_codes"
 	LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes  LocksListRequestExcludeIfItem = "can_program_online_access_codes"
 	LocksListRequestExcludeIfItemCanSimulateRemoval           LocksListRequestExcludeIfItem = "can_simulate_removal"
+	LocksListRequestExcludeIfItemCanSimulateConnection        LocksListRequestExcludeIfItem = "can_simulate_connection"
+	LocksListRequestExcludeIfItemCanSimulateDisconnection     LocksListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExcludeIfItem, error) {
@@ -168,6 +170,10 @@ func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExclu
 		return LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return LocksListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return LocksListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return LocksListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t LocksListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -185,6 +191,8 @@ const (
 	LocksListRequestIncludeIfItemCanProgramOfflineAccessCodes LocksListRequestIncludeIfItem = "can_program_offline_access_codes"
 	LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes  LocksListRequestIncludeIfItem = "can_program_online_access_codes"
 	LocksListRequestIncludeIfItemCanSimulateRemoval           LocksListRequestIncludeIfItem = "can_simulate_removal"
+	LocksListRequestIncludeIfItemCanSimulateConnection        LocksListRequestIncludeIfItem = "can_simulate_connection"
+	LocksListRequestIncludeIfItemCanSimulateDisconnection     LocksListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestIncludeIfItem, error) {
@@ -199,6 +207,10 @@ func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestInclu
 		return LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return LocksListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return LocksListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return LocksListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t LocksListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
