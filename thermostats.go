@@ -5,53 +5,53 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type ThermostatsCoolRequest struct {
-	DeviceId                  string   `json:"device_id" url:"device_id"`
-	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty" url:"cooling_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty" url:"cooling_set_point_fahrenheit,omitempty"`
-	Sync                      *bool    `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId                  string   `json:"device_id" url:"-"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty" url:"-"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty" url:"-"`
+	Sync                      *bool    `json:"sync,omitempty" url:"-"`
 }
 
 type ThermostatsGetRequest struct {
-	DeviceId *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	Name     *string `json:"name,omitempty" url:"name,omitempty"`
+	DeviceId *string `json:"device_id,omitempty" url:"-"`
+	Name     *string `json:"name,omitempty" url:"-"`
 }
 
 type ThermostatsHeatRequest struct {
-	DeviceId                  string   `json:"device_id" url:"device_id"`
-	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty" url:"heating_set_point_celsius,omitempty"`
-	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
-	Sync                      *bool    `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId                  string   `json:"device_id" url:"-"`
+	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty" url:"-"`
+	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty" url:"-"`
+	Sync                      *bool    `json:"sync,omitempty" url:"-"`
 }
 
 type ThermostatsHeatCoolRequest struct {
-	DeviceId                  string   `json:"device_id" url:"device_id"`
-	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty" url:"heating_set_point_celsius,omitempty"`
-	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
-	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty" url:"cooling_set_point_celsius,omitempty"`
-	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty" url:"cooling_set_point_fahrenheit,omitempty"`
-	Sync                      *bool    `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId                  string   `json:"device_id" url:"-"`
+	HeatingSetPointCelsius    *float64 `json:"heating_set_point_celsius,omitempty" url:"-"`
+	HeatingSetPointFahrenheit *float64 `json:"heating_set_point_fahrenheit,omitempty" url:"-"`
+	CoolingSetPointCelsius    *float64 `json:"cooling_set_point_celsius,omitempty" url:"-"`
+	CoolingSetPointFahrenheit *float64 `json:"cooling_set_point_fahrenheit,omitempty" url:"-"`
+	Sync                      *bool    `json:"sync,omitempty" url:"-"`
 }
 
 type ThermostatsListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                                                  `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                                                 `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                                                  `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType                                              `json:"device_type,omitempty" url:"device_type,omitempty"`
-	DeviceTypes         []DeviceType                                             `json:"device_types,omitempty" url:"device_types,omitempty"`
-	Manufacturer        *Manufacturer                                            `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
-	DeviceIds           []string                                                 `json:"device_ids,omitempty" url:"device_ids,omitempty"`
-	Limit               *float64                                                 `json:"limit,omitempty" url:"limit,omitempty"`
-	CreatedBefore       *time.Time                                               `json:"created_before,omitempty" url:"created_before,omitempty"`
-	UserIdentifierKey   *string                                                  `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	CustomMetadataHas   map[string]*ThermostatsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
-	IncludeIf           []ThermostatsListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
-	ExcludeIf           []ThermostatsListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
+	ConnectedAccountId  *string                                                  `json:"connected_account_id,omitempty" url:"-"`
+	ConnectedAccountIds []string                                                 `json:"connected_account_ids,omitempty" url:"-"`
+	ConnectWebviewId    *string                                                  `json:"connect_webview_id,omitempty" url:"-"`
+	DeviceType          *DeviceType                                              `json:"device_type,omitempty" url:"-"`
+	DeviceTypes         []DeviceType                                             `json:"device_types,omitempty" url:"-"`
+	Manufacturer        *Manufacturer                                            `json:"manufacturer,omitempty" url:"-"`
+	DeviceIds           []string                                                 `json:"device_ids,omitempty" url:"-"`
+	Limit               *float64                                                 `json:"limit,omitempty" url:"-"`
+	CreatedBefore       *time.Time                                               `json:"created_before,omitempty" url:"-"`
+	UserIdentifierKey   *string                                                  `json:"user_identifier_key,omitempty" url:"-"`
+	CustomMetadataHas   map[string]*ThermostatsListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"-"`
+	IncludeIf           []ThermostatsListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"-"`
+	ExcludeIf           []ThermostatsListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"-"`
 }
 
 func (t *ThermostatsListRequest) UnmarshalJSON(data []byte) error {
@@ -68,31 +68,72 @@ func (t *ThermostatsListRequest) MarshalJSON() ([]byte, error) {
 	type embed ThermostatsListRequest
 	var marshaler = struct {
 		embed
-		CreatedBefore *core.DateTime `json:"created_before,omitempty"`
+		CreatedBefore *internal.DateTime `json:"created_before,omitempty"`
 	}{
 		embed:         embed(*t),
-		CreatedBefore: core.NewOptionalDateTime(t.CreatedBefore),
+		CreatedBefore: internal.NewOptionalDateTime(t.CreatedBefore),
 	}
 	return json.Marshal(marshaler)
 }
 
 type ThermostatsOffRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
-	Sync     *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId string `json:"device_id" url:"-"`
+	Sync     *bool  `json:"sync,omitempty" url:"-"`
 }
 
 type ThermostatsSetFanModeRequest struct {
-	DeviceId       string                                      `json:"device_id" url:"device_id"`
-	FanMode        *FanMode                                    `json:"fan_mode,omitempty" url:"fan_mode,omitempty"`
-	FanModeSetting *ThermostatsSetFanModeRequestFanModeSetting `json:"fan_mode_setting,omitempty" url:"fan_mode_setting,omitempty"`
-	Sync           *bool                                       `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId       string                                      `json:"device_id" url:"-"`
+	FanMode        *FanMode                                    `json:"fan_mode,omitempty" url:"-"`
+	FanModeSetting *ThermostatsSetFanModeRequestFanModeSetting `json:"fan_mode_setting,omitempty" url:"-"`
+	Sync           *bool                                       `json:"sync,omitempty" url:"-"`
+}
+
+type FanMode string
+
+const (
+	FanModeAuto FanMode = "auto"
+	FanModeOn   FanMode = "on"
+)
+
+func NewFanModeFromString(s string) (FanMode, error) {
+	switch s {
+	case "auto":
+		return FanModeAuto, nil
+	case "on":
+		return FanModeOn, nil
+	}
+	var t FanMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (f FanMode) Ptr() *FanMode {
+	return &f
 }
 
 type ThermostatsCoolResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsCoolResponse) GetActionAttempt() *ActionAttempt {
+	if t == nil {
+		return nil
+	}
+	return t.ActionAttempt
+}
+
+func (t *ThermostatsCoolResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsCoolResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsCoolResponse) UnmarshalJSON(data []byte) error {
@@ -102,17 +143,22 @@ func (t *ThermostatsCoolResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsCoolResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsCoolResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -122,7 +168,26 @@ type ThermostatsGetResponse struct {
 	Thermostat *Device `json:"thermostat,omitempty" url:"thermostat,omitempty"`
 	Ok         bool    `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsGetResponse) GetThermostat() *Device {
+	if t == nil {
+		return nil
+	}
+	return t.Thermostat
+}
+
+func (t *ThermostatsGetResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsGetResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsGetResponse) UnmarshalJSON(data []byte) error {
@@ -132,17 +197,22 @@ func (t *ThermostatsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsGetResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsGetResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -152,7 +222,26 @@ type ThermostatsHeatCoolResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsHeatCoolResponse) GetActionAttempt() *ActionAttempt {
+	if t == nil {
+		return nil
+	}
+	return t.ActionAttempt
+}
+
+func (t *ThermostatsHeatCoolResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsHeatCoolResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsHeatCoolResponse) UnmarshalJSON(data []byte) error {
@@ -162,17 +251,22 @@ func (t *ThermostatsHeatCoolResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsHeatCoolResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsHeatCoolResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -182,7 +276,26 @@ type ThermostatsHeatResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsHeatResponse) GetActionAttempt() *ActionAttempt {
+	if t == nil {
+		return nil
+	}
+	return t.ActionAttempt
+}
+
+func (t *ThermostatsHeatResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsHeatResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsHeatResponse) UnmarshalJSON(data []byte) error {
@@ -192,46 +305,66 @@ func (t *ThermostatsHeatResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsHeatResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsHeatResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsListRequestCustomMetadataHasValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	String  string
+	Boolean bool
+
+	typ string
 }
 
 func NewThermostatsListRequestCustomMetadataHasValueFromString(value string) *ThermostatsListRequestCustomMetadataHasValue {
-	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "string", String: value}
+	return &ThermostatsListRequestCustomMetadataHasValue{typ: "String", String: value}
 }
 
 func NewThermostatsListRequestCustomMetadataHasValueFromBoolean(value bool) *ThermostatsListRequestCustomMetadataHasValue {
-	return &ThermostatsListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+	return &ThermostatsListRequestCustomMetadataHasValue{typ: "Boolean", Boolean: value}
+}
+
+func (t *ThermostatsListRequestCustomMetadataHasValue) GetString() string {
+	if t == nil {
+		return ""
+	}
+	return t.String
+}
+
+func (t *ThermostatsListRequestCustomMetadataHasValue) GetBoolean() bool {
+	if t == nil {
+		return false
+	}
+	return t.Boolean
 }
 
 func (t *ThermostatsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
+		t.typ = "String"
 		t.String = valueString
 		return nil
 	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		t.typeName = "boolean"
+		t.typ = "Boolean"
 		t.Boolean = valueBoolean
 		return nil
 	}
@@ -239,14 +372,13 @@ func (t *ThermostatsListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte
 }
 
 func (t ThermostatsListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
+	if t.typ == "String" || t.String != "" {
 		return json.Marshal(t.String)
-	case "boolean":
+	}
+	if t.typ == "Boolean" || t.Boolean != false {
 		return json.Marshal(t.Boolean)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type ThermostatsListRequestCustomMetadataHasValueVisitor interface {
@@ -255,14 +387,13 @@ type ThermostatsListRequestCustomMetadataHasValueVisitor interface {
 }
 
 func (t *ThermostatsListRequestCustomMetadataHasValue) Accept(visitor ThermostatsListRequestCustomMetadataHasValueVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
+	if t.typ == "String" || t.String != "" {
 		return visitor.VisitString(t.String)
-	case "boolean":
+	}
+	if t.typ == "Boolean" || t.Boolean != false {
 		return visitor.VisitBoolean(t.Boolean)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type ThermostatsListRequestExcludeIfItem string
@@ -273,6 +404,8 @@ const (
 	ThermostatsListRequestExcludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestExcludeIfItem = "can_program_offline_access_codes"
 	ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestExcludeIfItem = "can_program_online_access_codes"
 	ThermostatsListRequestExcludeIfItemCanSimulateRemoval           ThermostatsListRequestExcludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestExcludeIfItemCanSimulateConnection        ThermostatsListRequestExcludeIfItem = "can_simulate_connection"
+	ThermostatsListRequestExcludeIfItemCanSimulateDisconnection     ThermostatsListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsListRequestExcludeIfItem, error) {
@@ -287,6 +420,10 @@ func NewThermostatsListRequestExcludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return ThermostatsListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return ThermostatsListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return ThermostatsListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t ThermostatsListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -304,6 +441,8 @@ const (
 	ThermostatsListRequestIncludeIfItemCanProgramOfflineAccessCodes ThermostatsListRequestIncludeIfItem = "can_program_offline_access_codes"
 	ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes  ThermostatsListRequestIncludeIfItem = "can_program_online_access_codes"
 	ThermostatsListRequestIncludeIfItemCanSimulateRemoval           ThermostatsListRequestIncludeIfItem = "can_simulate_removal"
+	ThermostatsListRequestIncludeIfItemCanSimulateConnection        ThermostatsListRequestIncludeIfItem = "can_simulate_connection"
+	ThermostatsListRequestIncludeIfItemCanSimulateDisconnection     ThermostatsListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsListRequestIncludeIfItem, error) {
@@ -318,6 +457,10 @@ func NewThermostatsListRequestIncludeIfItemFromString(s string) (ThermostatsList
 		return ThermostatsListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return ThermostatsListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return ThermostatsListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return ThermostatsListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t ThermostatsListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -331,7 +474,26 @@ type ThermostatsListResponse struct {
 	Thermostats []*Device `json:"thermostats,omitempty" url:"thermostats,omitempty"`
 	Ok          bool      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsListResponse) GetThermostats() []*Device {
+	if t == nil {
+		return nil
+	}
+	return t.Thermostats
+}
+
+func (t *ThermostatsListResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsListResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsListResponse) UnmarshalJSON(data []byte) error {
@@ -341,17 +503,22 @@ func (t *ThermostatsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsListResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsListResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -361,7 +528,26 @@ type ThermostatsOffResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsOffResponse) GetActionAttempt() *ActionAttempt {
+	if t == nil {
+		return nil
+	}
+	return t.ActionAttempt
+}
+
+func (t *ThermostatsOffResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsOffResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsOffResponse) UnmarshalJSON(data []byte) error {
@@ -371,17 +557,22 @@ func (t *ThermostatsOffResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsOffResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsOffResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -413,7 +604,26 @@ type ThermostatsSetFanModeResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsSetFanModeResponse) GetActionAttempt() *ActionAttempt {
+	if t == nil {
+		return nil
+	}
+	return t.ActionAttempt
+}
+
+func (t *ThermostatsSetFanModeResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsSetFanModeResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsSetFanModeResponse) UnmarshalJSON(data []byte) error {
@@ -423,17 +633,22 @@ func (t *ThermostatsSetFanModeResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsSetFanModeResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsSetFanModeResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
@@ -449,7 +664,68 @@ type ThermostatsUpdateRequestDefaultClimateSetting struct {
 	HeatingSetPointFahrenheit *float64                                                      `json:"heating_set_point_fahrenheit,omitempty" url:"heating_set_point_fahrenheit,omitempty"`
 	ManualOverrideAllowed     *bool                                                         `json:"manual_override_allowed,omitempty" url:"manual_override_allowed,omitempty"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetAutomaticHeatingEnabled() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.AutomaticHeatingEnabled
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetAutomaticCoolingEnabled() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.AutomaticCoolingEnabled
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetHvacModeSetting() *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting {
+	if t == nil {
+		return nil
+	}
+	return t.HvacModeSetting
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetCoolingSetPointCelsius() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.CoolingSetPointCelsius
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetHeatingSetPointCelsius() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.HeatingSetPointCelsius
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetCoolingSetPointFahrenheit() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.CoolingSetPointFahrenheit
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetHeatingSetPointFahrenheit() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.HeatingSetPointFahrenheit
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetManualOverrideAllowed() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.ManualOverrideAllowed
+}
+
+func (t *ThermostatsUpdateRequestDefaultClimateSetting) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsUpdateRequestDefaultClimateSetting) UnmarshalJSON(data []byte) error {
@@ -459,26 +735,71 @@ func (t *ThermostatsUpdateRequestDefaultClimateSetting) UnmarshalJSON(data []byt
 		return err
 	}
 	*t = ThermostatsUpdateRequestDefaultClimateSetting(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsUpdateRequestDefaultClimateSetting) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
 }
 
+type ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting string
+
+const (
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff      ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "off"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool     ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "cool"
+	ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting = "heat_cool"
+)
+
+func NewThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingFromString(s string) (ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting, error) {
+	switch s {
+	case "off":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingOff, nil
+	case "heat":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeat, nil
+	case "cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingCool, nil
+	case "heat_cool":
+		return ThermostatsUpdateRequestDefaultClimateSettingHvacModeSettingHeatCool, nil
+	}
+	var t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting) Ptr() *ThermostatsUpdateRequestDefaultClimateSettingHvacModeSetting {
+	return &t
+}
+
 type ThermostatsUpdateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThermostatsUpdateResponse) GetOk() bool {
+	if t == nil {
+		return false
+	}
+	return t.Ok
+}
+
+func (t *ThermostatsUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
 }
 
 func (t *ThermostatsUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -488,23 +809,28 @@ func (t *ThermostatsUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*t = ThermostatsUpdateResponse(value)
-	t._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (t *ThermostatsUpdateResponse) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(t); err == nil {
+	if value, err := internal.StringifyJSON(t); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
 }
 
 type ThermostatsUpdateRequest struct {
-	DeviceId              string                                         `json:"device_id" url:"device_id"`
-	DefaultClimateSetting *ThermostatsUpdateRequestDefaultClimateSetting `json:"default_climate_setting,omitempty" url:"default_climate_setting,omitempty"`
+	DeviceId              string                                         `json:"device_id" url:"-"`
+	DefaultClimateSetting *ThermostatsUpdateRequestDefaultClimateSetting `json:"default_climate_setting,omitempty" url:"-"`
 }

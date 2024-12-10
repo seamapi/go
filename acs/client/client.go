@@ -11,13 +11,14 @@ import (
 	systems "github.com/seamapi/go/acs/systems"
 	users "github.com/seamapi/go/acs/users"
 	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	option "github.com/seamapi/go/option"
 	http "net/http"
 )
 
 type Client struct {
 	baseURL string
-	caller  *core.Caller
+	caller  *internal.Caller
 	header  http.Header
 
 	AccessGroups                      *accessgroups.Client
@@ -33,8 +34,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
 	return &Client{
 		baseURL: options.BaseURL,
-		caller: core.NewCaller(
-			&core.CallerParams{
+		caller: internal.NewCaller(
+			&internal.CallerParams{
 				Client:      options.HTTPClient,
 				MaxAttempts: options.MaxAttempts,
 			},

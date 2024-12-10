@@ -6,25 +6,25 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type CredentialsAssignRequest struct {
-	AcsUserId       string `json:"acs_user_id" url:"acs_user_id"`
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId       string `json:"acs_user_id" url:"-"`
+	AcsCredentialId string `json:"acs_credential_id" url:"-"`
 }
 
 type CredentialsCreateRequest struct {
-	CredentialManagerAcsSystemId *string                                     `json:"credential_manager_acs_system_id,omitempty" url:"credential_manager_acs_system_id,omitempty"`
-	AcsUserId                    string                                      `json:"acs_user_id" url:"acs_user_id"`
-	AccessMethod                 CredentialsCreateRequestAccessMethod        `json:"access_method,omitempty" url:"access_method,omitempty"`
-	Code                         *string                                     `json:"code,omitempty" url:"code,omitempty"`
-	IsMultiPhoneSyncCredential   *bool                                       `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
-	AllowedAcsEntranceIds        []string                                    `json:"allowed_acs_entrance_ids,omitempty" url:"allowed_acs_entrance_ids,omitempty"`
-	VisionlineMetadata           *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty" url:"visionline_metadata,omitempty"`
-	StartsAt                     *time.Time                                  `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                       *time.Time                                  `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	CredentialManagerAcsSystemId *string                                     `json:"credential_manager_acs_system_id,omitempty" url:"-"`
+	AcsUserId                    string                                      `json:"acs_user_id" url:"-"`
+	AccessMethod                 CredentialsCreateRequestAccessMethod        `json:"access_method" url:"-"`
+	Code                         *string                                     `json:"code,omitempty" url:"-"`
+	IsMultiPhoneSyncCredential   *bool                                       `json:"is_multi_phone_sync_credential,omitempty" url:"-"`
+	AllowedAcsEntranceIds        []string                                    `json:"allowed_acs_entrance_ids,omitempty" url:"-"`
+	VisionlineMetadata           *CredentialsCreateRequestVisionlineMetadata `json:"visionline_metadata,omitempty" url:"-"`
+	StartsAt                     *time.Time                                  `json:"starts_at,omitempty" url:"-"`
+	EndsAt                       *time.Time                                  `json:"ends_at,omitempty" url:"-"`
 }
 
 func (c *CredentialsCreateRequest) UnmarshalJSON(data []byte) error {
@@ -41,36 +41,59 @@ func (c *CredentialsCreateRequest) MarshalJSON() ([]byte, error) {
 	type embed CredentialsCreateRequest
 	var marshaler = struct {
 		embed
-		StartsAt *core.DateTime `json:"starts_at,omitempty"`
-		EndsAt   *core.DateTime `json:"ends_at,omitempty"`
+		StartsAt *internal.DateTime `json:"starts_at,omitempty"`
+		EndsAt   *internal.DateTime `json:"ends_at,omitempty"`
 	}{
 		embed:    embed(*c),
-		StartsAt: core.NewOptionalDateTime(c.StartsAt),
-		EndsAt:   core.NewOptionalDateTime(c.EndsAt),
+		StartsAt: internal.NewOptionalDateTime(c.StartsAt),
+		EndsAt:   internal.NewOptionalDateTime(c.EndsAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 type CredentialsDeleteRequest struct {
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"-"`
 }
 
 type CredentialsGetRequest struct {
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsCredentialId string `json:"acs_credential_id" url:"-"`
 }
 
 type CredentialsListRequest struct {
-	AcsUserId                  *string `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
-	AcsSystemId                *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
-	UserIdentityId             *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
-	IsMultiPhoneSyncCredential *bool   `json:"is_multi_phone_sync_credential,omitempty" url:"is_multi_phone_sync_credential,omitempty"`
+	AcsUserId                                        *string `json:"acs_user_id,omitempty" url:"-"`
+	AcsSystemId                                      *string `json:"acs_system_id,omitempty" url:"-"`
+	UserIdentityId                                   *string `json:"user_identity_id,omitempty" url:"-"`
+	CredentialsListRequestIsMultiPhoneSyncCredential *bool   `json:"is_multi_phone_sync_credential,omitempty" url:"-"`
+}
+
+type CredentialsListAccessibleEntrancesRequest struct {
+	AcsCredentialId string `json:"acs_credential_id" url:"-"`
 }
 
 type CredentialsAssignResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsAssignResponse) GetAcsCredential() *seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredential
+}
+
+func (c *CredentialsAssignResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsAssignResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsAssignResponse) UnmarshalJSON(data []byte) error {
@@ -80,17 +103,22 @@ func (c *CredentialsAssignResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsAssignResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsAssignResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -125,14 +153,58 @@ type CredentialsCreateRequestVisionlineMetadata struct {
 	AssaAbloyCredentialServiceMobileEndpointId *string                                                     `json:"assa_abloy_credential_service_mobile_endpoint_id,omitempty" url:"assa_abloy_credential_service_mobile_endpoint_id,omitempty"`
 	CardFormat                                 *CredentialsCreateRequestVisionlineMetadataCardFormat       `json:"card_format,omitempty" url:"card_format,omitempty"`
 	CardFunctionType                           *CredentialsCreateRequestVisionlineMetadataCardFunctionType `json:"card_function_type,omitempty" url:"card_function_type,omitempty"`
-	// ---
-	// deprecated: use override.
-	// ---
-	IsOverrideKey          *bool    `json:"is_override_key,omitempty" url:"is_override_key,omitempty"`
-	Override               *bool    `json:"override,omitempty" url:"override,omitempty"`
-	JoinerAcsCredentialIds []string `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
+	IsOverrideKey                              *bool                                                       `json:"is_override_key,omitempty" url:"is_override_key,omitempty"`
+	Override                                   *bool                                                       `json:"override,omitempty" url:"override,omitempty"`
+	JoinerAcsCredentialIds                     []string                                                    `json:"joiner_acs_credential_ids,omitempty" url:"joiner_acs_credential_ids,omitempty"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetAssaAbloyCredentialServiceMobileEndpointId() *string {
+	if c == nil {
+		return nil
+	}
+	return c.AssaAbloyCredentialServiceMobileEndpointId
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetCardFormat() *CredentialsCreateRequestVisionlineMetadataCardFormat {
+	if c == nil {
+		return nil
+	}
+	return c.CardFormat
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetCardFunctionType() *CredentialsCreateRequestVisionlineMetadataCardFunctionType {
+	if c == nil {
+		return nil
+	}
+	return c.CardFunctionType
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetIsOverrideKey() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.IsOverrideKey
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetOverride() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.Override
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetJoinerAcsCredentialIds() []string {
+	if c == nil {
+		return nil
+	}
+	return c.JoinerAcsCredentialIds
+}
+
+func (c *CredentialsCreateRequestVisionlineMetadata) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsCreateRequestVisionlineMetadata) UnmarshalJSON(data []byte) error {
@@ -142,27 +214,95 @@ func (c *CredentialsCreateRequestVisionlineMetadata) UnmarshalJSON(data []byte) 
 		return err
 	}
 	*c = CredentialsCreateRequestVisionlineMetadata(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsCreateRequestVisionlineMetadata) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+type CredentialsCreateRequestVisionlineMetadataCardFormat string
+
+const (
+	CredentialsCreateRequestVisionlineMetadataCardFormatTlCode CredentialsCreateRequestVisionlineMetadataCardFormat = "TLCode"
+	CredentialsCreateRequestVisionlineMetadataCardFormatRfid48 CredentialsCreateRequestVisionlineMetadataCardFormat = "rfid48"
+)
+
+func NewCredentialsCreateRequestVisionlineMetadataCardFormatFromString(s string) (CredentialsCreateRequestVisionlineMetadataCardFormat, error) {
+	switch s {
+	case "TLCode":
+		return CredentialsCreateRequestVisionlineMetadataCardFormatTlCode, nil
+	case "rfid48":
+		return CredentialsCreateRequestVisionlineMetadataCardFormatRfid48, nil
+	}
+	var t CredentialsCreateRequestVisionlineMetadataCardFormat
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CredentialsCreateRequestVisionlineMetadataCardFormat) Ptr() *CredentialsCreateRequestVisionlineMetadataCardFormat {
+	return &c
+}
+
+type CredentialsCreateRequestVisionlineMetadataCardFunctionType string
+
+const (
+	CredentialsCreateRequestVisionlineMetadataCardFunctionTypeGuest CredentialsCreateRequestVisionlineMetadataCardFunctionType = "guest"
+	CredentialsCreateRequestVisionlineMetadataCardFunctionTypeStaff CredentialsCreateRequestVisionlineMetadataCardFunctionType = "staff"
+)
+
+func NewCredentialsCreateRequestVisionlineMetadataCardFunctionTypeFromString(s string) (CredentialsCreateRequestVisionlineMetadataCardFunctionType, error) {
+	switch s {
+	case "guest":
+		return CredentialsCreateRequestVisionlineMetadataCardFunctionTypeGuest, nil
+	case "staff":
+		return CredentialsCreateRequestVisionlineMetadataCardFunctionTypeStaff, nil
+	}
+	var t CredentialsCreateRequestVisionlineMetadataCardFunctionType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CredentialsCreateRequestVisionlineMetadataCardFunctionType) Ptr() *CredentialsCreateRequestVisionlineMetadataCardFunctionType {
+	return &c
 }
 
 type CredentialsCreateResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsCreateResponse) GetAcsCredential() *seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredential
+}
+
+func (c *CredentialsCreateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsCreateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsCreateResponse) UnmarshalJSON(data []byte) error {
@@ -172,17 +312,22 @@ func (c *CredentialsCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -191,7 +336,19 @@ func (c *CredentialsCreateResponse) String() string {
 type CredentialsDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsDeleteResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -201,17 +358,22 @@ func (c *CredentialsDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsDeleteResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsDeleteResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -221,7 +383,26 @@ type CredentialsGetResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsGetResponse) GetAcsCredential() *seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredential
+}
+
+func (c *CredentialsGetResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsGetResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsGetResponse) UnmarshalJSON(data []byte) error {
@@ -231,17 +412,76 @@ func (c *CredentialsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsGetResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsGetResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CredentialsListAccessibleEntrancesResponse struct {
+	AcsEntrances []*seamapigo.AcsEntrance `json:"acs_entrances,omitempty" url:"acs_entrances,omitempty"`
+	Ok           bool                     `json:"ok" url:"ok"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) GetAcsEntrances() []*seamapigo.AcsEntrance {
+	if c == nil {
+		return nil
+	}
+	return c.AcsEntrances
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsListAccessibleEntrancesResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsListAccessibleEntrancesResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsListAccessibleEntrancesResponse) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -251,7 +491,26 @@ type CredentialsListResponse struct {
 	AcsCredentials []*seamapigo.AcsCredential `json:"acs_credentials,omitempty" url:"acs_credentials,omitempty"`
 	Ok             bool                       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsListResponse) GetAcsCredentials() []*seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredentials
+}
+
+func (c *CredentialsListResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsListResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsListResponse) UnmarshalJSON(data []byte) error {
@@ -261,17 +520,22 @@ func (c *CredentialsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsListResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -281,7 +545,26 @@ type CredentialsUnassignResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsUnassignResponse) GetAcsCredential() *seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredential
+}
+
+func (c *CredentialsUnassignResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsUnassignResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsUnassignResponse) UnmarshalJSON(data []byte) error {
@@ -291,17 +574,22 @@ func (c *CredentialsUnassignResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsUnassignResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsUnassignResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -311,7 +599,26 @@ type CredentialsUpdateResponse struct {
 	AcsCredential *seamapigo.AcsCredential `json:"acs_credential,omitempty" url:"acs_credential,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsUpdateResponse) GetAcsCredential() *seamapigo.AcsCredential {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredential
+}
+
+func (c *CredentialsUpdateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialsUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialsUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -321,28 +628,56 @@ func (c *CredentialsUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = CredentialsUpdateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialsUpdateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
 }
 
 type CredentialsUnassignRequest struct {
-	AcsUserId       string `json:"acs_user_id" url:"acs_user_id"`
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
+	AcsUserId       string `json:"acs_user_id" url:"-"`
+	AcsCredentialId string `json:"acs_credential_id" url:"-"`
 }
 
 type CredentialsUpdateRequest struct {
-	AcsCredentialId string `json:"acs_credential_id" url:"acs_credential_id"`
-	Code            string `json:"code" url:"code"`
+	AcsCredentialId string     `json:"acs_credential_id" url:"-"`
+	Code            *string    `json:"code,omitempty" url:"-"`
+	EndsAt          *time.Time `json:"ends_at,omitempty" url:"-"`
+}
+
+func (c *CredentialsUpdateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsUpdateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CredentialsUpdateRequest(body)
+	return nil
+}
+
+func (c *CredentialsUpdateRequest) MarshalJSON() ([]byte, error) {
+	type embed CredentialsUpdateRequest
+	var marshaler = struct {
+		embed
+		EndsAt *internal.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:  embed(*c),
+		EndsAt: internal.NewOptionalDateTime(c.EndsAt),
+	}
+	return json.Marshal(marshaler)
 }

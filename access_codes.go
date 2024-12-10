@@ -5,71 +5,406 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
+	time "time"
 )
 
 type AccessCodesCreateRequest struct {
-	DeviceId                      string           `json:"device_id" url:"device_id"`
-	Name                          *string          `json:"name,omitempty" url:"name,omitempty"`
-	StartsAt                      *string          `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                        *string          `json:"ends_at,omitempty" url:"ends_at,omitempty"`
-	Code                          *string          `json:"code,omitempty" url:"code,omitempty"`
-	Sync                          *bool            `json:"sync,omitempty" url:"sync,omitempty"`
-	AttemptForOfflineDevice       *bool            `json:"attempt_for_offline_device,omitempty" url:"attempt_for_offline_device,omitempty"`
-	CommonCodeKey                 *string          `json:"common_code_key,omitempty" url:"common_code_key,omitempty"`
-	PreferNativeScheduling        *bool            `json:"prefer_native_scheduling,omitempty" url:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool       *bool            `json:"use_backup_access_code_pool,omitempty" url:"use_backup_access_code_pool,omitempty"`
-	AllowExternalModification     *bool            `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
-	IsExternalModificationAllowed *bool            `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
-	UseOfflineAccessCode          *bool            `json:"use_offline_access_code,omitempty" url:"use_offline_access_code,omitempty"`
-	IsOfflineAccessCode           *bool            `json:"is_offline_access_code,omitempty" url:"is_offline_access_code,omitempty"`
-	IsOneTimeUse                  *bool            `json:"is_one_time_use,omitempty" url:"is_one_time_use,omitempty"`
-	MaxTimeRounding               *MaxTimeRounding `json:"max_time_rounding,omitempty" url:"max_time_rounding,omitempty"`
+	DeviceId                      string           `json:"device_id" url:"-"`
+	Name                          *string          `json:"name,omitempty" url:"-"`
+	StartsAt                      *string          `json:"starts_at,omitempty" url:"-"`
+	EndsAt                        *string          `json:"ends_at,omitempty" url:"-"`
+	Code                          *string          `json:"code,omitempty" url:"-"`
+	Sync                          *bool            `json:"sync,omitempty" url:"-"`
+	AttemptForOfflineDevice       *bool            `json:"attempt_for_offline_device,omitempty" url:"-"`
+	CommonCodeKey                 *string          `json:"common_code_key,omitempty" url:"-"`
+	PreferNativeScheduling        *bool            `json:"prefer_native_scheduling,omitempty" url:"-"`
+	UseBackupAccessCodePool       *bool            `json:"use_backup_access_code_pool,omitempty" url:"-"`
+	AllowExternalModification     *bool            `json:"allow_external_modification,omitempty" url:"-"`
+	IsExternalModificationAllowed *bool            `json:"is_external_modification_allowed,omitempty" url:"-"`
+	UseOfflineAccessCode          *bool            `json:"use_offline_access_code,omitempty" url:"-"`
+	IsOfflineAccessCode           *bool            `json:"is_offline_access_code,omitempty" url:"-"`
+	IsOneTimeUse                  *bool            `json:"is_one_time_use,omitempty" url:"-"`
+	MaxTimeRounding               *MaxTimeRounding `json:"max_time_rounding,omitempty" url:"-"`
 }
 
 type AccessCodesCreateMultipleRequest struct {
-	DeviceIds                      []string                                                        `json:"device_ids,omitempty" url:"device_ids,omitempty"`
-	BehaviorWhenCodeCannotBeShared *AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared `json:"behavior_when_code_cannot_be_shared,omitempty" url:"behavior_when_code_cannot_be_shared,omitempty"`
-	PreferredCodeLength            *float64                                                        `json:"preferred_code_length,omitempty" url:"preferred_code_length,omitempty"`
-	Name                           *string                                                         `json:"name,omitempty" url:"name,omitempty"`
-	StartsAt                       *string                                                         `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                         *string                                                         `json:"ends_at,omitempty" url:"ends_at,omitempty"`
-	Code                           *string                                                         `json:"code,omitempty" url:"code,omitempty"`
-	AttemptForOfflineDevice        *bool                                                           `json:"attempt_for_offline_device,omitempty" url:"attempt_for_offline_device,omitempty"`
-	PreferNativeScheduling         *bool                                                           `json:"prefer_native_scheduling,omitempty" url:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool        *bool                                                           `json:"use_backup_access_code_pool,omitempty" url:"use_backup_access_code_pool,omitempty"`
-	AllowExternalModification      *bool                                                           `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
-	IsExternalModificationAllowed  *bool                                                           `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
-	UseOfflineAccessCode           *bool                                                           `json:"use_offline_access_code,omitempty" url:"use_offline_access_code,omitempty"`
-	IsOfflineAccessCode            *bool                                                           `json:"is_offline_access_code,omitempty" url:"is_offline_access_code,omitempty"`
-	IsOneTimeUse                   *bool                                                           `json:"is_one_time_use,omitempty" url:"is_one_time_use,omitempty"`
-	MaxTimeRounding                *MaxTimeRounding                                                `json:"max_time_rounding,omitempty" url:"max_time_rounding,omitempty"`
+	DeviceIds                      []string                                                        `json:"device_ids,omitempty" url:"-"`
+	BehaviorWhenCodeCannotBeShared *AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared `json:"behavior_when_code_cannot_be_shared,omitempty" url:"-"`
+	PreferredCodeLength            *float64                                                        `json:"preferred_code_length,omitempty" url:"-"`
+	Name                           *string                                                         `json:"name,omitempty" url:"-"`
+	StartsAt                       *string                                                         `json:"starts_at,omitempty" url:"-"`
+	EndsAt                         *string                                                         `json:"ends_at,omitempty" url:"-"`
+	Code                           *string                                                         `json:"code,omitempty" url:"-"`
+	AttemptForOfflineDevice        *bool                                                           `json:"attempt_for_offline_device,omitempty" url:"-"`
+	PreferNativeScheduling         *bool                                                           `json:"prefer_native_scheduling,omitempty" url:"-"`
+	UseBackupAccessCodePool        *bool                                                           `json:"use_backup_access_code_pool,omitempty" url:"-"`
+	AllowExternalModification      *bool                                                           `json:"allow_external_modification,omitempty" url:"-"`
+	IsExternalModificationAllowed  *bool                                                           `json:"is_external_modification_allowed,omitempty" url:"-"`
+	UseOfflineAccessCode           *bool                                                           `json:"use_offline_access_code,omitempty" url:"-"`
+	IsOfflineAccessCode            *bool                                                           `json:"is_offline_access_code,omitempty" url:"-"`
+	IsOneTimeUse                   *bool                                                           `json:"is_one_time_use,omitempty" url:"-"`
+	MaxTimeRounding                *MaxTimeRounding                                                `json:"max_time_rounding,omitempty" url:"-"`
 }
 
 type AccessCodesDeleteRequest struct {
-	DeviceId     *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	AccessCodeId string  `json:"access_code_id" url:"access_code_id"`
-	Sync         *bool   `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId     *string `json:"device_id,omitempty" url:"-"`
+	AccessCodeId string  `json:"access_code_id" url:"-"`
+	Sync         *bool   `json:"sync,omitempty" url:"-"`
 }
 
 type AccessCodesGenerateCodeRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
+	DeviceId string `json:"device_id" url:"-"`
 }
 
 type AccessCodesGetRequest struct {
-	DeviceId     *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	AccessCodeId *string `json:"access_code_id,omitempty" url:"access_code_id,omitempty"`
-	Code         *string `json:"code,omitempty" url:"code,omitempty"`
+	DeviceId     *string `json:"device_id,omitempty" url:"-"`
+	AccessCodeId *string `json:"access_code_id,omitempty" url:"-"`
+	Code         *string `json:"code,omitempty" url:"-"`
 }
 
 type AccessCodesListRequest struct {
-	DeviceId          string   `json:"device_id" url:"device_id"`
-	AccessCodeIds     []string `json:"access_code_ids,omitempty" url:"access_code_ids,omitempty"`
-	UserIdentifierKey *string  `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	DeviceId          string   `json:"device_id" url:"-"`
+	AccessCodeIds     []string `json:"access_code_ids,omitempty" url:"-"`
+	UserIdentifierKey *string  `json:"user_identifier_key,omitempty" url:"-"`
 }
 
 type AccessCodesPullBackupAccessCodeRequest struct {
+	AccessCodeId string `json:"access_code_id" url:"-"`
+}
+
+type AccessCode struct {
+	// Unique identifier for a group of access codes that share the same code.
+	CommonCodeKey *string `json:"common_code_key,omitempty" url:"common_code_key,omitempty"`
+	// Indicates whether the code is set on the device according to a preconfigured schedule.
+	IsScheduledOnDevice *bool `json:"is_scheduled_on_device,omitempty" url:"is_scheduled_on_device,omitempty"`
+	// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+	Type AccessCodeType `json:"type" url:"type"`
+	// Indicates whether the access code is waiting for a code assignment.
+	IsWaitingForCodeAssignment *bool `json:"is_waiting_for_code_assignment,omitempty" url:"is_waiting_for_code_assignment,omitempty"`
+	// Unique identifier for the access code.
 	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
+	// Unique identifier for the device associated with the access code.
+	DeviceId string `json:"device_id" url:"device_id"`
+	// Name of the access code. Enables administrators and users to identify the access code easily, especially when there are numerous access codes.
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Code used for access. Typically, a numeric or alphanumeric string.
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
+	// Date and time at which the access code was created.
+	CreatedAt time.Time   `json:"created_at" url:"created_at"`
+	Errors    interface{} `json:"errors,omitempty" url:"errors,omitempty"`
+	Warnings  interface{} `json:"warnings,omitempty" url:"warnings,omitempty"`
+	// Indicates whether Seam manages the access code.
+	IsManaged bool `json:"is_managed" url:"is_managed"`
+	// Date and time at which the time-bound access code becomes active.
+	StartsAt *time.Time `json:"starts_at,omitempty" url:"starts_at,omitempty"`
+	// Date and time after which the time-bound access code becomes inactive.
+	EndsAt *time.Time `json:"ends_at,omitempty" url:"ends_at,omitempty"`
+	// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
+	Status AccessCodeStatus `json:"status" url:"status"`
+	// Indicates whether a backup access code is available for use if the primary access code is lost or compromised.
+	IsBackupAccessCodeAvailable bool `json:"is_backup_access_code_available" url:"is_backup_access_code_available"`
+	// Indicates whether the access code is a backup code.
+	IsBackup *bool `json:"is_backup,omitempty" url:"is_backup,omitempty"`
+	// Identifier of the pulled backup access code. Used to associate the pulled backup access code with the original access code.
+	PulledBackupAccessCodeId *string `json:"pulled_backup_access_code_id,omitempty" url:"pulled_backup_access_code_id,omitempty"`
+	// Indicates whether changes to the access code from external sources are permitted.
+	IsExternalModificationAllowed bool `json:"is_external_modification_allowed" url:"is_external_modification_allowed"`
+	// Indicates whether the access code can only be used once. If "true," the code becomes invalid after the first use.
+	IsOneTimeUse bool `json:"is_one_time_use" url:"is_one_time_use"`
+	// Indicates whether the access code is intended for use in offline scenarios. If "true," this code can be created on a device without a network connection.
+	IsOfflineAccessCode bool `json:"is_offline_access_code" url:"is_offline_access_code"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCode) GetCommonCodeKey() *string {
+	if a == nil {
+		return nil
+	}
+	return a.CommonCodeKey
+}
+
+func (a *AccessCode) GetIsScheduledOnDevice() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsScheduledOnDevice
+}
+
+func (a *AccessCode) GetType() AccessCodeType {
+	if a == nil {
+		return ""
+	}
+	return a.Type
+}
+
+func (a *AccessCode) GetIsWaitingForCodeAssignment() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsWaitingForCodeAssignment
+}
+
+func (a *AccessCode) GetAccessCodeId() string {
+	if a == nil {
+		return ""
+	}
+	return a.AccessCodeId
+}
+
+func (a *AccessCode) GetDeviceId() string {
+	if a == nil {
+		return ""
+	}
+	return a.DeviceId
+}
+
+func (a *AccessCode) GetName() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Name
+}
+
+func (a *AccessCode) GetCode() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Code
+}
+
+func (a *AccessCode) GetCreatedAt() time.Time {
+	if a == nil {
+		return time.Time{}
+	}
+	return a.CreatedAt
+}
+
+func (a *AccessCode) GetErrors() interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.Errors
+}
+
+func (a *AccessCode) GetWarnings() interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.Warnings
+}
+
+func (a *AccessCode) GetIsManaged() bool {
+	if a == nil {
+		return false
+	}
+	return a.IsManaged
+}
+
+func (a *AccessCode) GetStartsAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.StartsAt
+}
+
+func (a *AccessCode) GetEndsAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.EndsAt
+}
+
+func (a *AccessCode) GetStatus() AccessCodeStatus {
+	if a == nil {
+		return ""
+	}
+	return a.Status
+}
+
+func (a *AccessCode) GetIsBackupAccessCodeAvailable() bool {
+	if a == nil {
+		return false
+	}
+	return a.IsBackupAccessCodeAvailable
+}
+
+func (a *AccessCode) GetIsBackup() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsBackup
+}
+
+func (a *AccessCode) GetPulledBackupAccessCodeId() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PulledBackupAccessCodeId
+}
+
+func (a *AccessCode) GetIsExternalModificationAllowed() bool {
+	if a == nil {
+		return false
+	}
+	return a.IsExternalModificationAllowed
+}
+
+func (a *AccessCode) GetIsOneTimeUse() bool {
+	if a == nil {
+		return false
+	}
+	return a.IsOneTimeUse
+}
+
+func (a *AccessCode) GetIsOfflineAccessCode() bool {
+	if a == nil {
+		return false
+	}
+	return a.IsOfflineAccessCode
+}
+
+func (a *AccessCode) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AccessCode) UnmarshalJSON(data []byte) error {
+	type embed AccessCode
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+		StartsAt  *internal.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *internal.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AccessCode(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.Time()
+	a.StartsAt = unmarshaler.StartsAt.TimePtr()
+	a.EndsAt = unmarshaler.EndsAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AccessCode) MarshalJSON() ([]byte, error) {
+	type embed AccessCode
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+		StartsAt  *internal.DateTime `json:"starts_at,omitempty"`
+		EndsAt    *internal.DateTime `json:"ends_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: internal.NewDateTime(a.CreatedAt),
+		StartsAt:  internal.NewOptionalDateTime(a.StartsAt),
+		EndsAt:    internal.NewOptionalDateTime(a.EndsAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *AccessCode) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Current status of the access code within the operational lifecycle. Values are "setting," a transitional phase that indicates that the code is being configured or activated; "set", which indicates that the code is active and operational; "unset," which indicates a deactivated or unused state, either before activation or after deliberate deactivation; "removing," which indicates a transitional period in which the code is being deleted or made inactive; and "unknown," which indicates an indeterminate state, due to reasons such as system errors or incomplete data, that highlights a potential need for system review or troubleshooting.
+type AccessCodeStatus string
+
+const (
+	AccessCodeStatusSetting  AccessCodeStatus = "setting"
+	AccessCodeStatusSet      AccessCodeStatus = "set"
+	AccessCodeStatusUnset    AccessCodeStatus = "unset"
+	AccessCodeStatusRemoving AccessCodeStatus = "removing"
+	AccessCodeStatusUnknown  AccessCodeStatus = "unknown"
+)
+
+func NewAccessCodeStatusFromString(s string) (AccessCodeStatus, error) {
+	switch s {
+	case "setting":
+		return AccessCodeStatusSetting, nil
+	case "set":
+		return AccessCodeStatusSet, nil
+	case "unset":
+		return AccessCodeStatusUnset, nil
+	case "removing":
+		return AccessCodeStatusRemoving, nil
+	case "unknown":
+		return AccessCodeStatusUnknown, nil
+	}
+	var t AccessCodeStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodeStatus) Ptr() *AccessCodeStatus {
+	return &a
+}
+
+// Nature of the access code. Values are "ongoing" for access codes that are active continuously until deactivated manually or "time_bound" for access codes that have a specific duration.
+type AccessCodeType string
+
+const (
+	AccessCodeTypeTimeBound AccessCodeType = "time_bound"
+	AccessCodeTypeOngoing   AccessCodeType = "ongoing"
+)
+
+func NewAccessCodeTypeFromString(s string) (AccessCodeType, error) {
+	switch s {
+	case "time_bound":
+		return AccessCodeTypeTimeBound, nil
+	case "ongoing":
+		return AccessCodeTypeOngoing, nil
+	}
+	var t AccessCodeType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AccessCodeType) Ptr() *AccessCodeType {
+	return &a
+}
+
+type MaxTimeRounding string
+
+const (
+	MaxTimeRoundingOneHour MaxTimeRounding = "1hour"
+	MaxTimeRoundingOneDay  MaxTimeRounding = "1day"
+	MaxTimeRoundingOneH    MaxTimeRounding = "1h"
+	MaxTimeRoundingOneD    MaxTimeRounding = "1d"
+)
+
+func NewMaxTimeRoundingFromString(s string) (MaxTimeRounding, error) {
+	switch s {
+	case "1hour":
+		return MaxTimeRoundingOneHour, nil
+	case "1day":
+		return MaxTimeRoundingOneDay, nil
+	case "1h":
+		return MaxTimeRoundingOneH, nil
+	case "1d":
+		return MaxTimeRoundingOneD, nil
+	}
+	var t MaxTimeRounding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (m MaxTimeRounding) Ptr() *MaxTimeRounding {
+	return &m
 }
 
 type AccessCodesCreateMultipleRequestBehaviorWhenCodeCannotBeShared string
@@ -98,7 +433,26 @@ type AccessCodesCreateMultipleResponse struct {
 	AccessCodes []*AccessCode `json:"access_codes,omitempty" url:"access_codes,omitempty"`
 	Ok          bool          `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesCreateMultipleResponse) GetAccessCodes() []*AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.AccessCodes
+}
+
+func (a *AccessCodesCreateMultipleResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesCreateMultipleResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesCreateMultipleResponse) UnmarshalJSON(data []byte) error {
@@ -108,17 +462,22 @@ func (a *AccessCodesCreateMultipleResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesCreateMultipleResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesCreateMultipleResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -129,7 +488,33 @@ type AccessCodesCreateResponse struct {
 	AccessCode    *AccessCode    `json:"access_code,omitempty" url:"access_code,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesCreateResponse) GetActionAttempt() *ActionAttempt {
+	if a == nil {
+		return nil
+	}
+	return a.ActionAttempt
+}
+
+func (a *AccessCodesCreateResponse) GetAccessCode() *AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.AccessCode
+}
+
+func (a *AccessCodesCreateResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesCreateResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesCreateResponse) UnmarshalJSON(data []byte) error {
@@ -139,17 +524,22 @@ func (a *AccessCodesCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesCreateResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesCreateResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -159,7 +549,26 @@ type AccessCodesDeleteResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesDeleteResponse) GetActionAttempt() *ActionAttempt {
+	if a == nil {
+		return nil
+	}
+	return a.ActionAttempt
+}
+
+func (a *AccessCodesDeleteResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -169,17 +578,22 @@ func (a *AccessCodesDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesDeleteResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesDeleteResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -189,7 +603,26 @@ type AccessCodesGenerateCodeResponse struct {
 	GeneratedCode *AccessCode `json:"generated_code,omitempty" url:"generated_code,omitempty"`
 	Ok            bool        `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesGenerateCodeResponse) GetGeneratedCode() *AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.GeneratedCode
+}
+
+func (a *AccessCodesGenerateCodeResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesGenerateCodeResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesGenerateCodeResponse) UnmarshalJSON(data []byte) error {
@@ -199,17 +632,22 @@ func (a *AccessCodesGenerateCodeResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesGenerateCodeResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesGenerateCodeResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -219,7 +657,26 @@ type AccessCodesGetResponse struct {
 	AccessCode *AccessCode `json:"access_code,omitempty" url:"access_code,omitempty"`
 	Ok         bool        `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesGetResponse) GetAccessCode() *AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.AccessCode
+}
+
+func (a *AccessCodesGetResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesGetResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesGetResponse) UnmarshalJSON(data []byte) error {
@@ -229,17 +686,22 @@ func (a *AccessCodesGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesGetResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesGetResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -249,7 +711,26 @@ type AccessCodesListResponse struct {
 	AccessCodes []*AccessCode `json:"access_codes,omitempty" url:"access_codes,omitempty"`
 	Ok          bool          `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesListResponse) GetAccessCodes() []*AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.AccessCodes
+}
+
+func (a *AccessCodesListResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesListResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesListResponse) UnmarshalJSON(data []byte) error {
@@ -259,17 +740,22 @@ func (a *AccessCodesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesListResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesListResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -279,7 +765,26 @@ type AccessCodesPullBackupAccessCodeResponse struct {
 	BackupAccessCode *AccessCode `json:"backup_access_code,omitempty" url:"backup_access_code,omitempty"`
 	Ok               bool        `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesPullBackupAccessCodeResponse) GetBackupAccessCode() *AccessCode {
+	if a == nil {
+		return nil
+	}
+	return a.BackupAccessCode
+}
+
+func (a *AccessCodesPullBackupAccessCodeResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesPullBackupAccessCodeResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesPullBackupAccessCodeResponse) UnmarshalJSON(data []byte) error {
@@ -289,17 +794,22 @@ func (a *AccessCodesPullBackupAccessCodeResponse) UnmarshalJSON(data []byte) err
 		return err
 	}
 	*a = AccessCodesPullBackupAccessCodeResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesPullBackupAccessCodeResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -331,7 +841,26 @@ type AccessCodesUpdateResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessCodesUpdateResponse) GetActionAttempt() *ActionAttempt {
+	if a == nil {
+		return nil
+	}
+	return a.ActionAttempt
+}
+
+func (a *AccessCodesUpdateResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessCodesUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessCodesUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -341,39 +870,44 @@ func (a *AccessCodesUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessCodesUpdateResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessCodesUpdateResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
 }
 
 type AccessCodesUpdateRequest struct {
-	Name                          *string                       `json:"name,omitempty" url:"name,omitempty"`
-	StartsAt                      *string                       `json:"starts_at,omitempty" url:"starts_at,omitempty"`
-	EndsAt                        *string                       `json:"ends_at,omitempty" url:"ends_at,omitempty"`
-	Code                          *string                       `json:"code,omitempty" url:"code,omitempty"`
-	Sync                          *bool                         `json:"sync,omitempty" url:"sync,omitempty"`
-	AttemptForOfflineDevice       *bool                         `json:"attempt_for_offline_device,omitempty" url:"attempt_for_offline_device,omitempty"`
-	PreferNativeScheduling        *bool                         `json:"prefer_native_scheduling,omitempty" url:"prefer_native_scheduling,omitempty"`
-	UseBackupAccessCodePool       *bool                         `json:"use_backup_access_code_pool,omitempty" url:"use_backup_access_code_pool,omitempty"`
-	AllowExternalModification     *bool                         `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
-	IsExternalModificationAllowed *bool                         `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
-	UseOfflineAccessCode          *bool                         `json:"use_offline_access_code,omitempty" url:"use_offline_access_code,omitempty"`
-	IsOfflineAccessCode           *bool                         `json:"is_offline_access_code,omitempty" url:"is_offline_access_code,omitempty"`
-	IsOneTimeUse                  *bool                         `json:"is_one_time_use,omitempty" url:"is_one_time_use,omitempty"`
-	MaxTimeRounding               *MaxTimeRounding              `json:"max_time_rounding,omitempty" url:"max_time_rounding,omitempty"`
-	AccessCodeId                  string                        `json:"access_code_id" url:"access_code_id"`
-	DeviceId                      *string                       `json:"device_id,omitempty" url:"device_id,omitempty"`
-	Type                          *AccessCodesUpdateRequestType `json:"type,omitempty" url:"type,omitempty"`
-	IsManaged                     *bool                         `json:"is_managed,omitempty" url:"is_managed,omitempty"`
+	Name                          *string                       `json:"name,omitempty" url:"-"`
+	StartsAt                      *string                       `json:"starts_at,omitempty" url:"-"`
+	EndsAt                        *string                       `json:"ends_at,omitempty" url:"-"`
+	Code                          *string                       `json:"code,omitempty" url:"-"`
+	Sync                          *bool                         `json:"sync,omitempty" url:"-"`
+	AttemptForOfflineDevice       *bool                         `json:"attempt_for_offline_device,omitempty" url:"-"`
+	PreferNativeScheduling        *bool                         `json:"prefer_native_scheduling,omitempty" url:"-"`
+	UseBackupAccessCodePool       *bool                         `json:"use_backup_access_code_pool,omitempty" url:"-"`
+	AllowExternalModification     *bool                         `json:"allow_external_modification,omitempty" url:"-"`
+	IsExternalModificationAllowed *bool                         `json:"is_external_modification_allowed,omitempty" url:"-"`
+	UseOfflineAccessCode          *bool                         `json:"use_offline_access_code,omitempty" url:"-"`
+	IsOfflineAccessCode           *bool                         `json:"is_offline_access_code,omitempty" url:"-"`
+	IsOneTimeUse                  *bool                         `json:"is_one_time_use,omitempty" url:"-"`
+	MaxTimeRounding               *MaxTimeRounding              `json:"max_time_rounding,omitempty" url:"-"`
+	AccessCodeId                  string                        `json:"access_code_id" url:"-"`
+	DeviceId                      *string                       `json:"device_id,omitempty" url:"-"`
+	Type                          *AccessCodesUpdateRequestType `json:"type,omitempty" url:"-"`
+	IsManaged                     *bool                         `json:"is_managed,omitempty" url:"-"`
 }

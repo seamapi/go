@@ -5,17 +5,29 @@ package noisesensors
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type SimulateTriggerNoiseThresholdRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
+	DeviceId string `json:"device_id" url:"-"`
 }
 
 type SimulateTriggerNoiseThresholdResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateTriggerNoiseThresholdResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateTriggerNoiseThresholdResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateTriggerNoiseThresholdResponse) UnmarshalJSON(data []byte) error {
@@ -25,17 +37,22 @@ func (s *SimulateTriggerNoiseThresholdResponse) UnmarshalJSON(data []byte) error
 		return err
 	}
 	*s = SimulateTriggerNoiseThresholdResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateTriggerNoiseThresholdResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)

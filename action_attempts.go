@@ -5,22 +5,41 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type ActionAttemptsGetRequest struct {
-	ActionAttemptId string `json:"action_attempt_id" url:"action_attempt_id"`
+	ActionAttemptId string `json:"action_attempt_id" url:"-"`
 }
 
 type ActionAttemptsListRequest struct {
-	ActionAttemptIds []string `json:"action_attempt_ids,omitempty" url:"action_attempt_ids,omitempty"`
+	ActionAttemptIds []string `json:"action_attempt_ids,omitempty" url:"-"`
 }
 
 type ActionAttemptsGetResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *ActionAttemptsGetResponse) GetActionAttempt() *ActionAttempt {
+	if a == nil {
+		return nil
+	}
+	return a.ActionAttempt
+}
+
+func (a *ActionAttemptsGetResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *ActionAttemptsGetResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *ActionAttemptsGetResponse) UnmarshalJSON(data []byte) error {
@@ -30,17 +49,22 @@ func (a *ActionAttemptsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = ActionAttemptsGetResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *ActionAttemptsGetResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -50,7 +74,26 @@ type ActionAttemptsListResponse struct {
 	ActionAttempts []*ActionAttempt `json:"action_attempts,omitempty" url:"action_attempts,omitempty"`
 	Ok             bool             `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *ActionAttemptsListResponse) GetActionAttempts() []*ActionAttempt {
+	if a == nil {
+		return nil
+	}
+	return a.ActionAttempts
+}
+
+func (a *ActionAttemptsListResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *ActionAttemptsListResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *ActionAttemptsListResponse) UnmarshalJSON(data []byte) error {
@@ -60,17 +103,22 @@ func (a *ActionAttemptsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = ActionAttemptsListResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *ActionAttemptsListResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)

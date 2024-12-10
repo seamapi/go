@@ -6,22 +6,41 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type CredentialProvisioningAutomationsLaunchRequest struct {
-	UserIdentityId               string  `json:"user_identity_id" url:"user_identity_id"`
-	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
-	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
-	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"create_credential_manager_user,omitempty"`
-	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"credential_manager_acs_user_id,omitempty"`
+	UserIdentityId               string  `json:"user_identity_id" url:"-"`
+	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"-"`
+	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"-"`
+	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"-"`
+	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"-"`
 }
 
 type CredentialProvisioningAutomationsLaunchResponse struct {
 	AcsCredentialProvisioningAutomation *seamapigo.AcsCredentialProvisioningAutomation `json:"acs_credential_provisioning_automation,omitempty" url:"acs_credential_provisioning_automation,omitempty"`
 	Ok                                  bool                                           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialProvisioningAutomationsLaunchResponse) GetAcsCredentialProvisioningAutomation() *seamapigo.AcsCredentialProvisioningAutomation {
+	if c == nil {
+		return nil
+	}
+	return c.AcsCredentialProvisioningAutomation
+}
+
+func (c *CredentialProvisioningAutomationsLaunchResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *CredentialProvisioningAutomationsLaunchResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *CredentialProvisioningAutomationsLaunchResponse) UnmarshalJSON(data []byte) error {
@@ -31,17 +50,22 @@ func (c *CredentialProvisioningAutomationsLaunchResponse) UnmarshalJSON(data []b
 		return err
 	}
 	*c = CredentialProvisioningAutomationsLaunchResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *CredentialProvisioningAutomationsLaunchResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)

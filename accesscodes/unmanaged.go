@@ -6,37 +6,49 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type UnmanagedConvertToManagedRequest struct {
-	AccessCodeId                  string `json:"access_code_id" url:"access_code_id"`
-	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
-	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
-	Force                         *bool  `json:"force,omitempty" url:"force,omitempty"`
-	Sync                          *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	AccessCodeId                  string `json:"access_code_id" url:"-"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"-"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"-"`
+	Force                         *bool  `json:"force,omitempty" url:"-"`
+	Sync                          *bool  `json:"sync,omitempty" url:"-"`
 }
 
 type UnmanagedDeleteRequest struct {
-	AccessCodeId string `json:"access_code_id" url:"access_code_id"`
-	Sync         *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	AccessCodeId string `json:"access_code_id" url:"-"`
+	Sync         *bool  `json:"sync,omitempty" url:"-"`
 }
 
 type UnmanagedGetRequest struct {
-	DeviceId     *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	AccessCodeId *string `json:"access_code_id,omitempty" url:"access_code_id,omitempty"`
-	Code         *string `json:"code,omitempty" url:"code,omitempty"`
+	DeviceId     *string `json:"device_id,omitempty" url:"-"`
+	AccessCodeId *string `json:"access_code_id,omitempty" url:"-"`
+	Code         *string `json:"code,omitempty" url:"-"`
 }
 
 type UnmanagedListRequest struct {
-	DeviceId          string  `json:"device_id" url:"device_id"`
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	DeviceId          string  `json:"device_id" url:"-"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"-"`
 }
 
 type UnmanagedConvertToManagedResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedConvertToManagedResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedConvertToManagedResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedConvertToManagedResponse) UnmarshalJSON(data []byte) error {
@@ -46,17 +58,22 @@ func (u *UnmanagedConvertToManagedResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedConvertToManagedResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedConvertToManagedResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -66,7 +83,26 @@ type UnmanagedDeleteResponse struct {
 	ActionAttempt *seamapigo.ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedDeleteResponse) GetActionAttempt() *seamapigo.ActionAttempt {
+	if u == nil {
+		return nil
+	}
+	return u.ActionAttempt
+}
+
+func (u *UnmanagedDeleteResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -76,17 +112,22 @@ func (u *UnmanagedDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedDeleteResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedDeleteResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -96,7 +137,26 @@ type UnmanagedGetResponse struct {
 	AccessCode *seamapigo.UnmanagedAccessCode `json:"access_code,omitempty" url:"access_code,omitempty"`
 	Ok         bool                           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedGetResponse) GetAccessCode() *seamapigo.UnmanagedAccessCode {
+	if u == nil {
+		return nil
+	}
+	return u.AccessCode
+}
+
+func (u *UnmanagedGetResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedGetResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
@@ -106,17 +166,22 @@ func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedGetResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedGetResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -126,7 +191,26 @@ type UnmanagedListResponse struct {
 	AccessCodes []*seamapigo.UnmanagedAccessCode `json:"access_codes,omitempty" url:"access_codes,omitempty"`
 	Ok          bool                             `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedListResponse) GetAccessCodes() []*seamapigo.UnmanagedAccessCode {
+	if u == nil {
+		return nil
+	}
+	return u.AccessCodes
+}
+
+func (u *UnmanagedListResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedListResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
@@ -136,17 +220,22 @@ func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedListResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedListResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -155,7 +244,19 @@ func (u *UnmanagedListResponse) String() string {
 type UnmanagedUpdateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedUpdateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -165,26 +266,31 @@ func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedUpdateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedUpdateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedUpdateRequest struct {
-	AccessCodeId                  string `json:"access_code_id" url:"access_code_id"`
-	IsManaged                     bool   `json:"is_managed" url:"is_managed"`
-	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"allow_external_modification,omitempty"`
-	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"is_external_modification_allowed,omitempty"`
-	Force                         *bool  `json:"force,omitempty" url:"force,omitempty"`
+	AccessCodeId                  string `json:"access_code_id" url:"-"`
+	IsManaged                     bool   `json:"is_managed" url:"-"`
+	AllowExternalModification     *bool  `json:"allow_external_modification,omitempty" url:"-"`
+	IsExternalModificationAllowed *bool  `json:"is_external_modification_allowed,omitempty" url:"-"`
+	Force                         *bool  `json:"force,omitempty" url:"-"`
 }

@@ -5,30 +5,30 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type LocksGetRequest struct {
-	DeviceId *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	Name     *string `json:"name,omitempty" url:"name,omitempty"`
+	DeviceId *string `json:"device_id,omitempty" url:"-"`
+	Name     *string `json:"name,omitempty" url:"-"`
 }
 
 type LocksListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                                            `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                                           `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                                            `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
-	DeviceType          *DeviceType                                        `json:"device_type,omitempty" url:"device_type,omitempty"`
-	DeviceTypes         []DeviceType                                       `json:"device_types,omitempty" url:"device_types,omitempty"`
-	Manufacturer        *Manufacturer                                      `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
-	DeviceIds           []string                                           `json:"device_ids,omitempty" url:"device_ids,omitempty"`
-	Limit               *float64                                           `json:"limit,omitempty" url:"limit,omitempty"`
-	CreatedBefore       *time.Time                                         `json:"created_before,omitempty" url:"created_before,omitempty"`
-	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
-	IncludeIf           []LocksListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
-	ExcludeIf           []LocksListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
+	ConnectedAccountId  *string                                            `json:"connected_account_id,omitempty" url:"-"`
+	ConnectedAccountIds []string                                           `json:"connected_account_ids,omitempty" url:"-"`
+	ConnectWebviewId    *string                                            `json:"connect_webview_id,omitempty" url:"-"`
+	DeviceType          *DeviceType                                        `json:"device_type,omitempty" url:"-"`
+	DeviceTypes         []DeviceType                                       `json:"device_types,omitempty" url:"-"`
+	Manufacturer        *Manufacturer                                      `json:"manufacturer,omitempty" url:"-"`
+	DeviceIds           []string                                           `json:"device_ids,omitempty" url:"-"`
+	Limit               *float64                                           `json:"limit,omitempty" url:"-"`
+	CreatedBefore       *time.Time                                         `json:"created_before,omitempty" url:"-"`
+	UserIdentifierKey   *string                                            `json:"user_identifier_key,omitempty" url:"-"`
+	CustomMetadataHas   map[string]*LocksListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"-"`
+	IncludeIf           []LocksListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"-"`
+	ExcludeIf           []LocksListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"-"`
 }
 
 func (l *LocksListRequest) UnmarshalJSON(data []byte) error {
@@ -45,17 +45,17 @@ func (l *LocksListRequest) MarshalJSON() ([]byte, error) {
 	type embed LocksListRequest
 	var marshaler = struct {
 		embed
-		CreatedBefore *core.DateTime `json:"created_before,omitempty"`
+		CreatedBefore *internal.DateTime `json:"created_before,omitempty"`
 	}{
 		embed:         embed(*l),
-		CreatedBefore: core.NewOptionalDateTime(l.CreatedBefore),
+		CreatedBefore: internal.NewOptionalDateTime(l.CreatedBefore),
 	}
 	return json.Marshal(marshaler)
 }
 
 type LocksLockDoorRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
-	Sync     *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId string `json:"device_id" url:"-"`
+	Sync     *bool  `json:"sync,omitempty" url:"-"`
 }
 
 type LocksGetResponse struct {
@@ -63,7 +63,33 @@ type LocksGetResponse struct {
 	Device *Device `json:"device,omitempty" url:"device,omitempty"`
 	Ok     bool    `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocksGetResponse) GetLock() *Device {
+	if l == nil {
+		return nil
+	}
+	return l.Lock
+}
+
+func (l *LocksGetResponse) GetDevice() *Device {
+	if l == nil {
+		return nil
+	}
+	return l.Device
+}
+
+func (l *LocksGetResponse) GetOk() bool {
+	if l == nil {
+		return false
+	}
+	return l.Ok
+}
+
+func (l *LocksGetResponse) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
 }
 
 func (l *LocksGetResponse) UnmarshalJSON(data []byte) error {
@@ -73,46 +99,66 @@ func (l *LocksGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LocksGetResponse(value)
-	l._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LocksGetResponse) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
 }
 
 type LocksListRequestCustomMetadataHasValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	String  string
+	Boolean bool
+
+	typ string
 }
 
 func NewLocksListRequestCustomMetadataHasValueFromString(value string) *LocksListRequestCustomMetadataHasValue {
-	return &LocksListRequestCustomMetadataHasValue{typeName: "string", String: value}
+	return &LocksListRequestCustomMetadataHasValue{typ: "String", String: value}
 }
 
 func NewLocksListRequestCustomMetadataHasValueFromBoolean(value bool) *LocksListRequestCustomMetadataHasValue {
-	return &LocksListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+	return &LocksListRequestCustomMetadataHasValue{typ: "Boolean", Boolean: value}
+}
+
+func (l *LocksListRequestCustomMetadataHasValue) GetString() string {
+	if l == nil {
+		return ""
+	}
+	return l.String
+}
+
+func (l *LocksListRequestCustomMetadataHasValue) GetBoolean() bool {
+	if l == nil {
+		return false
+	}
+	return l.Boolean
 }
 
 func (l *LocksListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typeName = "string"
+		l.typ = "String"
 		l.String = valueString
 		return nil
 	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typeName = "boolean"
+		l.typ = "Boolean"
 		l.Boolean = valueBoolean
 		return nil
 	}
@@ -120,14 +166,13 @@ func (l *LocksListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) erro
 }
 
 func (l LocksListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
-	switch l.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "string":
+	if l.typ == "String" || l.String != "" {
 		return json.Marshal(l.String)
-	case "boolean":
+	}
+	if l.typ == "Boolean" || l.Boolean != false {
 		return json.Marshal(l.Boolean)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
 type LocksListRequestCustomMetadataHasValueVisitor interface {
@@ -136,14 +181,13 @@ type LocksListRequestCustomMetadataHasValueVisitor interface {
 }
 
 func (l *LocksListRequestCustomMetadataHasValue) Accept(visitor LocksListRequestCustomMetadataHasValueVisitor) error {
-	switch l.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "string":
+	if l.typ == "String" || l.String != "" {
 		return visitor.VisitString(l.String)
-	case "boolean":
+	}
+	if l.typ == "Boolean" || l.Boolean != false {
 		return visitor.VisitBoolean(l.Boolean)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
 type LocksListRequestExcludeIfItem string
@@ -154,6 +198,8 @@ const (
 	LocksListRequestExcludeIfItemCanProgramOfflineAccessCodes LocksListRequestExcludeIfItem = "can_program_offline_access_codes"
 	LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes  LocksListRequestExcludeIfItem = "can_program_online_access_codes"
 	LocksListRequestExcludeIfItemCanSimulateRemoval           LocksListRequestExcludeIfItem = "can_simulate_removal"
+	LocksListRequestExcludeIfItemCanSimulateConnection        LocksListRequestExcludeIfItem = "can_simulate_connection"
+	LocksListRequestExcludeIfItemCanSimulateDisconnection     LocksListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExcludeIfItem, error) {
@@ -168,6 +214,10 @@ func NewLocksListRequestExcludeIfItemFromString(s string) (LocksListRequestExclu
 		return LocksListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return LocksListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return LocksListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return LocksListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t LocksListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -185,6 +235,8 @@ const (
 	LocksListRequestIncludeIfItemCanProgramOfflineAccessCodes LocksListRequestIncludeIfItem = "can_program_offline_access_codes"
 	LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes  LocksListRequestIncludeIfItem = "can_program_online_access_codes"
 	LocksListRequestIncludeIfItemCanSimulateRemoval           LocksListRequestIncludeIfItem = "can_simulate_removal"
+	LocksListRequestIncludeIfItemCanSimulateConnection        LocksListRequestIncludeIfItem = "can_simulate_connection"
+	LocksListRequestIncludeIfItemCanSimulateDisconnection     LocksListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestIncludeIfItem, error) {
@@ -199,6 +251,10 @@ func NewLocksListRequestIncludeIfItemFromString(s string) (LocksListRequestInclu
 		return LocksListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return LocksListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return LocksListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return LocksListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t LocksListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -213,7 +269,33 @@ type LocksListResponse struct {
 	Devices []*Device `json:"devices,omitempty" url:"devices,omitempty"`
 	Ok      bool      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocksListResponse) GetLocks() []*Device {
+	if l == nil {
+		return nil
+	}
+	return l.Locks
+}
+
+func (l *LocksListResponse) GetDevices() []*Device {
+	if l == nil {
+		return nil
+	}
+	return l.Devices
+}
+
+func (l *LocksListResponse) GetOk() bool {
+	if l == nil {
+		return false
+	}
+	return l.Ok
+}
+
+func (l *LocksListResponse) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
 }
 
 func (l *LocksListResponse) UnmarshalJSON(data []byte) error {
@@ -223,17 +305,22 @@ func (l *LocksListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LocksListResponse(value)
-	l._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LocksListResponse) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
@@ -243,7 +330,26 @@ type LocksLockDoorResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocksLockDoorResponse) GetActionAttempt() *ActionAttempt {
+	if l == nil {
+		return nil
+	}
+	return l.ActionAttempt
+}
+
+func (l *LocksLockDoorResponse) GetOk() bool {
+	if l == nil {
+		return false
+	}
+	return l.Ok
+}
+
+func (l *LocksLockDoorResponse) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
 }
 
 func (l *LocksLockDoorResponse) UnmarshalJSON(data []byte) error {
@@ -253,17 +359,22 @@ func (l *LocksLockDoorResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LocksLockDoorResponse(value)
-	l._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LocksLockDoorResponse) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
@@ -273,7 +384,26 @@ type LocksUnlockDoorResponse struct {
 	ActionAttempt *ActionAttempt `json:"action_attempt,omitempty" url:"action_attempt,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocksUnlockDoorResponse) GetActionAttempt() *ActionAttempt {
+	if l == nil {
+		return nil
+	}
+	return l.ActionAttempt
+}
+
+func (l *LocksUnlockDoorResponse) GetOk() bool {
+	if l == nil {
+		return false
+	}
+	return l.Ok
+}
+
+func (l *LocksUnlockDoorResponse) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
 }
 
 func (l *LocksUnlockDoorResponse) UnmarshalJSON(data []byte) error {
@@ -283,23 +413,28 @@ func (l *LocksUnlockDoorResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LocksUnlockDoorResponse(value)
-	l._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LocksUnlockDoorResponse) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
 }
 
 type LocksUnlockDoorRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
-	Sync     *bool  `json:"sync,omitempty" url:"sync,omitempty"`
+	DeviceId string `json:"device_id" url:"-"`
+	Sync     *bool  `json:"sync,omitempty" url:"-"`
 }

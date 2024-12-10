@@ -6,36 +6,48 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type AccessGroupsAddUserRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
-	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
+	AcsUserId        string `json:"acs_user_id" url:"-"`
 }
 
 type AccessGroupsGetRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
 }
 
 type AccessGroupsListRequest struct {
-	AcsSystemId *string `json:"acs_system_id,omitempty" url:"acs_system_id,omitempty"`
-	AcsUserId   *string `json:"acs_user_id,omitempty" url:"acs_user_id,omitempty"`
+	AcsSystemId *string `json:"acs_system_id,omitempty" url:"-"`
+	AcsUserId   *string `json:"acs_user_id,omitempty" url:"-"`
 }
 
 type AccessGroupsListUsersRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
 }
 
 type AccessGroupsRemoveUserRequest struct {
-	AcsAccessGroupId string `json:"acs_access_group_id" url:"acs_access_group_id"`
-	AcsUserId        string `json:"acs_user_id" url:"acs_user_id"`
+	AcsAccessGroupId string `json:"acs_access_group_id" url:"-"`
+	AcsUserId        string `json:"acs_user_id" url:"-"`
 }
 
 type AccessGroupsAddUserResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessGroupsAddUserResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessGroupsAddUserResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessGroupsAddUserResponse) UnmarshalJSON(data []byte) error {
@@ -45,17 +57,22 @@ func (a *AccessGroupsAddUserResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessGroupsAddUserResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessGroupsAddUserResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -65,7 +82,26 @@ type AccessGroupsGetResponse struct {
 	AcsAccessGroup *seamapigo.AcsAccessGroup `json:"acs_access_group,omitempty" url:"acs_access_group,omitempty"`
 	Ok             bool                      `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessGroupsGetResponse) GetAcsAccessGroup() *seamapigo.AcsAccessGroup {
+	if a == nil {
+		return nil
+	}
+	return a.AcsAccessGroup
+}
+
+func (a *AccessGroupsGetResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessGroupsGetResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessGroupsGetResponse) UnmarshalJSON(data []byte) error {
@@ -75,17 +111,22 @@ func (a *AccessGroupsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessGroupsGetResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessGroupsGetResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -95,7 +136,26 @@ type AccessGroupsListResponse struct {
 	AcsAccessGroups []*seamapigo.AcsAccessGroup `json:"acs_access_groups,omitempty" url:"acs_access_groups,omitempty"`
 	Ok              bool                        `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessGroupsListResponse) GetAcsAccessGroups() []*seamapigo.AcsAccessGroup {
+	if a == nil {
+		return nil
+	}
+	return a.AcsAccessGroups
+}
+
+func (a *AccessGroupsListResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessGroupsListResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessGroupsListResponse) UnmarshalJSON(data []byte) error {
@@ -105,17 +165,22 @@ func (a *AccessGroupsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessGroupsListResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessGroupsListResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -125,7 +190,26 @@ type AccessGroupsListUsersResponse struct {
 	AcsUsers []*seamapigo.AcsUser `json:"acs_users,omitempty" url:"acs_users,omitempty"`
 	Ok       bool                 `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessGroupsListUsersResponse) GetAcsUsers() []*seamapigo.AcsUser {
+	if a == nil {
+		return nil
+	}
+	return a.AcsUsers
+}
+
+func (a *AccessGroupsListUsersResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessGroupsListUsersResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessGroupsListUsersResponse) UnmarshalJSON(data []byte) error {
@@ -135,17 +219,22 @@ func (a *AccessGroupsListUsersResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessGroupsListUsersResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessGroupsListUsersResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
@@ -154,7 +243,19 @@ func (a *AccessGroupsListUsersResponse) String() string {
 type AccessGroupsRemoveUserResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AccessGroupsRemoveUserResponse) GetOk() bool {
+	if a == nil {
+		return false
+	}
+	return a.Ok
+}
+
+func (a *AccessGroupsRemoveUserResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
 }
 
 func (a *AccessGroupsRemoveUserResponse) UnmarshalJSON(data []byte) error {
@@ -164,17 +265,22 @@ func (a *AccessGroupsRemoveUserResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = AccessGroupsRemoveUserResponse(value)
-	a._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *AccessGroupsRemoveUserResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)

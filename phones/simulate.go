@@ -6,14 +6,14 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type SimulateCreateSandboxPhoneRequest struct {
-	CustomSdkInstallationId *string                                             `json:"custom_sdk_installation_id,omitempty" url:"custom_sdk_installation_id,omitempty"`
-	UserIdentityId          string                                              `json:"user_identity_id" url:"user_identity_id"`
-	PhoneMetadata           *SimulateCreateSandboxPhoneRequestPhoneMetadata     `json:"phone_metadata,omitempty" url:"phone_metadata,omitempty"`
-	AssaAbloyMetadata       *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata `json:"assa_abloy_metadata,omitempty" url:"assa_abloy_metadata,omitempty"`
+	CustomSdkInstallationId *string                                             `json:"custom_sdk_installation_id,omitempty" url:"-"`
+	UserIdentityId          string                                              `json:"user_identity_id" url:"-"`
+	PhoneMetadata           *SimulateCreateSandboxPhoneRequestPhoneMetadata     `json:"phone_metadata,omitempty" url:"-"`
+	AssaAbloyMetadata       *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata `json:"assa_abloy_metadata,omitempty" url:"-"`
 }
 
 type SimulateCreateSandboxPhoneRequestAssaAbloyMetadata struct {
@@ -24,7 +24,54 @@ type SimulateCreateSandboxPhoneRequestAssaAbloyMetadata struct {
 	SeosAppletVersion  *string  `json:"seos_applet_version,omitempty" url:"seos_applet_version,omitempty"`
 	SeosTsmEndpointId  *float64 `json:"seos_tsm_endpoint_id,omitempty" url:"seos_tsm_endpoint_id,omitempty"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetBleCapability() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.BleCapability
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetHceCapability() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.HceCapability
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetNfcCapability() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.NfcCapability
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetApplicationVersion() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ApplicationVersion
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetSeosAppletVersion() *string {
+	if s == nil {
+		return nil
+	}
+	return s.SeosAppletVersion
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetSeosTsmEndpointId() *float64 {
+	if s == nil {
+		return nil
+	}
+	return s.SeosTsmEndpointId
+}
+
+func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) UnmarshalJSON(data []byte) error {
@@ -34,17 +81,22 @@ func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) UnmarshalJSON(data 
 		return err
 	}
 	*s = SimulateCreateSandboxPhoneRequestAssaAbloyMetadata(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateCreateSandboxPhoneRequestAssaAbloyMetadata) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)
@@ -56,7 +108,40 @@ type SimulateCreateSandboxPhoneRequestPhoneMetadata struct {
 	DeviceManufacturer *string                         `json:"device_manufacturer,omitempty" url:"device_manufacturer,omitempty"`
 	DeviceModel        *string                         `json:"device_model,omitempty" url:"device_model,omitempty"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) GetOperatingSystem() *seamapigo.PhoneOperatingSystem {
+	if s == nil {
+		return nil
+	}
+	return s.OperatingSystem
+}
+
+func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) GetOsVersion() *string {
+	if s == nil {
+		return nil
+	}
+	return s.OsVersion
+}
+
+func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) GetDeviceManufacturer() *string {
+	if s == nil {
+		return nil
+	}
+	return s.DeviceManufacturer
+}
+
+func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) GetDeviceModel() *string {
+	if s == nil {
+		return nil
+	}
+	return s.DeviceModel
+}
+
+func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) UnmarshalJSON(data []byte) error {
@@ -66,17 +151,22 @@ func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) UnmarshalJSON(data []by
 		return err
 	}
 	*s = SimulateCreateSandboxPhoneRequestPhoneMetadata(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateCreateSandboxPhoneRequestPhoneMetadata) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)
@@ -86,7 +176,26 @@ type SimulateCreateSandboxPhoneResponse struct {
 	Phone *seamapigo.Phone `json:"phone,omitempty" url:"phone,omitempty"`
 	Ok    bool             `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimulateCreateSandboxPhoneResponse) GetPhone() *seamapigo.Phone {
+	if s == nil {
+		return nil
+	}
+	return s.Phone
+}
+
+func (s *SimulateCreateSandboxPhoneResponse) GetOk() bool {
+	if s == nil {
+		return false
+	}
+	return s.Ok
+}
+
+func (s *SimulateCreateSandboxPhoneResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
 func (s *SimulateCreateSandboxPhoneResponse) UnmarshalJSON(data []byte) error {
@@ -96,17 +205,22 @@ func (s *SimulateCreateSandboxPhoneResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*s = SimulateCreateSandboxPhoneResponse(value)
-	s._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (s *SimulateCreateSandboxPhoneResponse) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(s); err == nil {
+	if value, err := internal.StringifyJSON(s); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", s)

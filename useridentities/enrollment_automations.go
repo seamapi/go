@@ -6,33 +6,46 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
+	time "time"
 )
 
 type EnrollmentAutomationsDeleteRequest struct {
-	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"enrollment_automation_id"`
+	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"-"`
 }
 
 type EnrollmentAutomationsGetRequest struct {
-	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"enrollment_automation_id"`
+	EnrollmentAutomationId string `json:"enrollment_automation_id" url:"-"`
 }
 
 type EnrollmentAutomationsLaunchRequest struct {
-	UserIdentityId               string  `json:"user_identity_id" url:"user_identity_id"`
-	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
-	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"acs_credential_pool_id,omitempty"`
-	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"create_credential_manager_user,omitempty"`
-	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"credential_manager_acs_user_id,omitempty"`
+	UserIdentityId               string  `json:"user_identity_id" url:"-"`
+	CredentialManagerAcsSystemId string  `json:"credential_manager_acs_system_id" url:"-"`
+	AcsCredentialPoolId          *string `json:"acs_credential_pool_id,omitempty" url:"-"`
+	CreateCredentialManagerUser  *bool   `json:"create_credential_manager_user,omitempty" url:"-"`
+	CredentialManagerAcsUserId   *string `json:"credential_manager_acs_user_id,omitempty" url:"-"`
 }
 
 type EnrollmentAutomationsListRequest struct {
-	UserIdentityId string `json:"user_identity_id" url:"user_identity_id"`
+	UserIdentityId string `json:"user_identity_id" url:"-"`
 }
 
 type EnrollmentAutomationsDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentAutomationsDeleteResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EnrollmentAutomationsDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EnrollmentAutomationsDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -42,17 +55,22 @@ func (e *EnrollmentAutomationsDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EnrollmentAutomationsDeleteResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EnrollmentAutomationsDeleteResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -62,7 +80,26 @@ type EnrollmentAutomationsGetResponse struct {
 	EnrollmentAutomation *seamapigo.EnrollmentAutomation `json:"enrollment_automation,omitempty" url:"enrollment_automation,omitempty"`
 	Ok                   bool                            `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentAutomationsGetResponse) GetEnrollmentAutomation() *seamapigo.EnrollmentAutomation {
+	if e == nil {
+		return nil
+	}
+	return e.EnrollmentAutomation
+}
+
+func (e *EnrollmentAutomationsGetResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EnrollmentAutomationsGetResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EnrollmentAutomationsGetResponse) UnmarshalJSON(data []byte) error {
@@ -72,17 +109,22 @@ func (e *EnrollmentAutomationsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EnrollmentAutomationsGetResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EnrollmentAutomationsGetResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -92,7 +134,26 @@ type EnrollmentAutomationsLaunchResponse struct {
 	EnrollmentAutomation *EnrollmentAutomationsLaunchResponseEnrollmentAutomation `json:"enrollment_automation,omitempty" url:"enrollment_automation,omitempty"`
 	Ok                   bool                                                     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentAutomationsLaunchResponse) GetEnrollmentAutomation() *EnrollmentAutomationsLaunchResponseEnrollmentAutomation {
+	if e == nil {
+		return nil
+	}
+	return e.EnrollmentAutomation
+}
+
+func (e *EnrollmentAutomationsLaunchResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EnrollmentAutomationsLaunchResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EnrollmentAutomationsLaunchResponse) UnmarshalJSON(data []byte) error {
@@ -102,17 +163,126 @@ func (e *EnrollmentAutomationsLaunchResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EnrollmentAutomationsLaunchResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EnrollmentAutomationsLaunchResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EnrollmentAutomationsLaunchResponseEnrollmentAutomation struct {
+	AcsCredentialProvisioningAutomationId string    `json:"acs_credential_provisioning_automation_id" url:"acs_credential_provisioning_automation_id"`
+	CredentialManagerAcsSystemId          string    `json:"credential_manager_acs_system_id" url:"credential_manager_acs_system_id"`
+	UserIdentityId                        string    `json:"user_identity_id" url:"user_identity_id"`
+	CreatedAt                             time.Time `json:"created_at" url:"created_at"`
+	WorkspaceId                           string    `json:"workspace_id" url:"workspace_id"`
+	EnrollmentAutomationId                string    `json:"enrollment_automation_id" url:"enrollment_automation_id"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetAcsCredentialProvisioningAutomationId() string {
+	if e == nil {
+		return ""
+	}
+	return e.AcsCredentialProvisioningAutomationId
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetCredentialManagerAcsSystemId() string {
+	if e == nil {
+		return ""
+	}
+	return e.CredentialManagerAcsSystemId
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetUserIdentityId() string {
+	if e == nil {
+		return ""
+	}
+	return e.UserIdentityId
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetCreatedAt() time.Time {
+	if e == nil {
+		return time.Time{}
+	}
+	return e.CreatedAt
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetWorkspaceId() string {
+	if e == nil {
+		return ""
+	}
+	return e.WorkspaceId
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetEnrollmentAutomationId() string {
+	if e == nil {
+		return ""
+	}
+	return e.EnrollmentAutomationId
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) UnmarshalJSON(data []byte) error {
+	type embed EnrollmentAutomationsLaunchResponseEnrollmentAutomation
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = EnrollmentAutomationsLaunchResponseEnrollmentAutomation(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) MarshalJSON() ([]byte, error) {
+	type embed EnrollmentAutomationsLaunchResponseEnrollmentAutomation
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: internal.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *EnrollmentAutomationsLaunchResponseEnrollmentAutomation) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
@@ -122,7 +292,26 @@ type EnrollmentAutomationsListResponse struct {
 	EnrollmentAutomations []*seamapigo.EnrollmentAutomation `json:"enrollment_automations,omitempty" url:"enrollment_automations,omitempty"`
 	Ok                    bool                              `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentAutomationsListResponse) GetEnrollmentAutomations() []*seamapigo.EnrollmentAutomation {
+	if e == nil {
+		return nil
+	}
+	return e.EnrollmentAutomations
+}
+
+func (e *EnrollmentAutomationsListResponse) GetOk() bool {
+	if e == nil {
+		return false
+	}
+	return e.Ok
+}
+
+func (e *EnrollmentAutomationsListResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
 }
 
 func (e *EnrollmentAutomationsListResponse) UnmarshalJSON(data []byte) error {
@@ -132,17 +321,22 @@ func (e *EnrollmentAutomationsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*e = EnrollmentAutomationsListResponse(value)
-	e._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (e *EnrollmentAutomationsListResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)

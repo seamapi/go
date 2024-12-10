@@ -5,16 +5,16 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type ClientSessionsCreateRequest struct {
-	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
-	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
-	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"-"`
+	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"-"`
+	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"-"`
+	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"-"`
+	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"-"`
 }
 
 func (c *ClientSessionsCreateRequest) UnmarshalJSON(data []byte) error {
@@ -31,29 +31,29 @@ func (c *ClientSessionsCreateRequest) MarshalJSON() ([]byte, error) {
 	type embed ClientSessionsCreateRequest
 	var marshaler = struct {
 		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:     embed(*c),
-		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 type ClientSessionsDeleteRequest struct {
-	ClientSessionId string `json:"client_session_id" url:"client_session_id"`
+	ClientSessionId string `json:"client_session_id" url:"-"`
 }
 
 type ClientSessionsGetRequest struct {
-	ClientSessionId   *string `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
-	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	ClientSessionId   *string `json:"client_session_id,omitempty" url:"-"`
+	UserIdentifierKey *string `json:"user_identifier_key,omitempty" url:"-"`
 }
 
 type ClientSessionsGetOrCreateRequest struct {
-	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
-	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
-	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	UserIdentifierKey   *string    `json:"user_identifier_key,omitempty" url:"-"`
+	ConnectWebviewIds   []string   `json:"connect_webview_ids,omitempty" url:"-"`
+	ConnectedAccountIds []string   `json:"connected_account_ids,omitempty" url:"-"`
+	UserIdentityIds     []string   `json:"user_identity_ids,omitempty" url:"-"`
+	ExpiresAt           *time.Time `json:"expires_at,omitempty" url:"-"`
 }
 
 func (c *ClientSessionsGetOrCreateRequest) UnmarshalJSON(data []byte) error {
@@ -70,39 +70,186 @@ func (c *ClientSessionsGetOrCreateRequest) MarshalJSON() ([]byte, error) {
 	type embed ClientSessionsGetOrCreateRequest
 	var marshaler = struct {
 		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:     embed(*c),
-		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 type ClientSessionsGrantAccessRequest struct {
-	ClientSessionId     *string  `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
-	UserIdentifierKey   *string  `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	ConnectedAccountIds []string `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ConnectWebviewIds   []string `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
-	UserIdentityIds     []string `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+	ClientSessionId     *string  `json:"client_session_id,omitempty" url:"-"`
+	UserIdentifierKey   *string  `json:"user_identifier_key,omitempty" url:"-"`
+	ConnectedAccountIds []string `json:"connected_account_ids,omitempty" url:"-"`
+	ConnectWebviewIds   []string `json:"connect_webview_ids,omitempty" url:"-"`
+	UserIdentityIds     []string `json:"user_identity_ids,omitempty" url:"-"`
 }
 
 type ClientSessionsListRequest struct {
-	ClientSessionId          *string `json:"client_session_id,omitempty" url:"client_session_id,omitempty"`
-	UserIdentifierKey        *string `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	ConnectWebviewId         *string `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
-	WithoutUserIdentifierKey *bool   `json:"without_user_identifier_key,omitempty" url:"without_user_identifier_key,omitempty"`
-	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"user_identity_id,omitempty"`
+	ClientSessionId          *string `json:"client_session_id,omitempty" url:"-"`
+	UserIdentifierKey        *string `json:"user_identifier_key,omitempty" url:"-"`
+	ConnectWebviewId         *string `json:"connect_webview_id,omitempty" url:"-"`
+	WithoutUserIdentifierKey *bool   `json:"without_user_identifier_key,omitempty" url:"-"`
+	UserIdentityId           *string `json:"user_identity_id,omitempty" url:"-"`
 }
 
 type ClientSessionsRevokeRequest struct {
-	ClientSessionId string `json:"client_session_id" url:"client_session_id"`
+	ClientSessionId string `json:"client_session_id" url:"-"`
+}
+
+type ClientSession struct {
+	ClientSessionId     string    `json:"client_session_id" url:"client_session_id"`
+	WorkspaceId         string    `json:"workspace_id" url:"workspace_id"`
+	CreatedAt           time.Time `json:"created_at" url:"created_at"`
+	Token               string    `json:"token" url:"token"`
+	UserIdentifierKey   *string   `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
+	DeviceCount         float64   `json:"device_count" url:"device_count"`
+	ConnectedAccountIds []string  `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
+	ConnectWebviewIds   []string  `json:"connect_webview_ids,omitempty" url:"connect_webview_ids,omitempty"`
+	UserIdentityIds     []string  `json:"user_identity_ids,omitempty" url:"user_identity_ids,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSession) GetClientSessionId() string {
+	if c == nil {
+		return ""
+	}
+	return c.ClientSessionId
+}
+
+func (c *ClientSession) GetWorkspaceId() string {
+	if c == nil {
+		return ""
+	}
+	return c.WorkspaceId
+}
+
+func (c *ClientSession) GetCreatedAt() time.Time {
+	if c == nil {
+		return time.Time{}
+	}
+	return c.CreatedAt
+}
+
+func (c *ClientSession) GetToken() string {
+	if c == nil {
+		return ""
+	}
+	return c.Token
+}
+
+func (c *ClientSession) GetUserIdentifierKey() *string {
+	if c == nil {
+		return nil
+	}
+	return c.UserIdentifierKey
+}
+
+func (c *ClientSession) GetDeviceCount() float64 {
+	if c == nil {
+		return 0
+	}
+	return c.DeviceCount
+}
+
+func (c *ClientSession) GetConnectedAccountIds() []string {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectedAccountIds
+}
+
+func (c *ClientSession) GetConnectWebviewIds() []string {
+	if c == nil {
+		return nil
+	}
+	return c.ConnectWebviewIds
+}
+
+func (c *ClientSession) GetUserIdentityIds() []string {
+	if c == nil {
+		return nil
+	}
+	return c.UserIdentityIds
+}
+
+func (c *ClientSession) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ClientSession) UnmarshalJSON(data []byte) error {
+	type embed ClientSession
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ClientSession(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ClientSession) MarshalJSON() ([]byte, error) {
+	type embed ClientSession
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: internal.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *ClientSession) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ClientSessionsCreateResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsCreateResponse) GetClientSession() *ClientSession {
+	if c == nil {
+		return nil
+	}
+	return c.ClientSession
+}
+
+func (c *ClientSessionsCreateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsCreateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsCreateResponse) UnmarshalJSON(data []byte) error {
@@ -112,17 +259,22 @@ func (c *ClientSessionsCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -131,7 +283,19 @@ func (c *ClientSessionsCreateResponse) String() string {
 type ClientSessionsDeleteResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsDeleteResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsDeleteResponse) UnmarshalJSON(data []byte) error {
@@ -141,17 +305,22 @@ func (c *ClientSessionsDeleteResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsDeleteResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsDeleteResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -161,7 +330,26 @@ type ClientSessionsGetOrCreateResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsGetOrCreateResponse) GetClientSession() *ClientSession {
+	if c == nil {
+		return nil
+	}
+	return c.ClientSession
+}
+
+func (c *ClientSessionsGetOrCreateResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsGetOrCreateResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsGetOrCreateResponse) UnmarshalJSON(data []byte) error {
@@ -171,17 +359,22 @@ func (c *ClientSessionsGetOrCreateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsGetOrCreateResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsGetOrCreateResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -191,7 +384,26 @@ type ClientSessionsGetResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsGetResponse) GetClientSession() *ClientSession {
+	if c == nil {
+		return nil
+	}
+	return c.ClientSession
+}
+
+func (c *ClientSessionsGetResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsGetResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsGetResponse) UnmarshalJSON(data []byte) error {
@@ -201,17 +413,22 @@ func (c *ClientSessionsGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsGetResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsGetResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -221,7 +438,26 @@ type ClientSessionsGrantAccessResponse struct {
 	ClientSession *ClientSession `json:"client_session,omitempty" url:"client_session,omitempty"`
 	Ok            bool           `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsGrantAccessResponse) GetClientSession() *ClientSession {
+	if c == nil {
+		return nil
+	}
+	return c.ClientSession
+}
+
+func (c *ClientSessionsGrantAccessResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsGrantAccessResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsGrantAccessResponse) UnmarshalJSON(data []byte) error {
@@ -231,17 +467,22 @@ func (c *ClientSessionsGrantAccessResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsGrantAccessResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsGrantAccessResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -251,7 +492,26 @@ type ClientSessionsListResponse struct {
 	ClientSessions []*ClientSession `json:"client_sessions,omitempty" url:"client_sessions,omitempty"`
 	Ok             bool             `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsListResponse) GetClientSessions() []*ClientSession {
+	if c == nil {
+		return nil
+	}
+	return c.ClientSessions
+}
+
+func (c *ClientSessionsListResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsListResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsListResponse) UnmarshalJSON(data []byte) error {
@@ -261,17 +521,22 @@ func (c *ClientSessionsListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsListResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsListResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
@@ -280,7 +545,19 @@ func (c *ClientSessionsListResponse) String() string {
 type ClientSessionsRevokeResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClientSessionsRevokeResponse) GetOk() bool {
+	if c == nil {
+		return false
+	}
+	return c.Ok
+}
+
+func (c *ClientSessionsRevokeResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
 func (c *ClientSessionsRevokeResponse) UnmarshalJSON(data []byte) error {
@@ -290,17 +567,22 @@ func (c *ClientSessionsRevokeResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = ClientSessionsRevokeResponse(value)
-	c._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (c *ClientSessionsRevokeResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)

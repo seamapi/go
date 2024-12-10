@@ -5,21 +5,33 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 )
 
 type PhonesDeactivateRequest struct {
-	DeviceId string `json:"device_id" url:"device_id"`
+	DeviceId string `json:"device_id" url:"-"`
 }
 
 type PhonesListRequest struct {
-	OwnerUserIdentityId *string `json:"owner_user_identity_id,omitempty" url:"owner_user_identity_id,omitempty"`
+	OwnerUserIdentityId *string `json:"owner_user_identity_id,omitempty" url:"-"`
 }
 
 type PhonesDeactivateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PhonesDeactivateResponse) GetOk() bool {
+	if p == nil {
+		return false
+	}
+	return p.Ok
+}
+
+func (p *PhonesDeactivateResponse) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
 }
 
 func (p *PhonesDeactivateResponse) UnmarshalJSON(data []byte) error {
@@ -29,17 +41,22 @@ func (p *PhonesDeactivateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*p = PhonesDeactivateResponse(value)
-	p._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (p *PhonesDeactivateResponse) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)
@@ -49,7 +66,26 @@ type PhonesListResponse struct {
 	Phones []*Phone `json:"phones,omitempty" url:"phones,omitempty"`
 	Ok     bool     `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PhonesListResponse) GetPhones() []*Phone {
+	if p == nil {
+		return nil
+	}
+	return p.Phones
+}
+
+func (p *PhonesListResponse) GetOk() bool {
+	if p == nil {
+		return false
+	}
+	return p.Ok
+}
+
+func (p *PhonesListResponse) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
 }
 
 func (p *PhonesListResponse) UnmarshalJSON(data []byte) error {
@@ -59,17 +95,22 @@ func (p *PhonesListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*p = PhonesListResponse(value)
-	p._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (p *PhonesListResponse) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)

@@ -6,30 +6,30 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	seamapigo "github.com/seamapi/go"
-	core "github.com/seamapi/go/core"
+	internal "github.com/seamapi/go/internal"
 	time "time"
 )
 
 type UnmanagedGetRequest struct {
-	DeviceId *string `json:"device_id,omitempty" url:"device_id,omitempty"`
-	Name     *string `json:"name,omitempty" url:"name,omitempty"`
+	DeviceId *string `json:"device_id,omitempty" url:"-"`
+	Name     *string `json:"name,omitempty" url:"-"`
 }
 
 type UnmanagedListRequest struct {
 	// List all devices owned by this connected account
-	ConnectedAccountId  *string                                                `json:"connected_account_id,omitempty" url:"connected_account_id,omitempty"`
-	ConnectedAccountIds []string                                               `json:"connected_account_ids,omitempty" url:"connected_account_ids,omitempty"`
-	ConnectWebviewId    *string                                                `json:"connect_webview_id,omitempty" url:"connect_webview_id,omitempty"`
-	DeviceType          *seamapigo.DeviceType                                  `json:"device_type,omitempty" url:"device_type,omitempty"`
-	DeviceTypes         []seamapigo.DeviceType                                 `json:"device_types,omitempty" url:"device_types,omitempty"`
-	Manufacturer        *seamapigo.Manufacturer                                `json:"manufacturer,omitempty" url:"manufacturer,omitempty"`
-	DeviceIds           []string                                               `json:"device_ids,omitempty" url:"device_ids,omitempty"`
-	Limit               *float64                                               `json:"limit,omitempty" url:"limit,omitempty"`
-	CreatedBefore       *time.Time                                             `json:"created_before,omitempty" url:"created_before,omitempty"`
-	UserIdentifierKey   *string                                                `json:"user_identifier_key,omitempty" url:"user_identifier_key,omitempty"`
-	CustomMetadataHas   map[string]*UnmanagedListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"custom_metadata_has,omitempty"`
-	IncludeIf           []UnmanagedListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"include_if,omitempty"`
-	ExcludeIf           []UnmanagedListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"exclude_if,omitempty"`
+	ConnectedAccountId  *string                                                `json:"connected_account_id,omitempty" url:"-"`
+	ConnectedAccountIds []string                                               `json:"connected_account_ids,omitempty" url:"-"`
+	ConnectWebviewId    *string                                                `json:"connect_webview_id,omitempty" url:"-"`
+	DeviceType          *seamapigo.DeviceType                                  `json:"device_type,omitempty" url:"-"`
+	DeviceTypes         []seamapigo.DeviceType                                 `json:"device_types,omitempty" url:"-"`
+	Manufacturer        *seamapigo.Manufacturer                                `json:"manufacturer,omitempty" url:"-"`
+	DeviceIds           []string                                               `json:"device_ids,omitempty" url:"-"`
+	Limit               *float64                                               `json:"limit,omitempty" url:"-"`
+	CreatedBefore       *time.Time                                             `json:"created_before,omitempty" url:"-"`
+	UserIdentifierKey   *string                                                `json:"user_identifier_key,omitempty" url:"-"`
+	CustomMetadataHas   map[string]*UnmanagedListRequestCustomMetadataHasValue `json:"custom_metadata_has,omitempty" url:"-"`
+	IncludeIf           []UnmanagedListRequestIncludeIfItem                    `json:"include_if,omitempty" url:"-"`
+	ExcludeIf           []UnmanagedListRequestExcludeIfItem                    `json:"exclude_if,omitempty" url:"-"`
 }
 
 func (u *UnmanagedListRequest) UnmarshalJSON(data []byte) error {
@@ -46,10 +46,10 @@ func (u *UnmanagedListRequest) MarshalJSON() ([]byte, error) {
 	type embed UnmanagedListRequest
 	var marshaler = struct {
 		embed
-		CreatedBefore *core.DateTime `json:"created_before,omitempty"`
+		CreatedBefore *internal.DateTime `json:"created_before,omitempty"`
 	}{
 		embed:         embed(*u),
-		CreatedBefore: core.NewOptionalDateTime(u.CreatedBefore),
+		CreatedBefore: internal.NewOptionalDateTime(u.CreatedBefore),
 	}
 	return json.Marshal(marshaler)
 }
@@ -58,7 +58,26 @@ type UnmanagedGetResponse struct {
 	Device *seamapigo.UnmanagedDevice `json:"device,omitempty" url:"device,omitempty"`
 	Ok     bool                       `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedGetResponse) GetDevice() *seamapigo.UnmanagedDevice {
+	if u == nil {
+		return nil
+	}
+	return u.Device
+}
+
+func (u *UnmanagedGetResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedGetResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
@@ -68,46 +87,66 @@ func (u *UnmanagedGetResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedGetResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedGetResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedListRequestCustomMetadataHasValue struct {
-	typeName string
-	String   string
-	Boolean  bool
+	String  string
+	Boolean bool
+
+	typ string
 }
 
 func NewUnmanagedListRequestCustomMetadataHasValueFromString(value string) *UnmanagedListRequestCustomMetadataHasValue {
-	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "string", String: value}
+	return &UnmanagedListRequestCustomMetadataHasValue{typ: "String", String: value}
 }
 
 func NewUnmanagedListRequestCustomMetadataHasValueFromBoolean(value bool) *UnmanagedListRequestCustomMetadataHasValue {
-	return &UnmanagedListRequestCustomMetadataHasValue{typeName: "boolean", Boolean: value}
+	return &UnmanagedListRequestCustomMetadataHasValue{typ: "Boolean", Boolean: value}
+}
+
+func (u *UnmanagedListRequestCustomMetadataHasValue) GetString() string {
+	if u == nil {
+		return ""
+	}
+	return u.String
+}
+
+func (u *UnmanagedListRequestCustomMetadataHasValue) GetBoolean() bool {
+	if u == nil {
+		return false
+	}
+	return u.Boolean
 }
 
 func (u *UnmanagedListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		u.typeName = "string"
+		u.typ = "String"
 		u.String = valueString
 		return nil
 	}
 	var valueBoolean bool
 	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		u.typeName = "boolean"
+		u.typ = "Boolean"
 		u.Boolean = valueBoolean
 		return nil
 	}
@@ -115,14 +154,13 @@ func (u *UnmanagedListRequestCustomMetadataHasValue) UnmarshalJSON(data []byte) 
 }
 
 func (u UnmanagedListRequestCustomMetadataHasValue) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
+	if u.typ == "String" || u.String != "" {
 		return json.Marshal(u.String)
-	case "boolean":
+	}
+	if u.typ == "Boolean" || u.Boolean != false {
 		return json.Marshal(u.Boolean)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", u)
 }
 
 type UnmanagedListRequestCustomMetadataHasValueVisitor interface {
@@ -131,14 +169,13 @@ type UnmanagedListRequestCustomMetadataHasValueVisitor interface {
 }
 
 func (u *UnmanagedListRequestCustomMetadataHasValue) Accept(visitor UnmanagedListRequestCustomMetadataHasValueVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
+	if u.typ == "String" || u.String != "" {
 		return visitor.VisitString(u.String)
-	case "boolean":
+	}
+	if u.typ == "Boolean" || u.Boolean != false {
 		return visitor.VisitBoolean(u.Boolean)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", u)
 }
 
 type UnmanagedListRequestExcludeIfItem string
@@ -149,6 +186,8 @@ const (
 	UnmanagedListRequestExcludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestExcludeIfItem = "can_program_offline_access_codes"
 	UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestExcludeIfItem = "can_program_online_access_codes"
 	UnmanagedListRequestExcludeIfItemCanSimulateRemoval           UnmanagedListRequestExcludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestExcludeIfItemCanSimulateConnection        UnmanagedListRequestExcludeIfItem = "can_simulate_connection"
+	UnmanagedListRequestExcludeIfItemCanSimulateDisconnection     UnmanagedListRequestExcludeIfItem = "can_simulate_disconnection"
 )
 
 func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequestExcludeIfItem, error) {
@@ -163,6 +202,10 @@ func NewUnmanagedListRequestExcludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestExcludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return UnmanagedListRequestExcludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return UnmanagedListRequestExcludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return UnmanagedListRequestExcludeIfItemCanSimulateDisconnection, nil
 	}
 	var t UnmanagedListRequestExcludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -180,6 +223,8 @@ const (
 	UnmanagedListRequestIncludeIfItemCanProgramOfflineAccessCodes UnmanagedListRequestIncludeIfItem = "can_program_offline_access_codes"
 	UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes  UnmanagedListRequestIncludeIfItem = "can_program_online_access_codes"
 	UnmanagedListRequestIncludeIfItemCanSimulateRemoval           UnmanagedListRequestIncludeIfItem = "can_simulate_removal"
+	UnmanagedListRequestIncludeIfItemCanSimulateConnection        UnmanagedListRequestIncludeIfItem = "can_simulate_connection"
+	UnmanagedListRequestIncludeIfItemCanSimulateDisconnection     UnmanagedListRequestIncludeIfItem = "can_simulate_disconnection"
 )
 
 func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequestIncludeIfItem, error) {
@@ -194,6 +239,10 @@ func NewUnmanagedListRequestIncludeIfItemFromString(s string) (UnmanagedListRequ
 		return UnmanagedListRequestIncludeIfItemCanProgramOnlineAccessCodes, nil
 	case "can_simulate_removal":
 		return UnmanagedListRequestIncludeIfItemCanSimulateRemoval, nil
+	case "can_simulate_connection":
+		return UnmanagedListRequestIncludeIfItemCanSimulateConnection, nil
+	case "can_simulate_disconnection":
+		return UnmanagedListRequestIncludeIfItemCanSimulateDisconnection, nil
 	}
 	var t UnmanagedListRequestIncludeIfItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -207,7 +256,26 @@ type UnmanagedListResponse struct {
 	Devices []*seamapigo.UnmanagedDevice `json:"devices,omitempty" url:"devices,omitempty"`
 	Ok      bool                         `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedListResponse) GetDevices() []*seamapigo.UnmanagedDevice {
+	if u == nil {
+		return nil
+	}
+	return u.Devices
+}
+
+func (u *UnmanagedListResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedListResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
@@ -217,17 +285,22 @@ func (u *UnmanagedListResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedListResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedListResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
@@ -236,7 +309,19 @@ func (u *UnmanagedListResponse) String() string {
 type UnmanagedUpdateResponse struct {
 	Ok bool `json:"ok" url:"ok"`
 
-	_rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnmanagedUpdateResponse) GetOk() bool {
+	if u == nil {
+		return false
+	}
+	return u.Ok
+}
+
+func (u *UnmanagedUpdateResponse) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
 }
 
 func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
@@ -246,23 +331,28 @@ func (u *UnmanagedUpdateResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*u = UnmanagedUpdateResponse(value)
-	u._rawJSON = json.RawMessage(data)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (u *UnmanagedUpdateResponse) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
+	if value, err := internal.StringifyJSON(u); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
 }
 
 type UnmanagedUpdateRequest struct {
-	DeviceId  string `json:"device_id" url:"device_id"`
-	IsManaged bool   `json:"is_managed" url:"is_managed"`
+	DeviceId  string `json:"device_id" url:"-"`
+	IsManaged bool   `json:"is_managed" url:"-"`
 }
